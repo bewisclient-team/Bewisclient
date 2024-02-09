@@ -1,0 +1,38 @@
+{
+	"schemaVersion": 1,
+	"id": "bewisclient",
+	"version": "${version}",
+	"name": "Bewisclient",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"Me!"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/bewisclient/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			{
+				"value": "bewis09.bewisclient.Bewisclient",
+				"adapter": "kotlin"
+			}
+		]
+	},
+	"mixins": [
+		"bewisclient.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.15.6",
+		"minecraft": "~1.20.4",
+		"java": ">=17",
+		"fabric-api": "*",
+		"fabric-language-kotlin": ">=1.9.22"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}

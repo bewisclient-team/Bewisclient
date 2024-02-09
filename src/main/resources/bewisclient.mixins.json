@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "package": "bewis09.bewisclient.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "ClientPlayerInteractionManagerMixin",
+    "InGameHudMixin",
+    "InGameOverlayRendererMixin",
+    "ScreenMixin",
+    "ZoomMixin"
+  ]
+}
