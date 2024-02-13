@@ -9,9 +9,12 @@
   },
   "client": [
     "ClientPlayerInteractionManagerMixin",
+    "DebugHudMixin",
     "InGameHudMixin",
     "InGameOverlayRendererMixin",
+    "MouseMixin",
     "ScreenMixin",
+    "TextFieldWidgetMixin",
     "ZoomMixin"
   ]
 }

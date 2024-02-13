@@ -13,7 +13,7 @@ class ArrayOptionsElement(title: String, private val value: String, private val 
 
     private var v = getValue<Float>(settings,value)!!.toInt()
 
-    private val widget = ButtonWidget.builder(Text.empty()) {
+    private val widget = ScalableButtonWidget.builder(Text.empty()) {
         v += 1
         v %= de.size
         setValue(settings,value,v.toFloat())
@@ -28,7 +28,7 @@ class ArrayOptionsElement(title: String, private val value: String, private val 
 
         val height = 24+10*descriptionLines.size
 
-        widget.message = Bewisclient.getTranslationText("tiwyla."+de[v])
+        widget.message = Bewisclient.getTranslationText(de[v])
 
         widget.x = x+width-107
         widget.y = y+height/2-10

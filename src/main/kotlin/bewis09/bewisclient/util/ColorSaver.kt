@@ -1,0 +1,20 @@
+package bewis09.bewisclient.util
+
+import java.awt.Color
+
+class ColorSaver(private val color: Int) {
+    fun getColor(): Int {
+        if(color>=0)
+            return color
+        val length = color*-1
+        return Color.HSBtoRGB((System.currentTimeMillis()%(length))/(length.toFloat()),1f,1f)
+    }
+
+    fun getOriginalColor(): Int {
+        return color
+    }
+
+    override fun toString(): String {
+        return "#${color.toString(16)}"
+    }
+}

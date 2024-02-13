@@ -13,9 +13,9 @@ abstract class LineWidget(id: String, private val width: Int, private val center
         drawContext.fill(getPosX(),getPosY(),getPosX()+getOriginalWidth(),getPosY()+getOriginalHeight(), ColorHelper.Argb.getArgb(((getProperty(Settings.TRANSPARENCY)?.times(255F))?.toInt()!!),0,0,0))
         for ((index, text) in getText().iterator().withIndex()) {
             if(centered)
-                drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer,text,getPosX()+getOriginalWidth()/2,getPosY()+13*index+4,-1)
+                drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer,text,getPosX()+getOriginalWidth()/2,getPosY()+13*index+4,(0xFF000000L+getProperty(TEXT_COLOR)!!.getColor()).toInt())
             if(!centered)
-                drawContext.drawTextWithShadow(MinecraftClient.getInstance().textRenderer,text,getPosX()+6,getPosY()+13*index+4,-1)
+                drawContext.drawTextWithShadow(MinecraftClient.getInstance().textRenderer,text,getPosX()+6,getPosY()+13*index+4,(0xFF000000L+getProperty(TEXT_COLOR)!!.getColor()).toInt())
         }
         drawContext.matrices.scale(1/getScale(),1/getScale(),1F)
     }

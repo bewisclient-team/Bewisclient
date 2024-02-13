@@ -2,16 +2,41 @@ package bewis09.bewisclient.drawable
 
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.screen.MainOptionsScreen
+import bewis09.bewisclient.screen.elements.ElementList
 import com.mojang.blaze3d.systems.RenderSystem
+import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.widget.ButtonWidget
-import net.minecraft.screen.ScreenTexts
 import net.minecraft.util.Identifier
+import java.io.File
+import java.io.PrintWriter
+import java.util.Scanner
 
-class MacroGroupElement(title: String, elements: ArrayList<MainOptionsElement>): MainOptionsElement(title,"",elements, Identifier("")) {
+class MacroGroupElement(title: String, private val file: String): MainOptionsElement(title,"", arrayListOf(), Identifier("")) {
 
-    private val deleteButton = ButtonWidget.builder(Bewisclient.getTranslationText("delete")) {}.build()
+    private var deleteConfirm = false
+
+    private val list = getTextFromFile(file)
+
+    private val deleteButton = ButtonWidget.builder(Bewisclient.getTranslationText("delete")) {
+        val file = File(FabricLoader.getInstance().gameDir.toString()+"\\macros\\"+file)
+
+        val currentScreen = MinecraftClient.getInstance().currentScreen
+
+        if(currentScreen is MainOptionsScreen && deleteConfirm) {
+
+            file.delete()
+
+            currentScreen.allElements.removeLast()
+            currentScreen.allElements.add(ElementList.macros())
+        } else {
+            deleteConfirm = true
+
+            it.message = Bewisclient.getTranslationText("confirm")
+        }
+
+    }.build()
     private val shortcutButton = ButtonWidget.builder(Bewisclient.getTranslationText("shortcutButton")) {}.build()
 
     override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {
@@ -29,7 +54,7 @@ class MacroGroupElement(title: String, elements: ArrayList<MainOptionsElement>):
 
         val height = 42
 
-        val isSelected = x+width-20 < mouseX && y < mouseY && x+width > mouseX && y+height > mouseY;
+        val isSelected = x+width-20 < mouseX && y < mouseY && x+width > mouseX && y+height > mouseY
 
         pos = arrayOf(x,y,x+width,y+height)
 
@@ -47,6 +72,10 @@ class MacroGroupElement(title: String, elements: ArrayList<MainOptionsElement>):
         }
 
         deleteButton.render(context,mouseX,mouseY,0f)
+
+        if(deleteConfirm)
+            context.fill(deleteButton.x,deleteButton.y,deleteButton.x+deleteButton.width,deleteButton.y+deleteButton.height, 0x66AA0000)
+
         shortcutButton.render(context,mouseX,mouseY,0f)
 
         RenderSystem.enableBlend()
@@ -67,8 +96,83 @@ class MacroGroupElement(title: String, elements: ArrayList<MainOptionsElement>):
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int, screen: MainOptionsScreen) {
+        val d = deleteConfirm
         deleteButton.mouseClicked(mouseX, mouseY, button)
         shortcutButton.mouseClicked(mouseX, mouseY, button)
-        super.mouseClicked(mouseX, mouseY, button, screen)
+        if(d) {
+            deleteConfirm = false
+            deleteButton.message=Bewisclient.getTranslationText("delete")
+        }
+        val isSelected = pos[2] - 20 < mouseX && pos[1] < mouseY && pos[2] > mouseX && pos[3] > mouseY
+        if(isSelected) {
+            screen.playDownSound(MinecraftClient.getInstance().soundManager)
+            screen.openNewSlice(getElementsFromFile(file,this))
+        }
+    }
+
+    fun saveFile() {
+        val f = File(FabricLoader.getInstance().gameDir.toString()+"\\macros\\"+ file)
+        val p = PrintWriter(f)
+        list.forEach {
+            p.println(it)
+        }
+        p.flush()
+        p.close()
+    }
+
+    fun changeFile(i: Int, lastText: String) {
+        list[i] = lastText
+
+        if(i+1==list.size) {
+            (MinecraftClient.getInstance().currentScreen as MainOptionsScreen).allElements.last().add(MacroElement("",i+1,this))
+            list.add("")
+        }
+
+        saveFile()
+    }
+
+    fun deleteEntry(i: Int) {
+        if(i+1<list.size) {
+            list.removeAt(i)
+
+            saveFile()
+
+            val currentScreen = MinecraftClient.getInstance().currentScreen as MainOptionsScreen
+            currentScreen.allElements.removeLast()
+            currentScreen.allElements.add(getElementsFromFile(file,this))
+        }
+    }
+
+    private fun getElementsFromFile(file: String, element: MacroGroupElement): ArrayList<MainOptionsElement> {
+        val f = File(FabricLoader.getInstance().gameDir.toString()+"\\macros\\"+ file)
+        val a: ArrayList<MainOptionsElement> = arrayListOf()
+        try {
+            val s = Scanner(f)
+
+            var i = -1
+            while(s.hasNextLine()) {
+                val t = s.nextLine()
+                if(t!="")
+                    a.add(MacroElement(t,++i,element))
+            }
+            a.add(MacroElement("",++i,element))
+        } catch (_: Exception){}
+        return a
+    }
+
+    private fun getTextFromFile(file: String): ArrayList<String> {
+        val f = File(FabricLoader.getInstance().gameDir.toString()+"\\macros\\"+ file)
+        val a: ArrayList<String> = arrayListOf()
+        try {
+            val s = Scanner(f)
+
+            while(s.hasNextLine()) {
+                val t = s.nextLine()
+                if(t!="")
+                    a.add(t)
+            }
+            a.add("")
+        } catch (_: Exception){}
+        return a
     }
 }

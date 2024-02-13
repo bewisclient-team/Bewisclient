@@ -1,6 +1,5 @@
 package bewis09.bewisclient
 
-import bewis09.bewisclient.mixin.ZoomMixin
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.widgets.WidgetRenderer
@@ -8,11 +7,12 @@ import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback
-import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.option.KeyBinding
 import net.minecraft.client.util.InputUtil
+import net.minecraft.text.MutableText
 import net.minecraft.text.Text
+import net.minecraft.util.math.Vec3d
 import org.lwjgl.glfw.GLFW
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -24,7 +24,19 @@ object Bewisclient : ModInitializer {
 	var openOptionScreenKeyBindimg: KeyBinding? = null
 	var zoomBinding: KeyBinding? = null
 
+	var posOld = Vec3d.ZERO
+	var posNew = Vec3d.ZERO
+
+	var speed = 0.0
+
 	var pt: Boolean? = false
+
+	class Companion {
+		companion object {
+			var rightList: ArrayList<Long> = ArrayList()
+			val leftList: ArrayList<Long> = ArrayList()
+		}
+	}
 
 	override fun onInitialize() {
 		SettingsLoader.loadSettings()
@@ -46,6 +58,17 @@ object Bewisclient : ModInitializer {
 		))
 
 		ClientTickEvents.END_CLIENT_TICK.register {
+
+			if(it.player!=null && it.isPaused.not()) {
+				posOld = posNew
+				posNew = it.player!!.pos
+
+				speed = if(SettingsLoader.WidgetSettings.getValue<SettingsLoader.Settings>("speed")?.getValue<Boolean>("vertical_speed")==true)
+					posNew.subtract(posOld).length()
+				else
+					posNew.subtract(posOld).horizontalLength()
+			}
+
 			while (openOptionScreenKeyBindimg?.wasPressed() == true) {
 				it.setScreen(MainOptionsScreen())
 			}
@@ -70,11 +93,25 @@ object Bewisclient : ModInitializer {
 		LOGGER.info(string.toString())
 	}
 
-	fun getTranslationText(key: String): Text {
+	fun getTranslationText(key: String): MutableText {
 		return Text.translatable("bewisclient.$key")
 	}
 
 	fun getTranslatedString(key: String): String {
 		return getTranslationText(key).string
+	}
+
+	fun lCount(): Int {
+		for (l in java.util.ArrayList(Companion.leftList)) {
+			if (System.currentTimeMillis() - l > 1000) Companion.leftList.remove(l)
+		}
+		return Companion.leftList.size
+	}
+
+	fun rCount(): Int {
+		for (l in java.util.ArrayList(Companion.rightList)) {
+			if (System.currentTimeMillis() - l > 1000) Companion.rightList.remove(l)
+		}
+		return Companion.rightList.size
 	}
 }

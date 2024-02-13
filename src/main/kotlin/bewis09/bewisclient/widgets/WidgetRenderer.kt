@@ -2,6 +2,8 @@ package bewis09.bewisclient.widgets
 
 import bewis09.bewisclient.screen.WidgetConfigScreen
 import bewis09.bewisclient.widgets.lineWidgets.*
+import bewis09.bewisclient.widgets.specialWidgets.KeyWidget
+import bewis09.bewisclient.widgets.specialWidgets.TiwylaWidget
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
@@ -9,6 +11,8 @@ import net.minecraft.client.gui.DrawContext
 class WidgetRenderer: HudRenderCallback {
 
     companion object {
+        val effectWidget = EffectWidget()
+
         val widgets = arrayListOf(
                 BiomeWidget(),
                 SpeedWidget(),
@@ -17,6 +21,7 @@ class WidgetRenderer: HudRenderCallback {
                 TiwylaWidget(),
                 PingWidget(),
                 CoordinatesWidget(),
+                effectWidget,
                 DayWidget(),
                 DaytimeWidget(),
                 KeyWidget()

@@ -1,7 +1,7 @@
 package bewis09.bewisclient.api
 
-import bewis09.bewisclient.widgets.lineWidgets.TiwylaWidget
-import bewis09.bewisclient.widgets.lineWidgets.TiwylaWidget.Companion.entityExtraInfo
+import bewis09.bewisclient.widgets.specialWidgets.TiwylaWidget
+import bewis09.bewisclient.widgets.specialWidgets.TiwylaWidget.Companion.entityExtraInfo
 import net.minecraft.block.Block
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.LivingEntity

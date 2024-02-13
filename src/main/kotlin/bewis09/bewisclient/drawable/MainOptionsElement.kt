@@ -106,6 +106,10 @@ open class MainOptionsElement {
         }
     }
 
+    open fun mouseReleased(mouseX: Double, mouseY: Double, button: Int) {
+
+    }
+
     open fun onDrag(mouseX: Double, mouseY: Double, deltaX: Double, deltaY: Double, button: Int) {
 
     }

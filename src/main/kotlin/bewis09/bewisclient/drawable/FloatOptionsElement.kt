@@ -22,6 +22,8 @@ class FloatOptionsElement(title: String, private val value: String, private val 
 
     val widget = UsableSliderWidget(0, 0, 100, 20, Text.empty(), ((getValue<Float>(settings,value)!!- de?.start!!)/(de.end-de.start)).toDouble(), de.end, de.start, de.decimalPoints, valueChanged)
 
+    var clicked = false
+
     override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {
         val client = MinecraftClient.getInstance()
 
@@ -54,11 +56,18 @@ class FloatOptionsElement(title: String, private val value: String, private val 
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int, screen: MainOptionsScreen) {
+        if(widget.isHovered)
+            clicked = true
         widget.mouseClicked(mouseX, mouseY, button)
     }
 
+    override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int) {
+        clicked = false
+        super.mouseReleased(mouseX, mouseY, button)
+    }
+
     override fun onDrag(mouseX: Double, mouseY: Double, deltaX: Double, deltaY: Double, button: Int) {
-        if(widget.isHovered)
+        if(widget.isHovered && clicked)
             widget.mouseDragged(mouseX,mouseY,button,deltaX,deltaY)
     }
 }

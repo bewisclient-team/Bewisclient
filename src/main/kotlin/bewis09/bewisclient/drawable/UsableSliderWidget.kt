@@ -6,33 +6,57 @@ import net.minecraft.text.Text
 import kotlin.math.pow
 import kotlin.math.round
 
-class UsableSliderWidget(x: Int, y: Int, width: Int, height: Int, text: Text, value: Double, val maxValue: Float, val minValue: Float, val decimalPlaces: Int, val valueApply: (Double) -> Unit) : SliderWidget(x, y, width, height, text, value) {
+class UsableSliderWidget : SliderWidget {
 
-    init {
-        message = Text.of(Bewisclient.getTranslatedString("gui.value")+": "+withDecimalPlaces(value*(maxValue-minValue)+minValue,decimalPlaces))
+    val maxValue: Float
+    val minValue: Float
+    val decimalPlaces: Int
+    val valueApply: (Double) -> Unit
+    var messageApplier: ((Double) -> Text)? = null
+
+    constructor(x: Int, y: Int, width: Int, height: Int, text: Text, value: Double, maxValue: Float, minValue: Float, decimalPlaces: Int, valueApply: (Double) -> Unit) : super(x, y, width, height, text, value) {
+        this.maxValue = maxValue
+        this.minValue = minValue
+        this.decimalPlaces = decimalPlaces
+        this.valueApply = valueApply
+        updateMessage()
+    }
+
+    constructor(x: Int, y: Int, width: Int, height: Int, text: Text, value: Double, maxValue: Float, minValue: Float, decimalPlaces: Int, valueApply: (Double) -> Unit, messageApplier: (Double) -> Text) : super(x, y, width, height, text, value) {
+        this.maxValue = maxValue
+        this.minValue = minValue
+        this.decimalPlaces = decimalPlaces
+        this.valueApply = valueApply
+        this.messageApplier = messageApplier
+        updateMessage()
     }
 
     override fun updateMessage() {
-        message = Text.of(Bewisclient.getTranslatedString("gui.value")+": "+withDecimalPlaces(value*(maxValue-minValue)+minValue,decimalPlaces))
+        message = if(messageApplier==null)
+            Text.of(Bewisclient.getTranslatedString("gui.value")+": "+ withDecimalPlaces(value*(maxValue-minValue)+minValue,decimalPlaces))
+        else
+            messageApplier!!(value)
     }
 
     override fun applyValue() {
         valueApply(value)
     }
 
-    interface ValueApplier {
-         operator fun invoke(value: Double)
+    fun getValue(): Double {
+        return value
     }
 
-    private fun withDecimalPlaces(value:Double,decimalPlaces: Int): String {
-        if(decimalPlaces>0) {
-            var p = (round(value* 10.0.pow(decimalPlaces.toDouble()))/ 10.0.pow(decimalPlaces.toDouble())).toString()
-            while(p.split(".")[1].length<decimalPlaces) {
-                p+="0"
+    companion object {
+        fun withDecimalPlaces(value:Double, decimalPlaces: Int): String {
+            if(decimalPlaces>0) {
+                var p = (round(value* 10.0.pow(decimalPlaces.toDouble()))/ 10.0.pow(decimalPlaces.toDouble())).toString()
+                while(p.split(".")[1].length<decimalPlaces) {
+                    p+="0"
+                }
+                return p
+            } else {
+                return value.toInt().toString()
             }
-            return p
-        } else {
-            return value.toInt().toString()
         }
     }
 }

@@ -46,16 +46,19 @@ class MainOptionsScreen : Screen(Text.empty()) {
     private val closeTextures: ButtonTextures = ButtonTextures(Identifier("bewisclient","textures/sprites/close_button.png"), Identifier("bewisclient","textures/sprites/close_button_highlighted.png"))
     private val backTextures: ButtonTextures = ButtonTextures(Identifier("bewisclient","textures/sprites/back_button.png"),Identifier("bewisclient","textures/sprites/back_button_highlighted.png"))
 
-    private var allElements = arrayListOf(ElementList.main)
+    var allElements = arrayListOf(ElementList.main())
 
     init {
         animationState = AnimationState.TO_MAIN_SCREEN_UNSTARTED
     }
 
     override fun render(context: DrawContext?, mouseX: Int, mouseY: Int, delta: Float) {
+
+        correctScroll()
+
         context!!
         var animationFrame = 1F
-        val animationSpeed = MathHelper.clamp(SettingsLoader.DesignSettings.getValue(Settings.OPTIONS_MENU)!!.getValue(Settings.ANIMATION_TIME)!!.toInt(),1,500)
+        val animationSpeed = MathHelper.clamp(SettingsLoader.DesignSettings.getValue(Settings.Settings.OPTIONS_MENU)!!.getValue(Settings.Settings.ANIMATION_TIME)!!.toInt(),1,500)
         if(System.currentTimeMillis() - animationStart >= animationSpeed) {
             if(animationState==AnimationState.TO_OTHER_SCREEN) {
                 client?.setScreen(animatedScreen)
@@ -86,18 +89,19 @@ class MainOptionsScreen : Screen(Text.empty()) {
 
         RenderSystem.enableBlend()
         RenderSystem.setShaderColor(0.25f, 0.25f, 0.25f, 1f)
-        context.enableScissor(0,0, (width/4*animationFrame).toInt(),height)
+        context.enableScissor(0,0, (this.width/4*animationFrame).toInt(),this.height)
         context.drawTexture(OPTIONS_BACKGROUND_TEXTURE, 0, 0, 0, 0.0f, 0.0f, this.width, this.height, 32, 32)
         context.disableScissor()
-        context.enableScissor(width-(width/4*animationFrame).toInt(),0,width,height)
+        context.enableScissor(this.width-(this.width/4*animationFrame).toInt(),0,this.width,this.height)
         context.drawTexture(OPTIONS_BACKGROUND_TEXTURE, 0, 0, 0, 0.0f, 0.0f, this.width, this.height, 32, 32)
         context.disableScissor()
-        context.enableScissor((width/4*animationFrame).toInt(), (height-28*animationFrame).toInt(),width-(width/4*animationFrame).toInt(),height)
+        context.enableScissor((this.width/4*animationFrame).toInt(), (this.height-28*animationFrame).toInt(),this.width-(this.width/4*animationFrame).toInt(),this.height)
         RenderSystem.setShaderColor(0.15f, 0.15f, 0.15f, 1f)
-        context.drawTexture(OPTIONS_BACKGROUND_TEXTURE, 0, 0, 0, 0.0f, 0.0f, this.width, this.height, 32, 32)
+        context.drawTexture(OPTIONS_BACKGROUND_TEXTURE, 0, 0, 0, 0.0f, 0.0f, width, height, 32, 32)
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
         RenderSystem.disableBlend()
         context.disableScissor()
+
         bottomAnimation.forEach {
             it.y = (height - (24 * animationFrame)).toInt()
         }
@@ -107,19 +111,24 @@ class MainOptionsScreen : Screen(Text.empty()) {
             drawable.render(context, mouseX, mouseY, delta)
         }
 
+        val width = (this.width* scale.toDouble()).toInt()
+        val height = (this.height* scale.toDouble()).toInt()
+
+        context.matrices.scale(1f/ scale,1f/ scale,1f/ scale)
+
         var h = 4 + scrolls[slice].toInt()
 
         val normalOffset: Int = (if (animationState == AnimationState.LEFT) width/2*middleAnimationFrame else if (animationState == AnimationState.RIGHT) -width/2*middleAnimationFrame else 0F).roundToInt()
 
-        context.enableScissor((width/4*animationFrame).toInt(),0, (width-(width/4*animationFrame)).toInt(),(height-28*animationFrame).toInt())
+        context.enableScissor((this.width/4*animationFrame).toInt(),0, (this.width-(this.width/4*animationFrame)).toInt(),(this.height-28*animationFrame).toInt())
 
         allElements[slice].forEach {element ->
             h+=4+element.render(context,
                     width/4+10 + normalOffset,
                     h,
                     width/2-20,
-                    mouseX,
-                    mouseY,
+                    (mouseX* scale).toInt(),
+                    (mouseY* scale).toInt(),
                     max(10,floor(animationFrame*255).toLong() )*0x1000000L)
         }
 
@@ -132,8 +141,8 @@ class MainOptionsScreen : Screen(Text.empty()) {
                         width/4+10 + normalOffset + width/2,
                         h,
                         width/2-20,
-                        mouseX,
-                        mouseY,
+                        (mouseX* scale).toInt(),
+                        (mouseY* scale).toInt(),
                         max(10,floor(animationFrame*255).toLong() )*0x1000000L)
             }
         } else if(animationState==AnimationState.LEFT) {
@@ -143,39 +152,50 @@ class MainOptionsScreen : Screen(Text.empty()) {
                         width/4+10 + normalOffset - width/2,
                         h,
                         width/2-20,
-                        mouseX,
-                        mouseY,
+                        (mouseX* scale).toInt(),
+                        (mouseY* scale).toInt(),
                         max(10,floor(animationFrame*255).toLong() )*0x1000000L)
             }
         }
 
         context.disableScissor()
 
-        context.fillGradient((width/4*animationFrame).toInt(), (height-34*animationFrame).toInt(), (width-(width/4*animationFrame)).toInt(), (height-28*animationFrame).toInt(),0,0xFF000000.toInt())
-        fillGradient(context,(width/4*animationFrame).toInt(),0, ((width/4*animationFrame)+6*animationFrame).toInt(),height, 0xFF000000.toInt(),0)
-        fillGradient(context, (width-(width/4*animationFrame)-6*animationFrame).toInt(),0,width-(width/4*animationFrame).toInt(),height, 0,0xFF000000.toInt())
+        context.matrices.scale(scale, scale, scale)
+
+        context.fillGradient((this.width/4*animationFrame).toInt(), (this.height-34*animationFrame).toInt(), (this.width-(this.width/4*animationFrame)).toInt(), (this.height-28*animationFrame).toInt(),0,0xFF000000.toInt())
+        fillGradient(context,(this.width/4*animationFrame).toInt(),0, ((this.width/4*animationFrame)+6*animationFrame).toInt(),this.height, 0xFF000000.toInt(),0)
+        fillGradient(context, (this.width-(this.width/4*animationFrame)-6*animationFrame).toInt(),0,this.width-(this.width/4*animationFrame).toInt(),this.height, 0,0xFF000000.toInt())
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
+        clicked = true
         if(animationState==AnimationState.STABLE && mouseX>width/4 && mouseX<width/4*3 && mouseY<height-28) {
-            allElements[slice].forEach {it.mouseClicked(mouseX, mouseY, button, this)}
+            allElements[slice].forEach {it.mouseClicked(mouseX* scale, mouseY* scale, button, this)}
         }
         return super.mouseClicked(mouseX, mouseY, button)
     }
 
+    override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int): Boolean {
+        clicked = false
+        if(animationState==AnimationState.STABLE && mouseX>width/4 && mouseX<width/4*3 && mouseY<height-28) {
+            allElements[slice].forEach {it.mouseReleased(mouseX* scale, mouseY* scale, button)}
+        }
+        return super.mouseReleased(mouseX, mouseY, button)
+    }
+
     override fun charTyped(chr: Char, modifiers: Int): Boolean {
-        allElements[slice].forEach {it.charTyped(chr, modifiers)}
+        ArrayList(allElements[slice]).forEach {it.charTyped(chr, modifiers)}
         return super.charTyped(chr, modifiers)
     }
 
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
-        allElements[slice].forEach {it.keyPressed(keyCode, scanCode, modifiers)}
+        ArrayList(allElements[slice]).forEach {it.keyPressed(keyCode, scanCode, modifiers)}
         return super.keyPressed(keyCode, scanCode, modifiers)
     }
 
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, deltaX: Double, deltaY: Double): Boolean {
         if(animationState==AnimationState.STABLE && mouseX>width/4 && mouseX<width/4*3 && mouseY<height-28) {
-            allElements[slice].forEach {it.onDrag(mouseX, mouseY, deltaX, deltaY, button)}
+            allElements[slice].forEach {it.onDrag(mouseX* scale, mouseY* scale, deltaX* scale, deltaY* scale, button)}
         }
         return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)
     }
@@ -210,12 +230,13 @@ class MainOptionsScreen : Screen(Text.empty()) {
     }
 
     fun goBack() {
-        if(slice>0) {
-            animationState = AnimationState.LEFT
-            animationStart = System.currentTimeMillis()
-        } else {
-            startAllAnimation(null)
-        }
+        if(animationState==AnimationState.STABLE)
+            if(slice>0) {
+                animationState = AnimationState.LEFT
+                animationStart = System.currentTimeMillis()
+            } else {
+                startAllAnimation(null)
+            }
     }
 
     fun openNewSlice(elements: ArrayList<MainOptionsElement>) {
@@ -258,7 +279,7 @@ class MainOptionsScreen : Screen(Text.empty()) {
     }
 
     fun correctScroll() {
-        scrolls[slice]=max((height-32-totalHeight).toFloat(),scrolls[slice])
+        scrolls[slice]=max((height* Companion.scale -32-totalHeight),scrolls[slice])
         scrolls[slice]=min(0f,scrolls[slice])
     }
 
@@ -271,5 +292,20 @@ class MainOptionsScreen : Screen(Text.empty()) {
 
     fun playDownSound(soundManager: SoundManager) {
         soundManager.play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0f))
+    }
+
+    companion object {
+
+        var laS = 1f/SettingsLoader.DesignSettings.getValue(Settings.Settings.OPTIONS_MENU)?.getValue(Settings.Settings.OPTIONS_SCALE)!!
+
+        var clicked = false
+
+        val scale: Float
+            get() {
+                if(!clicked) {
+                    laS = 1f/SettingsLoader.DesignSettings.getValue(Settings.Settings.OPTIONS_MENU)?.getValue(Settings.Settings.OPTIONS_SCALE)!!
+                }
+                return laS
+            }
     }
 }

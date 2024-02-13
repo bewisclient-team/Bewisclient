@@ -8,26 +8,26 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.roundToInt
 
-abstract class Widget(val id: String) {
+abstract class Widget(val id: String): Settings() {
     abstract fun render(drawContext: DrawContext)
 
     abstract fun getOriginalWidth(): Int
     abstract fun getOriginalHeight(): Int
 
-    fun getScale(): Float = getProperty(Settings.SCALE)!!
+    open fun getScale(): Float = getProperty(Settings.SCALE)!!
 
     open fun isEnabled(): Boolean = getProperty(Settings.ENABLED)!!
 
     private fun getSavedPosX(): Float = getProperty(Settings.POSX)!!
     private fun getSavedPosY(): Float = getProperty(Settings.POSY)!!
 
-    private fun getScreenWidth(): Int = MinecraftClient.getInstance().window.scaledWidth
+    fun getScreenWidth(): Int = MinecraftClient.getInstance().window.scaledWidth
     private fun getScreenHeight(): Int = MinecraftClient.getInstance().window.scaledHeight
 
     private fun getSavedPartX(): Int = getProperty(Settings.PARTX)?.toInt()!!
     private fun getSavedPartY(): Int = getProperty(Settings.PARTY)?.toInt()!!
 
-    fun getOriginalPosX(): Int {
+    open fun getOriginalPosX(): Int {
         if(getSavedPartX()==-1)
             return (getSavedPosX()).roundToInt()
         if(getSavedPartX()==0) {
@@ -69,7 +69,7 @@ abstract class Widget(val id: String) {
     fun <K> setProperty(setting: SettingsLoader.TypedSettingID<K>, value:K): K? =
             SettingsLoader.WidgetSettings.getValue(SettingsLoader.TypedSettingID<SettingsLoader.Settings>(id))?.setValue(setting,value)
 
-    fun setPropertyPosX(value: Float, allV: Int, wV: Int): Float? {
+    open fun setPropertyPosX(value: Float, allV: Int, wV: Int, sneak: Boolean): Float? {
         var pos: Float
         var part = 0f
         if(allV/3>value) {
@@ -81,16 +81,18 @@ abstract class Widget(val id: String) {
             pos = allV-value-wV
             part = 1F
         }
-        if(abs(value+wV/2-allV/2) <5) {
+        if(abs(value+wV/2-allV/2) <5 && !sneak) {
             part = 0F
             pos = 0F
         }
+        if(part!=0f && abs(pos-2.5)<5 && !sneak)
+            pos = 5f
         SettingsLoader.WidgetSettings.getValue(SettingsLoader.TypedSettingID<SettingsLoader.Settings>(id))?.setValueWithoutSave(Settings.PARTX, part)
-        return SettingsLoader.WidgetSettings.getValue(SettingsLoader.TypedSettingID<SettingsLoader.Settings>(id))?.setValueWithoutSave(Settings.POSX, if (part==0f) pos else max(pos,5f))
+        return SettingsLoader.WidgetSettings.getValue(SettingsLoader.TypedSettingID<SettingsLoader.Settings>(id))?.setValueWithoutSave(Settings.POSX, pos)
     }
 
-    fun setPropertyPosY(value: Float, allV: Int, wV: Int): Float? {
-        val pos: Float
+    open fun setPropertyPosY(value: Float, allV: Int, wV: Int, sneak: Boolean): Float? {
+        var pos: Float
         val part: Float
         if(allV/2>value) {
             pos = value
@@ -99,7 +101,9 @@ abstract class Widget(val id: String) {
             pos = allV-value-wV
             part = 1F
         }
+        if(abs(pos-2.5)<5 && !sneak)
+            pos = 5f
         SettingsLoader.WidgetSettings.getValue(SettingsLoader.TypedSettingID<SettingsLoader.Settings>(id))?.setValueWithoutSave(Settings.PARTY, part)
-        return SettingsLoader.WidgetSettings.getValue(SettingsLoader.TypedSettingID<SettingsLoader.Settings>(id))?.setValueWithoutSave(Settings.POSY, max(pos,5f))
+        return SettingsLoader.WidgetSettings.getValue(SettingsLoader.TypedSettingID<SettingsLoader.Settings>(id))?.setValueWithoutSave(Settings.POSY, pos)
     }
 }

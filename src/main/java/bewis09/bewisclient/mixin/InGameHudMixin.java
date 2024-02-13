@@ -2,6 +2,7 @@ package bewis09.bewisclient.mixin;
 
 import bewis09.bewisclient.JavaSettingsSender;
 import bewis09.bewisclient.util.MathUtil;
+import bewis09.bewisclient.widgets.WidgetRenderer;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -215,7 +216,7 @@ public abstract class InGameHudMixin {
                 StatusEffect statusEffect = statusEffectInstance.getEffectType();
                 if (!statusEffectInstance.shouldShowIcon()) continue;
                 int k = this.scaledWidth+4;
-                int l = 1;
+                int l = WidgetRenderer.Companion.getEffectWidget().getPosY()+1;
                 if (this.client.isDemo()) {
                     l += 15;
                 }
@@ -253,6 +254,58 @@ public abstract class InGameHudMixin {
             }
 
             list.forEach(Runnable::run);
+            ci.cancel();
+        } else {
+            AbstractInventoryScreen abstractInventoryScreen;
+            Screen screen;
+            Collection<StatusEffectInstance> collection = this.client.player.getStatusEffects();
+            if (collection.isEmpty() || (screen = this.client.currentScreen) instanceof AbstractInventoryScreen && (abstractInventoryScreen = (AbstractInventoryScreen)screen).hideStatusEffectHud()) {
+                return;
+            }
+            RenderSystem.enableBlend();
+            int i = 0;
+            int j = 0;
+            StatusEffectSpriteManager statusEffectSpriteManager = this.client.getStatusEffectSpriteManager();
+            ArrayList<Runnable> list = Lists.newArrayListWithExpectedSize(collection.size());
+            for (StatusEffectInstance statusEffectInstance : Ordering.natural().reverse().sortedCopy(collection)) {
+                int n;
+                StatusEffect statusEffect = statusEffectInstance.getEffectType();
+                if (!statusEffectInstance.shouldShowIcon()) continue;
+                int k = this.scaledWidth;
+                int l = WidgetRenderer.Companion.getEffectWidget().getPosY()+1;
+                if (this.client.isDemo()) {
+                    l += 15;
+                }
+                if (statusEffect.isBeneficial()) {
+                    k -= 25 * ++i;
+                } else {
+                    k -= 25 * ++j;
+                    l += 26;
+                }
+                float f = 1.0f;
+                if (statusEffectInstance.isAmbient()) {
+                    context.drawGuiTexture(EFFECT_BACKGROUND_AMBIENT_TEXTURE, k, l, 24, 24);
+                } else {
+                    context.drawGuiTexture(EFFECT_BACKGROUND_TEXTURE, k, l, 24, 24);
+                    if (statusEffectInstance.isDurationBelow(200)) {
+                        int m = statusEffectInstance.getDuration();
+                        n = 10 - m / 20;
+                        f = MathHelper.clamp((float)m / 10.0f / 5.0f * 0.5f, 0.0f, 0.5f) + MathHelper.cos((float)m * (float)Math.PI / 5.0f) * MathHelper.clamp((float)n / 10.0f * 0.25f, 0.0f, 0.25f);
+                    }
+                }
+                Sprite sprite = statusEffectSpriteManager.getSprite(statusEffect);
+                n = k;
+                int o = l;
+                float g = f;
+                int finalN = n;
+                list.add(() -> {
+                    context.setShaderColor(1.0f, 1.0f, 1.0f, g);
+                    context.drawSprite(finalN + 3, o + 3, 0, 18, 18, sprite);
+                    context.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+                });
+            }
+            list.forEach(Runnable::run);
+
             ci.cancel();
         }
     }

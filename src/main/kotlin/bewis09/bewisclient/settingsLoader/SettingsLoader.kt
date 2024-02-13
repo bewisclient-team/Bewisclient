@@ -2,8 +2,10 @@
 
 package bewis09.bewisclient.settingsLoader
 
-import bewis09.bewisclient.Bewisclient
+import bewis09.bewisclient.screen.MainOptionsScreen
+import bewis09.bewisclient.util.ColorSaver
 import net.fabricmc.loader.api.FabricLoader
+import net.minecraft.client.MinecraftClient
 import java.io.File
 import java.io.PrintWriter
 import java.util.*
@@ -22,6 +24,9 @@ object SettingsLoader {
         loadSetting("widgets",WidgetSettings)
         loadSetting("general",GeneralSettings)
         loadSetting("design",DesignSettings)
+
+        if(MinecraftClient.getInstance().currentScreen is MainOptionsScreen)
+            (MinecraftClient.getInstance().currentScreen as MainOptionsScreen).startAllAnimation(MainOptionsScreen())
     }
 
     private fun loadSetting(id: String, settings: Settings) {
@@ -41,6 +46,7 @@ object SettingsLoader {
             var openString = ""
             var stringOpen = false
             var first = true
+            var color = false
 
             for (c in str.chars()) {
                 if(c?.toChar() =='{') {
@@ -52,6 +58,8 @@ object SettingsLoader {
                         sets[sets.size-1].setValueWithoutSave(TypedSettingID(keyString),o,)
                         sets.add(o)
                     }
+                } else if(c?.toChar() =='#') {
+                    color = true
                 } else if(c?.toChar() =='"') {
                     stringOpen=!stringOpen
                     if(!stringOpen) {
@@ -70,7 +78,12 @@ object SettingsLoader {
                 } else if(stringOpen) {
                     openString+=c?.toChar()
                 } else if(c?.toChar() ==',') {
-                    if(openString!="") {
+                    if(color) {
+                        color = false
+                        try {
+                            sets[sets.size - 1].setValueWithoutSave(TypedSettingID(keyString), ColorSaver((openString).toInt(16)))
+                        } catch (_: Exception) {}
+                    } else if(openString!="") {
                         try {
                             if (openString.contains("true") || openString.contains("false")) {
                                 sets[sets.size - 1].setValueWithoutSave(TypedSettingID(keyString), (openString).contains("true"))
@@ -82,7 +95,12 @@ object SettingsLoader {
                     keyString = ""
                     openString = ""
                 } else if(c?.toChar() =='}') {
-                    if(openString!="") {
+                    if(color) {
+                        color = false
+                        try {
+                            sets[sets.size - 1].setValueWithoutSave(TypedSettingID(keyString), ColorSaver((openString).toInt(16)))
+                        } catch (_: Exception) {}
+                    } else if(openString!="") {
                         try {
                             if (openString.contains("true") || openString.contains("false")) {
                                 sets[sets.size - 1].setValueWithoutSave(TypedSettingID(keyString), (openString).contains("true"))
@@ -101,6 +119,7 @@ object SettingsLoader {
                 }
             }
         } else {
+            file.parentFile.mkdirs()
             file.createNewFile()
         }
 

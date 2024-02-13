@@ -1,6 +1,6 @@
 @file:Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
 
-package bewis09.bewisclient.widgets.lineWidgets
+package bewis09.bewisclient.widgets.specialWidgets
 
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.api.JavaAPIEntryPoint.EntityListener
@@ -13,6 +13,7 @@ import net.minecraft.block.*
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.network.ClientPlayerEntity
+import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.passive.AxolotlEntity
@@ -20,12 +21,9 @@ import net.minecraft.entity.passive.CatEntity
 import net.minecraft.entity.passive.FrogEntity
 import net.minecraft.entity.passive.HorseEntity
 import net.minecraft.entity.passive.LlamaEntity
-import net.minecraft.entity.passive.PandaEntity
 import net.minecraft.entity.passive.RabbitEntity
 import net.minecraft.entity.passive.TraderLlamaEntity
-import net.minecraft.entity.passive.VillagerEntity
 import net.minecraft.registry.Registries
-import net.minecraft.registry.RegistryKeys
 import net.minecraft.registry.tag.BlockTags
 import net.minecraft.state.property.Property
 import net.minecraft.text.Style
@@ -66,16 +64,16 @@ class TiwylaWidget: Widget("tiwyla") {
                     if(it is AxolotlEntity) it.variant.name else ""
                 }),
                 Pair(EntityType.HORSE, EntityListener {
-                    if(it is HorseEntity) it.variant.name.toLowerCase()+", "+it.marking.name.toLowerCase() else ""
+                    if (it is HorseEntity) it.variant.name.lowercase(Locale.getDefault()) + ", " + it.marking.name.lowercase(Locale.getDefault()) else ""
                 }),
                 Pair(EntityType.RABBIT, EntityListener {
                     if(it is RabbitEntity) it.variant.name else ""
                 }),
                 Pair(EntityType.LLAMA, EntityListener {
-                    if(it is LlamaEntity) it.variant.name.toLowerCase()+", ${Bewisclient.getTranslatedString("strength")}: "+it.strength.toString() else ""
+                    if(it is LlamaEntity) it.variant.name.lowercase(Locale.getDefault()) + ", ${Bewisclient.getTranslatedString("strength")}: " + it.strength.toString() else ""
                 }),
                 Pair(EntityType.TRADER_LLAMA, EntityListener {
-                    if(it is TraderLlamaEntity) it.variant.name.toLowerCase()+", ${Bewisclient.getTranslatedString("strength")}: "+it.strength.toString() else ""
+                    if(it is TraderLlamaEntity) it.variant.name.lowercase(Locale.getDefault()) + ", ${Bewisclient.getTranslatedString("strength")}: " + it.strength.toString() else ""
                 }),
                 Pair(EntityType.WITHER, EntityListener {if(it.health<150) Bewisclient.getTranslatedString("wither.second_stage") else Bewisclient.getTranslatedString("wither.first_stage")})
         )
@@ -89,11 +87,11 @@ class TiwylaWidget: Widget("tiwyla") {
         if(getText().size==0) return
         drawContext.matrices.scale(getScale(),getScale(),1F)
         drawContext.fill(getPosX(),getPosY(),getPosX()+getOriginalWidth(),getPosY()+getOriginalHeight(), ColorHelper.Argb.getArgb(((getProperty(Settings.TRANSPARENCY)?.times(255F))?.toInt()!!),0,0,0))
-        drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, getText()[0],getPosX()+getOriginalWidth()/2,getPosY()+4,-1)
+        drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, getText()[0],getPosX()+getOriginalWidth()/2,getPosY()+4,(0xFF000000L+getProperty(TOP_COLOR)!!.getColor()).toInt())
         drawContext.matrices.scale(0.7F,0.7F,1F)
         for ((index, text) in getText().iterator().withIndex()) {
             if(index!=0)
-                drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer,if (text.split("%")[0]=="cTH") convertToHearths(text.split("%")[1].toDouble(),text.split("%")[2].toDouble(),text.split("%")[3].toDouble()) else Text.of(text),((getPosX()+getOriginalWidth()/2)/0.7F).toInt(),((getPosY()+8*index+8)/0.7F).toInt(),-1)
+                drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer,if (text.split("%")[0]=="cTH") convertToHearths(text.split("%")[1].toDouble(),text.split("%")[2].toDouble(),text.split("%")[3].toDouble()) else Text.of(text),((getPosX()+getOriginalWidth()/2)/0.7F).toInt(),((getPosY()+8*index+8)/0.7F).toInt(),(0xFF000000L+getProperty(BOTTOM_COLOR)!!.getColor()).toInt())
         }
         drawContext.matrices.scale(1/0.7F,1/0.7F,1F)
         drawContext.matrices.scale(1/getScale(),1/getScale(),1F)
@@ -112,8 +110,8 @@ class TiwylaWidget: Widget("tiwyla") {
             return arrayListOf()
         if(hitResult.type==HitResult.Type.BLOCK)
             return getTextFromBlock(hitResult as BlockHitResult,MinecraftClient.getInstance().world!!.getBlockState(hitResult.blockPos))
-        if(hitResult.type==HitResult.Type.ENTITY && (hitResult as EntityHitResult).entity is LivingEntity)
-            return getTextFromEntity(hitResult, hitResult.entity as LivingEntity)
+        if(hitResult.type==HitResult.Type.ENTITY)
+            return getTextFromEntity(hitResult as EntityHitResult, hitResult.entity)
         return arrayListOf()
     }
 
@@ -212,12 +210,17 @@ class TiwylaWidget: Widget("tiwyla") {
         return map.getOrDefault(level, "${Bewisclient.getTranslatedString("mining_level")}: ${Bewisclient.getTranslatedString("mining_level.other")}")
     }
 
-    private fun getTextFromEntity(hitResult: EntityHitResult, entity: LivingEntity):ArrayList<String> {
-        return arrayListOf(
-                entity.name.string,
-                "cTH%${entity.health}%${entity.maxHealth}%${entity.absorptionAmount}",
-                getExtra(entity) ?: Registries.ENTITY_TYPE.getId(entity.type).toString()
-        )
+    private fun getTextFromEntity(hitResult: EntityHitResult, entity: Entity):ArrayList<String> {
+        return if(entity is LivingEntity)
+            arrayListOf(
+                    entity.name.string,
+                    "cTH%${entity.health}%${entity.maxHealth}%${entity.absorptionAmount}",
+                    getExtra(entity) ?: Registries.ENTITY_TYPE.getId(entity.type).toString()
+            )
+        else
+            arrayListOf(
+                    entity.name.string
+            )
     }
 
     @Suppress("NAME_SHADOWING")

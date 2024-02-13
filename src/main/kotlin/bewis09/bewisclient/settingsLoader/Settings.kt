@@ -1,7 +1,10 @@
 package bewis09.bewisclient.settingsLoader
 
-object Settings {
+import bewis09.bewisclient.util.ColorSaver
+
+open class Settings {
     val SCALE: SettingsLoader.TypedSettingID<Float> = SettingsLoader.TypedSettingID("size")
+    val OPTIONS_SCALE: SettingsLoader.TypedSettingID<Float> = SettingsLoader.TypedSettingID("scale")
     val POSX: SettingsLoader.TypedSettingID<Float> = SettingsLoader.TypedSettingID("posX")
     val POSY: SettingsLoader.TypedSettingID<Float> = SettingsLoader.TypedSettingID("posY")
     val PARTX: SettingsLoader.TypedSettingID<Float> = SettingsLoader.TypedSettingID("partX")
@@ -14,4 +17,15 @@ object Settings {
     val FIRST_LINE: SettingsLoader.TypedSettingID<Float> = SettingsLoader.TypedSettingID("first_line")
     val SECOND_LINE: SettingsLoader.TypedSettingID<Float> = SettingsLoader.TypedSettingID("second_line")
     val THIRD_LINE: SettingsLoader.TypedSettingID<Float> = SettingsLoader.TypedSettingID("third_line")
+    val SHOW_BIOME: SettingsLoader.TypedSettingID<Boolean> = SettingsLoader.TypedSettingID("show_biome")
+    val SHOW_DIRECTION: SettingsLoader.TypedSettingID<Boolean> = SettingsLoader.TypedSettingID("show_direction")
+    val COLORCODE_BIOME: SettingsLoader.TypedSettingID<Boolean> = SettingsLoader.TypedSettingID("colorcode_biome")
+    val CPS_ELEMENTS: SettingsLoader.TypedSettingID<Float> = SettingsLoader.TypedSettingID("cps_elements")
+    val TEXT_COLOR: SettingsLoader.TypedSettingID<ColorSaver> = SettingsLoader.TypedSettingID("text_color")
+    val TOP_COLOR: SettingsLoader.TypedSettingID<ColorSaver> = SettingsLoader.TypedSettingID("top_color")
+    val BOTTOM_COLOR: SettingsLoader.TypedSettingID<ColorSaver> = SettingsLoader.TypedSettingID("bottom_color")
+
+    companion object {
+        val Settings: Settings = Settings()
+    }
 }

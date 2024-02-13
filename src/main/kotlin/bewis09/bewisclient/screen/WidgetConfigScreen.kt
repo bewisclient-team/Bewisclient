@@ -30,7 +30,7 @@ class WidgetConfigScreen(val parent: MainOptionsScreen): Screen(Text.empty()) {
             alphaStart= System.currentTimeMillis();
         }
 
-        val animationSpeed = MathHelper.clamp(SettingsLoader.DesignSettings.getValue(Settings.OPTIONS_MENU)!!.getValue(Settings.ANIMATION_TIME)!!.toInt(),1,500).toFloat()
+        val animationSpeed = MathHelper.clamp(SettingsLoader.DesignSettings.getValue(Settings.Settings.OPTIONS_MENU)!!.getValue(Settings.Settings.ANIMATION_TIME)!!.toInt(),1,500).toFloat()
 
         if(alphaDirection ==1 && (System.currentTimeMillis() - alphaStart)/animationSpeed>1) {
             MinecraftClient.getInstance().setScreen(parent)
@@ -67,8 +67,8 @@ class WidgetConfigScreen(val parent: MainOptionsScreen): Screen(Text.empty()) {
            context?.drawTooltip(textRenderer,Bewisclient.getTranslationText("widgets."+selected?.id),mouseX,mouseY)
 
         if(_sel_element!=null) {
-            _sel_element!!.setPropertyPosX((mouseX-_sel_xOffset).toFloat(), width, _sel_element!!.getWidth())
-            _sel_element!!.setPropertyPosY((mouseY-_sel_yOffset).toFloat(), height, _sel_element!!.getHeight())
+            _sel_element!!.setPropertyPosX((mouseX-_sel_xOffset).toFloat(), width, _sel_element!!.getWidth(), hasShiftDown())
+            _sel_element!!.setPropertyPosY((mouseY-_sel_yOffset).toFloat(), height, _sel_element!!.getHeight(), hasShiftDown())
             _sel_element!!.render(context!!)
         }
     }

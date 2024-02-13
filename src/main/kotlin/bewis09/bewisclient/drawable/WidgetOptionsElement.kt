@@ -53,7 +53,7 @@ open class WidgetOptionsElement(val originalTitle: String, elements: ArrayList<M
         RenderSystem.disableBlend()
 
         if(this.javaClass == WidgetOptionsElement::class.java) {
-            val enabled = (SettingsLoader.WidgetSettings.getValue<SettingsLoader.Settings>(originalTitle)!!.getValue(Settings.ENABLED) == true)
+            val enabled = (SettingsLoader.WidgetSettings.getValue<SettingsLoader.Settings>(originalTitle)!!.getValue(Settings.Settings.ENABLED) == true)
 
             val hovered = pos[2]-100 < mouseX && pos[1]+2 < mouseY && pos[2]-24 > mouseX && pos[1]+16 > mouseY
 
@@ -100,8 +100,8 @@ open class WidgetOptionsElement(val originalTitle: String, elements: ArrayList<M
         if (pos[2]-100 < mouseX && pos[1]+2 < mouseY && pos[2]-24 > mouseX && pos[1]+16 > mouseY) {
             screen.playDownSound(MinecraftClient.getInstance().soundManager)
 
-            val enabled = (SettingsLoader.WidgetSettings.getValue<SettingsLoader.Settings>(originalTitle)!!.getValue(Settings.ENABLED) == true)
-            SettingsLoader.WidgetSettings.getValue<SettingsLoader.Settings>(originalTitle)!!.setValue(Settings.ENABLED, !enabled)
+            val enabled = (SettingsLoader.WidgetSettings.getValue<SettingsLoader.Settings>(originalTitle)!!.getValue(Settings.Settings.ENABLED) == true)
+            SettingsLoader.WidgetSettings.getValue<SettingsLoader.Settings>(originalTitle)!!.setValue(Settings.Settings.ENABLED, !enabled)
         }
 
         super.mouseClicked(mouseX, mouseY, button, screen)

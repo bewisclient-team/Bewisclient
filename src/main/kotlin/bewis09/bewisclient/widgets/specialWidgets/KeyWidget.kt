@@ -1,4 +1,4 @@
-package bewis09.bewisclient.widgets.lineWidgets
+package bewis09.bewisclient.widgets.specialWidgets
 
 import bewis09.bewisclient.widgets.Widget
 import net.minecraft.client.MinecraftClient
@@ -42,7 +42,11 @@ class KeyWidget: Widget("keys",) {
     }
 
     private fun renderKey(width: Int, height: Int, x:Int, y:Int, text: Text, keyBinding: KeyBinding, drawContext: DrawContext) {
-        drawContext.fill(getPosX()+x,getPosY()+y,getPosX()+x+width,getPosY()+y+height, if (keyBinding.isPressed()) 0x77FFFFFF else 0x77000000)
-        drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer,text,getPosX()+x+width/2,getPosY()+y+((height-9)/2+1),-1)
+        drawContext.fill(getPosX()+x,getPosY()+y,getPosX()+x+width,getPosY()+y+height,getAlphaModifier() + if (keyBinding.isPressed()) 0xFFFFFF else 0x000000)
+        drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer,text,getPosX()+x+width/2,getPosY()+y+((height-9)/2+1),(0xFF000000L+getProperty(TEXT_COLOR)!!.getColor()).toInt())
+    }
+
+    private fun getAlphaModifier(): Int {
+        return (getProperty(TRANSPARENCY)?.times(255f))!!.toInt()*0x1000000
     }
 }

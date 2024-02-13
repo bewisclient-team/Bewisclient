@@ -1,13 +1,10 @@
 package bewis09.bewisclient.api;
 
-import bewis09.bewisclient.widgets.lineWidgets.TiwylaWidget;
+import bewis09.bewisclient.widgets.specialWidgets.TiwylaWidget;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.state.property.Property;
-
-import javax.swing.text.html.parser.Entity;
-import java.util.EventListener;
 
 public class JavaAPIEntryPoint {
     public static void addBlockExtraInfoPair(Block block, Property<?> property) {
