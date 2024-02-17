@@ -13,14 +13,23 @@ open class MainOptionsElement {
 
     val title: String
     val description: String
-    var screen: Screen? = null
+    var screen: ((MainOptionsScreen) -> Screen)? = null
     var elements: ArrayList<MainOptionsElement>? = null
     val image: Identifier
 
-    constructor(title: String, description: String, screen: Screen?, image: Identifier) {
+    constructor(title: String, description: String, screen: ((MainOptionsScreen) -> Screen), image: Identifier) {
         this.title = title
         this.description = description
         this.screen = screen
+        this.image = image
+        this.select = Identifier("bewisclient", "textures/sprites/select.png")
+        this.selectHovered = Identifier("bewisclient", "textures/sprites/select_highlighted.png")
+        this.pos = arrayOf(0, 0, 0, 0)
+    }
+
+    constructor(title: String, description: String, image: Identifier) {
+        this.title = title
+        this.description = description
         this.image = image
         this.select = Identifier("bewisclient", "textures/sprites/select.png")
         this.selectHovered = Identifier("bewisclient", "textures/sprites/select_highlighted.png")
@@ -102,7 +111,7 @@ open class MainOptionsElement {
             if(elements!=null)
                 screen.openNewSlice(elements!!)
             else if(this.screen!=null)
-                MinecraftClient.getInstance().setScreen(this.screen)
+                screen.startAllAnimation(this.screen!!(screen))
         }
     }
 

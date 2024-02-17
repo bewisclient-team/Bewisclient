@@ -132,7 +132,7 @@ class MainOptionsScreen : Screen(Text.empty()) {
                     max(10,floor(animationFrame*255).toLong() )*0x1000000L)
         }
 
-        totalHeight = h - scrolls[slice].toInt()
+        totalHeight = h - scrolls[slice].toInt() + 8
 
         if(animationState==AnimationState.RIGHT) {
             h = 4  + scrolls[slice+1].toInt()

@@ -1,8 +1,10 @@
 package bewis09.bewisclient
 
+import bewis09.bewisclient.cape.Capes
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.widgets.WidgetRenderer
+import bewis09.bewisclient.wings.WingFeatureRenderer
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
@@ -16,7 +18,8 @@ import net.minecraft.util.math.Vec3d
 import org.lwjgl.glfw.GLFW
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-
+import java.awt.event.ActionEvent
+import javax.swing.Timer
 
 object Bewisclient : ModInitializer {
     private val LOGGER: Logger = LoggerFactory.getLogger("bewisclient")
@@ -72,21 +75,24 @@ object Bewisclient : ModInitializer {
 			while (openOptionScreenKeyBindimg?.wasPressed() == true) {
 				it.setScreen(MainOptionsScreen())
 			}
-			if(SettingsLoader.GeneralSettings.getValue<Boolean>("zoom_enabled") == true) {
+			if(SettingsLoader.GeneralSettings.getValue("zoom_enabled")) {
 				if (zoomBinding?.isPressed == true) {
 					JavaSettingsSender.isZoomed = true
 					if (pt == null)
 						pt = MinecraftClient.getInstance().options.smoothCameraEnabled
-					if(SettingsLoader.GeneralSettings.getValue<Boolean>("hard_zoom") != true)
+					if(!SettingsLoader.GeneralSettings.getValue<Boolean>("hard_zoom"))
 						MinecraftClient.getInstance().options.smoothCameraEnabled = true
 				} else {
 					JavaSettingsSender.isZoomed = false
-					if (pt != null && SettingsLoader.GeneralSettings.getValue<Boolean>("hard_zoom") != true)
+					if (pt != null && !SettingsLoader.GeneralSettings.getValue<Boolean>("hard_zoom"))
 						MinecraftClient.getInstance().options.smoothCameraEnabled = pt!!
 					pt = null
 				}
 			}
 		}
+
+		wing()
+		Capes.register()
 	}
 
 	fun log(string: Any?) {
@@ -99,6 +105,12 @@ object Bewisclient : ModInitializer {
 
 	fun getTranslatedString(key: String): String {
 		return getTranslationText(key).string
+	}
+
+	fun wing() {
+		Timer(50) { e: ActionEvent? ->
+			WingFeatureRenderer.wing_animation_duration = (WingFeatureRenderer.wing_animation_duration + 1) % 60
+		}.start()
 	}
 
 	fun lCount(): Int {

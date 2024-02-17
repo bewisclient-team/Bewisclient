@@ -14,6 +14,7 @@ open class Settings {
     val CLOCK24: SettingsLoader.TypedSettingID<Boolean> = SettingsLoader.TypedSettingID("24Clock")
     val ANIMATION_TIME: SettingsLoader.TypedSettingID<Float> = SettingsLoader.TypedSettingID("animation_time")
     val OPTIONS_MENU: SettingsLoader.TypedSettingID<SettingsLoader.Settings> = SettingsLoader.TypedSettingID("options_menu")
+    val BLOCKHIT: SettingsLoader.TypedSettingID<SettingsLoader.Settings> = SettingsLoader.TypedSettingID("blockhit")
     val FIRST_LINE: SettingsLoader.TypedSettingID<Float> = SettingsLoader.TypedSettingID("first_line")
     val SECOND_LINE: SettingsLoader.TypedSettingID<Float> = SettingsLoader.TypedSettingID("second_line")
     val THIRD_LINE: SettingsLoader.TypedSettingID<Float> = SettingsLoader.TypedSettingID("third_line")

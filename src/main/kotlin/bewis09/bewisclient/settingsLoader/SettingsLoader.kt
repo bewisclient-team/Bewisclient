@@ -2,6 +2,7 @@
 
 package bewis09.bewisclient.settingsLoader
 
+import bewis09.bewisclient.exception.SettingNotFoundException
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.util.ColorSaver
 import net.fabricmc.loader.api.FabricLoader
@@ -179,13 +180,13 @@ object SettingsLoader {
             return settings.getValue(settingID)
         }
 
-        fun <K> getValue(settingID: TypedSettingID<K>): K? {
-            if(!settings.contains(settingID.id)) return null
+        fun <K> getValue(settingID: TypedSettingID<K>): K {
+            if(!settings.contains(settingID.id)) throw SettingNotFoundException(settingID.id)
             return settings.getValue(settingID.id) as K
         }
 
-        fun <K> getValue(settingID: String): K? {
-            if(!settings.contains(settingID)) return null
+        fun <K> getValue(settingID: String): K {
+            if(!settings.contains(settingID)) throw SettingNotFoundException(settingID)
             return settings.getValue(settingID) as K
         }
 

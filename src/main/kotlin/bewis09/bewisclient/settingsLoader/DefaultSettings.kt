@@ -4,8 +4,6 @@ import bewis09.bewisclient.util.ColorSaver
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 object DefaultSettings {
 
@@ -22,7 +20,10 @@ object DefaultSettings {
             Pair("options_menu.animation_time",SliderInfo(0f,500f,0)),
             Pair(".maxinfolength",SliderInfo(1f,10f,0)),
             Pair(".fire_height",SliderInfo(0.6f,1f,2)),
-            Pair("options_menu.scale",SliderInfo(0.5f,1f,2))
+            Pair("options_menu.scale",SliderInfo(0.5f,1f,2)),
+            Pair("scoreboardsize",SliderInfo(0.2f,1.2f,2)),
+            Pair("blockhit.alpha",SliderInfo(0.0f,1.0f,2)),
+            Pair(".lava_view",SliderInfo(0.0f,1.0f,2))
     )
 
     val arrays: HashMap<String,ArrayList<String>> = hashMapOf(
@@ -156,7 +157,18 @@ object DefaultSettings {
             Pair("disable_pumpkin_overlay",false),
             Pair("show_pumpkin_icon",true),
             Pair("fire_height",1f),
-            Pair("cleaner_debug_menu",false)
+            Pair("cleaner_debug_menu",false),
+            Pair("shulker_box_tooltip",false),
+        Pair("blockhit",SettingsLoader.Settings()),
+            Pair("blockhit.enabled",false),
+            Pair("blockhit.color",ColorSaver(0)),
+            Pair("blockhit.alpha",0.4f),
+        Pair("better_visibility",SettingsLoader.Settings()),
+            Pair("better_visibility.lava",false),
+            Pair("better_visibility.lava_view",0.5f),
+            Pair("better_visibility.water",false),
+            Pair("better_visibility.nether",false),
+            Pair("better_visibility.powder_snow",false)
     )
 
     val general: Array<Pair<String,Any>> = arrayOf(

@@ -15,6 +15,12 @@
 				"value": "bewis09.bewisclient.Bewisclient",
 				"adapter": "kotlin"
 			}
+		],
+		"client": [
+			{
+				"value": "bewis09.bewisclient.BewisclientClient",
+				"adapter": "kotlin"
+			}
 		]
 	},
 	"mixins": [
@@ -26,5 +32,6 @@
 		"java": ">=17",
 		"fabric-api": "*",
 		"fabric-language-kotlin": ">=1.9.22"
-	}
+	},
+	"accessWidener": "bewisclient.accesswidener"
 }

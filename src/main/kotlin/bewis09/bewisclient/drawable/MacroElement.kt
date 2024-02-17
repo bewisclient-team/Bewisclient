@@ -9,7 +9,7 @@ import net.minecraft.client.gui.widget.TextFieldWidget
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 
-class MacroElement(line: String, val i: Int, val element: MacroGroupElement): MainOptionsElement("","",null, Identifier("")) {
+class MacroElement(line: String, val i: Int, val element: MacroGroupElement): MainOptionsElement("","", Identifier("")) {
 
     val widget = TextFieldWidget(MinecraftClient.getInstance().textRenderer,0,0,0,20, Text.empty())
 

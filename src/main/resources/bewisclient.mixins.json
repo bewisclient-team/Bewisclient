@@ -3,18 +3,27 @@
   "package": "bewis09.bewisclient.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "BlockItemMixin"
   ],
   "injectors": {
     "defaultRequire": 1
   },
   "client": [
+    "AbstractClientPlayerEntityMixin",
+    "BackgroundRendererMixin",
     "ClientPlayerInteractionManagerMixin",
+    "ClientPlayNetworkHandlerMixin",
     "DebugHudMixin",
     "InGameHudMixin",
     "InGameOverlayRendererMixin",
     "MouseMixin",
+    "PlayerEntityRendererMixin",
     "ScreenMixin",
+    "SkinTexturesMixin",
     "TextFieldWidgetMixin",
+    "TooltipComponentMixin",
+    "WolfCollarFeatureRendererMixin",
+    "WorldRendererMixin",
     "ZoomMixin"
   ]
 }

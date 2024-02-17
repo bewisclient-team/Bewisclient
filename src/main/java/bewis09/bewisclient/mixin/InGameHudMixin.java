@@ -16,7 +16,6 @@ import net.minecraft.client.gui.hud.DebugHud;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.StatusEffectSpriteManager;
@@ -27,6 +26,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.scoreboard.ScoreboardEntry;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -41,54 +41,71 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @SuppressWarnings("ALL")
 @Environment(EnvType.CLIENT)
 @Mixin(InGameHud.class)
 public abstract class InGameHudMixin {
 
-    private static final Identifier EFFECT_WIDGET = new Identifier("bewisclient","gui/effect_widget.png");
-    @Shadow @Final private static Identifier PUMPKIN_BLUR;
+    private static final Identifier EFFECT_WIDGET = new Identifier("bewisclient", "gui/effect_widget.png");
+    @Shadow
+    @Final
+    private static Identifier PUMPKIN_BLUR;
 
-    @Shadow private int scaledHeight;
+    @Shadow
+    private int scaledHeight;
 
-    @Shadow private int scaledWidth;
+    @Shadow
+    private int scaledWidth;
 
-    @Shadow @Final private MinecraftClient client;
+    @Shadow
+    @Final
+    private MinecraftClient client;
 
-    @Shadow private int heldItemTooltipFade;
+    @Shadow
+    private int heldItemTooltipFade;
 
-    @Shadow private ItemStack currentStack;
+    @Shadow
+    private ItemStack currentStack;
 
-    @Shadow public abstract TextRenderer getTextRenderer();
+    @Shadow
+    public abstract TextRenderer getTextRenderer();
 
-    @Shadow @Final private static String SCOREBOARD_JOINER;
+    @Shadow
+    @Final
+    private static String SCOREBOARD_JOINER;
 
-    @Shadow protected abstract boolean shouldRenderSpectatorCrosshair(HitResult hitResult);
+    @Shadow
+    protected abstract boolean shouldRenderSpectatorCrosshair(HitResult hitResult);
 
-    @Shadow @Final private DebugHud debugHud;
+    @Shadow
+    @Final
+    private DebugHud debugHud;
 
-    @Shadow @Final private static Identifier EFFECT_BACKGROUND_TEXTURE;
+    @Shadow
+    @Final
+    private static Identifier EFFECT_BACKGROUND_TEXTURE;
 
-    @Shadow @Final private static Identifier EFFECT_BACKGROUND_AMBIENT_TEXTURE;
+    @Shadow
+    @Final
+    private static Identifier EFFECT_BACKGROUND_AMBIENT_TEXTURE;
 
-    @Inject(method = "renderOverlay", at=@At("HEAD"), cancellable = true)
+    @Shadow @Final private static Comparator<ScoreboardEntry> SCOREBOARD_ENTRY_COMPARATOR;
+
+    @Inject(method = "renderOverlay", at = @At("HEAD"), cancellable = true)
     public void inject(DrawContext context, Identifier texture, float opacity, CallbackInfo ci) {
-        if(((boolean)JavaSettingsSender.Companion.getDesignSettings().getValue("disable_pumpkin_overlay"))&&texture==PUMPKIN_BLUR){
-            if(JavaSettingsSender.Companion.getDesignSettings().getValue("show_pumpkin_icon"))
-                context.drawItem(Items.CARVED_PUMPKIN.getDefaultStack(),scaledWidth/2+94,scaledHeight-20);
+        if (((boolean) JavaSettingsSender.Companion.getDesignSettings().getValue("disable_pumpkin_overlay")) && texture == PUMPKIN_BLUR) {
+            if (JavaSettingsSender.Companion.getDesignSettings().getValue("show_pumpkin_icon"))
+                context.drawItem(Items.CARVED_PUMPKIN.getDefaultStack(), scaledWidth / 2 + 94, scaledHeight - 20);
             RenderSystem.enableBlend();
             ci.cancel();
         }
     }
 
-    @Inject(method = "renderHeldItemTooltip",at=@At("HEAD"),cancellable = true)
+    @Inject(method = "renderHeldItemTooltip", at = @At("HEAD"), cancellable = true)
     public void renderHeldItemTooltip(DrawContext context, CallbackInfo ci) {
-        if(JavaSettingsSender.Companion.getDesignSettings().getValue("held_item_info")) {
+        if (JavaSettingsSender.Companion.getDesignSettings().getValue("held_item_info")) {
             this.client.getProfiler().push("selectedItemName");
             if (this.heldItemTooltipFade > 0 && !this.currentStack.isEmpty()) {
                 int l;
@@ -132,27 +149,28 @@ public abstract class InGameHudMixin {
             mutableText.formatted(Formatting.ITALIC);
         }
         list.add(mutableText);
-        appendShulkerBoxInfo(stack,list);
-        appendBookInfo(stack,list);
-        ItemStack.appendEnchantments(list,stack.getEnchantments());
-        ItemStack.appendEnchantments(list,(EnchantedBookItem.getEnchantmentNbt(stack)));
+        appendShulkerBoxInfo(stack, list);
+        appendBookInfo(stack, list);
+        ItemStack.appendEnchantments(list, stack.getEnchantments());
+        ItemStack.appendEnchantments(list, (EnchantedBookItem.getEnchantmentNbt(stack)));
         boolean b = false;
         int i = 0;
-        if((JavaSettingsSender.Companion.getDesignSettings().getValue("maxinfolength") !=(Object)10f)) {
-            while (list.size() > (((float)JavaSettingsSender.Companion.getDesignSettings().getValue("maxinfolength")))+1) {
+        if ((JavaSettingsSender.Companion.getDesignSettings().getValue("maxinfolength") != (Object) 10f)) {
+            while (list.size() > (((float) JavaSettingsSender.Companion.getDesignSettings().getValue("maxinfolength"))) + 1) {
                 i++;
                 list.remove(list.size() - 1);
                 b = true;
             }
         }
-        if(b) list.add(Text.translatable("bewisclient.hud.andmore", i).formatted(Formatting.GRAY).formatted(Formatting.ITALIC));
+        if (b)
+            list.add(Text.translatable("bewisclient.hud.andmore", i).formatted(Formatting.GRAY).formatted(Formatting.ITALIC));
         return list;
     }
 
     @SuppressWarnings("deprecation")
     public void appendBookInfo(ItemStack i, List<Text> list) {
-        if(i.itemMatches(Items.WRITTEN_BOOK.getRegistryEntry())) {
-            i.getItem().appendTooltip(i,this.client.world, list, TooltipContext.Default.BASIC);
+        if (i.itemMatches(Items.WRITTEN_BOOK.getRegistryEntry())) {
+            i.getItem().appendTooltip(i, this.client.world, list, TooltipContext.Default.BASIC);
         }
     }
 
@@ -163,7 +181,7 @@ public abstract class InGameHudMixin {
                     DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(27, ItemStack.EMPTY);
                     Inventories.readNbt(Objects.requireNonNull(BlockItem.getBlockEntityNbt(d)), defaultedList);
                     for (ItemStack itemStack : defaultedList) {
-                        if(itemStack.getCount()!=0) {
+                        if (itemStack.getCount() != 0) {
                             MutableText mutableText = itemStack.getName().copy();
                             mutableText.append(" x").append(String.valueOf(itemStack.getCount())).formatted(Formatting.GRAY);
                             list.add(mutableText);
@@ -171,7 +189,8 @@ public abstract class InGameHudMixin {
                     }
                 }
             }
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
     }
 
     int getValue(double value, int min, int max) {
@@ -183,7 +202,7 @@ public abstract class InGameHudMixin {
      * @reason Why Not?
      */
 
-    @Inject(method = "renderStatusEffectOverlay",at=@At("HEAD"), cancellable = true)
+    @Inject(method = "renderStatusEffectOverlay", at = @At("HEAD"), cancellable = true)
     protected void renderStatusEffectOverlay(DrawContext context, CallbackInfo ci) {
         if (JavaSettingsSender.Companion.getDesignSettings().getValue("extend_status_effect_info")) {
             Collection<StatusEffectInstance> collection;
@@ -215,8 +234,8 @@ public abstract class InGameHudMixin {
                 int n;
                 StatusEffect statusEffect = statusEffectInstance.getEffectType();
                 if (!statusEffectInstance.shouldShowIcon()) continue;
-                int k = this.scaledWidth+4;
-                int l = WidgetRenderer.Companion.getEffectWidget().getPosY()+1;
+                int k = this.scaledWidth + 4;
+                int l = WidgetRenderer.Companion.getEffectWidget().getPosY() + 1;
                 if (this.client.isDemo()) {
                     l += 15;
                 }
@@ -236,7 +255,7 @@ public abstract class InGameHudMixin {
                     if (statusEffectInstance.isDurationBelow(200)) {
                         int m = statusEffectInstance.getDuration();
                         n = 10 - m / 20;
-                        f = MathHelper.clamp((float)m / 10.0f / 5.0f * 0.5f, 0.0f, 0.5f) + MathHelper.cos((float)m * (float)Math.PI / 5.0f) * MathHelper.clamp((float)n / 10.0f * 0.25f, 0.0f, 0.25f);
+                        f = MathHelper.clamp((float) m / 10.0f / 5.0f * 0.5f, 0.0f, 0.5f) + MathHelper.cos((float) m * (float) Math.PI / 5.0f) * MathHelper.clamp((float) n / 10.0f * 0.25f, 0.0f, 0.25f);
                     }
                 }
                 context.drawCenteredTextWithShadow(getTextRenderer(), statusEffectInstance.isDurationBelow(120000) ? MathUtil.Companion.zeroBefore(statusEffectInstance.getDuration() / 1200, 2) + ":" + MathUtil.Companion.zeroBefore((statusEffectInstance.getDuration() % 1200) / 20, 2) : "**:**", k + 12, l + 25, -1);
@@ -259,7 +278,7 @@ public abstract class InGameHudMixin {
             AbstractInventoryScreen abstractInventoryScreen;
             Screen screen;
             Collection<StatusEffectInstance> collection = this.client.player.getStatusEffects();
-            if (collection.isEmpty() || (screen = this.client.currentScreen) instanceof AbstractInventoryScreen && (abstractInventoryScreen = (AbstractInventoryScreen)screen).hideStatusEffectHud()) {
+            if (collection.isEmpty() || (screen = this.client.currentScreen) instanceof AbstractInventoryScreen && (abstractInventoryScreen = (AbstractInventoryScreen) screen).hideStatusEffectHud()) {
                 return;
             }
             RenderSystem.enableBlend();
@@ -272,7 +291,7 @@ public abstract class InGameHudMixin {
                 StatusEffect statusEffect = statusEffectInstance.getEffectType();
                 if (!statusEffectInstance.shouldShowIcon()) continue;
                 int k = this.scaledWidth;
-                int l = WidgetRenderer.Companion.getEffectWidget().getPosY()+1;
+                int l = WidgetRenderer.Companion.getEffectWidget().getPosY() + 1;
                 if (this.client.isDemo()) {
                     l += 15;
                 }
@@ -290,7 +309,7 @@ public abstract class InGameHudMixin {
                     if (statusEffectInstance.isDurationBelow(200)) {
                         int m = statusEffectInstance.getDuration();
                         n = 10 - m / 20;
-                        f = MathHelper.clamp((float)m / 10.0f / 5.0f * 0.5f, 0.0f, 0.5f) + MathHelper.cos((float)m * (float)Math.PI / 5.0f) * MathHelper.clamp((float)n / 10.0f * 0.25f, 0.0f, 0.25f);
+                        f = MathHelper.clamp((float) m / 10.0f / 5.0f * 0.5f, 0.0f, 0.5f) + MathHelper.cos((float) m * (float) Math.PI / 5.0f) * MathHelper.clamp((float) n / 10.0f * 0.25f, 0.0f, 0.25f);
                     }
                 }
                 Sprite sprite = statusEffectSpriteManager.getSprite(statusEffect);

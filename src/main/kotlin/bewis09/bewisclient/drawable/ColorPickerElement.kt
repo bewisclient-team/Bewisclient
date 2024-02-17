@@ -8,7 +8,6 @@ import bewis09.bewisclient.util.ColorSaver
 import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
-import net.minecraft.client.gui.widget.ButtonWidget
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.MathHelper
@@ -48,7 +47,7 @@ class ColorPickerElement(title: String, private val value: String, private val s
     })
 
     val widget2 = UsableSliderWidget(0, 0, 100, 20, Text.empty(),
-            if(getValue<ColorSaver>(settings,value)!!.getColor()>0) colorStart[2].toDouble() else 0.0, 1F, 0F, 2, {
+            if(getValue<ColorSaver>(settings,value)!!.getColor()>0) colorStart[2].toDouble() else 1.0, 1F, 0F, 2, {
         setValue(settings,value,ColorSaver(convertRGBtoHSB(posX/60f,posY/60f,it.toFloat())+0x1000000))
     },{
         Text.of(Bewisclient.getTranslatedString("gui.brightness")+": "+withDecimalPlaces(it,2))
