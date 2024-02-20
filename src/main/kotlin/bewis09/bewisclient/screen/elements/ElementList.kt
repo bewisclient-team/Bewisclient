@@ -1,11 +1,13 @@
 package bewis09.bewisclient.screen.elements
 
+import bewis09.bewisclient.JavaSettingsSender.Companion.DesignSettings
 import bewis09.bewisclient.drawable.*
 import bewis09.bewisclient.screen.CosmeticsScreen
 import bewis09.bewisclient.settingsLoader.DefaultSettings
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.util.ColorSaver
 import net.fabricmc.loader.api.FabricLoader
+import net.minecraft.client.MinecraftClient
 import net.minecraft.util.Identifier
 import java.io.File
 
@@ -13,7 +15,7 @@ object ElementList {
 
     private val excludedProperties = arrayOf("posX","posY","partX","partY","enabled","effect","effect.enabled","effect.transparency","effect.size")
 
-    val widgets: ()->ArrayList<MainOptionsElement> = { loadWidgetsFromDefault() }
+    val widgets: ()->ArrayList<MainOptionsElement> = { loadWidgetsFromDefault(DefaultSettings.getDefault("widgets")) }
 
     val macros: ()->ArrayList<MainOptionsElement> = {
         loadMacrosFromFile()
@@ -23,7 +25,8 @@ object ElementList {
         arrayListOf(
                 FloatOptionsElement("%options_menu.animation_time", "options_menu.animation_time", SettingsLoader.DesignSettings),
                 FloatOptionsElement("%options_menu.scale", "options_menu.scale", SettingsLoader.DesignSettings),
-                )
+                BooleanOptionsElement("%options_menu.all_click", "options_menu.all_click", SettingsLoader.DesignSettings),
+        )
     }
 
     private val blockhit: ()->ArrayList<MainOptionsElement> = {
@@ -31,6 +34,22 @@ object ElementList {
                 BooleanOptionsElement("%blockhit.enabled", "blockhit.enabled", SettingsLoader.DesignSettings),
                 ColorPickerElement("%blockhit.color", "blockhit.color", SettingsLoader.DesignSettings),
                 FloatOptionsElement("%blockhit.alpha", "blockhit.alpha", SettingsLoader.DesignSettings)
+        )
+    }
+
+    private val fullbright: ()->ArrayList<MainOptionsElement> = {
+        arrayListOf(
+                BooleanOptionsElement("%fullbright.enabled", "fullbright.enabled", SettingsLoader.DesignSettings) {
+                    if ((DesignSettings.getValue<Any>("fullbright") as SettingsLoader.Settings).getValue("enabled"))
+                        MinecraftClient.getInstance().options.gamma.value = ((DesignSettings.getValue<Any>("fullbright") as SettingsLoader.Settings).getValue<Any>("value") as Float).toDouble()
+                    else
+                        MinecraftClient.getInstance().options.gamma.value = 1.0
+                },
+                FloatOptionsElement("%fullbright.value", "fullbright.value", SettingsLoader.DesignSettings) {
+                    if ((DesignSettings.getValue<Any>("fullbright") as SettingsLoader.Settings).getValue("enabled"))
+                        MinecraftClient.getInstance().options.gamma.value = ((DesignSettings.getValue<Any>("fullbright") as SettingsLoader.Settings).getValue<Any>("value") as Float).toDouble()
+                },
+                BooleanOptionsElement("%fullbright.night_vision", "fullbright.night_vision", SettingsLoader.DesignSettings)
         )
     }
 
@@ -90,6 +109,7 @@ object ElementList {
                 MainOptionsElement("gui.design", "gui.design.description", design(), Identifier("bewisclient", "textures/main_icons/design.png")),
                 MainOptionsElement("gui.util", "gui.util.description", util(), Identifier("bewisclient", "textures/main_icons/util.png")),
                 MainOptionsElement("gui.cosmetics", "gui.cosmetics.description", { CosmeticsScreen(it) }, Identifier("bewisclient", "textures/main_icons/cosmetics.png")),
+                MainOptionsElement("gui.fullbright", "gui.fullbright.description", fullbright(), Identifier("bewisclient", "textures/main_icons/fullbright.png")),
                 MainOptionsElement("gui.contact", "gui.contact.description", contact(), Identifier("bewisclient", "textures/main_icons/contact.png")),
                 MainOptionsElement("gui.better_visibility", "gui.better_visibility.description", better_visibility(), Identifier("bewisclient", "textures/main_icons/better_visibility.png")),
                 MainOptionsElement("gui.blockhit", "gui.blockhit.description", blockhit(), Identifier("bewisclient", "textures/main_icons/blockhit.png")),
@@ -100,8 +120,7 @@ object ElementList {
         )
     }
 
-    private fun loadWidgetsFromDefault(): ArrayList<MainOptionsElement> {
-        val def = DefaultSettings.getDefault("widgets")
+    fun loadWidgetsFromDefault(def: Array<Pair<String, Any>>): ArrayList<MainOptionsElement> {
 
         val map: ArrayList<MainOptionsElement> = arrayListOf()
 
@@ -138,7 +157,10 @@ object ElementList {
                 else
                     ArrayOptionsElement(str,value,SettingsLoader.WidgetSettings)
             }
-            is String -> StringOptionsElement(str,value,SettingsLoader.WidgetSettings)
+            is String -> if(str.split("_")[0]=="info")
+                            InfoElement("info.$str")
+                        else
+                            StringOptionsElement(str,value,SettingsLoader.WidgetSettings)
             is ColorSaver -> ColorPickerElement(str,value,SettingsLoader.WidgetSettings)
             else -> WidgetOptionsElement(str, arrayListOf())
         }

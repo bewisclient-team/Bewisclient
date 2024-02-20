@@ -48,4 +48,15 @@ class EffectWidget: Widget("effect") {
         SettingsLoader.WidgetSettings.getValue(SettingsLoader.TypedSettingID<SettingsLoader.Settings>(id))?.setValueWithoutSave(Settings.PARTY, part)
         return SettingsLoader.WidgetSettings.getValue(SettingsLoader.TypedSettingID<SettingsLoader.Settings>(id))?.setValueWithoutSave(Settings.POSY, max(pos, 0f))
     }
+
+    override fun getWidgetSettings(): ArrayList<Pair<String,Any>> = arrayListOf(
+            Pair(id,SettingsLoader.Settings()),
+            Pair("$id.enabled",true),
+            Pair("$id.transparency",1F),
+            Pair("$id.size",1F),
+            Pair("$id.posX",0F),
+            Pair("$id.partX",0F),
+            Pair("$id.posY",2F),
+            Pair("$id.partY",-1.0F)
+    )
 }

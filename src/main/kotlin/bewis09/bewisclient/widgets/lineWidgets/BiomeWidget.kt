@@ -6,7 +6,8 @@ import net.minecraft.registry.entry.RegistryEntry
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
-import net.minecraft.world.biome.*
+import net.minecraft.world.biome.Biome
+import net.minecraft.world.biome.BiomeKeys
 
 class BiomeWidget: LineWidget("biome",150, true) {
 
@@ -98,5 +99,11 @@ class BiomeWidget: LineWidget("biome",150, true) {
 
             return biomeCodes.getOrDefault(biome.key.orElseGet{null},"")
         }
+    }
+
+    override fun getWidgetSettings(): ArrayList<Pair<String, Any>> {
+        val list = super.getWidgetSettings(.7f,5f,-1f,5f,1f)
+        list.add(Pair("biome.colorcode_biome",false))
+        return list
     }
 }

@@ -1,7 +1,6 @@
 package bewis09.bewisclient.widgets.lineWidgets
 
 import bewis09.bewisclient.Bewisclient
-import bewis09.bewisclient.settingsLoader.SettingsLoader
 
 class CPSWidget: LineWidget("cps",80,true) {
     override fun getText(): ArrayList<String> {
@@ -11,5 +10,11 @@ class CPSWidget: LineWidget("cps",80,true) {
             2f -> return arrayListOf("${Bewisclient.rCount()} CPS")
         }
         return arrayListOf("${Bewisclient.lCount()} | ${Bewisclient.rCount()} CPS")
+    }
+
+    override fun getWidgetSettings(): ArrayList<Pair<String, Any>> {
+        val list = super.getWidgetSettings(.7f,5f,1f,47f,-1f)
+        list.add(Pair("cps.cps_elements",0F))
+        return list
     }
 }

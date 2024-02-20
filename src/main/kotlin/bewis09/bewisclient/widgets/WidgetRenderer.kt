@@ -24,8 +24,17 @@ class WidgetRenderer: HudRenderCallback {
                 effectWidget,
                 DayWidget(),
                 DaytimeWidget(),
-                KeyWidget()
+                KeyWidget(),
+                InventoryWidget()
         )
+
+        fun getOptionsArrayList(): ArrayList<Pair<String, Any>> {
+            val array = arrayListOf<Pair<String,Any>>()
+            for (widget in widgets) {
+                array.addAll(widget.getWidgetSettings())
+            }
+            return array
+        }
     }
 
     override fun onHudRender(drawContext: DrawContext?, tickDelta: Float) {

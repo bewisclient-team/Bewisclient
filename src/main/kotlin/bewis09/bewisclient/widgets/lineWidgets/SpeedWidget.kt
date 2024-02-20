@@ -1,9 +1,7 @@
 package bewis09.bewisclient.widgets.lineWidgets
 
 import bewis09.bewisclient.Bewisclient
-import net.minecraft.client.MinecraftClient
 import kotlin.math.round
-import kotlin.math.sqrt
 
 class SpeedWidget: LineWidget("speed",80,true) {
 
@@ -17,5 +15,11 @@ class SpeedWidget: LineWidget("speed",80,true) {
             strD+="0"
         }
         return strD
+    }
+
+    override fun getWidgetSettings(): ArrayList<Pair<String, Any>> {
+        val list = super.getWidgetSettings(0.7f,5f,1f,71f,-1f)
+        list.add(Pair("speed.vertical_speed",false))
+        return list
     }
 }

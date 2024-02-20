@@ -25,6 +25,7 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.math.ColorHelper
 import net.minecraft.util.math.MathHelper
 import org.joml.Matrix4f
+import java.util.*
 import kotlin.math.*
 
 @Suppress("CAST_NEVER_SUCCEEDS")
@@ -37,11 +38,13 @@ class MainOptionsScreen : Screen(Text.empty()) {
     private var searchBar: TextFieldWidget? = null
     private var bottomAnimation: ArrayList<ClickableWidget> = arrayListOf()
 
-    private var slice = 0
+    var slice = 0
 
     private var totalHeight = 0
 
-    private var scrolls = arrayListOf(0F)
+    var scrolls = arrayListOf(0F)
+
+    var shouldNotNotifyChange = false
 
     private val closeTextures: ButtonTextures = ButtonTextures(Identifier("bewisclient","textures/sprites/close_button.png"), Identifier("bewisclient","textures/sprites/close_button_highlighted.png"))
     private val backTextures: ButtonTextures = ButtonTextures(Identifier("bewisclient","textures/sprites/back_button.png"),Identifier("bewisclient","textures/sprites/back_button_highlighted.png"))
@@ -58,7 +61,7 @@ class MainOptionsScreen : Screen(Text.empty()) {
 
         context!!
         var animationFrame = 1F
-        val animationSpeed = MathHelper.clamp(SettingsLoader.DesignSettings.getValue(Settings.Settings.OPTIONS_MENU)!!.getValue(Settings.Settings.ANIMATION_TIME)!!.toInt(),1,500)
+        val animationSpeed = MathHelper.clamp(SettingsLoader.DesignSettings.getValue(Settings.Settings.OPTIONS_MENU).getValue(Settings.Settings.ANIMATION_TIME).toInt(),1,500)
         if(System.currentTimeMillis() - animationStart >= animationSpeed) {
             if(animationState==AnimationState.TO_OTHER_SCREEN) {
                 client?.setScreen(animatedScreen)
@@ -220,7 +223,33 @@ class MainOptionsScreen : Screen(Text.empty()) {
             SettingsLoader.loadSettings()
         }.dimensions(width/4*3-1-width/6,height-24,width/6-29,20).build()))
         searchBar = addDrawableChild(TextFieldWidget(MinecraftClient.getInstance().textRenderer,width/2+4-width/12,height-24,width/6-8,20,Text.empty()))
+        searchBar?.setChangedListener {
+            if(!shouldNotNotifyChange) {
+                if (it == "") {
+                    allElements = arrayListOf(ElementList.main())
+                    scrolls = arrayListOf(0f)
+                    slice = 0
+                } else {
+                    allElements.add(getList(ElementList.main()))
+                    scrolls.add(0F)
+                    slice++
+                }
+            }
+        }
         bottomAnimation.add(searchBar!!)
+    }
+
+    fun getList(elements: ArrayList<MainOptionsElement>): ArrayList<MainOptionsElement> {
+        val list: ArrayList<MainOptionsElement> = arrayListOf()
+        for (e in elements) {
+            if(Bewisclient.getTranslatedString(e.title).lowercase(Locale.getDefault()).contains(searchBar!!.text.lowercase(Locale.getDefault())) && e.javaClass!=MainOptionsElement::class.java) {
+                list.add(e)
+            }
+            if(e.elements!=null) {
+                list.addAll(getList(e.elements!!))
+            }
+        }
+        return list
     }
 
     fun startAllAnimation(screen: Screen?) {
@@ -231,9 +260,12 @@ class MainOptionsScreen : Screen(Text.empty()) {
 
     fun goBack() {
         if(animationState==AnimationState.STABLE)
-            if(slice>0) {
+            if(slice>0 && searchBar?.text=="") {
+                shouldNotNotifyChange = true
+                searchBar?.text = ""
                 animationState = AnimationState.LEFT
                 animationStart = System.currentTimeMillis()
+                shouldNotNotifyChange = false
             } else {
                 startAllAnimation(null)
             }
@@ -279,13 +311,13 @@ class MainOptionsScreen : Screen(Text.empty()) {
     }
 
     fun correctScroll() {
-        scrolls[slice]=max((height* Companion.scale -32-totalHeight),scrolls[slice])
+        scrolls[slice]=max((height* scale -32-totalHeight),scrolls[slice])
         scrolls[slice]=min(0f,scrolls[slice])
     }
 
     override fun mouseScrolled(mouseX: Double, mouseY: Double, horizontalAmount: Double, verticalAmount: Double): Boolean {
         if(animationState==AnimationState.STABLE)
-            scrolls[slice]+=verticalAmount.toFloat()*10
+            scrolls[slice]+=verticalAmount.toFloat()*20
         correctScroll()
         return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)
     }
@@ -296,14 +328,14 @@ class MainOptionsScreen : Screen(Text.empty()) {
 
     companion object {
 
-        var laS = 1f/SettingsLoader.DesignSettings.getValue(Settings.Settings.OPTIONS_MENU)?.getValue(Settings.Settings.OPTIONS_SCALE)!!
+        var laS = 1f/ SettingsLoader.DesignSettings.getValue(Settings.Settings.OPTIONS_MENU).getValue(Settings.Settings.OPTIONS_SCALE)
 
         var clicked = false
 
         val scale: Float
             get() {
                 if(!clicked) {
-                    laS = 1f/SettingsLoader.DesignSettings.getValue(Settings.Settings.OPTIONS_MENU)?.getValue(Settings.Settings.OPTIONS_SCALE)!!
+                    laS = 1f/SettingsLoader.DesignSettings.getValue(Settings.Settings.OPTIONS_MENU).getValue(Settings.Settings.OPTIONS_SCALE)
                 }
                 return laS
             }

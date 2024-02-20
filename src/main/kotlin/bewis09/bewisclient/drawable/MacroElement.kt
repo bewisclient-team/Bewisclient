@@ -47,12 +47,12 @@ class MacroElement(line: String, val i: Int, val element: MacroGroupElement): Ma
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int) {
         if(widget.isSelected)
             widget.keyPressed(keyCode, scanCode, modifiers)
+        element.changeFile(i, widget.text)
         super.keyPressed(keyCode, scanCode, modifiers)
     }
 
     override fun charTyped(chr: Char, modifiers: Int) {
         if(widget.isSelected) {
-            element.changeFile(i, widget.text)
             widget.charTyped(chr, modifiers)
         }
         super.charTyped(chr, modifiers)

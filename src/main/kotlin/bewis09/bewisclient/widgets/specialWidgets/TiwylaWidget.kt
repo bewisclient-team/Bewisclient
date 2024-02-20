@@ -5,7 +5,8 @@ package bewis09.bewisclient.widgets.specialWidgets
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.api.JavaAPIEntryPoint.EntityListener
 import bewis09.bewisclient.mixin.ClientPlayerInteractionManagerMixin
-import bewis09.bewisclient.settingsLoader.Settings
+import bewis09.bewisclient.settingsLoader.SettingsLoader
+import bewis09.bewisclient.util.ColorSaver
 import bewis09.bewisclient.widgets.Widget
 import net.fabricmc.fabric.api.mininglevel.v1.FabricMineableTags
 import net.fabricmc.fabric.api.mininglevel.v1.MiningLevelManager
@@ -16,13 +17,8 @@ import net.minecraft.client.network.ClientPlayerEntity
 import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.LivingEntity
-import net.minecraft.entity.passive.AxolotlEntity
-import net.minecraft.entity.passive.CatEntity
-import net.minecraft.entity.passive.FrogEntity
-import net.minecraft.entity.passive.HorseEntity
-import net.minecraft.entity.passive.LlamaEntity
-import net.minecraft.entity.passive.RabbitEntity
-import net.minecraft.entity.passive.TraderLlamaEntity
+import net.minecraft.entity.passive.*
+import net.minecraft.item.ItemStack
 import net.minecraft.registry.Registries
 import net.minecraft.registry.tag.BlockTags
 import net.minecraft.state.property.Property
@@ -86,14 +82,21 @@ class TiwylaWidget: Widget("tiwyla") {
     override fun render(drawContext: DrawContext) {
         if(getText().size==0) return
         drawContext.matrices.scale(getScale(),getScale(),1F)
-        drawContext.fill(getPosX(),getPosY(),getPosX()+getOriginalWidth(),getPosY()+getOriginalHeight(), ColorHelper.Argb.getArgb(((getProperty(Settings.TRANSPARENCY)?.times(255F))?.toInt()!!),0,0,0))
-        drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, getText()[0],getPosX()+getOriginalWidth()/2,getPosY()+4,(0xFF000000L+getProperty(TOP_COLOR)!!.getColor()).toInt())
+        drawContext.fill(getPosX(),getPosY(),getPosX()+getOriginalWidth(),getPosY()+getOriginalHeight(), ColorHelper.Argb.getArgb(((getProperty(Settings.TRANSPARENCY).times(255F)).toInt()),0,0,0))
+        drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, getText()[0],getPosX()+getOriginalWidth()/2,getPosY()+4,(0xFF000000L+getProperty(TOP_COLOR).getColor()).toInt())
         drawContext.matrices.scale(0.7F,0.7F,1F)
         for ((index, text) in getText().iterator().withIndex()) {
             if(index!=0)
                 drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer,if (text.split("%")[0]=="cTH") convertToHearths(text.split("%")[1].toDouble(),text.split("%")[2].toDouble(),text.split("%")[3].toDouble()) else Text.of(text),((getPosX()+getOriginalWidth()/2)/0.7F).toInt(),((getPosY()+8*index+8)/0.7F).toInt(),(0xFF000000L+getProperty(BOTTOM_COLOR)!!.getColor()).toInt())
         }
         drawContext.matrices.scale(1/0.7F,1/0.7F,1F)
+        val hitResult = MinecraftClient.getInstance().crosshairTarget
+        if (hitResult is BlockHitResult) {
+            if (getProperty(SHOW_BLOCK_ICON)) {
+                drawContext.drawItem(ItemStack(MinecraftClient.getInstance().world!!.getBlockState(hitResult.blockPos).block),getPosX()+10,getPosY()+12)
+            }
+        }
+
         drawContext.matrices.scale(1/getScale(),1/getScale(),1F)
     }
 
@@ -102,7 +105,7 @@ class TiwylaWidget: Widget("tiwyla") {
     }
 
     override fun getOriginalHeight(): Int {
-        return if(getText().size==4) 41 else 33
+        return if(getText().size==4) 41 else if(getText().size==2) 25 else 33
     }
 
     private fun getTextFromType(hitResult: HitResult?):ArrayList<String> {
@@ -212,11 +215,18 @@ class TiwylaWidget: Widget("tiwyla") {
 
     private fun getTextFromEntity(hitResult: EntityHitResult, entity: Entity):ArrayList<String> {
         return if(entity is LivingEntity)
-            arrayListOf(
-                    entity.name.string,
-                    "cTH%${entity.health}%${entity.maxHealth}%${entity.absorptionAmount}",
-                    getExtra(entity) ?: Registries.ENTITY_TYPE.getId(entity.type).toString()
-            )
+            if(MinecraftClient.getInstance().isInSingleplayer && getProperty(SHOW_HEALTH_INFORMATION)) {
+                arrayListOf(
+                        entity.name.string,
+                        "cTH%${entity.health}%${entity.maxHealth}%${entity.absorptionAmount}",
+                        getExtra(entity) ?: Registries.ENTITY_TYPE.getId(entity.type).toString()
+                )
+            } else {
+                arrayListOf(
+                        entity.name.string,
+                        getExtra(entity) ?: Registries.ENTITY_TYPE.getId(entity.type).toString()
+                )
+            }
         else
             arrayListOf(
                     entity.name.string
@@ -253,5 +263,26 @@ class TiwylaWidget: Widget("tiwyla") {
 
     fun roundUpAndHalf(i: Double): Double {
         return 500 - ((1000 - i).toInt()) / 2.0
+    }
+
+    override fun getWidgetSettings(): ArrayList<Pair<String, Any>> {
+        return arrayListOf(
+                Pair(id, SettingsLoader.Settings()),
+                Pair("$id.enabled",true),
+                Pair("$id.transparency",0.43F),
+                Pair("$id.size",1F),
+                Pair("$id.posX",5.0F),
+                Pair("$id.partX",0F),
+                Pair("$id.posY",5.0F),
+                Pair("$id.partY",-1.0F),
+                Pair("tiwyla.top_color", ColorSaver(0xFFFFFF)),
+                Pair("tiwyla.bottom_color", ColorSaver(0xFFFFFF)),
+                Pair("tiwyla.first_line",6F),
+                Pair("tiwyla.second_line",1F),
+                Pair("tiwyla.third_line",5F),
+                Pair("tiwyla.show_block_icon",true),
+                Pair("tiwyla.show_health_information",true),
+                Pair("tiwyla.info_tiwyla_health_removed","")
+        )
     }
 }

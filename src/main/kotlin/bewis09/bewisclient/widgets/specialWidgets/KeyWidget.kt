@@ -5,7 +5,6 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.option.KeyBinding
 import net.minecraft.text.Text
-import org.lwjgl.opengl.GL11
 
 @Suppress("SameParameterValue")
 class KeyWidget: Widget("keys",) {
@@ -48,5 +47,9 @@ class KeyWidget: Widget("keys",) {
 
     private fun getAlphaModifier(): Int {
         return (getProperty(TRANSPARENCY)?.times(255f))!!.toInt()*0x1000000
+    }
+
+    override fun getWidgetSettings(): ArrayList<Pair<String, Any>> {
+        return super.getWidgetSettings(1f,5.0f,-1f,17f,1f)
     }
 }

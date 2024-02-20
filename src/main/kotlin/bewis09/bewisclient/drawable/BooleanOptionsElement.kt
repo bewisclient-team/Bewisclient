@@ -4,17 +4,29 @@ import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.settingsLoader.Settings
 import bewis09.bewisclient.settingsLoader.SettingsLoader
-import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
-import net.minecraft.util.Colors
 import net.minecraft.util.math.ColorHelper
 import net.minecraft.util.math.MathHelper
 import kotlin.math.cos
-import kotlin.math.floor
-import kotlin.math.roundToInt
 
-class BooleanOptionsElement(title: String, private val value: String, private val settings: SettingsLoader.Settings) : WidgetOptionsElement(title, arrayListOf()) {
+class BooleanOptionsElement : WidgetOptionsElement {
+
+    private val value: String
+    private val settings: SettingsLoader.Settings
+    val valueChanger: (Boolean)->Unit
+
+    constructor(title: String, value: String, settings: SettingsLoader.Settings) : super(title, arrayListOf()) {
+        this.value = value
+        this.settings = settings
+        this.valueChanger = {}
+    }
+
+    constructor(title: String, value: String, settings: SettingsLoader.Settings, valueChanger: (Boolean)->Unit) : super(title, arrayListOf()) {
+        this.value = value
+        this.settings = settings
+        this.valueChanger = valueChanger
+    }
 
     var animationStart = 0L
 
@@ -76,7 +88,10 @@ class BooleanOptionsElement(title: String, private val value: String, private va
             screen.playDownSound(MinecraftClient.getInstance().soundManager)
 
             animationStart = System.currentTimeMillis()
-            setValue(settings,value,getValue<Boolean>(settings,value)==false)
+            val b = getValue<Boolean>(settings,value)==false
+            setValue(settings,value,b)
+
+            valueChanger(b)
         }
     }
 }

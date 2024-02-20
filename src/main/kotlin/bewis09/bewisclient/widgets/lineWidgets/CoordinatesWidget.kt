@@ -2,7 +2,6 @@ package bewis09.bewisclient.widgets.lineWidgets
 
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
-import kotlin.math.roundToInt
 
 class CoordinatesWidget: LineWidget("coordinates",100,false) {
     override fun getText(): ArrayList<String> {
@@ -46,5 +45,13 @@ class CoordinatesWidget: LineWidget("coordinates",100,false) {
             drawContext.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, text, getPosX() + getOriginalWidth() - 6 - MinecraftClient.getInstance().textRenderer.getWidth(text), getPosY() + 4, (0xFF000000L+getProperty(TEXT_COLOR)!!.getColor()).toInt())
             drawContext.matrices.scale(1 / getScale(), 1 / getScale(), 1F)
         }
+    }
+
+    override fun getWidgetSettings(): ArrayList<Pair<String, Any>> {
+        val list = super.getWidgetSettings(.7f,5f,1f,5f,-1f)
+        list.add(Pair("coordinates.show_biome",false))
+        list.add(Pair("coordinates.show_direction",false))
+        list.add(Pair("coordinates.colorcode_biome",false))
+        return list
     }
 }

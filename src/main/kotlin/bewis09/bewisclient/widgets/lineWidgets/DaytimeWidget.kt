@@ -1,11 +1,17 @@
 package bewis09.bewisclient.widgets.lineWidgets
 
-import bewis09.bewisclient.settingsLoader.Settings
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.util.math.ColorHelper
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 
 class DaytimeWidget: LineWidget("daytime",80,true) {
+
+    private val dateFormat: DateFormat = DateFormat.getTimeInstance(DateFormat.DEFAULT, Locale.getDefault())
+    private val d = !((dateFormat as SimpleDateFormat).toPattern().contains("a"))
+
     override fun getText(): ArrayList<String> {
         val time = (MinecraftClient.getInstance().world?.timeOfDay?.plus(6000L))?.rem(24000L)
         val hour = withZeros(if (getProperty(Settings.CLOCK24) == false) if (time?.div(1000L)==12L) time.div(1000L) else if (time?.div(1000L)==0L) 12 else time?.div(1000L)?.rem(12L) else time?.div(1000L))
@@ -37,5 +43,11 @@ class DaytimeWidget: LineWidget("daytime",80,true) {
             strD= "0$strD"
         }
         return strD
+    }
+
+    override fun getWidgetSettings(): ArrayList<Pair<String, Any>> {
+        val list = super.getWidgetSettings(.7f,5f,1f,83f,-1f)
+        list.add(Pair("daytime.24Clock",d))
+        return list
     }
 }

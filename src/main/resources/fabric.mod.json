@@ -10,15 +10,9 @@
 	"icon": "assets/bewisclient/icon.png",
 	"environment": "*",
 	"entrypoints": {
-		"main": [
-			{
-				"value": "bewis09.bewisclient.Bewisclient",
-				"adapter": "kotlin"
-			}
-		],
 		"client": [
 			{
-				"value": "bewis09.bewisclient.BewisclientClient",
+				"value": "bewis09.bewisclient.Bewisclient",
 				"adapter": "kotlin"
 			}
 		]

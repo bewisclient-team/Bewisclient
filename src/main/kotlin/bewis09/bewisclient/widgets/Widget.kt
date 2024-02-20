@@ -1,11 +1,13 @@
 package bewis09.bewisclient.widgets
 
+import bewis09.bewisclient.mixin.BossBarHudMixin
+import bewis09.bewisclient.screen.WidgetConfigScreen
 import bewis09.bewisclient.settingsLoader.Settings
 import bewis09.bewisclient.settingsLoader.SettingsLoader
+import bewis09.bewisclient.util.ColorSaver
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import kotlin.math.abs
-import kotlin.math.max
 import kotlin.math.roundToInt
 
 abstract class Widget(val id: String): Settings() {
@@ -53,8 +55,12 @@ abstract class Widget(val id: String): Settings() {
     }
 
     fun getPosY(): Int {
-        if(getSavedPartY()==-1)
+        if(getSavedPartY()==-1) {
+            if(getSavedPartX()==0 && MinecraftClient.getInstance().currentScreen !is WidgetConfigScreen) {
+                return ((getSavedPosY()+(MinecraftClient.getInstance().inGameHud.bossBarHud as BossBarHudMixin).bossBars.size*19)/getScale()).roundToInt()
+            }
             return (getSavedPosY()/getScale()).roundToInt()
+        }
         if(getSavedPartY()==0)
             return ((getScreenHeight()/2+getSavedPosY()-getHeight()/2)/getScale()).roundToInt()
         return ((getScreenHeight()-getSavedPosY()-getHeight())/getScale()).roundToInt()
@@ -63,11 +69,11 @@ abstract class Widget(val id: String): Settings() {
     fun getWidth(): Int = (getScale() * getOriginalWidth()).roundToInt()
     fun getHeight(): Int = (getScale() * getOriginalHeight()).roundToInt()
 
-    fun <K> getProperty(setting: SettingsLoader.TypedSettingID<K>): K? =
-            SettingsLoader.WidgetSettings.getValue(SettingsLoader.TypedSettingID<SettingsLoader.Settings>(id))?.getValue(setting)
+    fun <K> getProperty(setting: SettingsLoader.TypedSettingID<K>): K =
+            SettingsLoader.WidgetSettings.getValue(SettingsLoader.TypedSettingID<SettingsLoader.Settings>(id)).getValue(setting)
 
     fun <K> setProperty(setting: SettingsLoader.TypedSettingID<K>, value:K): K? =
-            SettingsLoader.WidgetSettings.getValue(SettingsLoader.TypedSettingID<SettingsLoader.Settings>(id))?.setValue(setting,value)
+            SettingsLoader.WidgetSettings.getValue(SettingsLoader.TypedSettingID<SettingsLoader.Settings>(id)).setValue(setting,value)
 
     open fun setPropertyPosX(value: Float, allV: Int, wV: Int, sneak: Boolean): Float? {
         var pos: Float
@@ -87,8 +93,8 @@ abstract class Widget(val id: String): Settings() {
         }
         if(part!=0f && abs(pos-2.5)<5 && !sneak)
             pos = 5f
-        SettingsLoader.WidgetSettings.getValue(SettingsLoader.TypedSettingID<SettingsLoader.Settings>(id))?.setValueWithoutSave(Settings.PARTX, part)
-        return SettingsLoader.WidgetSettings.getValue(SettingsLoader.TypedSettingID<SettingsLoader.Settings>(id))?.setValueWithoutSave(Settings.POSX, pos)
+        SettingsLoader.WidgetSettings.getValue(SettingsLoader.TypedSettingID<SettingsLoader.Settings>(id)).setValueWithoutSave(Settings.PARTX, part)
+        return SettingsLoader.WidgetSettings.getValue(SettingsLoader.TypedSettingID<SettingsLoader.Settings>(id)).setValueWithoutSave(Settings.POSX, pos)
     }
 
     open fun setPropertyPosY(value: Float, allV: Int, wV: Int, sneak: Boolean): Float? {
@@ -103,7 +109,21 @@ abstract class Widget(val id: String): Settings() {
         }
         if(abs(pos-2.5)<5 && !sneak)
             pos = 5f
-        SettingsLoader.WidgetSettings.getValue(SettingsLoader.TypedSettingID<SettingsLoader.Settings>(id))?.setValueWithoutSave(Settings.PARTY, part)
-        return SettingsLoader.WidgetSettings.getValue(SettingsLoader.TypedSettingID<SettingsLoader.Settings>(id))?.setValueWithoutSave(Settings.POSY, pos)
+        SettingsLoader.WidgetSettings.getValue(SettingsLoader.TypedSettingID<SettingsLoader.Settings>(id)).setValueWithoutSave(Settings.PARTY, part)
+        return SettingsLoader.WidgetSettings.getValue(SettingsLoader.TypedSettingID<SettingsLoader.Settings>(id)).setValueWithoutSave(Settings.POSY, pos)
     }
+
+    abstract fun getWidgetSettings(): ArrayList<Pair<String,Any>>
+
+    open fun getWidgetSettings(size: Float,posX: Float,partX: Float,posY: Float,partY: Float): ArrayList<Pair<String,Any>> = arrayListOf(
+            Pair(id,SettingsLoader.Settings()),
+            Pair("$id.enabled",true),
+            Pair("$id.transparency",0.43F),
+            Pair("$id.size",size),
+            Pair("$id.posX",posX),
+            Pair("$id.partX",partX),
+            Pair("$id.posY",posY),
+            Pair("$id.partY",partY),
+            Pair("$id.text_color", ColorSaver(0xFFFFFF))
+    )
 }

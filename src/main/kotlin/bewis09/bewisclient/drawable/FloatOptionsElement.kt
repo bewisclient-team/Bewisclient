@@ -10,17 +10,43 @@ import net.minecraft.text.Text
 import kotlin.math.pow
 import kotlin.math.round
 
-class FloatOptionsElement(title: String, private val value: String, private val settings: SettingsLoader.Settings) : WidgetOptionsElement(title, arrayListOf()) {
+class FloatOptionsElement : WidgetOptionsElement {
 
-    val valueChanged: (Double) -> Unit = { a ->
-        run {
-            setValue(settings,value,round(((a*(de!!.end-de.start)+ de.start).toFloat()*10f.pow(de.decimalPoints)))/10f.pow(de.decimalPoints))
+    private val value: String
+    private val settings: SettingsLoader.Settings
+
+    constructor(title: String, value: String, settings: SettingsLoader.Settings) : super(title, arrayListOf()) {
+        this.value = value
+        this.settings = settings
+        this.valueChanged = { a ->
+            run {
+                setValue(settings, value, round(((a * (de!!.end - de.start) + de.start).toFloat() * 10f.pow(de.decimalPoints))) / 10f.pow(de.decimalPoints))
+            }
         }
+        this.de = DefaultSettings.sliders[value]
+                ?: DefaultSettings.sliders["." + value.split(".")[value.split(".").size - 1]]
+        this.widget = UsableSliderWidget(0, 0, 100, 20, Text.empty(), ((getValue<Float>(settings, value)!! - de?.start!!) / (de.end - de.start)).toDouble(), de.end, de.start, de.decimalPoints, valueChanged)
     }
 
-    private val de = DefaultSettings.sliders[value] ?: DefaultSettings.sliders["."+value.split(".")[value.split(".").size-1]]
+    constructor(title: String, value: String, settings: SettingsLoader.Settings, valueChanger: (Double)->Unit) : super(title, arrayListOf()) {
+        this.value = value
+        this.settings = settings
+        this.valueChanged = { a ->
+            run {
+                setValue(settings, value, round(((a * (de!!.end - de.start) + de.start).toFloat() * 10f.pow(de.decimalPoints))) / 10f.pow(de.decimalPoints))
+                valueChanger(a)
+            }
+        }
+        this.de = DefaultSettings.sliders[value]
+                ?: DefaultSettings.sliders["." + value.split(".")[value.split(".").size - 1]]
+        this.widget = UsableSliderWidget(0, 0, 100, 20, Text.empty(), ((getValue<Float>(settings, value)!! - de?.start!!) / (de.end - de.start)).toDouble(), de.end, de.start, de.decimalPoints, valueChanged)
+    }
 
-    val widget = UsableSliderWidget(0, 0, 100, 20, Text.empty(), ((getValue<Float>(settings,value)!!- de?.start!!)/(de.end-de.start)).toDouble(), de.end, de.start, de.decimalPoints, valueChanged)
+    val valueChanged: (Double) -> Unit
+
+    private val de: DefaultSettings.SliderInfo?
+
+    val widget: UsableSliderWidget
 
     var clicked = false
 

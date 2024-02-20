@@ -25,6 +25,9 @@ open class Settings {
     val TEXT_COLOR: SettingsLoader.TypedSettingID<ColorSaver> = SettingsLoader.TypedSettingID("text_color")
     val TOP_COLOR: SettingsLoader.TypedSettingID<ColorSaver> = SettingsLoader.TypedSettingID("top_color")
     val BOTTOM_COLOR: SettingsLoader.TypedSettingID<ColorSaver> = SettingsLoader.TypedSettingID("bottom_color")
+    val SHOW_BLOCK_ICON: SettingsLoader.TypedSettingID<Boolean> = SettingsLoader.TypedSettingID("show_block_icon")
+    val SHOW_HEALTH_INFORMATION: SettingsLoader.TypedSettingID<Boolean> = SettingsLoader.TypedSettingID("show_health_information")
+    val SHOW_PROGRESS_BAR: SettingsLoader.TypedSettingID<Boolean> = SettingsLoader.TypedSettingID("show_progress_bar")
 
     companion object {
         val Settings: Settings = Settings()
