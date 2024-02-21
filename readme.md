@@ -28,3 +28,6 @@ The function `addBlockExtraInfoPair` allows you to add your custom external Info
 
 The function `addEntityExtraInfoPair` allows you to add your custom external Information about the entity the player is looking at in the TIWYLA Widget
 
+The function `addMainOptionsElement` allows you to add your own element in the Main Options Screen
+
+The function `addWidget` allows you to add your own widget

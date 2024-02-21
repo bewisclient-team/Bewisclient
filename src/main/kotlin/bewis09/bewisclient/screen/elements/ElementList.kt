@@ -6,10 +6,8 @@ import bewis09.bewisclient.screen.CosmeticsScreen
 import bewis09.bewisclient.settingsLoader.DefaultSettings
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.util.ColorSaver
-import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.MinecraftClient
 import net.minecraft.util.Identifier
-import java.io.File
 
 object ElementList {
 
@@ -17,9 +15,7 @@ object ElementList {
 
     val widgets: ()->ArrayList<MainOptionsElement> = { loadWidgetsFromDefault(DefaultSettings.getDefault("widgets")) }
 
-    val macros: ()->ArrayList<MainOptionsElement> = {
-        loadMacrosFromFile()
-    }
+    val newMainOptionsElements: ArrayList<()->MainOptionsElement> = arrayListOf()
 
     private val design: ()->ArrayList<MainOptionsElement> = {
         arrayListOf(
@@ -115,8 +111,7 @@ object ElementList {
                 MainOptionsElement("gui.blockhit", "gui.blockhit.description", blockhit(), Identifier("bewisclient", "textures/main_icons/blockhit.png")),
                 MainOptionsElement("gui.zoom", "gui.zoom.description", zoom(), Identifier("bewisclient", "textures/main_icons/zoom.png")),
                 MainOptionsElement("gui.pumpkin", "gui.pumpkin.description", pumpkin(), Identifier("bewisclient", "textures/main_icons/pumpkin.png")),
-                MainOptionsElement("gui.held_item_info", "gui.held_item_info.description", held_item_info(), Identifier("bewisclient", "textures/main_icons/held_item_info.png")),
-                //MainOptionsElement("gui.macros","gui.macros.description", macros(), Identifier("bewisclient","textures/main_icons/macros.png"))
+                MainOptionsElement("gui.held_item_info", "gui.held_item_info.description", held_item_info(), Identifier("bewisclient", "textures/main_icons/held_item_info.png"))
         )
     }
 
@@ -164,20 +159,5 @@ object ElementList {
             is ColorSaver -> ColorPickerElement(str,value,SettingsLoader.WidgetSettings)
             else -> WidgetOptionsElement(str, arrayListOf())
         }
-    }
-
-    private fun loadMacrosFromFile(): ArrayList<MainOptionsElement> {
-        val file = File((FabricLoader.getInstance().gameDir.toString()+"\\macros"))
-        file.mkdirs()
-
-        val list = arrayListOf<MainOptionsElement>()
-
-        file.listFiles()?.forEach {
-            list.add(
-                 MacroGroupElement(it.name.split(".")[0], it.name)
-            )
-        }
-
-        return list
     }
 }
