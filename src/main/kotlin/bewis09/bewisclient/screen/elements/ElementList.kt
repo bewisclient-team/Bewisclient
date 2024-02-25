@@ -112,7 +112,7 @@ object ElementList {
                 MainOptionsElement("gui.zoom", "gui.zoom.description", zoom(), Identifier("bewisclient", "textures/main_icons/zoom.png")),
                 MainOptionsElement("gui.pumpkin", "gui.pumpkin.description", pumpkin(), Identifier("bewisclient", "textures/main_icons/pumpkin.png")),
                 MainOptionsElement("gui.held_item_info", "gui.held_item_info.description", held_item_info(), Identifier("bewisclient", "textures/main_icons/held_item_info.png"))
-        )
+        ).addNewElements()
     }
 
     fun loadWidgetsFromDefault(def: Array<Pair<String, Any>>): ArrayList<MainOptionsElement> {
@@ -160,4 +160,14 @@ object ElementList {
             else -> WidgetOptionsElement(str, arrayListOf())
         }
     }
+}
+
+private fun ArrayList<MainOptionsElement>.addNewElements(): ArrayList<MainOptionsElement> {
+    ElementList.newMainOptionsElements.forEach {
+        this.add(it())
+
+        println(it().title)
+    }
+
+    return this
 }
