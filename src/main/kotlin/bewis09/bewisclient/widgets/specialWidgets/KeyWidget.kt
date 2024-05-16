@@ -41,8 +41,8 @@ class KeyWidget: Widget("keys",) {
     }
 
     private fun renderKey(width: Int, height: Int, x:Int, y:Int, text: Text, keyBinding: KeyBinding, drawContext: DrawContext) {
-        drawContext.fill(getPosX()+x,getPosY()+y,getPosX()+x+width,getPosY()+y+height,getAlphaModifier() + if (keyBinding.isPressed()) 0xFFFFFF else 0x000000)
-        drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer,text,getPosX()+x+width/2,getPosY()+y+((height-9)/2+1),(0xFF000000L+getProperty(TEXT_COLOR)!!.getColor()).toInt())
+        drawContext.fill(getPosX()+x,getPosY()+y,getPosX()+x+width,getPosY()+y+height,getAlphaModifier() + if (keyBinding.isPressed) 0xFFFFFF else 0x000000)
+        drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer,text,getPosX()+x+width/2,getPosY()+y+((height-9)/2+1),(0xFF000000L+getProperty(TEXT_COLOR).getColor()).toInt())
     }
 
     private fun getAlphaModifier(): Int {

@@ -42,7 +42,7 @@ class CoordinatesWidget: LineWidget("coordinates",100,false) {
                 7 -> direction="SE"
             }
             val text = "- $direction -"
-            drawContext.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, text, getPosX() + getOriginalWidth() - 6 - MinecraftClient.getInstance().textRenderer.getWidth(text), getPosY() + 4, (0xFF000000L+getProperty(TEXT_COLOR)!!.getColor()).toInt())
+            drawContext.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, text, getPosX() + getOriginalWidth() - 6 - MinecraftClient.getInstance().textRenderer.getWidth(text), getPosY() + 4, (0xFF000000L+getProperty(TEXT_COLOR).getColor()).toInt())
             drawContext.matrices.scale(1 / getScale(), 1 / getScale(), 1F)
         }
     }

@@ -7,7 +7,6 @@ import bewis09.bewisclient.mixin.ScreenMixin
 import bewis09.bewisclient.screen.elements.ElementList
 import bewis09.bewisclient.settingsLoader.Settings
 import bewis09.bewisclient.settingsLoader.SettingsLoader
-import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.ButtonTextures
@@ -57,9 +56,11 @@ class MainOptionsScreen : Screen(Text.empty()) {
 
     override fun render(context: DrawContext?, mouseX: Int, mouseY: Int, delta: Float) {
 
-        correctScroll()
-
         context!!
+
+        context.fill(0,0,width,height, 0xAA000000.toInt())
+
+        correctScroll()
         var animationFrame = 1F
         val animationSpeed = MathHelper.clamp(SettingsLoader.DesignSettings.getValue(Settings.Settings.OPTIONS_MENU).getValue(Settings.Settings.ANIMATION_TIME).toInt(),1,500)
         if(System.currentTimeMillis() - animationStart >= animationSpeed) {
@@ -90,28 +91,12 @@ class MainOptionsScreen : Screen(Text.empty()) {
         if(animationState.animation==AnimationState.MIDDLE_ANIMATION)
             animationFrame = 1f
 
-        RenderSystem.enableBlend()
-        RenderSystem.setShaderColor(0.25f, 0.25f, 0.25f, 1f)
-        context.enableScissor(0,0, (this.width/4*animationFrame).toInt(),this.height)
-        context.drawTexture(OPTIONS_BACKGROUND_TEXTURE, 0, 0, 0, 0.0f, 0.0f, this.width, this.height, 32, 32)
-        context.disableScissor()
-        context.enableScissor(this.width-(this.width/4*animationFrame).toInt(),0,this.width,this.height)
-        context.drawTexture(OPTIONS_BACKGROUND_TEXTURE, 0, 0, 0, 0.0f, 0.0f, this.width, this.height, 32, 32)
-        context.disableScissor()
-        context.enableScissor((this.width/4*animationFrame).toInt(), (this.height-28*animationFrame).toInt(),this.width-(this.width/4*animationFrame).toInt(),this.height)
-        RenderSystem.setShaderColor(0.15f, 0.15f, 0.15f, 1f)
-        context.drawTexture(OPTIONS_BACKGROUND_TEXTURE, 0, 0, 0, 0.0f, 0.0f, width, height, 32, 32)
-        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
-        RenderSystem.disableBlend()
-        context.disableScissor()
+        context.fill((this.width/4) +4,0, (this.width-this.width/4-2)-2,this.height,
+            ((0x88*animationFrame).toLong()*0x1000000).toInt()
+        )
 
         bottomAnimation.forEach {
             it.y = (height - (24 * animationFrame)).toInt()
-        }
-        for (drawable in (this as ScreenMixin).getDrawables()) {
-            if(drawable is ClickableWidget)
-                drawable.setAlpha(max(0.05f,animationFrame))
-            drawable.render(context, mouseX, mouseY, delta)
         }
 
         val width = (this.width* scale.toDouble()).toInt()
@@ -123,7 +108,7 @@ class MainOptionsScreen : Screen(Text.empty()) {
 
         val normalOffset: Int = (if (animationState == AnimationState.LEFT) width/2*middleAnimationFrame else if (animationState == AnimationState.RIGHT) -width/2*middleAnimationFrame else 0F).roundToInt()
 
-        context.enableScissor((this.width/4*animationFrame).toInt(),0, (this.width-(this.width/4*animationFrame)).toInt(),(this.height-28*animationFrame).toInt())
+        context.enableScissor((this.width/4+4*animationFrame).toInt(),0, (this.width-(this.width/4+4*animationFrame)).toInt(),(this.height))
 
         allElements[slice].forEach {element ->
             h+=4+element.render(context,
@@ -165,9 +150,31 @@ class MainOptionsScreen : Screen(Text.empty()) {
 
         context.matrices.scale(scale, scale, scale)
 
-        context.fillGradient((this.width/4*animationFrame).toInt(), (this.height-34*animationFrame).toInt(), (this.width-(this.width/4*animationFrame)).toInt(), (this.height-28*animationFrame).toInt(),0,0xFF000000.toInt())
-        fillGradient(context,(this.width/4*animationFrame).toInt(),0, ((this.width/4*animationFrame)+6*animationFrame).toInt(),this.height, 0xFF000000.toInt(),0)
-        fillGradient(context, (this.width-(this.width/4*animationFrame)-6*animationFrame).toInt(),0,this.width-(this.width/4*animationFrame).toInt(),this.height, 0,0xFF000000.toInt())
+        context.matrices.translate(0f,0f,3f)
+
+        context.enableScissor((this.width/4) +4,(this.height-28*animationFrame).toInt(), (this.width-this.width/4-2)-2,this.height)
+
+        context.fill(0,0,width,height, 0xAA000000.toInt())
+
+        context.disableScissor()
+
+        context.fill((this.width/4) +4,(this.height-28*animationFrame).toInt(), (this.width-this.width/4-2)-2,this.height,
+            0xAA000000.toInt()
+        )
+
+        for (drawable in (this as ScreenMixin).getDrawables()) {
+            if(drawable is ClickableWidget)
+                drawable.setAlpha(max(0.05f,animationFrame))
+            drawable.render(context, mouseX, mouseY, delta)
+        }
+
+        context.matrices.translate(0f,0f,-3f)
+
+        fillGradient(context, (this.width/4) -2,0, ((this.width/4)+6*animationFrame).toInt()-2,this.height,0,
+            ((0xFF*animationFrame).toLong()*0x1000000).toInt()
+        )
+        fillGradient(context, (this.width-(this.width/4)-6*animationFrame).toInt()+2,0,this.width- (this.width/4) +2,this.height,
+            ((0xFF*animationFrame).toLong()*0x1000000).toInt(), 0)
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {

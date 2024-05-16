@@ -74,7 +74,7 @@ public abstract class DebugHudMixin {
             String[] strings = this.client.fpsDebugString.split(" ");
             list.add(strings[0] + " " + strings[1] + ", " + strings[strings.length - 2] + " " + strings[strings.length - 1]);
             if (this.client.world != null) {
-                list.add("Dimension: " + this.client.world.getDimensionKey().getValue());
+                list.add("Dimension: " + this.client.world.getDimensionEntry().getIdAsString());
                 list.add("Entity Count: " + this.client.world.getRegularEntityCount());
             }
 

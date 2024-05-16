@@ -45,7 +45,7 @@ class CosmeticsScreen(private val parent: MainOptionsScreen) : Screen(Text.empty
             alphaStart= System.currentTimeMillis();
         }
 
-        val animationSpeed = MathHelper.clamp(SettingsLoader.DesignSettings.getValue(Settings.Settings.OPTIONS_MENU)!!.getValue(Settings.Settings.ANIMATION_TIME)!!.toInt(),1,500).toFloat()
+        val animationSpeed = MathHelper.clamp(SettingsLoader.DesignSettings.getValue(Settings.Settings.OPTIONS_MENU).getValue(Settings.Settings.ANIMATION_TIME).toInt(),1,500).toFloat()
 
         if(alphaDirection ==1 && (System.currentTimeMillis() - alphaStart)/animationSpeed>1) {
             MinecraftClient.getInstance().setScreen(parent)
@@ -147,12 +147,12 @@ class CosmeticsScreen(private val parent: MainOptionsScreen) : Screen(Text.empty
 
     override fun init() {
         scrollY = max(0.0, min(-maxScrollY.toDouble(), scrollY))
-        this.addDrawableChild(ButtonWidget.builder(Text.translatable("bewisclient.option.rotate")) { button: ButtonWidget? -> isReversed = !isReversed }.dimensions(13, height / 2 + 74, 70, 20).build())
+        this.addDrawableChild(ButtonWidget.builder(Text.translatable("bewisclient.option.rotate")) { isReversed = !isReversed }.dimensions(13, height / 2 + 74, 70, 20).build())
         var z = 0
         for (c in Capes.CAPES) {
             z++
             val finalZ = z
-            this.addDrawableChild(ButtonWidget.builder(Text.translatable("bewisclient.option.use")) { button: ButtonWidget? ->
+            this.addDrawableChild(ButtonWidget.builder(Text.translatable("bewisclient.option.use")) {
                 Cape.setCurrentRealCape(c)
                 SettingsLoader.DesignSettings.setValue("cape",(finalZ-1).toFloat())
             }.dimensions(50 + z * 64 + 10, (getScrollY() + 100).toInt(), 40, 20).build())
@@ -161,7 +161,7 @@ class CosmeticsScreen(private val parent: MainOptionsScreen) : Screen(Text.empty
         for (c in Wing.WINGS) {
             z++
             val finalZ1 = z
-            this.addDrawableChild(ButtonWidget.builder(Text.translatable("bewisclient.option.use")) { button: ButtonWidget? ->
+            this.addDrawableChild(ButtonWidget.builder(Text.translatable("bewisclient.option.use")) {
                 Wing.current_wing = c
                 SettingsLoader.DesignSettings.setValue("wing",(finalZ1-1).toFloat())
             }.dimensions(50 + z * 64 + 10, (getScrollY() + 230).toInt(), 40, 20).build())
@@ -170,7 +170,7 @@ class CosmeticsScreen(private val parent: MainOptionsScreen) : Screen(Text.empty
         for (c in Hat.HATS) {
             z++
             val finalZ2 = z
-            this.addDrawableChild(ButtonWidget.builder(Text.translatable("bewisclient.option.use")) { button: ButtonWidget? ->
+            this.addDrawableChild(ButtonWidget.builder(Text.translatable("bewisclient.option.use")) {
                 Hat.current_hat = c
                 SettingsLoader.DesignSettings.setValue("hat",(finalZ2-1).toFloat())
             }.dimensions(50 + z * 64 + 10, (getScrollY() + 360).toInt(), 40, 20).build())
@@ -193,7 +193,7 @@ class CosmeticsScreen(private val parent: MainOptionsScreen) : Screen(Text.empty
         entity.pitch = -g * 20.0f
         entity.headYaw = entity.yaw
         entity.prevHeadYaw = entity.yaw
-        InventoryScreen.drawEntity(context, x.toFloat(), y.toFloat(), size, Vector3f(), quaternionf, quaternionf2, entity)
+        InventoryScreen.drawEntity(context, x.toFloat(), y.toFloat(), size.toFloat(), Vector3f(), quaternionf, quaternionf2, entity)
         entity.bodyYaw = h
         entity.yaw = i
         entity.pitch = j
@@ -217,7 +217,7 @@ class CosmeticsScreen(private val parent: MainOptionsScreen) : Screen(Text.empty
         entity.pitch = -g * 20.0f
         entity.headYaw = entity.yaw
         entity.prevHeadYaw = entity.yaw
-        InventoryScreen.drawEntity(context, x.toFloat(), y.toFloat(), size, Vector3f(), quaternionf, quaternionf2, entity)
+        InventoryScreen.drawEntity(context, x.toFloat(), y.toFloat(), size.toFloat(), Vector3f(), quaternionf, quaternionf2, entity)
         entity.bodyYaw = h
         entity.yaw = i
         entity.pitch = j

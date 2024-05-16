@@ -81,7 +81,7 @@ object Bewisclient : ClientModInitializer {
 				posOld = posNew
 				posNew = it.player!!.pos
 
-				speed = if(SettingsLoader.WidgetSettings.getValue<SettingsLoader.Settings>("speed")?.getValue<Boolean>("vertical_speed")==true)
+				speed = if(SettingsLoader.WidgetSettings.getValue<SettingsLoader.Settings>("speed").getValue("vertical_speed"))
 					posNew.subtract(posOld).length()
 				else
 					posNew.subtract(posOld).horizontalLength()
@@ -136,7 +136,7 @@ object Bewisclient : ClientModInitializer {
 			}
 		}
 
-		ClientCommandRegistrationCallback.EVENT.register(ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource?>, registryAccess: CommandRegistryAccess? ->
+		ClientCommandRegistrationCallback.EVENT.register(ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource?>, _: CommandRegistryAccess? ->
 			dispatcher.register(ClientCommandManager.literal("snake")
 					.executes { context: CommandContext<FabricClientCommandSource> ->
 						context.source.client.send {
@@ -170,7 +170,7 @@ object Bewisclient : ClientModInitializer {
 	}
 
 	fun wing() {
-		Timer(50) { e: ActionEvent? ->
+		Timer(50) {
 			WingFeatureRenderer.wing_animation_duration = (WingFeatureRenderer.wing_animation_duration + 1) % 60
 		}.start()
 	}

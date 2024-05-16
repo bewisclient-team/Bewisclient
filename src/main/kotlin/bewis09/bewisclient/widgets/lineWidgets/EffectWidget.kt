@@ -45,8 +45,8 @@ class EffectWidget: Widget("effect") {
             pos = allV-value-wV
             part = 1F
         }
-        SettingsLoader.WidgetSettings.getValue(SettingsLoader.TypedSettingID<SettingsLoader.Settings>(id))?.setValueWithoutSave(Settings.PARTY, part)
-        return SettingsLoader.WidgetSettings.getValue(SettingsLoader.TypedSettingID<SettingsLoader.Settings>(id))?.setValueWithoutSave(Settings.POSY, max(pos, 0f))
+        SettingsLoader.WidgetSettings.getValue(SettingsLoader.TypedSettingID<SettingsLoader.Settings>(id)).setValueWithoutSave(Settings.PARTY, part)
+        return SettingsLoader.WidgetSettings.getValue(SettingsLoader.TypedSettingID<SettingsLoader.Settings>(id)).setValueWithoutSave(Settings.POSY, max(pos, 0f))
     }
 
     override fun getWidgetSettings(): ArrayList<Pair<String,Any>> = arrayListOf(

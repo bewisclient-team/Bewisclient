@@ -33,7 +33,7 @@ class PingWidget: LineWidget("ping",80,true) {
                 var o = 0
                 val log = MinecraftClient.getInstance().debugHud.pingLog
 
-                for (i in 0..99.coerceAtMost(log.size() - 1)) {
+                for (i in 0..99.coerceAtMost(log.length - 1)) {
                     o++
                     l += log.get(i).toInt()
                 }

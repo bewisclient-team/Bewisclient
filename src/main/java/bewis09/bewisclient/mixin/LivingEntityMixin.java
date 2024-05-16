@@ -11,6 +11,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -30,7 +31,7 @@ public abstract class LivingEntityMixin extends Entity {
     StatusEffectInstance instance = new StatusEffectInstance(StatusEffects.NIGHT_VISION,1000,0,true,false,false);
 
     @Inject(method = "hasStatusEffect",at=@At("HEAD"), cancellable = true)
-    public void inject(StatusEffect effect, CallbackInfoReturnable<Boolean> cir) {
+    public void inject(RegistryEntry<StatusEffect> effect, CallbackInfoReturnable<Boolean> cir) {
         SettingsLoader.Settings settings = JavaSettingsSender.Companion.getDesignSettings().getValue("fullbright");
         if(effect == StatusEffects.NIGHT_VISION && ((Boolean)settings.getValue("night_vision")) && MinecraftClient.getInstance().cameraEntity!=null) {
             if (this.getName().getString().equals(MinecraftClient.getInstance().cameraEntity.getName().getString())) {
@@ -40,7 +41,7 @@ public abstract class LivingEntityMixin extends Entity {
     }
 
     @Inject(method = "getStatusEffect",at=@At("HEAD"), cancellable = true)
-    public void injectNext(StatusEffect effect, CallbackInfoReturnable<StatusEffectInstance> cir) {
+    public void injectNext(RegistryEntry<StatusEffect> effect, CallbackInfoReturnable<StatusEffectInstance> cir) {
         SettingsLoader.Settings settings = JavaSettingsSender.Companion.getDesignSettings().getValue("fullbright");
         if(effect == StatusEffects.NIGHT_VISION && ((Boolean)settings.getValue("night_vision")) && MinecraftClient.getInstance().cameraEntity!=null) {
             if (this.getName().equals(MinecraftClient.getInstance().cameraEntity.getName())) {

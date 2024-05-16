@@ -8,8 +8,6 @@ import bewis09.bewisclient.mixin.ClientPlayerInteractionManagerMixin
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.util.ColorSaver
 import bewis09.bewisclient.widgets.Widget
-import net.fabricmc.fabric.api.mininglevel.v1.FabricMineableTags
-import net.fabricmc.fabric.api.mininglevel.v1.MiningLevelManager
 import net.minecraft.block.*
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
@@ -51,10 +49,10 @@ class TiwylaWidget: Widget("tiwyla") {
 
         val entityExtraInfo = hashMapOf<EntityType<*>, EntityListener>(
                 Pair(EntityType.CAT, EntityListener {
-                    if(it is CatEntity) Registries.CAT_VARIANT.getId(it.variant)?.path else ""
+                    if(it is CatEntity) Registries.CAT_VARIANT.getId(it.variant.value())?.path else ""
                 }),
                 Pair(EntityType.FROG, EntityListener {
-                    if(it is FrogEntity) Registries.FROG_VARIANT.getId(it.variant)?.path else ""
+                    if(it is FrogEntity) Registries.FROG_VARIANT.getId(it.variant.value())?.path else ""
                 }),
                 Pair(EntityType.AXOLOTL, EntityListener {
                     if(it is AxolotlEntity) it.variant.name else ""
@@ -87,7 +85,7 @@ class TiwylaWidget: Widget("tiwyla") {
         drawContext.matrices.scale(0.7F,0.7F,1F)
         for ((index, text) in getText().iterator().withIndex()) {
             if(index!=0)
-                drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer,if (text.split("%")[0]=="cTH") convertToHearths(text.split("%")[1].toDouble(),text.split("%")[2].toDouble(),text.split("%")[3].toDouble()) else Text.of(text),((getPosX()+getOriginalWidth()/2)/0.7F).toInt(),((getPosY()+8*index+8)/0.7F).toInt(),(0xFF000000L+getProperty(BOTTOM_COLOR)!!.getColor()).toInt())
+                drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer,if (text.split("%")[0]=="cTH") convertToHearths(text.split("%")[1].toDouble(),text.split("%")[2].toDouble(),text.split("%")[3].toDouble()) else Text.of(text),((getPosX()+getOriginalWidth()/2)/0.7F).toInt(),((getPosY()+8*index+8)/0.7F).toInt(),(0xFF000000L+getProperty(BOTTOM_COLOR).getColor()).toInt())
         }
         drawContext.matrices.scale(1/0.7F,1/0.7F,1F)
         val hitResult = MinecraftClient.getInstance().crosshairTarget
@@ -120,9 +118,9 @@ class TiwylaWidget: Widget("tiwyla") {
 
     private fun getTextFromBlock(hitResult: BlockHitResult, blockState: BlockState):ArrayList<String> {
         val firstLine = blockState.block.name.string
-        val secondLine = getBlockInformation(getProperty(Settings.FIRST_LINE)!!.toInt(),blockState,hitResult.blockPos)
-        val thirdLine = getBlockInformation(getProperty(Settings.SECOND_LINE)!!.toInt(),blockState,hitResult.blockPos)
-        val fourthLine = getBlockInformation(getProperty(Settings.THIRD_LINE)!!.toInt(),blockState,hitResult.blockPos)
+        val secondLine = getBlockInformation(getProperty(Settings.FIRST_LINE).toInt(),blockState,hitResult.blockPos)
+        val thirdLine = getBlockInformation(getProperty(Settings.SECOND_LINE).toInt(),blockState,hitResult.blockPos)
+        val fourthLine = getBlockInformation(getProperty(Settings.THIRD_LINE).toInt(),blockState,hitResult.blockPos)
 
         return arrayListOf(firstLine,secondLine,thirdLine,fourthLine)
     }
@@ -196,21 +194,28 @@ class TiwylaWidget: Widget("tiwyla") {
         if (block.defaultState.isIn(BlockTags.PICKAXE_MINEABLE)) return "${Bewisclient.getTranslatedString("tool")}: ${Bewisclient.getTranslatedString("tool.pickaxe")}"
         if (block.defaultState.isIn(BlockTags.HOE_MINEABLE)) return "${Bewisclient.getTranslatedString("tool")}: ${Bewisclient.getTranslatedString("tool.hoe")}"
         if (block.defaultState.isIn(BlockTags.SHOVEL_MINEABLE)) return "${Bewisclient.getTranslatedString("tool")}: ${Bewisclient.getTranslatedString("tool.shovel")}"
-        if (block.defaultState.isIn(FabricMineableTags.SHEARS_MINEABLE)) return "${Bewisclient.getTranslatedString("tool")}: ${Bewisclient.getTranslatedString("tool.shears")}"
-        if (block.defaultState.isIn(FabricMineableTags.SWORD_MINEABLE)) return "${Bewisclient.getTranslatedString("tool")}: ${Bewisclient.getTranslatedString("tool.sword")}"
+        if (block.defaultState.isIn(BlockTags.SWORD_EFFICIENT)) return "${Bewisclient.getTranslatedString("tool")}: ${Bewisclient.getTranslatedString("tool.sword")}"
         return "${Bewisclient.getTranslatedString("tool")}: ${Bewisclient.getTranslatedString("tool.none")}"
     }
 
     private fun getLevel(block: Block): String {
+        val no = "${Bewisclient.getTranslatedString("mining_level")}: ${Bewisclient.getTranslatedString("mining_level.none")}"
+        val def = "${Bewisclient.getTranslatedString("mining_level")}: ${Bewisclient.getTranslatedString("mining_level.wood")}"
+
         val map = Map.of(
-                0, "${Bewisclient.getTranslatedString("mining_level")}: ${Bewisclient.getTranslatedString("mining_level.none")}",
-                1, "${Bewisclient.getTranslatedString("mining_level")}: ${Bewisclient.getTranslatedString("mining_level.wood")}",
-                2, "${Bewisclient.getTranslatedString("mining_level")}: ${Bewisclient.getTranslatedString("mining_level.stone")}",
-                3, "${Bewisclient.getTranslatedString("mining_level")}: ${Bewisclient.getTranslatedString("mining_level.iron")}",
-                4, "${Bewisclient.getTranslatedString("mining_level")}: ${Bewisclient.getTranslatedString("mining_level.diamond")}"
+                BlockTags.NEEDS_STONE_TOOL, "${Bewisclient.getTranslatedString("mining_level")}: ${Bewisclient.getTranslatedString("mining_level.stone")}",
+                BlockTags.NEEDS_IRON_TOOL, "${Bewisclient.getTranslatedString("mining_level")}: ${Bewisclient.getTranslatedString("mining_level.iron")}",
+                BlockTags.NEEDS_DIAMOND_TOOL, "${Bewisclient.getTranslatedString("mining_level")}: ${Bewisclient.getTranslatedString("mining_level.diamond")}"
         )
-        val level = (if (MiningLevelManager.getRequiredMiningLevel(block.defaultState) == -1) if (block.defaultState.isToolRequired) 0 else -1 else MiningLevelManager.getRequiredMiningLevel(block.defaultState)) + 1
-        return map.getOrDefault(level, "${Bewisclient.getTranslatedString("mining_level")}: ${Bewisclient.getTranslatedString("mining_level.other")}")
+
+        for (m in map.entries) {
+            if(block.defaultState.isIn(m.key)) {
+                return m.value
+            }
+        }
+
+        if(block.defaultState.isToolRequired) return def
+        return no
     }
 
     private fun getTextFromEntity(hitResult: EntityHitResult, entity: Entity):ArrayList<String> {

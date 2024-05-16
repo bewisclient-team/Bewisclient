@@ -16,18 +16,18 @@ abstract class Widget(val id: String): Settings() {
     abstract fun getOriginalWidth(): Int
     abstract fun getOriginalHeight(): Int
 
-    open fun getScale(): Float = getProperty(Settings.SCALE)!!
+    open fun getScale(): Float = getProperty(Settings.SCALE)
 
-    open fun isEnabled(): Boolean = getProperty(Settings.ENABLED)!!
+    open fun isEnabled(): Boolean = getProperty(Settings.ENABLED)
 
-    private fun getSavedPosX(): Float = getProperty(Settings.POSX)!!
-    private fun getSavedPosY(): Float = getProperty(Settings.POSY)!!
+    private fun getSavedPosX(): Float = getProperty(Settings.POSX)
+    private fun getSavedPosY(): Float = getProperty(Settings.POSY)
 
     fun getScreenWidth(): Int = MinecraftClient.getInstance().window.scaledWidth
     private fun getScreenHeight(): Int = MinecraftClient.getInstance().window.scaledHeight
 
-    private fun getSavedPartX(): Int = getProperty(Settings.PARTX)?.toInt()!!
-    private fun getSavedPartY(): Int = getProperty(Settings.PARTY)?.toInt()!!
+    private fun getSavedPartX(): Int = getProperty(Settings.PARTX).toInt()
+    private fun getSavedPartY(): Int = getProperty(Settings.PARTY).toInt()
 
     open fun getOriginalPosX(): Int {
         if(getSavedPartX()==-1)

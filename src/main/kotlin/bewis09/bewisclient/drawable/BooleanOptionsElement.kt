@@ -53,7 +53,7 @@ class BooleanOptionsElement : WidgetOptionsElement {
 
         val enabled = getValue<Boolean>(settings,value)==true
 
-        var progress = MathHelper.clamp((System.currentTimeMillis() - animationStart)/SettingsLoader.DesignSettings.getValue(Settings.Settings.OPTIONS_MENU)!!.getValue(Settings.Settings.ANIMATION_TIME)!!,0F,1F)
+        var progress = MathHelper.clamp((System.currentTimeMillis() - animationStart)/SettingsLoader.DesignSettings.getValue(Settings.Settings.OPTIONS_MENU).getValue(Settings.Settings.ANIMATION_TIME),0F,1F)
 
         if(enabled) {
             progress = 1-progress
