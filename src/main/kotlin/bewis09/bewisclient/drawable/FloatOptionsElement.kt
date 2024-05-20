@@ -7,39 +7,40 @@ import bewis09.bewisclient.settingsLoader.SettingsLoader
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.text.Text
+import kotlin.math.log
 import kotlin.math.pow
 import kotlin.math.round
 
 class FloatOptionsElement : WidgetOptionsElement {
 
     private val value: String
-    private val settings: SettingsLoader.Settings
+    private val settings: String
 
-    constructor(title: String, value: String, settings: SettingsLoader.Settings) : super(title, arrayListOf()) {
+    constructor(title: String, path: String, value: String, settings: String) : super(title, path, arrayListOf()) {
         this.value = value
         this.settings = settings
         this.valueChanged = { a ->
             run {
-                setValue(settings, value, round(((a * (de!!.end - de.start) + de.start).toFloat() * 10f.pow(de.decimalPoints))) / 10f.pow(de.decimalPoints))
+                SettingsLoader.set(settings, path, round(((a * (de!!.end - de.start) + de.start).toFloat() * 10f.pow(de.decimalPoints))) / 10f.pow(de.decimalPoints))
             }
         }
-        this.de = DefaultSettings.sliders[value]
-                ?: DefaultSettings.sliders["." + value.split(".")[value.split(".").size - 1]]
-        this.widget = UsableSliderWidget(0, 0, 100, 20, Text.empty(), ((getValue<Float>(settings, value)!! - de?.start!!) / (de.end - de.start)).toDouble(), de.end, de.start, de.decimalPoints, valueChanged)
+        this.de = DefaultSettings.sliders[path]
+                ?: DefaultSettings.sliders["."+value.split(".")[value.split(".").size - 1]]
+        this.widget = UsableSliderWidget(0, 0, 100, 20, Text.empty(), ((SettingsLoader.getFloat(settings, path) - de?.start!!) / (de.end - de.start)).toDouble(), de.end, de.start, de.decimalPoints, valueChanged)
     }
 
-    constructor(title: String, value: String, settings: SettingsLoader.Settings, valueChanger: (Double)->Unit) : super(title, arrayListOf()) {
+    constructor(title: String, path: String, value: String, settings: String, valueChanger: (Double)->Unit) : super(title, path, arrayListOf()) {
         this.value = value
         this.settings = settings
         this.valueChanged = { a ->
             run {
-                setValue(settings, value, round(((a * (de!!.end - de.start) + de.start).toFloat() * 10f.pow(de.decimalPoints))) / 10f.pow(de.decimalPoints))
+                SettingsLoader.set(settings, path, round(((a * (de!!.end - de.start) + de.start).toFloat() * 10f.pow(de.decimalPoints))) / 10f.pow(de.decimalPoints))
                 valueChanger(a)
             }
         }
-        this.de = DefaultSettings.sliders[value]
+        this.de = DefaultSettings.sliders[path]
                 ?: DefaultSettings.sliders["." + value.split(".")[value.split(".").size - 1]]
-        this.widget = UsableSliderWidget(0, 0, 100, 20, Text.empty(), ((getValue<Float>(settings, value)!! - de?.start!!) / (de.end - de.start)).toDouble(), de.end, de.start, de.decimalPoints, valueChanged)
+        this.widget = UsableSliderWidget(0, 0, 100, 20, Text.empty(), ((SettingsLoader.getFloat(settings, path) - de?.start!!) / (de.end - de.start)).toDouble(), de.end, de.start, de.decimalPoints, valueChanged)
     }
 
     val valueChanged: (Double) -> Unit

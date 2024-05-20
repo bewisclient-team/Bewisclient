@@ -44,7 +44,7 @@ public class InGameOverlayRendererMixin {
         float o = MathHelper.lerp(l, i, k);
         float p = MathHelper.lerp(l, j, k);
         for (int r = 0; r < 2; ++r) {
-            float d = JavaSettingsSender.Companion.getDesignSettings().getValue("fire_height");
+            float d = JavaSettingsSender.Companion.getSettings().getFloat("design","fire_height");
             matrices.push();
             matrices.translate((float)(-(r * 2 - 1)) * 0.24f, -0.3f, 0.0f);
             matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees((float)(r * 2 - 1) * 10.0f));

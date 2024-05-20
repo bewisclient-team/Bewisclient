@@ -4,9 +4,7 @@ import bewis09.bewisclient.settingsLoader.SettingsLoader
 
 class JavaSettingsSender {
     companion object {
-        var WidgetSettings = SettingsLoader.WidgetSettings
-        var GeneralSettings = SettingsLoader.GeneralSettings
-        var DesignSettings = SettingsLoader.DesignSettings
+        var settings = SettingsLoader
         var isZoomed: Boolean = true
     }
 }

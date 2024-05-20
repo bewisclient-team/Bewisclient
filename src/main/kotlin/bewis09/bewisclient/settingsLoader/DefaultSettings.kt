@@ -1,9 +1,15 @@
+@file:Suppress("CAST_NEVER_SUCCEEDS")
+
 package bewis09.bewisclient.settingsLoader
 
-import bewis09.bewisclient.util.ColorSaver
 import bewis09.bewisclient.widgets.WidgetRenderer
+import com.google.gson.Gson
+import com.google.gson.JsonObject
+import com.google.gson.JsonPrimitive
 
 object DefaultSettings {
+
+    val gson = Gson()
 
     class SliderInfo(val start: Float, val end: Float, val decimalPoints: Int)
 
@@ -31,50 +37,57 @@ object DefaultSettings {
             ))
     )
 
-    val widgets: Array<Pair<String,Any>> = WidgetRenderer.getOptionsArrayList().toTypedArray()
+    val widgets: JsonObject = WidgetRenderer.getOptionsObject()
 
-    val design: Array<Pair<String,Any>> = arrayOf(
-        Pair("options_menu",SettingsLoader.Settings()),
-            Pair("options_menu.animation_time",200F),
-            Pair("options_menu.scale",0.75f),
-            Pair("extend_status_effect_info",false),
-            Pair("held_item_info",false),
-            Pair("maxinfolength",5F),
-            Pair("disable_pumpkin_overlay",false),
-            Pair("show_pumpkin_icon",true),
-            Pair("fire_height",1f),
-            Pair("cleaner_debug_menu",false),
-            Pair("options_menu.all_click",false),
-            Pair("shulker_box_tooltip",false),
-        Pair("blockhit",SettingsLoader.Settings()),
-            Pair("blockhit.enabled",false),
-            Pair("blockhit.color",ColorSaver(0)),
-            Pair("blockhit.alpha",0.4f),
-        Pair("better_visibility",SettingsLoader.Settings()),
-            Pair("better_visibility.lava",false),
-            Pair("better_visibility.lava_view",0.5f),
-            Pair("better_visibility.water",false),
-            Pair("better_visibility.nether",false),
-            Pair("better_visibility.powder_snow",false),
-        Pair("fullbright",SettingsLoader.Settings()),
-            Pair("fullbright.enabled",false),
-            Pair("fullbright.night_vision",false),
-            Pair("fullbright.value",1f),
-        Pair("background_texture","texture_minecraft:textures/gui/options_background.png")
-    )
+    val design: JsonObject = JsonObject()
 
-    val general: Array<Pair<String,Any>> = arrayOf(
-        Pair("zoom_enabled",true),
-        Pair("instant_zoom",false),
-        Pair("hard_zoom",false)
-    )
+    val general: JsonObject = JsonObject()
 
-    fun getDefault(string: String): Array<Pair<String,Any>> {
+    init {
+        val BV = JsonObject()
+        BV.add("powder_snow", JsonPrimitive(false))
+        BV.add("lava", JsonPrimitive(false))
+        BV.add("nether", JsonPrimitive(false))
+        BV.add("lava_view", JsonPrimitive(0.5))
+        BV.add("water", JsonPrimitive(false))
+        val BH = JsonObject()
+        BH.add("color", JsonPrimitive(0))
+        BH.add("alpha", JsonPrimitive(0.4))
+        BH.add("enabled", JsonPrimitive(false))
+        val OM = JsonObject()
+        OM.add("animation_time", JsonPrimitive(200.0))
+        OM.add("scale", JsonPrimitive(0.75))
+        OM.add("all_click", JsonPrimitive(false))
+        val FB = JsonObject()
+        FB.add("night_vision", JsonPrimitive(false))
+        FB.add("value", JsonPrimitive(1.0))
+        FB.add("enabled", JsonPrimitive(false))
+        val HI = JsonObject()
+        HI.add("maxinfolength", JsonPrimitive(5.0))
+        HI.add("held_item_info", JsonPrimitive(false))
+        design.add("better_visibility",BV)
+        design.add("blockhit",BH)
+        design.add("options_menu",OM)
+        design.add("fullbright",FB)
+        design.add("held_item_info",HI)
+        design.add("fire_height", JsonPrimitive(1.0))
+        design.add("disable_pumpkin_overlay", JsonPrimitive(false))
+        design.add("shulker_box_tooltip", JsonPrimitive(false))
+        design.add("extend_status_effect_info", JsonPrimitive(false))
+        design.add("cleaner_debug_menu", JsonPrimitive(false))
+        design.add("show_pumpkin_icon", JsonPrimitive(true))
+
+        general.add("instant_zoom", JsonPrimitive(false))
+        general.add("zoom_enabled", JsonPrimitive(true))
+        general.add("hard_zoom", JsonPrimitive(false))
+    }
+
+    fun getDefault(string: String): JsonObject {
         when (string) {
             "widgets" -> return widgets
             "general" -> return general
             "design" -> return design
         }
-        return arrayOf()
+        return JsonObject()
     }
 }

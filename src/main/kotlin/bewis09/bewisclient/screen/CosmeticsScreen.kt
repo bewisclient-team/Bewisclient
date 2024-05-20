@@ -45,7 +45,7 @@ class CosmeticsScreen(private val parent: MainOptionsScreen) : Screen(Text.empty
             alphaStart= System.currentTimeMillis();
         }
 
-        val animationSpeed = MathHelper.clamp(SettingsLoader.DesignSettings.getValue(Settings.Settings.OPTIONS_MENU).getValue(Settings.Settings.ANIMATION_TIME).toInt(),1,500).toFloat()
+        val animationSpeed = MathHelper.clamp(SettingsLoader.getFloat("design","options_menu.animation_time").toInt(),1,500).toFloat()
 
         if(alphaDirection ==1 && (System.currentTimeMillis() - alphaStart)/animationSpeed>1) {
             MinecraftClient.getInstance().setScreen(parent)
@@ -154,7 +154,7 @@ class CosmeticsScreen(private val parent: MainOptionsScreen) : Screen(Text.empty
             val finalZ = z
             this.addDrawableChild(ButtonWidget.builder(Text.translatable("bewisclient.option.use")) {
                 Cape.setCurrentRealCape(c)
-                SettingsLoader.DesignSettings.setValue("cape",(finalZ-1).toFloat())
+                SettingsLoader.set("design","cape",(finalZ-1).toFloat())
             }.dimensions(50 + z * 64 + 10, (getScrollY() + 100).toInt(), 40, 20).build())
         }
         z = 0
@@ -163,7 +163,7 @@ class CosmeticsScreen(private val parent: MainOptionsScreen) : Screen(Text.empty
             val finalZ1 = z
             this.addDrawableChild(ButtonWidget.builder(Text.translatable("bewisclient.option.use")) {
                 Wing.current_wing = c
-                SettingsLoader.DesignSettings.setValue("wing",(finalZ1-1).toFloat())
+                SettingsLoader.set("design","wing",(finalZ1-1).toFloat())
             }.dimensions(50 + z * 64 + 10, (getScrollY() + 230).toInt(), 40, 20).build())
         }
         z = 0
@@ -172,7 +172,7 @@ class CosmeticsScreen(private val parent: MainOptionsScreen) : Screen(Text.empty
             val finalZ2 = z
             this.addDrawableChild(ButtonWidget.builder(Text.translatable("bewisclient.option.use")) {
                 Hat.current_hat = c
-                SettingsLoader.DesignSettings.setValue("hat",(finalZ2-1).toFloat())
+                SettingsLoader.set("design","hat",(finalZ2-1).toFloat())
             }.dimensions(50 + z * 64 + 10, (getScrollY() + 360).toInt(), 40, 20).build())
         }
     }

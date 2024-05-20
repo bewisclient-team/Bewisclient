@@ -62,7 +62,7 @@ class MainOptionsScreen : Screen(Text.empty()) {
 
         correctScroll()
         var animationFrame = 1F
-        val animationSpeed = MathHelper.clamp(SettingsLoader.DesignSettings.getValue(Settings.Settings.OPTIONS_MENU).getValue(Settings.Settings.ANIMATION_TIME).toInt(),1,500)
+        val animationSpeed = MathHelper.clamp(SettingsLoader.getInt("design","options_menu.animation_time").toInt(),1,500)
         if(System.currentTimeMillis() - animationStart >= animationSpeed) {
             if(animationState==AnimationState.TO_OTHER_SCREEN) {
                 client?.setScreen(animatedScreen)
@@ -108,7 +108,8 @@ class MainOptionsScreen : Screen(Text.empty()) {
 
         val normalOffset: Int = (if (animationState == AnimationState.LEFT) width/2*middleAnimationFrame else if (animationState == AnimationState.RIGHT) -width/2*middleAnimationFrame else 0F).roundToInt()
 
-        context.enableScissor((this.width/4+4*animationFrame).toInt(),0, (this.width-(this.width/4+4*animationFrame)).toInt(),(this.height))
+        if(animationState!=AnimationState.STABLE)
+            context.enableScissor((this.width/4+4*animationFrame).toInt(),0, (this.width-(this.width/4+4*animationFrame)).toInt(),(this.height))
 
         allElements[slice].forEach {element ->
             h+=4+element.render(context,
@@ -119,6 +120,9 @@ class MainOptionsScreen : Screen(Text.empty()) {
                     (mouseY* scale).toInt(),
                     max(10,floor(animationFrame*255).toLong() )*0x1000000L)
         }
+
+        if(animationState==AnimationState.STABLE)
+            context.enableScissor((this.width/4+4*animationFrame).toInt(),0, (this.width-(this.width/4+4*animationFrame)).toInt(),(this.height))
 
         totalHeight = h - scrolls[slice].toInt() + 8
 
@@ -335,14 +339,14 @@ class MainOptionsScreen : Screen(Text.empty()) {
 
     companion object {
 
-        var laS = 1f/ SettingsLoader.DesignSettings.getValue(Settings.Settings.OPTIONS_MENU).getValue(Settings.Settings.OPTIONS_SCALE)
+        var laS = 1f/ SettingsLoader.getFloat("design","options_menu.scale")
 
         var clicked = false
 
         val scale: Float
             get() {
                 if(!clicked) {
-                    laS = 1f/SettingsLoader.DesignSettings.getValue(Settings.Settings.OPTIONS_MENU).getValue(Settings.Settings.OPTIONS_SCALE)
+                    laS = 1f/SettingsLoader.getFloat("design","options_menu.scale")
                 }
                 return laS
             }

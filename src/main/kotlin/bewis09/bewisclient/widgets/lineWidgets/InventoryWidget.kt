@@ -2,7 +2,10 @@ package bewis09.bewisclient.widgets.lineWidgets
 
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.widgets.Widget
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
 import com.mojang.blaze3d.systems.RenderSystem
+import com.google.gson.JsonPrimitive
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.util.Identifier
@@ -37,14 +40,17 @@ class InventoryWidget: Widget("inventory") {
         return 60
     }
 
-    override fun getWidgetSettings(): ArrayList<Pair<String, Any>> = arrayListOf(
-            Pair(id, SettingsLoader.Settings()),
-            Pair("$id.enabled",true),
-            Pair("$id.transparency",1F),
-            Pair("$id.size",1f),
-            Pair("$id.posX",5f),
-            Pair("$id.partX",1f),
-            Pair("$id.posY",5f),
-            Pair("$id.partY",1f)
-    )
+    override fun getWidgetSettings(): JsonObject {
+        val jsonObject = JsonObject()
+
+        jsonObject.add("enabled", JsonPrimitive(true))
+        jsonObject.add("transparency", JsonPrimitive(1))
+        jsonObject.add("size", JsonPrimitive(1))
+        jsonObject.add("posX", JsonPrimitive(5))
+        jsonObject.add("partX", JsonPrimitive(1))
+        jsonObject.add("posY", JsonPrimitive(5))
+        jsonObject.add("partY", JsonPrimitive(1))
+
+        return jsonObject
+    }
 }

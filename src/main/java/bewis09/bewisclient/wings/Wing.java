@@ -14,7 +14,7 @@ public record Wing(Identifier texture) {
 
     static {
         try {
-            current_wing = WINGS[Math.round(JavaSettingsSender.Companion.getDesignSettings().getValue("wing"))];
+            current_wing = WINGS[JavaSettingsSender.Companion.getSettings().getInt("design","wing")];
         } catch (Exception e) {
             e.printStackTrace();
             current_wing = EMPTY;

@@ -9,11 +9,11 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.util.Identifier
 
-open class WidgetOptionsElement(val originalTitle: String, elements: ArrayList<MainOptionsElement>): MainOptionsElement(if (originalTitle.toCharArray()[0] =='%') originalTitle.drop(1) else "widgets.$originalTitle", if (originalTitle.toCharArray()[0] =='%') "description."+originalTitle.drop(1) else "widgets.description.$originalTitle", elements, Identifier("")) {
+open class WidgetOptionsElement(originalTitle: String, val path: String, elements: ArrayList<MainOptionsElement>): MainOptionsElement(if (originalTitle.toCharArray()[0] =='%') originalTitle.drop(1) else "widgets.$originalTitle", if (originalTitle.toCharArray()[0] =='%') "description."+originalTitle.drop(1) else "widgets.description.$originalTitle", elements, Identifier("")) {
     override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {
         val client = MinecraftClient.getInstance()
 
-        allClicked = SettingsLoader.DesignSettings.getValue(Settings.Settings.OPTIONS_MENU).getValue("all_click")
+        allClicked = SettingsLoader.getBoolean("design","options_menu.all_click")
 
         val descriptionLines = client.textRenderer.wrapLines(Bewisclient.getTranslationText(description),width-if(!allClicked)(34)else 12)
 
@@ -67,7 +67,7 @@ open class WidgetOptionsElement(val originalTitle: String, elements: ArrayList<M
         }
 
         if(this.javaClass == WidgetOptionsElement::class.java) {
-            val enabled = (SettingsLoader.WidgetSettings.getValue<SettingsLoader.Settings>(originalTitle).getValue(Settings.Settings.ENABLED))
+            val enabled = (SettingsLoader.getBoolean("widgets","$path.enabled"))
 
             val hovered = pos[2]-100 < mouseX && pos[1]+2 < mouseY && pos[2]-24 > mouseX && pos[1]+16 > mouseY
 
@@ -80,42 +80,12 @@ open class WidgetOptionsElement(val originalTitle: String, elements: ArrayList<M
         return height
     }
 
-    fun <K> getValue(settings: SettingsLoader.Settings, path: String): K? {
-        val split = path.split(".")
-
-        var m = settings
-
-        split.forEachIndexed{ i: Int, s: String ->
-            if(i+1!=split.size) {
-                m = m.getValue<SettingsLoader.Settings>(s)
-            } else {
-                return m.getValue(s)
-            }
-        }
-
-        return null
-    }
-
-    fun setValue(settings: SettingsLoader.Settings, path: String, value: Any) {
-        val split = path.split(".")
-
-        var m = settings
-
-        split.forEachIndexed{ i: Int, s: String ->
-            if(i+1!=split.size) {
-                m = m.getValue<SettingsLoader.Settings>(s)
-            } else {
-                m.setValue(s,value)
-            }
-        }
-    }
-
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int, screen: MainOptionsScreen) {
         if (pos[2]-100 < mouseX && pos[1]+2 < mouseY && pos[2]-24 > mouseX && pos[1]+16 > mouseY) {
             screen.playDownSound(MinecraftClient.getInstance().soundManager)
 
-            val enabled = (SettingsLoader.WidgetSettings.getValue<SettingsLoader.Settings>(originalTitle).getValue(Settings.Settings.ENABLED))
-            SettingsLoader.WidgetSettings.getValue<SettingsLoader.Settings>(originalTitle).setValue(Settings.Settings.ENABLED, !enabled)
+            val enabled = (SettingsLoader.getBoolean("widgets","$path.enabled"))
+            SettingsLoader.set("widgets","$path.enabled", !enabled)
         }
 
         super.mouseClicked(mouseX, mouseY, button, screen)

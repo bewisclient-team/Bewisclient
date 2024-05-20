@@ -3,6 +3,7 @@ package bewis09.bewisclient.widgets.lineWidgets
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.mixin.ClientPlayNetworkHandlerMixin
 import bewis09.bewisclient.screen.WidgetConfigScreen
+import com.google.gson.JsonObject
 import net.minecraft.client.MinecraftClient
 
 class PingWidget: LineWidget("ping",80,true) {
@@ -49,7 +50,7 @@ class PingWidget: LineWidget("ping",80,true) {
         }
     }
 
-    override fun getWidgetSettings(): ArrayList<Pair<String, Any>> {
+    override fun getWidgetSettings(): JsonObject {
         return getWidgetSettings(0.7f,5f,1f,95f,-1f)
     }
 }

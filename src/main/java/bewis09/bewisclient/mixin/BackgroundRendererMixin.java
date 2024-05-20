@@ -28,26 +28,25 @@ public abstract class BackgroundRendererMixin {
     private static void applyFog(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, float tickDelta, CallbackInfo ci) {
         CameraSubmersionType cameraSubmersionType = camera.getSubmersionType();
         BackgroundRenderer.FogData fogData = new BackgroundRenderer.FogData(fogType);
-        SettingsLoader.Settings settings = JavaSettingsSender.Companion.getDesignSettings().getValue("better_visibility");
-        if (cameraSubmersionType == CameraSubmersionType.LAVA && ((boolean)settings.getValue("lava"))) {
+        if (cameraSubmersionType == CameraSubmersionType.LAVA && (JavaSettingsSender.Companion.getSettings().getBoolean("design","better_visibility.lava"))) {
             fogData.fogStart = -8.0f;
-            fogData.fogEnd = viewDistance * ((float)settings.getValue("lava_view"));
+            fogData.fogEnd = viewDistance * ((JavaSettingsSender.Companion.getSettings().getFloat("design","better_visibility.lava_view")));
             RenderSystem.setShaderFogStart(fogData.fogStart);
             RenderSystem.setShaderFogEnd(fogData.fogEnd);
             RenderSystem.setShaderFogShape(fogData.fogShape);
-        } else if (cameraSubmersionType == CameraSubmersionType.POWDER_SNOW && ((boolean)settings.getValue("powder_snow"))) {
+        } else if (cameraSubmersionType == CameraSubmersionType.POWDER_SNOW && (JavaSettingsSender.Companion.getSettings().getBoolean("design","better_visibility.power_snow"))) {
             fogData.fogStart = -8.0f;
             fogData.fogEnd = viewDistance * 0.5f;
             RenderSystem.setShaderFogStart(fogData.fogStart);
             RenderSystem.setShaderFogEnd(fogData.fogEnd);
             RenderSystem.setShaderFogShape(fogData.fogShape);
-        } else if (cameraSubmersionType == CameraSubmersionType.WATER && (boolean)settings.getValue("water")) {
+        } else if (cameraSubmersionType == CameraSubmersionType.WATER && (JavaSettingsSender.Companion.getSettings().getBoolean("design","better_visibility.water"))) {
             fogData.fogStart = -8.0f;
             fogData.fogEnd = viewDistance;
             RenderSystem.setShaderFogStart(fogData.fogStart);
             RenderSystem.setShaderFogEnd(fogData.fogEnd);
             RenderSystem.setShaderFogShape(fogData.fogShape);
-        } else if (thickFog && (boolean)settings.getValue("nether")) {
+        } else if (thickFog && (JavaSettingsSender.Companion.getSettings().getBoolean("design","better_visibility.nether"))) {
             fogData.fogStart = viewDistance-1;
             fogData.fogEnd = viewDistance;
             RenderSystem.setShaderFogStart(fogData.fogStart);

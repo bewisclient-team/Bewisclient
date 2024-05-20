@@ -1,6 +1,9 @@
 package bewis09.bewisclient.widgets.lineWidgets
 
 import bewis09.bewisclient.Bewisclient
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
+import com.google.gson.JsonPrimitive
 import kotlin.math.round
 
 class SpeedWidget: LineWidget("speed",80,true) {
@@ -17,9 +20,9 @@ class SpeedWidget: LineWidget("speed",80,true) {
         return strD
     }
 
-    override fun getWidgetSettings(): ArrayList<Pair<String, Any>> {
+    override fun getWidgetSettings(): JsonObject {
         val list = super.getWidgetSettings(0.7f,5f,1f,71f,-1f)
-        list.add(Pair("speed.vertical_speed",false))
+        list.add("vertical_speed", JsonPrimitive(false))
         return list
     }
 }

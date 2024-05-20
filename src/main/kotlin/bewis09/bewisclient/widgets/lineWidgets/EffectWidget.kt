@@ -1,9 +1,11 @@
 package bewis09.bewisclient.widgets.lineWidgets
 
-import bewis09.bewisclient.JavaSettingsSender.Companion.DesignSettings
 import bewis09.bewisclient.screen.WidgetConfigScreen
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.widgets.Widget
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
+import com.google.gson.JsonPrimitive
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import kotlin.math.max
@@ -20,7 +22,7 @@ class EffectWidget: Widget("effect") {
     }
 
     override fun getOriginalHeight(): Int {
-        return if(DesignSettings.getValue<Boolean>("extend_status_effect_info") == true) 72 else 50
+        return if(SettingsLoader.getBoolean("design","extend_status_effect_info")) 72 else 50
     }
 
     override fun getOriginalPosX(): Int {
@@ -31,11 +33,11 @@ class EffectWidget: Widget("effect") {
         return 1f
     }
 
-    override fun setPropertyPosX(value: Float, allV: Int, wV: Int,sneak:Boolean): Float {
-        return 0F
+    override fun setPropertyPosX(value: Float, allV: Int, wV: Int,sneak:Boolean) {
+
     }
 
-    override fun setPropertyPosY(value: Float, allV: Int, wV: Int,sneak:Boolean): Float? {
+    override fun setPropertyPosY(value: Float, allV: Int, wV: Int,sneak:Boolean) {
         val pos: Float
         val part: Float
         if(allV/2>value) {
@@ -45,18 +47,23 @@ class EffectWidget: Widget("effect") {
             pos = allV-value-wV
             part = 1F
         }
-        SettingsLoader.WidgetSettings.getValue(SettingsLoader.TypedSettingID<SettingsLoader.Settings>(id)).setValueWithoutSave(Settings.PARTY, part)
-        return SettingsLoader.WidgetSettings.getValue(SettingsLoader.TypedSettingID<SettingsLoader.Settings>(id)).setValueWithoutSave(Settings.POSY, max(pos, 0f))
+        SettingsLoader.disableAutoSave()
+        SettingsLoader.set("widgets","$id.partY", part)
+        SettingsLoader.disableAutoSave()
+        SettingsLoader.set("widgets","$id.posY", pos)
     }
 
-    override fun getWidgetSettings(): ArrayList<Pair<String,Any>> = arrayListOf(
-            Pair(id,SettingsLoader.Settings()),
-            Pair("$id.enabled",true),
-            Pair("$id.transparency",1F),
-            Pair("$id.size",1F),
-            Pair("$id.posX",0F),
-            Pair("$id.partX",0F),
-            Pair("$id.posY",2F),
-            Pair("$id.partY",-1.0F)
-    )
+    override fun getWidgetSettings(): JsonObject {
+        val jsonObject = JsonObject()
+
+        jsonObject.add("enabled", JsonPrimitive(true) )
+        jsonObject.add("transparency", JsonPrimitive(1) )
+        jsonObject.add("size", JsonPrimitive(1) )
+        jsonObject.add("posX", JsonPrimitive(0) )
+        jsonObject.add("partX", JsonPrimitive(0) )
+        jsonObject.add("posY", JsonPrimitive(2) )
+        jsonObject.add("partY", JsonPrimitive(-1) )
+
+        return jsonObject
+    }
 }

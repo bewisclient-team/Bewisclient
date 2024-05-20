@@ -10,11 +10,11 @@ import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.ConfirmLinkScreen
 import net.minecraft.util.Util
 
-class ContactElement(title: String, val url: String): WidgetOptionsElement("%contact.$title", arrayListOf()) {
+class ContactElement(title: String, val url: String): WidgetOptionsElement("%contact.$title", "", arrayListOf()) {
     override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {
         val client = MinecraftClient.getInstance()
 
-        allClicked = SettingsLoader.DesignSettings.getValue(Settings.Settings.OPTIONS_MENU).getValue("all_click")
+        allClicked = SettingsLoader.getBoolean("design","options_menu.all_click")
 
         val descriptionLines = client.textRenderer.wrapLines(Bewisclient.getTranslationText(description),width-if(!allClicked)(34)else 12)
 

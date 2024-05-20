@@ -59,7 +59,7 @@ open class MainOptionsElement {
 
         val client = MinecraftClient.getInstance()
 
-        allClicked = SettingsLoader.DesignSettings.getValue(Settings.Settings.OPTIONS_MENU).getValue("all_click")
+        allClicked = SettingsLoader.getBoolean("design","options_menu.all_click")
 
         val descriptionLines = client.textRenderer.wrapLines(Bewisclient.getTranslationText(description),width-(if(allClicked) 50 else 72))
 

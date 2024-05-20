@@ -24,8 +24,8 @@ public class Capes {
         CAPES = capes.toArray(new AbstractCape[0]);
 
         try {
-            Cape.setCurrentCape(Capes.CAPES[Math.round(JavaSettingsSender.Companion.getDesignSettings().getValue("cape"))]);
-            Cape.setCurrentRealCape(Capes.CAPES[Math.round(JavaSettingsSender.Companion.getDesignSettings().getValue("cape"))]);
+            Cape.setCurrentCape(Capes.CAPES[JavaSettingsSender.Companion.getSettings().getInt("design","cape")]);
+            Cape.setCurrentRealCape(Capes.CAPES[JavaSettingsSender.Companion.getSettings().getInt("design","cape")]);
         } catch (Exception ignored){
             Cape.setCurrentRealCape(null);
             Cape.setCurrentCape(null);

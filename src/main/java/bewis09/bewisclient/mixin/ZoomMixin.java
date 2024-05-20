@@ -38,8 +38,8 @@ public class ZoomMixin implements ZoomImplementer {
 
     @Inject(method = "getFov",at=@At("RETURN"),cancellable = true)
     private void getFov(Camera camera, float tickDelta, boolean changingFov, CallbackInfoReturnable<Double> cir) {
-        if((JavaSettingsSender.Companion.getGeneralSettings().getValue("zoom_enabled"))) {
-            if (!(boolean) JavaSettingsSender.Companion.getGeneralSettings().getValue("instant_zoom")) {
+        if(JavaSettingsSender.Companion.getSettings().getBoolean("general","zoom_enabled")) {
+            if (!JavaSettingsSender.Companion.getSettings().getBoolean("general","instant_zoom")) {
                 if (JavaSettingsSender.Companion.isZoomed() != lastZoomed || zoomgoal != lastZoomGoal) {
                     zoomStart = getZoomFactor();
                     if (!JavaSettingsSender.Companion.isZoomed()) {

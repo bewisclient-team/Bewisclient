@@ -3,7 +3,8 @@
   "package": "bewis09.bewisclient.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "BlockItemMixin"
+    "BlockItemMixin",
+    "ItemStackMixin"
   ],
   "injectors": {
     "defaultRequire": 1

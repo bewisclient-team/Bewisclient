@@ -9,17 +9,17 @@ import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.widget.ButtonWidget
 import net.minecraft.text.Text
 
-class ArrayOptionsElement(title: String, private val value: String, private val settings: SettingsLoader.Settings) : WidgetOptionsElement(title, arrayListOf()) {
+class ArrayOptionsElement(title: String, path: String, private val value: String, private val settings: String) : WidgetOptionsElement(title, path, arrayListOf()) {
 
-    private var v = getValue<Float>(settings,value)!!.toInt()
+    private var v = SettingsLoader.getFloat(settings,path).toInt()
 
     private val widget = ScalableButtonWidget.builder(Text.empty()) {
         v += 1
         v %= de.size
-        setValue(settings,value,v.toFloat())
+        SettingsLoader.set(settings,path,v.toFloat())
     }.dimensions(0,0,100,20).build()
 
-    private val de = (DefaultSettings.arrays[value] ?: DefaultSettings.arrays["."+value.split(".")[value.split(".").size-1]])!!
+    private val de = (DefaultSettings.arrays[value] ?: DefaultSettings.arrays["." + value.split(".")[value.split(".").size - 1]])!!
 
     override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {
         val client = MinecraftClient.getInstance()

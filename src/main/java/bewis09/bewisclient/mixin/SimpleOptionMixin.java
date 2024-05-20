@@ -47,11 +47,10 @@ public abstract class SimpleOptionMixin<T> {
         }
     }
 
-    @Inject(method="createWidget*",at=@At("HEAD"),cancellable = true)
-    public void createButton(GameOptions options, int x, int y, int width, CallbackInfoReturnable<ClickableWidget> cir) {
-        SettingsLoader.Settings settings = JavaSettingsSender.Companion.getDesignSettings().getValue("fullbright");
-        if(((boolean)settings.getValue("enabled")) &&(MinecraftClient.getInstance().options.getGamma().getValue()!=(double)(float)settings.getValue("value"))) MinecraftClient.getInstance().options.getGamma().setValue((double)(float)settings.getValue("value"));
-        if(this.codec==MinecraftClient.getInstance().options.getGamma().getCodec()&&(boolean)settings.getValue("enabled")) {
+    @Inject(method="createWidget(Lnet/minecraft/client/option/GameOptions;IIILjava/util/function/Consumer;)Lnet/minecraft/client/gui/widget/ClickableWidget;",at=@At("HEAD"),cancellable = true)
+    public void createButton(GameOptions options, int x, int y, int width, Consumer<T> changeCallback, CallbackInfoReturnable<ClickableWidget> cir) {
+        if(JavaSettingsSender.Companion.getSettings().getBoolean("design","fullbright.enabled") &&(MinecraftClient.getInstance().options.getGamma().getValue()!=JavaSettingsSender.Companion.getSettings().getFloat("design","fullbright.value"))) MinecraftClient.getInstance().options.getGamma().setValue((double)(float)JavaSettingsSender.Companion.getSettings().getFloat("design","fullbright.value"));
+        if(this.codec==MinecraftClient.getInstance().options.getGamma().getCodec()&&JavaSettingsSender.Companion.getSettings().getBoolean("design","fullbright.enabled")) {
             ButtonWidget b = ButtonWidget.builder(Bewisclient.INSTANCE.getTranslationText("fullbright"),null).dimensions(x, y, width, 20).build();
             b.active = false;
             cir.setReturnValue(b);

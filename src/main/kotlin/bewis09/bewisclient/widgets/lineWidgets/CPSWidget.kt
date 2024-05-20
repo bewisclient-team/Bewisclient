@@ -1,6 +1,9 @@
 package bewis09.bewisclient.widgets.lineWidgets
 
 import bewis09.bewisclient.Bewisclient
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
+import com.google.gson.JsonPrimitive
 
 class CPSWidget: LineWidget("cps",80,true) {
     override fun getText(): ArrayList<String> {
@@ -12,9 +15,9 @@ class CPSWidget: LineWidget("cps",80,true) {
         return arrayListOf("${Bewisclient.lCount()} | ${Bewisclient.rCount()} CPS")
     }
 
-    override fun getWidgetSettings(): ArrayList<Pair<String, Any>> {
+    override fun getWidgetSettings(): JsonObject {
         val list = super.getWidgetSettings(.7f,5f,1f,47f,-1f)
-        list.add(Pair("cps.cps_elements",0F))
+        list.add("cps_elements", JsonPrimitive(0) as JsonElement)
         return list
     }
 }

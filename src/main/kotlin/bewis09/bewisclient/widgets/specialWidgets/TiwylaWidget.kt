@@ -5,9 +5,9 @@ package bewis09.bewisclient.widgets.specialWidgets
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.api.JavaAPIEntryPoint.EntityListener
 import bewis09.bewisclient.mixin.ClientPlayerInteractionManagerMixin
-import bewis09.bewisclient.settingsLoader.SettingsLoader
-import bewis09.bewisclient.util.ColorSaver
 import bewis09.bewisclient.widgets.Widget
+import com.google.gson.JsonObject
+import com.google.gson.JsonPrimitive
 import net.minecraft.block.*
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
@@ -270,24 +270,25 @@ class TiwylaWidget: Widget("tiwyla") {
         return 500 - ((1000 - i).toInt()) / 2.0
     }
 
-    override fun getWidgetSettings(): ArrayList<Pair<String, Any>> {
-        return arrayListOf(
-                Pair(id, SettingsLoader.Settings()),
-                Pair("$id.enabled",true),
-                Pair("$id.transparency",0.43F),
-                Pair("$id.size",1F),
-                Pair("$id.posX",5.0F),
-                Pair("$id.partX",0F),
-                Pair("$id.posY",5.0F),
-                Pair("$id.partY",-1.0F),
-                Pair("tiwyla.top_color", ColorSaver(0xFFFFFF)),
-                Pair("tiwyla.bottom_color", ColorSaver(0xFFFFFF)),
-                Pair("tiwyla.first_line",6F),
-                Pair("tiwyla.second_line",1F),
-                Pair("tiwyla.third_line",5F),
-                Pair("tiwyla.show_block_icon",true),
-                Pair("tiwyla.show_health_information",true),
-                Pair("tiwyla.info_tiwyla_health_removed","")
-        )
+    override fun getWidgetSettings(): JsonObject {
+        val jsonObject = JsonObject()
+
+        jsonObject.add("enabled", JsonPrimitive(true))
+        jsonObject.add("transparency", JsonPrimitive(0.43))
+        jsonObject.add("size", JsonPrimitive(1))
+        jsonObject.add("posX", JsonPrimitive(5))
+        jsonObject.add("partX", JsonPrimitive(0))
+        jsonObject.add("posY", JsonPrimitive(5))
+        jsonObject.add("partY", JsonPrimitive(-1))
+        jsonObject.add("top_color", JsonPrimitive("0xFFFFFF"))
+        jsonObject.add("bottom_color", JsonPrimitive("0xFFFFFF"))
+        jsonObject.add("first_line",JsonPrimitive(6F))
+        jsonObject.add("second_line",JsonPrimitive(1F))
+        jsonObject.add("third_line",JsonPrimitive(5F))
+        jsonObject.add("show_block_icon",JsonPrimitive(true))
+        jsonObject.add("show_health_information",JsonPrimitive(true))
+        jsonObject.add("info_tiwyla_health_removed",JsonPrimitive(""))
+
+        return jsonObject
     }
 }

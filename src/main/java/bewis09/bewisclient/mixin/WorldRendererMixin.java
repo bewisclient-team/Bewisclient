@@ -27,17 +27,16 @@ public abstract class WorldRendererMixin {
      * @reason Why not
      */
 
-    @SuppressWarnings("DataFlowIssue")
     @Overwrite
     private void drawBlockOutline(MatrixStack matrices, VertexConsumer vertexConsumer, Entity entity, double cameraX, double cameraY, double cameraZ, BlockPos pos, BlockState state) {
-        int in = ((((ColorSaver)Objects.requireNonNull(JavaSettingsSender.Companion.getDesignSettings().getValue(Settings.Companion.getSettings().getBLOCKHIT())).getValue("color")).getColor())+0x1000000)%0x1000000;
+        int in = (((new ColorSaver(Integer.parseInt(JavaSettingsSender.Companion.getSettings().getString("design","blockhit.color").replace("0x",""),16))).getColor())+0x1000000)%0x1000000;
         String str = MathUtil.Companion.zeroBefore(in,6,16);
         try {
             float r = Integer.decode("0x" + str.charAt(0) + str.charAt(1)) / 256f;
             float g = Integer.decode("0x" + str.charAt(2) + str.charAt(3)) / 256f;
             float b = Integer.decode("0x" + str.charAt(4) + str.charAt(5)) / 256f;
-            float a = JavaSettingsSender.Companion.getDesignSettings().getValue(Settings.Companion.getSettings().getBLOCKHIT()).getValue("alpha");
-            if (!((boolean)JavaSettingsSender.Companion.getDesignSettings().getValue(Settings.Companion.getSettings().getBLOCKHIT()).getValue("enabled"))) {
+            float a = JavaSettingsSender.Companion.getSettings().getFloat("design","blockhit.alpha");
+            if (!JavaSettingsSender.Companion.getSettings().getBoolean("design","blockhit.enabled")) {
                 r = b = g = 0;
                 a = 0.4f;
             }

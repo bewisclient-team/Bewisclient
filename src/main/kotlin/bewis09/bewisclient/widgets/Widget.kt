@@ -5,9 +5,14 @@ import bewis09.bewisclient.screen.WidgetConfigScreen
 import bewis09.bewisclient.settingsLoader.Settings
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.util.ColorSaver
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
+import com.google.gson.JsonPrimitive
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
+import java.util.*
 import kotlin.math.abs
+import kotlin.math.log
 import kotlin.math.roundToInt
 
 abstract class Widget(val id: String): Settings() {
@@ -69,13 +74,28 @@ abstract class Widget(val id: String): Settings() {
     fun getWidth(): Int = (getScale() * getOriginalWidth()).roundToInt()
     fun getHeight(): Int = (getScale() * getOriginalHeight()).roundToInt()
 
-    fun <K> getProperty(setting: SettingsLoader.TypedSettingID<K>): K =
-            SettingsLoader.WidgetSettings.getValue(SettingsLoader.TypedSettingID<SettingsLoader.Settings>(id)).getValue(setting)
+    inline fun <reified K> getProperty(setting: SettingsLoader.TypedSettingID<K>): K {
+        when (true) {
+            K::class.java.name.lowercase().contains("float") -> return SettingsLoader.getFloat("widgets","$id.${setting.id}") as K
+            K::class.java.name.lowercase().contains("boolean") -> return SettingsLoader.getBoolean("widgets","$id.${setting.id}") as K
+            K::class.java.name.lowercase().contains("colorsaver") -> return ColorSaver(SettingsLoader.getString("widgets","$id.${setting.id}")) as K
+            K::class.java.name.lowercase().contains("string") -> return SettingsLoader.getString("widgets","$id.${setting.id}") as K
+            else -> {}
+        }
+        throw ClassCastException()
+    }
 
-    fun <K> setProperty(setting: SettingsLoader.TypedSettingID<K>, value:K): K? =
-            SettingsLoader.WidgetSettings.getValue(SettingsLoader.TypedSettingID<SettingsLoader.Settings>(id)).setValue(setting,value)
+    inline fun <reified K> setProperty(setting: SettingsLoader.TypedSettingID<K>, value: K) {
+        when (true) {
+            K::class.java.name.lowercase().contains("float") -> SettingsLoader.set("widgets","$id.${setting.id}",value as Float)
+            K::class.java.name.lowercase().contains("boolean") -> SettingsLoader.set("widgets","$id.${setting.id}",value as Boolean)
+            K::class.java.name.lowercase().contains("colorsaver") -> SettingsLoader.set("widgets","$id.${setting.id}",value as ColorSaver)
+            K::class.java.name.lowercase().contains("string") -> SettingsLoader.set("widgets","$id.${setting.id}",value as String)
+            else -> {}
+        }
+    }
 
-    open fun setPropertyPosX(value: Float, allV: Int, wV: Int, sneak: Boolean): Float? {
+    open fun setPropertyPosX(value: Float, allV: Int, wV: Int, sneak: Boolean) {
         var pos: Float
         var part = 0f
         if(allV/3>value) {
@@ -93,11 +113,13 @@ abstract class Widget(val id: String): Settings() {
         }
         if(part!=0f && abs(pos-2.5)<5 && !sneak)
             pos = 5f
-        SettingsLoader.WidgetSettings.getValue(SettingsLoader.TypedSettingID<SettingsLoader.Settings>(id)).setValueWithoutSave(Settings.PARTX, part)
-        return SettingsLoader.WidgetSettings.getValue(SettingsLoader.TypedSettingID<SettingsLoader.Settings>(id)).setValueWithoutSave(Settings.POSX, pos)
+        SettingsLoader.disableAutoSave()
+        SettingsLoader.set("widgets","$id.partX", part)
+        SettingsLoader.disableAutoSave()
+        SettingsLoader.set("widgets","$id.posX", pos)
     }
 
-    open fun setPropertyPosY(value: Float, allV: Int, wV: Int, sneak: Boolean): Float? {
+    open fun setPropertyPosY(value: Float, allV: Int, wV: Int, sneak: Boolean) {
         var pos: Float
         val part: Float
         if(allV/2>value) {
@@ -109,21 +131,26 @@ abstract class Widget(val id: String): Settings() {
         }
         if(abs(pos-2.5)<5 && !sneak)
             pos = 5f
-        SettingsLoader.WidgetSettings.getValue(SettingsLoader.TypedSettingID<SettingsLoader.Settings>(id)).setValueWithoutSave(Settings.PARTY, part)
-        return SettingsLoader.WidgetSettings.getValue(SettingsLoader.TypedSettingID<SettingsLoader.Settings>(id)).setValueWithoutSave(Settings.POSY, pos)
+        SettingsLoader.disableAutoSave()
+        SettingsLoader.set("widgets","$id.partY", part)
+        SettingsLoader.disableAutoSave()
+        SettingsLoader.set("widgets","$id.posY", pos)
     }
 
-    abstract fun getWidgetSettings(): ArrayList<Pair<String,Any>>
+    abstract fun getWidgetSettings(): JsonObject
 
-    open fun getWidgetSettings(size: Float,posX: Float,partX: Float,posY: Float,partY: Float): ArrayList<Pair<String,Any>> = arrayListOf(
-            Pair(id,SettingsLoader.Settings()),
-            Pair("$id.enabled",true),
-            Pair("$id.transparency",0.43F),
-            Pair("$id.size",size),
-            Pair("$id.posX",posX),
-            Pair("$id.partX",partX),
-            Pair("$id.posY",posY),
-            Pair("$id.partY",partY),
-            Pair("$id.text_color", ColorSaver(0xFFFFFF))
-    )
+    fun getWidgetSettings(size: Float,posX: Float,partX: Float,posY: Float,partY: Float): JsonObject {
+        val jsonObject = JsonObject()
+
+        jsonObject.add("enabled", JsonPrimitive(true))
+        jsonObject.add("transparency", JsonPrimitive(0.43f))
+        jsonObject.add("size", JsonPrimitive(size))
+        jsonObject.add("posX", JsonPrimitive(posX))
+        jsonObject.add("partX", JsonPrimitive(partX))
+        jsonObject.add("posY", JsonPrimitive(posY))
+        jsonObject.add("partY", JsonPrimitive(partY))
+        jsonObject.add("text_color", JsonPrimitive("0xFFFFFF"))
+
+        return jsonObject
+    }
 }

@@ -13,16 +13,16 @@ import kotlin.math.cos
 class BooleanOptionsElement : WidgetOptionsElement {
 
     private val value: String
-    private val settings: SettingsLoader.Settings
+    private val settings: String
     val valueChanger: (Boolean)->Unit
 
-    constructor(title: String, value: String, settings: SettingsLoader.Settings) : super(title, arrayListOf()) {
+    constructor(title: String, path: String, value: String, settings: String) : super(title, path, arrayListOf()) {
         this.value = value
         this.settings = settings
         this.valueChanger = {}
     }
 
-    constructor(title: String, value: String, settings: SettingsLoader.Settings, valueChanger: (Boolean)->Unit) : super(title, arrayListOf()) {
+    constructor(title: String, path: String, value: String, settings: String, valueChanger: (Boolean)->Unit) : super(title, path, arrayListOf()) {
         this.value = value
         this.settings = settings
         this.valueChanger = valueChanger
@@ -51,9 +51,9 @@ class BooleanOptionsElement : WidgetOptionsElement {
 
         val middleX = x+width-10
 
-        val enabled = getValue<Boolean>(settings,value)==true
+        val enabled = SettingsLoader.getBoolean(settings,path)
 
-        var progress = MathHelper.clamp((System.currentTimeMillis() - animationStart)/SettingsLoader.DesignSettings.getValue(Settings.Settings.OPTIONS_MENU).getValue(Settings.Settings.ANIMATION_TIME),0F,1F)
+        var progress = MathHelper.clamp((System.currentTimeMillis() - animationStart)/SettingsLoader.getFloat("design","options_menu.animation_time"),0F,1F)
 
         if(enabled) {
             progress = 1-progress
@@ -88,8 +88,8 @@ class BooleanOptionsElement : WidgetOptionsElement {
             screen.playDownSound(MinecraftClient.getInstance().soundManager)
 
             animationStart = System.currentTimeMillis()
-            val b = getValue<Boolean>(settings,value)==false
-            setValue(settings,value,b)
+            val b = !SettingsLoader.getBoolean(settings,path)
+            SettingsLoader.set(settings,path,b)
 
             valueChanger(b)
         }

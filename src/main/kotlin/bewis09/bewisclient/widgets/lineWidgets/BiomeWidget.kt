@@ -1,5 +1,8 @@
 package bewis09.bewisclient.widgets.lineWidgets
 
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
+import com.google.gson.JsonPrimitive
 import net.minecraft.client.MinecraftClient
 import net.minecraft.registry.RegistryKey
 import net.minecraft.registry.entry.RegistryEntry
@@ -12,7 +15,7 @@ import net.minecraft.world.biome.BiomeKeys
 class BiomeWidget: LineWidget("biome",150, true) {
 
     override fun getText(): ArrayList<String> {
-        return arrayListOf(textGetter(getProperty(COLORCODE_BIOME) == true))
+        return arrayListOf(textGetter(getProperty(COLORCODE_BIOME)))
     }
 
     companion object {
@@ -101,9 +104,9 @@ class BiomeWidget: LineWidget("biome",150, true) {
         }
     }
 
-    override fun getWidgetSettings(): ArrayList<Pair<String, Any>> {
+    override fun getWidgetSettings(): JsonObject {
         val list = super.getWidgetSettings(.7f,5f,-1f,5f,1f)
-        list.add(Pair("biome.colorcode_biome",false))
+        list.add("colorcode_biome",JsonPrimitive(false))
         return list
     }
 }

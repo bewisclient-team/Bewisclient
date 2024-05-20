@@ -33,7 +33,7 @@ class WidgetConfigScreen(var parent: MainOptionsScreen): Screen(Text.empty()) {
             alphaStart= System.currentTimeMillis()
         }
 
-        val animationSpeed = MathHelper.clamp(SettingsLoader.DesignSettings.getValue(Settings.Settings.OPTIONS_MENU).getValue(Settings.Settings.ANIMATION_TIME).toInt(),1,500).toFloat()
+        val animationSpeed = MathHelper.clamp(SettingsLoader.getFloat("design","options_menu.animation_time").toInt(),1,500).toFloat()
 
         if(alphaDirection ==1 && (System.currentTimeMillis() - alphaStart)/animationSpeed>1) {
             MinecraftClient.getInstance().setScreen(parent)
@@ -105,7 +105,7 @@ class WidgetConfigScreen(var parent: MainOptionsScreen): Screen(Text.empty()) {
 
                 parent = MainOptionsScreen()
                 parent.allElements.add(ElementList.widgets())
-                parent.allElements.add(ElementList.loadWidgetsFromDefault(selected!!.getWidgetSettings().toTypedArray())[0].elements!!)
+                parent.allElements.add(ElementList.loadWidgetsSingleFromDefault(selected!!.getWidgetSettings(),selected!!.id))
                 parent.scrolls.add(0f)
                 parent.scrolls.add(0f)
                 parent.slice = 2

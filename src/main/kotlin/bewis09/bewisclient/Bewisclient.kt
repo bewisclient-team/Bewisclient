@@ -3,6 +3,7 @@ package bewis09.bewisclient
 import bewis09.bewisclient.cape.Capes
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.screen.SnakeScreen
+import bewis09.bewisclient.server.ServerConnection
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.widgets.WidgetRenderer
 import bewis09.bewisclient.wings.WingFeatureRenderer
@@ -54,6 +55,8 @@ object Bewisclient : ClientModInitializer {
 	override fun onInitializeClient() {
 		SettingsLoader.loadSettings()
 
+		//ServerConnection()
+
 		HudRenderCallback.EVENT.register(WidgetRenderer())
 
 		val keyBinding1 = KeyBindingHelper.registerKeyBinding(KeyBinding("bewisclient.key.gamma", GLFW.GLFW_KEY_G, "bewisclient.category.bewisclient"))
@@ -81,7 +84,7 @@ object Bewisclient : ClientModInitializer {
 				posOld = posNew
 				posNew = it.player!!.pos
 
-				speed = if(SettingsLoader.WidgetSettings.getValue<SettingsLoader.Settings>("speed").getValue("vertical_speed"))
+				speed = if(SettingsLoader.getBoolean("widgets","speed.vertical_speed"))
 					posNew.subtract(posOld).length()
 				else
 					posNew.subtract(posOld).horizontalLength()
@@ -92,44 +95,40 @@ object Bewisclient : ClientModInitializer {
 			}
 
 			while (keyBinding1.wasPressed()) {
-				val fullBright = SettingsLoader.DesignSettings.getValue<SettingsLoader.Settings>("fullbright")
-				fullBright.setValue("enabled",true)
-				fullBright.setValue("value",if(fullBright.getValue<Float>("value")<=1) 10f else 1f)
-				MinecraftClient.getInstance().options.gamma.value = fullBright.getValue<Float>("value").toDouble()
-				printGammaMessage(fullBright.getValue<Float>("value")/10)
+				SettingsLoader.set("design","fullbright.enabled",true)
+				SettingsLoader.set("design","fullbright.value",if(SettingsLoader.getFloat("design","fullbright.value")<=1) 10f else 1f)
+				MinecraftClient.getInstance().options.gamma.value = SettingsLoader.getFloat("design","fullbright.value").toDouble()
+				printGammaMessage(SettingsLoader.getFloat("design","fullbright.value")/10)
 			}
 			while (keyBinding2.wasPressed()) {
-				val fullBright = SettingsLoader.DesignSettings.getValue<SettingsLoader.Settings>("fullbright")
-				fullBright.setValue("enabled",true)
-				fullBright.setValue("value",min(10f,fullBright.getValue<Float>("value")+0.25f))
-				MinecraftClient.getInstance().options.gamma.value = fullBright.getValue<Float>("value").toDouble()
-				printGammaMessage(fullBright.getValue<Float>("value")/10)
+				SettingsLoader.set("design","fullbright.enabled",true)
+				SettingsLoader.set("design","fullbright.value",min(10f,SettingsLoader.getFloat("design","fullbright.value")+0.25f))
+				MinecraftClient.getInstance().options.gamma.value = SettingsLoader.getFloat("design","fullbright.value").toDouble()
+				printGammaMessage(SettingsLoader.getFloat("design","fullbright.value")/10)
 			}
 			while (keyBinding3.wasPressed()) {
-				val fullBright = SettingsLoader.DesignSettings.getValue<SettingsLoader.Settings>("fullbright")
-				fullBright.setValue("enabled",true)
-				fullBright.setValue("value",max(0f,fullBright.getValue<Float>("value")-0.25f))
-				MinecraftClient.getInstance().options.gamma.value = fullBright.getValue<Float>("value").toDouble()
-				printGammaMessage(fullBright.getValue<Float>("value")/10)
+				SettingsLoader.set("design","fullbright.enabled",true)
+				SettingsLoader.set("design","fullbright.value",max(0f,SettingsLoader.getFloat("design","fullbright.value")-0.25f))
+				MinecraftClient.getInstance().options.gamma.value = SettingsLoader.getFloat("design","fullbright.value").toDouble()
+				printGammaMessage(SettingsLoader.getFloat("design","fullbright.value")/10)
 			}
 			while (keyBinding4.wasPressed()) {
-				val fullBright = SettingsLoader.DesignSettings.getValue<SettingsLoader.Settings>("fullbright")
-				fullBright.setValue("night_vision",!fullBright.getValue<Boolean>("night_vision"))
+				SettingsLoader.set("design","fullbright.night_vision",!SettingsLoader.getBoolean("design","fullbright.night_vision"))
 				assert(MinecraftClient.getInstance().player != null)
-				MinecraftClient.getInstance().player!!.sendMessage(Text.translatable("bewisclient.night_vision." + (if (fullBright.getValue("night_vision")) "enabled" else "disabled")).setStyle(
-						Style.EMPTY.withColor(if (fullBright.getValue("night_vision")) 0xFFFF00 else 0xFF0000)
+				MinecraftClient.getInstance().player!!.sendMessage(Text.translatable("bewisclient.night_vision." + (if (SettingsLoader.getBoolean("design","fullbright.night_vision")) "enabled" else "disabled")).setStyle(
+						Style.EMPTY.withColor(if (SettingsLoader.getBoolean("design","fullbright.night_vision")) 0xFFFF00 else 0xFF0000)
 				), true)
 			}
-			if(SettingsLoader.GeneralSettings.getValue("zoom_enabled")) {
+			if(SettingsLoader.getBoolean("general","zoom_enabled")) {
 				if (zoomBinding?.isPressed == true) {
 					JavaSettingsSender.isZoomed = true
 					if (pt == null)
 						pt = MinecraftClient.getInstance().options.smoothCameraEnabled
-					if(!SettingsLoader.GeneralSettings.getValue<Boolean>("hard_zoom"))
+					if(!SettingsLoader.getBoolean("general","hard_zoom"))
 						MinecraftClient.getInstance().options.smoothCameraEnabled = true
 				} else {
 					JavaSettingsSender.isZoomed = false
-					if (pt != null && !SettingsLoader.GeneralSettings.getValue<Boolean>("hard_zoom"))
+					if (pt != null && !SettingsLoader.getBoolean("general","hard_zoom"))
 						MinecraftClient.getInstance().options.smoothCameraEnabled = pt!!
 					pt = null
 				}

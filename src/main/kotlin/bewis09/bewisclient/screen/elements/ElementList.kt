@@ -1,17 +1,18 @@
 package bewis09.bewisclient.screen.elements
 
-import bewis09.bewisclient.JavaSettingsSender.Companion.DesignSettings
 import bewis09.bewisclient.drawable.*
 import bewis09.bewisclient.screen.CosmeticsScreen
 import bewis09.bewisclient.settingsLoader.DefaultSettings
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.util.ColorSaver
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
 import net.minecraft.client.MinecraftClient
 import net.minecraft.util.Identifier
 
 object ElementList {
 
-    private val excludedProperties = arrayOf("posX","posY","partX","partY","enabled","effect","effect.enabled","effect.transparency","effect.size")
+    private val excludedProperties = arrayOf("posX","posY","partX","partY","enabled","effect")
 
     val widgets: ()->ArrayList<MainOptionsElement> = { loadWidgetsFromDefault(DefaultSettings.getDefault("widgets")) }
 
@@ -19,43 +20,44 @@ object ElementList {
 
     private val design: ()->ArrayList<MainOptionsElement> = {
         arrayListOf(
-                FloatOptionsElement("%options_menu.animation_time", "options_menu.animation_time", SettingsLoader.DesignSettings),
-                FloatOptionsElement("%options_menu.scale", "options_menu.scale", SettingsLoader.DesignSettings),
-                BooleanOptionsElement("%options_menu.all_click", "options_menu.all_click", SettingsLoader.DesignSettings),
+                FloatOptionsElement("%options_menu.animation_time", "options_menu.animation_time", "options_menu.animation_time", "design"),
+                FloatOptionsElement("%options_menu.scale", "options_menu.scale", "options_menu.scale", "design"),
+                BooleanOptionsElement("%options_menu.all_click", "options_menu.all_click", "options_menu.all_click", "design"),
         )
     }
 
     private val blockhit: ()->ArrayList<MainOptionsElement> = {
         arrayListOf(
-                BooleanOptionsElement("%blockhit.enabled", "blockhit.enabled", SettingsLoader.DesignSettings),
-                ColorPickerElement("%blockhit.color", "blockhit.color", SettingsLoader.DesignSettings),
-                FloatOptionsElement("%blockhit.alpha", "blockhit.alpha", SettingsLoader.DesignSettings)
+                BooleanOptionsElement("%blockhit.enabled", "blockhit.enabled","blockhit.enabled", "design"),
+                ColorPickerElement("%blockhit.color", "blockhit.color", "blockhit.color", "design"),
+                FloatOptionsElement("%blockhit.alpha", "blockhit.alpha", "blockhit.alpha", "design")
         )
     }
 
     private val fullbright: ()->ArrayList<MainOptionsElement> = {
         arrayListOf(
-                BooleanOptionsElement("%fullbright.enabled", "fullbright.enabled", SettingsLoader.DesignSettings) {
-                    if ((DesignSettings.getValue<Any>("fullbright") as SettingsLoader.Settings).getValue("enabled"))
-                        MinecraftClient.getInstance().options.gamma.value = ((DesignSettings.getValue<Any>("fullbright") as SettingsLoader.Settings).getValue<Any>("value") as Float).toDouble()
+                BooleanOptionsElement("%fullbright.enabled", "fullbright.enabled", "fullbright.enabled", "design") {
+                    if (SettingsLoader.getBoolean("design","fullbright.enabled"))
+                        MinecraftClient.getInstance().options.gamma.value =
+                            SettingsLoader.getFloat("design","fullbright.value").toDouble()
                     else
                         MinecraftClient.getInstance().options.gamma.value = 1.0
                 },
-                FloatOptionsElement("%fullbright.value", "fullbright.value", SettingsLoader.DesignSettings) {
-                    if ((DesignSettings.getValue<Any>("fullbright") as SettingsLoader.Settings).getValue("enabled"))
-                        MinecraftClient.getInstance().options.gamma.value = ((DesignSettings.getValue<Any>("fullbright") as SettingsLoader.Settings).getValue<Any>("value") as Float).toDouble()
+                FloatOptionsElement("%fullbright.value", "fullbright.value", "fullbright.value", "design") {
+                    if (SettingsLoader.getBoolean("design","fullbright.enabled"))
+                        MinecraftClient.getInstance().options.gamma.value = SettingsLoader.getFloat("design","fullbright.value").toDouble()
                 },
-                BooleanOptionsElement("%fullbright.night_vision", "fullbright.night_vision", SettingsLoader.DesignSettings)
+                BooleanOptionsElement("%fullbright.night_vision", "fullbright.night_vision", "fullbright.night_vision", "design")
         )
     }
 
     private val better_visibility: ()->ArrayList<MainOptionsElement> = {
         arrayListOf(
-                BooleanOptionsElement("%better_visibility.lava", "better_visibility.lava", SettingsLoader.DesignSettings),
-                FloatOptionsElement("%better_visibility.lava_view", "better_visibility.lava_view", SettingsLoader.DesignSettings),
-                BooleanOptionsElement("%better_visibility.nether", "better_visibility.nether", SettingsLoader.DesignSettings),
-                BooleanOptionsElement("%better_visibility.water", "better_visibility.water", SettingsLoader.DesignSettings),
-                BooleanOptionsElement("%better_visibility.powder_snow", "better_visibility.powder_snow", SettingsLoader.DesignSettings)
+                BooleanOptionsElement("%better_visibility.lava", "better_visibility.lava", "better_visibility.lava", "design"),
+                FloatOptionsElement("%better_visibility.lava_view", "better_visibility.lava_view", "better_visibility.lava_view", "design"),
+                BooleanOptionsElement("%better_visibility.nether", "better_visibility.nether", "better_visibility.nether", "design"),
+                BooleanOptionsElement("%better_visibility.water", "better_visibility.water", "better_visibility.water", "design"),
+                BooleanOptionsElement("%better_visibility.powder_snow", "better_visibility.powder_snow", "better_visibility.powder_snow", "design")
         )
     }
 
@@ -70,32 +72,32 @@ object ElementList {
 
     private val zoom: ()->ArrayList<MainOptionsElement> = {
         arrayListOf(
-                BooleanOptionsElement("%gui.zoom_enabled", "zoom_enabled", SettingsLoader.GeneralSettings),
-                BooleanOptionsElement("%gui.instant_zoom", "instant_zoom", SettingsLoader.GeneralSettings),
-                BooleanOptionsElement("%gui.hard_zoom", "hard_zoom", SettingsLoader.GeneralSettings)
+                BooleanOptionsElement("%gui.zoom_enabled", "zoom_enabled", "zoom_enabled", "general"),
+                BooleanOptionsElement("%gui.instant_zoom", "instant_zoom", "instant_zoom", "general"),
+                BooleanOptionsElement("%gui.hard_zoom", "hard_zoom", "hard_zoom", "general")
         )
     }
 
     private val pumpkin: ()->ArrayList<MainOptionsElement> = {
         arrayListOf(
-                BooleanOptionsElement("%pumpkin_overlay.disable_pumpkin_overlay", "disable_pumpkin_overlay", SettingsLoader.DesignSettings),
-                BooleanOptionsElement("%pumpkin_overlay.show_pumpkin_icon", "show_pumpkin_icon", SettingsLoader.DesignSettings)
+                BooleanOptionsElement("%pumpkin_overlay.disable_pumpkin_overlay", "disable_pumpkin_overlay", "disable_pumpkin_overlay", "design"),
+                BooleanOptionsElement("%pumpkin_overlay.show_pumpkin_icon", "show_pumpkin_icon", "show_pumpkin_icon", "design")
         )
     }
 
     private val held_item_info: ()->ArrayList<MainOptionsElement> = {
         arrayListOf(
-                BooleanOptionsElement("%held_item_info.held_item_info", "held_item_info", SettingsLoader.DesignSettings),
-                FloatOptionsElement("%held_item_info.maxinfolength", "maxinfolength", SettingsLoader.DesignSettings)
+                BooleanOptionsElement("%held_item_info.held_item_info", "held_item_info.held_item_info", "held_item_info", "design"),
+                FloatOptionsElement("%held_item_info.maxinfolength", "held_item_info.maxinfolength", "maxinfolength", "design")
         )
     }
 
     val util: ()->ArrayList<MainOptionsElement> = {
         arrayListOf(
-                BooleanOptionsElement("%extend_status_effect_info", "extend_status_effect_info", SettingsLoader.DesignSettings),
-                FloatOptionsElement("%fire_height", "fire_height", SettingsLoader.DesignSettings),
-                BooleanOptionsElement("%cleaner_debug_menu", "cleaner_debug_menu", SettingsLoader.DesignSettings),
-                BooleanOptionsElement("%shulker_box_tooltip", "shulker_box_tooltip", SettingsLoader.DesignSettings),
+                BooleanOptionsElement("%extend_status_effect_info", "extend_status_effect_info","extend_status_effect_info", "design"),
+                FloatOptionsElement("%fire_height", "fire_height", "fire_height", "design"),
+                BooleanOptionsElement("%cleaner_debug_menu", "cleaner_debug_menu", "cleaner_debug_menu", "design"),
+                BooleanOptionsElement("%shulker_box_tooltip", "shulker_box_tooltip", "shulker_box_tooltip", "design"),
         )
     }
 
@@ -115,49 +117,52 @@ object ElementList {
         ).addNewElements()
     }
 
-    fun loadWidgetsFromDefault(def: Array<Pair<String, Any>>): ArrayList<MainOptionsElement> {
-
+    fun loadWidgetsFromDefault(def: JsonObject): ArrayList<MainOptionsElement> {
         val map: ArrayList<MainOptionsElement> = arrayListOf()
 
-        def.forEach {
-            val split = it.first.split(".")
+        def.entrySet().forEach { v ->
+            val m: ArrayList<MainOptionsElement> = arrayListOf()
 
-            var m: ArrayList<MainOptionsElement> = map
+            v.value.asJsonObject.entrySet().forEach {
+                if (!excludedProperties.contains(it.key))
+                    m.add(loadWidget(v.key + "." + it.key, it.key, it.value))
+            }
 
-            for ((index, s) in split.iterator().withIndex()) {
-                if(index+1!=split.size) {
-                    for (pl in ArrayList(m)) {
-                        if ((pl as WidgetOptionsElement).originalTitle == s) {
-                            m = pl.elements!!
-                            break
-                        }
-                    }
-                } else {
-                    if(!excludedProperties.contains(s) && !excludedProperties.contains(it.first))
-                        m.add(loadWidget(s,it.second,it.first))
-                }
+            if (!excludedProperties.contains(v.key))
+                map.add(WidgetOptionsElement(v.key, v.key, m))
+        }
+
+        return map
+    }
+
+    fun loadWidgetsSingleFromDefault(def: JsonObject, vkey: String): ArrayList<MainOptionsElement> {
+        val map: ArrayList<MainOptionsElement> = arrayListOf()
+
+        def.entrySet().forEach {
+            if (!excludedProperties.contains(vkey) && !excludedProperties.contains(it.key)) {
+                map.add(loadWidget(vkey + "." + it.key, it.key, it.value))
             }
         }
 
         return map
     }
 
-    private fun loadWidget(str: String,any: Any,value: String): MainOptionsElement {
-        return when (any) {
-            is Boolean -> BooleanOptionsElement(str,value,SettingsLoader.WidgetSettings)
-            is Float -> {
-                if((DefaultSettings.arrays[value]
-                                ?: DefaultSettings.arrays["." + value.split(".")[value.split(".").size - 1]]) == null)
-                    FloatOptionsElement(str, value, SettingsLoader.WidgetSettings)
+    private fun loadWidget(str: String, key:String,value: JsonElement): MainOptionsElement {
+        return when (true) {
+            value.asJsonPrimitive.isBoolean -> BooleanOptionsElement(key,str,key,"widgets")
+            (value.asJsonPrimitive.isString && value.asString.startsWith("0x")) -> ColorPickerElement(key,str,key,"widgets")
+            value.asJsonPrimitive.isNumber -> {
+                if((DefaultSettings.arrays[key]
+                                ?: DefaultSettings.arrays[".$key"]) == null)
+                    FloatOptionsElement(key,str, key, "widgets")
                 else
-                    ArrayOptionsElement(str,value,SettingsLoader.WidgetSettings)
+                    ArrayOptionsElement(key,str,key,"widgets")
             }
-            is String -> if(str.split("_")[0]=="info")
+            value.asJsonPrimitive.isString -> if(str.split("_")[0]=="info")
                             InfoElement("info.$str")
                         else
-                            StringOptionsElement(str,value,SettingsLoader.WidgetSettings)
-            is ColorSaver -> ColorPickerElement(str,value,SettingsLoader.WidgetSettings)
-            else -> WidgetOptionsElement(str, arrayListOf())
+                            StringOptionsElement(key,str,key,"widgets")
+            else -> WidgetOptionsElement(key,str, arrayListOf())
         }
     }
 }
@@ -165,8 +170,6 @@ object ElementList {
 private fun ArrayList<MainOptionsElement>.addNewElements(): ArrayList<MainOptionsElement> {
     ElementList.newMainOptionsElements.forEach {
         this.add(it())
-
-        println(it().title)
     }
 
     return this

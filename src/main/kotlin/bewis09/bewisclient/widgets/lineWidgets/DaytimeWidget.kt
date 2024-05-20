@@ -1,5 +1,8 @@
 package bewis09.bewisclient.widgets.lineWidgets
 
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
+import com.google.gson.JsonPrimitive
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.util.math.ColorHelper
@@ -45,9 +48,9 @@ class DaytimeWidget: LineWidget("daytime",80,true) {
         return strD
     }
 
-    override fun getWidgetSettings(): ArrayList<Pair<String, Any>> {
+    override fun getWidgetSettings(): JsonObject {
         val list = super.getWidgetSettings(.7f,5f,1f,83f,-1f)
-        list.add(Pair("daytime.24Clock",d))
+        list.add("24Clock", JsonPrimitive(d))
         return list
     }
 }

@@ -5,6 +5,8 @@ import bewis09.bewisclient.tooltip.ShulkerBoxTooltipData;
 import net.minecraft.block.Block;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.client.item.TooltipData;
+import net.minecraft.client.item.TooltipType;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -32,21 +34,21 @@ public abstract class BlockItemMixin extends Item {
        super(settings);
    }
 
-//    @SuppressWarnings("all")
-//    @Override
-//    public Optional<TooltipData> getTooltipData(ItemStack stack) {
-//        if(getBlock() instanceof ShulkerBoxBlock && (boolean) JavaSettingsSender.Companion.getDesignSettings().getValue("shulker_box_tooltip")) {
-//            DefaultedList<ItemStack> stacks = DefaultedList.ofSize(27, ItemStack.EMPTY);
-//            if(BlockItem.getBlockEntityNbt(stack)!=null) {
-//                Inventories.readNbt(BlockItem.getBlockEntityNbt(stack), stacks);
-//                return Optional.of(new ShulkerBoxTooltipData(stacks,((ShulkerBoxBlock) getBlock()).getColor()==null ? DyeColor.PURPLE : ((ShulkerBoxBlock) getBlock()).getColor()));
-//            }
-//        }
-//        return super.getTooltipData(stack);
-//    }
-//
-//    @Inject(method = "appendTooltip",at=@At("HEAD"),cancellable = true)
-//    public void inject(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context, CallbackInfo ci) {
-//        if(getBlock() instanceof ShulkerBoxBlock && (boolean) JavaSettingsSender.Companion.getDesignSettings().getValue("shulker_box_tooltip")) ci.cancel();
-//    }
+   @SuppressWarnings("all")
+   @Override
+   public Optional<TooltipData> getTooltipData(ItemStack stack) {
+       if(getBlock() instanceof ShulkerBoxBlock && (JavaSettingsSender.Companion.getSettings().getBoolean("design","shulker_box_tooltip"))) {
+           DefaultedList<ItemStack> stacks = DefaultedList.ofSize(27, ItemStack.EMPTY);
+           if(stack.getComponents().getOrDefault(DataComponentTypes.CONTAINER,null)!=null) {
+               stack.getComponents().getOrDefault(DataComponentTypes.CONTAINER,null).copyTo(stacks);
+               return Optional.of(new ShulkerBoxTooltipData(stacks,((ShulkerBoxBlock) getBlock()).getColor()==null ? DyeColor.PURPLE : ((ShulkerBoxBlock) getBlock()).getColor()));
+           }
+       }
+       return super.getTooltipData(stack);
+   }
+
+   @Inject(method = "appendTooltip",at=@At("HEAD"),cancellable = true)
+   public void inject(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type, CallbackInfo ci) {
+       if(getBlock() instanceof ShulkerBoxBlock && JavaSettingsSender.Companion.getSettings().getBoolean("design","shulker_box_tooltip")) ci.cancel();
+   }
 }

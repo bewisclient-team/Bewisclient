@@ -1,155 +1,72 @@
-@file:Suppress("UNCHECKED_CAST")
-
 package bewis09.bewisclient.settingsLoader
 
 import bewis09.bewisclient.exception.SettingNotFoundException
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.util.ColorSaver
+import com.google.gson.Gson
+import com.google.gson.JsonArray
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
+import com.google.gson.JsonPrimitive
+import kotlinx.serialization.json.Json
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.MinecraftClient
 import java.io.File
 import java.io.PrintWriter
 import java.util.*
+import kotlin.collections.HashMap
+import kotlin.math.log
 
 object SettingsLoader {
+    val gson = Gson()
 
-    var WidgetSettings = Settings()
-    var GeneralSettings = Settings()
-    var DesignSettings = Settings()
+    var WidgetSettings: JsonObject = JsonObject()
+    var GeneralSettings: JsonObject = JsonObject()
+    var DesignSettings: JsonObject = JsonObject()
+
+    private var autoSave: Boolean = true
 
     fun loadSettings() {
-        WidgetSettings = Settings()
-        GeneralSettings = Settings()
-        DesignSettings = Settings()
-
-        loadSetting("widgets",WidgetSettings)
-        loadSetting("general",GeneralSettings)
-        loadSetting("design",DesignSettings)
+        WidgetSettings = loadSetting("widgets")
+        GeneralSettings = loadSetting("general")
+        DesignSettings = loadSetting("design")
 
         if(MinecraftClient.getInstance().currentScreen is MainOptionsScreen)
             (MinecraftClient.getInstance().currentScreen as MainOptionsScreen).startAllAnimation(MainOptionsScreen())
     }
 
-    private fun loadSetting(id: String, settings: Settings) {
+    private fun loadSetting(id: String): JsonObject {
         val file = File((FabricLoader.getInstance().gameDir).toString()+"/bewisclient/"+id+".json")
-        if(file.exists()) {
-            val scanner = Scanner(file)
 
+        var gsonLoaded: JsonObject
+
+        try {
+            val scanner = Scanner(file)
             var str = ""
 
             while (scanner.hasNextLine()) {
                 str += scanner.nextLine()
             }
 
-            val sets: ArrayList<Settings> = arrayListOf()
-
-            var keyString = ""
-            var openString = ""
-            var stringOpen = false
-            var first = true
-            var color = false
-
-            for (c in str.chars()) {
-                if(c?.toChar() =='{') {
-                    first=true
-                    if(sets.size==0) {
-                        sets.add(settings)
-                    } else {
-                        val o = Settings()
-                        sets[sets.size-1].setValueWithoutSave(TypedSettingID(keyString),o,)
-                        sets.add(o)
-                    }
-                } else if(c?.toChar() =='#') {
-                    color = true
-                } else if(c?.toChar() =='"') {
-                    stringOpen=!stringOpen
-                    if(!stringOpen) {
-                        if(first) {
-                            first = false
-                            keyString = openString
-                        } else {
-                            sets[sets.size-1].setValueWithoutSave(TypedSettingID(keyString),openString)
-                            keyString = ""
-                            first=true
-                        }
-                        openString = ""
-                    } else {
-                        openString = ""
-                    }
-                } else if(stringOpen) {
-                    openString+=c?.toChar()
-                } else if(c?.toChar() ==',') {
-                    if(color) {
-                        color = false
-                        try {
-                            sets[sets.size - 1].setValueWithoutSave(TypedSettingID(keyString), ColorSaver((openString).toInt(16)))
-                        } catch (_: Exception) {}
-                    } else if(openString!="") {
-                        try {
-                            if (openString.contains("true") || openString.contains("false")) {
-                                sets[sets.size - 1].setValueWithoutSave(TypedSettingID(keyString), (openString).contains("true"))
-                            } else
-                                sets[sets.size - 1].setValueWithoutSave(TypedSettingID(keyString), (openString).toFloat())
-                        } catch (_: Exception) {}
-                    }
-                    first=true
-                    keyString = ""
-                    openString = ""
-                } else if(c?.toChar() =='}') {
-                    if(color) {
-                        color = false
-                        try {
-                            sets[sets.size - 1].setValueWithoutSave(TypedSettingID(keyString), ColorSaver((openString).toInt(16)))
-                        } catch (_: Exception) {}
-                    } else if(openString!="") {
-                        try {
-                            if (openString.contains("true") || openString.contains("false")) {
-                                sets[sets.size - 1].setValueWithoutSave(TypedSettingID(keyString), (openString).contains("true"))
-                            } else
-                                sets[sets.size - 1].setValueWithoutSave(TypedSettingID(keyString), (openString).toFloat())
-                        } catch (_: Exception) {}
-                    }
-                    first=true
-                    keyString = ""
-                    openString = ""
-                    sets.remove(sets[sets.size-1])
-                } else if(c?.toChar() ==':') {
-                    first=false
-                } else {
-                    openString += c?.toChar()
-                }
-            }
-        } else {
+            gsonLoaded = gson.fromJson(str,JsonElement::class.java) as JsonObject
+        } catch (e: Exception) {
+            System.err.println("ERROR LOADING SETTINGS FILE $id")
             file.parentFile.mkdirs()
             file.createNewFile()
+            gsonLoaded = JsonObject()
         }
 
-        for (pair in DefaultSettings.getDefault(id)) {
-            var set = settings
+        saveSettings(id,gsonLoaded)
 
-            val o = pair.first.split(".")
-            for ((index,string) in o.iterator().withIndex()) {
-                if(index==o.size-1) {
-                    if(set.getValueAsAny(string)==null)
-                        set.setValueWithoutSave(string,pair.second)
-                } else {
-                    val s = set.getValueAsAny(string)
-                    if(s is Settings) {
-                        set = s
-                    } else {
-                        break
-                    }
-                }
-            }
-        }
-
-        saveSettings(id,settings)
+        return gsonLoaded
     }
 
-    fun saveSettings(id:String,settings: Settings) {
+    fun disableAutoSave() { autoSave = false }
+
+    fun saveSettings(id:String,settings: JsonObject) {
         val file = File((FabricLoader.getInstance().gameDir).toString()+"/bewisclient/"+id+".json")
         val printWriter = PrintWriter(file)
-        printWriter.print(settings.toString())
+        printWriter.print(gson.toJson(settings))
         printWriter.close()
     }
 
@@ -161,7 +78,7 @@ object SettingsLoader {
 
     class TypedSettingID<K>(val id: String) {
         override fun equals(other: Any?): Boolean {
-            if(other is TypedSettingID<*>)
+            if (other is TypedSettingID<*>)
                 return id == other.id
             return false
         }
@@ -171,59 +88,79 @@ object SettingsLoader {
         }
     }
 
-    class Settings {
+    fun set(settings: String, id: String, value: String) = set(settings,id,JsonPrimitive(value))
+    fun set(settings: String, id: String, value: Number) = set(settings,id,JsonPrimitive(value))
+    fun set(settings: String, id: String, value: Boolean) = set(settings,id,JsonPrimitive(value))
+    fun set(settings: String, id: String, value: ColorSaver) = set(settings,id,JsonPrimitive(value.toString()))
 
-        private val settings: HashMap<String,Any> = HashMap()
+    fun set(settings: String, id: String, value: JsonElement) {
+        settingMap = HashMap()
 
-        fun getValueAsAny(settingID: String): Any? {
-            if(!settings.contains(settingID)) return null
-            return settings.getValue(settingID)
-        }
+        var set = getSettings(settings).asJsonObject
 
-        fun <K> getValue(settingID: TypedSettingID<K>): K {
-            if(!settings.contains(settingID.id)) throw SettingNotFoundException(settingID.id)
-            return settings.getValue(settingID.id) as K
-        }
+        for ((index, i) in id.split(".").withIndex()) {
+            val j = set.get(i)
+            if(index==(id.split(".").size-1)) {
+                set.add(i,value)
+            } else if(j!=null && j.isJsonObject) {
+                set = j.asJsonObject
+            } else {
+                val t = JsonObject()
 
-        fun <K> getValue(settingID: String): K {
-            if(!settings.contains(settingID)) throw SettingNotFoundException(settingID)
-            return settings.getValue(settingID) as K
-        }
-
-        fun <K> setValueWithoutSave(settingID: TypedSettingID<K>, value: K): K? {
-            return setValueWithoutSave(settingID.id,value)
-        }
-
-        fun <K> setValueWithoutSave(settingID: String, value: K): K? {
-            val t = settings.remove(settingID) as K?
-            settings[settingID] = value as Any
-            return t
-        }
-
-        fun <K> setValue(settingID: String, value: K): K? {
-            val t = settings.remove(settingID) as K?
-            settings[settingID] = value as Any
-            saveAllSettings()
-            return t
-        }
-
-        fun <K> setValue(settingID: TypedSettingID<K>, value: K): K? {
-            return setValue(settingID.id,value)
-        }
-
-        override fun toString(): String {
-            var str = ""
-            for ((i,s) in settings.entries.iterator().withIndex()) {
-                var sl = s.value.toString()
-                if(s.value is String) {
-                    sl="\"$sl\""
-                }
-                str+=("\""+s.key+"\""+":"+sl)
-                if(i!=settings.entries.size-1) {
-                    str+=",\n"
-                }
+                set.add(i,t)
+                set = t
             }
-            return "{\n$str\n}"
         }
+
+        if(autoSave) saveAllSettings()
+
+        autoSave=true
+    }
+
+    var settingMap = HashMap<String,JsonPrimitive>()
+
+    fun getFloat(settings: String, id: String): Float = get(settings, id).asFloat
+    fun getInt(settings: String, id: String): Int = get(settings, id).asInt
+    fun getString(settings: String, id: String): String = get(settings, id).asString
+    fun getArray(settings: String, id: String): JsonArray = get(settings, id).asJsonArray
+    fun getBoolean(settings: String, id: String): Boolean = get(settings, id).asBoolean
+    fun getJsonObject(settings: String, id: String): JsonObject = get(settings, id).asJsonObject
+
+    fun get(settings: String, id: String): JsonPrimitive {
+        return get(settings,getSettings(settings).asJsonObject,settings,id,0)
+    }
+
+    fun get(sID: String, settings: JsonObject ,settingsID: String, id: String, iteration: Int): JsonPrimitive {
+        if(settingMap.containsKey("$sID.$id")) return settingMap["$sID.$id"]!!
+
+        if(iteration>2) throw SettingNotFoundException(id)
+
+        var set = settings
+
+        for ((index, i) in id.split(".").withIndex()) {
+            val j = set.get(i)
+            if(j!=null) {
+                if(index==(id.split(".").size-1)) {
+                    settingMap["$sID.$id"] = j as JsonPrimitive
+                    return j
+                } else if(j.isJsonObject) {
+                    set = j.asJsonObject
+                } else {
+                    return get(sID,DefaultSettings.getDefault(settingsID).asJsonObject,settingsID,id,iteration+1)
+                }
+            } else {
+                return get(sID,DefaultSettings.getDefault(settingsID).asJsonObject,settingsID,id,iteration+1)
+            }
+        }
+        return get(sID,DefaultSettings.getDefault(settingsID).asJsonObject,settingsID,id,iteration+1)
+    }
+
+    fun getSettings(string: String): JsonElement {
+        when (string) {
+            "widgets" -> return WidgetSettings
+            "general" -> return GeneralSettings
+            "design" -> return DesignSettings
+        }
+        return DefaultSettings.gson.fromJson("{}",JsonElement::class.java)
     }
 }

@@ -19,7 +19,7 @@ public class TitleScreenMixin extends Screen {
 
     @Inject(method = "init",at=@At("HEAD"))
     private void init(CallbackInfo ci) {
-        if(((SettingsLoader.Settings)JavaSettingsSender.Companion.getDesignSettings().getValue("fullbright")).getValue("enabled"))
-            MinecraftClient.getInstance().options.getGamma().setValue((double)(float)((SettingsLoader.Settings)JavaSettingsSender.Companion.getDesignSettings().getValue("fullbright")).getValue("value"));
+        if(JavaSettingsSender.Companion.getSettings().getBoolean("design","fullbright.enabled"))
+            MinecraftClient.getInstance().options.getGamma().setValue((double) JavaSettingsSender.Companion.getSettings().getFloat("design","fullbright.value"));
     }
 }
