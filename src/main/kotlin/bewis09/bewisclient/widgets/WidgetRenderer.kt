@@ -12,7 +12,7 @@ import net.minecraft.client.gui.DrawContext
 class WidgetRenderer: HudRenderCallback {
 
     companion object {
-        val effectWidget = EffectWidget()
+        //val effectWidget = EffectWidget()
 
         val widgets = arrayListOf(
                 BiomeWidget(),
@@ -22,7 +22,7 @@ class WidgetRenderer: HudRenderCallback {
                 TiwylaWidget(),
                 PingWidget(),
                 CoordinatesWidget(),
-                effectWidget,
+                //effectWidget,
                 DayWidget(),
                 DaytimeWidget(),
                 KeyWidget(),
@@ -41,7 +41,7 @@ class WidgetRenderer: HudRenderCallback {
     }
 
     override fun onHudRender(drawContext: DrawContext?, tickDelta: Float) {
-        if(MinecraftClient.getInstance().currentScreen !is WidgetConfigScreen) {
+        if(MinecraftClient.getInstance().currentScreen !is WidgetConfigScreen && !MinecraftClient.getInstance().options.hudHidden) {
             widgets.forEach {
                 if (drawContext != null && it.isEnabled()) {
                     it.render(drawContext)
