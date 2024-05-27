@@ -1,6 +1,7 @@
 package bewis09.bewisclient.mixin;
 
 import bewis09.bewisclient.Bewisclient;
+import bewis09.bewisclient.JavaSettingsSender;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,8 +16,7 @@ import java.io.IOException;
 public class MinecraftClientMixin {
     @Inject(method = "stop",at = @At("HEAD"))
     private void inject(CallbackInfo ci) throws IOException {
-
-        if(Bewisclient.Companion.Companion.getUpdate()!=null) {
+        if(Bewisclient.Companion.Companion.getUpdate()!=null && JavaSettingsSender.Companion.getSettings().getBoolean("general","experimental.auto_update")) {
             var javaHome = System.getProperty("java.home");
             var f = new File(javaHome);
             f = new File(f, "bin");
@@ -26,7 +26,7 @@ public class MinecraftClientMixin {
                     "cmd.exe", "/c",
                     "cd " + FabricLoader.getInstance().getGameDir() + "\\bewisclient\\java\\ "
                             + "&& " +
-                    f + " JavaUpdater " + FabricLoader.getInstance().getGameDir() + " " + Bewisclient.Companion.Companion.getUpdate().get("name").getAsString().toLowerCase().replace(" ","-") + " " + FabricLoader.getInstance().getModContainer("bewisclient").get().findPath("")
+                    f + " JavaUpdater " + FabricLoader.getInstance().getGameDir() + " " + Bewisclient.Companion.Companion.getUpdate().get("name").getAsString().toLowerCase().replace(" ","-")
             );
             builder.redirectErrorStream(true);
             builder.start();
