@@ -77,6 +77,9 @@ object DefaultSettings {
         design.add("cleaner_debug_menu", JsonPrimitive(false))
         design.add("show_pumpkin_icon", JsonPrimitive(true))
 
+        val EX = JsonObject()
+        EX.add("auto_update", JsonPrimitive(false))
+        general.add("experimental", EX)
         general.add("instant_zoom", JsonPrimitive(false))
         general.add("zoom_enabled", JsonPrimitive(true))
         general.add("hard_zoom", JsonPrimitive(false))

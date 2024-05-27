@@ -9,6 +9,7 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import net.minecraft.client.MinecraftClient
 import net.minecraft.util.Identifier
+import kotlin.math.exp
 
 object ElementList {
 
@@ -23,6 +24,12 @@ object ElementList {
                 FloatOptionsElement("%options_menu.animation_time", "options_menu.animation_time", "options_menu.animation_time", "design"),
                 FloatOptionsElement("%options_menu.scale", "options_menu.scale", "options_menu.scale", "design"),
                 BooleanOptionsElement("%options_menu.all_click", "options_menu.all_click", "options_menu.all_click", "design"),
+        )
+    }
+
+    private val experimental: ()->ArrayList<MainOptionsElement> = {
+        arrayListOf(
+            BooleanOptionsElement("%experimental.auto_update", "experimental.auto_update", "experimental.auto_update", "general"),
         )
     }
 
@@ -113,7 +120,8 @@ object ElementList {
                 MainOptionsElement("gui.blockhit", "gui.blockhit.description", blockhit(), Identifier("bewisclient", "textures/main_icons/blockhit.png")),
                 MainOptionsElement("gui.zoom", "gui.zoom.description", zoom(), Identifier("bewisclient", "textures/main_icons/zoom.png")),
                 MainOptionsElement("gui.pumpkin", "gui.pumpkin.description", pumpkin(), Identifier("bewisclient", "textures/main_icons/pumpkin.png")),
-                MainOptionsElement("gui.held_item_info", "gui.held_item_info.description", held_item_info(), Identifier("bewisclient", "textures/main_icons/held_item_info.png"))
+                MainOptionsElement("gui.held_item_info", "gui.held_item_info.description", held_item_info(), Identifier("bewisclient", "textures/main_icons/held_item_info.png")) ,
+                MainOptionsElement("gui.experimental", "gui.experimental.description", experimental(), Identifier("bewisclient", "textures/main_icons/experimental.png"))
         ).addNewElements()
     }
 

@@ -1,5 +1,7 @@
 package bewis09.bewisclient
 
+import bewis09.bewisclient.autoUpdate.UpdateChecker
+import bewis09.bewisclient.autoUpdate.Updater
 import bewis09.bewisclient.cape.Capes
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.screen.SnakeScreen
@@ -7,6 +9,7 @@ import bewis09.bewisclient.server.ServerConnection
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.widgets.WidgetRenderer
 import bewis09.bewisclient.wings.WingFeatureRenderer
+import com.google.gson.JsonObject
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.context.CommandContext
 import net.fabricmc.api.ClientModInitializer
@@ -49,10 +52,15 @@ object Bewisclient : ClientModInitializer {
 		companion object {
 			var rightList: ArrayList<Long> = ArrayList()
 			val leftList: ArrayList<Long> = ArrayList()
+			var update: JsonObject? = null
 		}
 	}
 
 	override fun onInitializeClient() {
+		Companion.update = UpdateChecker.checkForUpdates()
+		if(Companion.update!=null)
+			Updater.downloadVersion(Companion.update!!)
+
 		SettingsLoader.loadSettings()
 
 		//ServerConnection()
