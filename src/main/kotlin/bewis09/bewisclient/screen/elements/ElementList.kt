@@ -9,6 +9,8 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import net.minecraft.client.MinecraftClient
 import net.minecraft.util.Identifier
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.exp
 
 object ElementList {
@@ -28,9 +30,10 @@ object ElementList {
     }
 
     private val experimental: ()->ArrayList<MainOptionsElement> = {
-        arrayListOf(
-            BooleanOptionsElement("%experimental.auto_update", "experimental.auto_update", "experimental.auto_update", "general"),
-        )
+        val a: ArrayList<MainOptionsElement> = arrayListOf()
+        if(System.getProperty("os.name").lowercase(Locale.getDefault()).contains("win"))
+            a.add(BooleanOptionsElement("%experimental.auto_update", "experimental.auto_update", "experimental.auto_update", "general"))
+        a
     }
 
     private val blockhit: ()->ArrayList<MainOptionsElement> = {
