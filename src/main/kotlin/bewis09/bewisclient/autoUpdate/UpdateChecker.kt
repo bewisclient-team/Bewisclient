@@ -12,10 +12,6 @@ import java.util.*
 
 object UpdateChecker {
     fun checkForUpdates(): JsonObject? {
-        if (!System.getProperty("os.name").lowercase(Locale.getDefault()).contains("win")) {
-            return null
-        }
-
         try {
             val scanner = Scanner(URL("https://api.modrinth.com/v2/project/bewisclient/version").openStream())
             val response = scanner.nextLine()

@@ -13,23 +13,5 @@ class JavaSettingsSender {
     companion object {
         var settings = SettingsLoader
         var isZoomed: Boolean = true
-
-        fun cC() {
-            val f = File(FabricLoader.getInstance().gameDir.pathString+"\\bewisclient\\java\\JavaUpdater.class")
-
-            if(!f.exists()) {
-                f.parentFile.mkdirs()
-                f.createNewFile()
-
-                val r = MinecraftClient.getInstance().resourceManager.getResource(
-                    Identifier(
-                        "bewisclient",
-                        "java/java_updater.bcclass"
-                    )
-                )
-
-                FileUtils.copyInputStreamToFile(r.get().inputStream, f)
-            }
-        }
     }
 }

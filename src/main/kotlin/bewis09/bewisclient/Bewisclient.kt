@@ -57,11 +57,11 @@ object Bewisclient : ClientModInitializer {
 	}
 
 	override fun onInitializeClient() {
+		SettingsLoader.loadSettings()
+
 		Companion.update = UpdateChecker.checkForUpdates()
 		if(Companion.update!=null)
 			Updater.downloadVersion(Companion.update!!)
-
-		SettingsLoader.loadSettings()
 
 		//ServerConnection()
 

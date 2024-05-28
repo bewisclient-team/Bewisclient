@@ -11,11 +11,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 
 @Mixin(MinecraftClient.class)
 public class MinecraftClientMixin {
     @Inject(method = "stop",at = @At("HEAD"))
     private void inject(CallbackInfo ci) throws IOException {
+        if (!System.getProperty("os.name").toLowerCase(Locale.getDefault()).contains("win")) {
+            ci.cancel();
+        }
+
         if(Bewisclient.Companion.Companion.getUpdate()!=null && JavaSettingsSender.Companion.getSettings().getBoolean("general","experimental.auto_update")) {
             var javaHome = System.getProperty("java.home");
             var f = new File(javaHome);

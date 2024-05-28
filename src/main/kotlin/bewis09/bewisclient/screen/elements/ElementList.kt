@@ -13,7 +13,7 @@ import kotlin.math.exp
 
 object ElementList {
 
-    private val excludedProperties = arrayOf("posX","posY","partX","partY","enabled","effect")
+    private val excludedProperties = arrayOf("posX","posY","partX","partY","effect")
 
     val widgets: ()->ArrayList<MainOptionsElement> = { loadWidgetsFromDefault(DefaultSettings.getDefault("widgets")) }
 
