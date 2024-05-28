@@ -83,6 +83,7 @@ object DefaultSettings {
         general.add("instant_zoom", JsonPrimitive(false))
         general.add("zoom_enabled", JsonPrimitive(true))
         general.add("hard_zoom", JsonPrimitive(false))
+        general.add("tnt_timer", JsonPrimitive(false))
     }
 
     fun getDefault(string: String): JsonObject {

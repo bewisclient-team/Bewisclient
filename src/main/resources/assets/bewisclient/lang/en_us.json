@@ -188,6 +188,8 @@
   "bewisclient.widgets.speed": "Speed",
   "bewisclient.widgets.text_color": "Text Color",
   "bewisclient.widgets.third_line": "Third Line",
+  "bewisclient.tnt_timer": "TNT Timer",
+  "bewisclient.description.tnt_timer": "Shows a small timer above TNT entities to indicate when it will explode",
   "bewisclient.widgets.tiwyla": "Tiwyla",
   "bewisclient.widgets.top_color": "Top Color",
   "bewisclient.widgets.transparency": "Transparency",

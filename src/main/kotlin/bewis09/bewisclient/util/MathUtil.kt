@@ -11,6 +11,11 @@ class MathUtil {
             return i
         }
 
+        fun withAfterCommaZero(number: Double, afterComma: Int): String {
+            val v: Double = Math.round(number * 10.0.pow(afterComma)) / 10.0.pow(afterComma)
+            return zeroAfterComma(v, afterComma)
+        }
+
         fun withAfterComma(number: Double, afterComma: Double): String {
             val v: Double = Math.round(number * 10.0.pow(afterComma)) / 10.0.pow(afterComma)
             return zeroAfter(v, afterComma + 1 + v.toInt().toString().length)
@@ -19,6 +24,15 @@ class MathUtil {
         fun zeroAfter(number: Double, count: Double): String {
             val str = StringBuilder(number.toString())
             while (str.length < count) {
+                str.append("0")
+            }
+            return str.toString()
+        }
+
+        fun zeroAfterComma(number: Double, count: Int): String {
+            val str = StringBuilder(number.toString())
+            while (str.split(".").size==1 || str.split(".")[1].length < count) {
+                if(str.split(".").size==1) str.append(".")
                 str.append("0")
             }
             return str.toString()

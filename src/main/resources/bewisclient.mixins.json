@@ -27,6 +27,7 @@
     "SkinTexturesMixin",
     "TextFieldWidgetMixin",
     "TitleScreenMixin",
+    "TNTEntityRendererMixin",
     "TooltipComponentMixin",
     "WolfCollarFeatureRendererMixin",
     "WorldRendererMixin",

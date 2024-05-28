@@ -108,6 +108,7 @@ object ElementList {
                 FloatOptionsElement("%fire_height", "fire_height", "fire_height", "design"),
                 BooleanOptionsElement("%cleaner_debug_menu", "cleaner_debug_menu", "cleaner_debug_menu", "design"),
                 BooleanOptionsElement("%shulker_box_tooltip", "shulker_box_tooltip", "shulker_box_tooltip", "design"),
+                BooleanOptionsElement("%tnt_timer", "tnt_timer", "tnt_timer", "general"),
         )
     }
 
