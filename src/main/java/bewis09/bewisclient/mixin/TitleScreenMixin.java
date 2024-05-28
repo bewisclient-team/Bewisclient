@@ -17,8 +17,6 @@ import java.io.File;
 
 @Mixin(TitleScreen.class)
 public class TitleScreenMixin extends Screen {
-    @Unique
-    private static boolean hasFileCloned = false;
 
     protected TitleScreenMixin(Text title) {
         super(title);
@@ -26,11 +24,6 @@ public class TitleScreenMixin extends Screen {
 
     @Inject(method = "init",at=@At("HEAD"))
     private void init(CallbackInfo ci) {
-        if(!hasFileCloned) {
-            hasFileCloned = true;
-            JavaSettingsSender.Companion.cC();
-        }
-
         if(JavaSettingsSender.Companion.getSettings().getBoolean("design","fullbright.enabled"))
             MinecraftClient.getInstance().options.getGamma().setValue((double) JavaSettingsSender.Companion.getSettings().getFloat("design","fullbright.value"));
     }
