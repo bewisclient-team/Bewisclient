@@ -1,6 +1,8 @@
 package bewis09.bewisclient.mixin;
 
 import bewis09.bewisclient.JavaSettingsSender;
+import bewis09.bewisclient.kfj.KFJ;
+import bewis09.bewisclient.widgets.WidgetRenderer;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -181,135 +183,19 @@ public abstract class InGameHudMixin {
         return (int) Math.round((value * (max - min) + min));
     }
 
-    ///**
-    // * @author Mojang
-    // * @reason Why Not?
-    // */
-//
-    //@Inject(method = "renderStatusEffectOverlay", at = @At("HEAD"), cancellable = true)
-    //protected void renderStatusEffectOverlay(DrawContext context, CallbackInfo ci) {
-    //    if (JavaSettingsSender.Companion.getDesignSettings().getValue("extend_status_effect_info")) {
-    //        Collection<StatusEffectInstance> collection;
-    //        label40:
-    //        {
-    //            assert this.client.player != null;
-    //            collection = this.client.player.getStatusEffects();
-    //            if (!collection.isEmpty()) {
-    //                Screen var4 = this.client.currentScreen;
-    //                if (!(var4 instanceof AbstractInventoryScreen<?> abstractInventoryScreen)) {
-    //                    break label40;
-    //                }
-//
-    //                if (!abstractInventoryScreen.hideStatusEffectHud()) {
-    //                    break label40;
-    //                }
-    //            }
-//
-    //            return;
-    //        }
-//
-    //        RenderSystem.enableBlend();
-    //        int i = 0;
-    //        int j = 0;
-    //        StatusEffectSpriteManager statusEffectSpriteManager = this.client.getStatusEffectSpriteManager();
-    //        List<Runnable> list = Lists.newArrayListWithExpectedSize(collection.size());
-//
-    //        for (StatusEffectInstance statusEffectInstance : Ordering.natural().reverse().sortedCopy(collection)) {
-    //            int n;
-    //            StatusEffect statusEffect = statusEffectInstance.getEffectType();
-    //            if (!statusEffectInstance.shouldShowIcon()) continue;
-    //            int k = this.scaledWidth + 4;
-    //            int l = WidgetRenderer.Companion.getEffectWidget().getPosY() + 1;
-    //            if (this.client.isDemo()) {
-    //                l += 15;
-    //            }
-    //            if (statusEffect.isBeneficial()) {
-    //                k -= 33 * ++i;
-    //            } else {
-    //                k -= 33 * ++j;
-    //                l += 37;
-    //            }
-    //            float f = 1.0f;
-    //            if (statusEffectInstance.isAmbient()) {
-    //                context.drawGuiTexture(EFFECT_BACKGROUND_AMBIENT_TEXTURE, k, l, 24, 24);
-    //                context.drawTexture(EFFECT_WIDGET, k - 4, l + 21, 32, 15, 32, 0, 32, 15, 64, 15);
-    //            } else {
-    //                context.drawGuiTexture(EFFECT_BACKGROUND_TEXTURE, k, l, 24, 24);
-    //                context.drawTexture(EFFECT_WIDGET, k - 4, l + 21, 32, 15, 0, 0, 32, 15, 64, 15);
-    //                if (statusEffectInstance.isDurationBelow(200)) {
-    //                    int m = statusEffectInstance.getDuration();
-    //                    n = 10 - m / 20;
-    //                    f = MathHelper.clamp((float) m / 10.0f / 5.0f * 0.5f, 0.0f, 0.5f) + MathHelper.cos((float) m * (float) Math.PI / 5.0f) * MathHelper.clamp((float) n / 10.0f * 0.25f, 0.0f, 0.25f);
-    //                }
-    //            }
-    //            context.drawCenteredTextWithShadow(getTextRenderer(), statusEffectInstance.isDurationBelow(120000) ? MathUtil.Companion.zeroBefore(statusEffectInstance.getDuration() / 1200, 2) + ":" + MathUtil.Companion.zeroBefore((statusEffectInstance.getDuration() % 1200) / 20, 2) : "**:**", k + 12, l + 25, -1);
-//
-    //            Sprite sprite = statusEffectSpriteManager.getSprite(statusEffect);
-    //            n = k;
-    //            int o = l;
-    //            float g = f;
-    //            int finalN = n;
-    //            list.add(() -> {
-    //                context.setShaderColor(1.0f, 1.0f, 1.0f, g);
-    //                context.drawSprite(finalN + 3, o + 3, 0, 18, 18, sprite);
-    //                context.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-    //            });
-    //        }
-//
-    //        list.forEach(Runnable::run);
-    //        ci.cancel();
-    //    } else {
-    //        AbstractInventoryScreen abstractInventoryScreen;
-    //        Screen screen;
-    //        Collection<StatusEffectInstance> collection = this.client.player.getStatusEffects();
-    //        if (collection.isEmpty() || (screen = this.client.currentScreen) instanceof AbstractInventoryScreen && (abstractInventoryScreen = (AbstractInventoryScreen) screen).hideStatusEffectHud()) {
-    //            return;
-    //        }
-    //        RenderSystem.enableBlend();
-    //        int i = 0;
-    //        int j = 0;
-    //        StatusEffectSpriteManager statusEffectSpriteManager = this.client.getStatusEffectSpriteManager();
-    //        ArrayList<Runnable> list = Lists.newArrayListWithExpectedSize(collection.size());
-    //        for (StatusEffectInstance statusEffectInstance : Ordering.natural().reverse().sortedCopy(collection)) {
-    //            int n;
-    //            StatusEffect statusEffect = statusEffectInstance.getEffectType();
-    //            if (!statusEffectInstance.shouldShowIcon()) continue;
-    //            int k = this.scaledWidth;
-    //            int l = WidgetRenderer.Companion.getEffectWidget().getPosY() + 1;
-    //            if (this.client.isDemo()) {
-    //                l += 15;
-    //            }
-    //            if (statusEffect.isBeneficial()) {
-    //                k -= 25 * ++i;
-    //            } else {
-    //                k -= 25 * ++j;
-    //                l += 26;
-    //            }
-    //            float f = 1.0f;
-    //            if (statusEffectInstance.isAmbient()) {
-    //                context.drawGuiTexture(EFFECT_BACKGROUND_AMBIENT_TEXTURE, k, l, 24, 24);
-    //            } else {
-    //                context.drawGuiTexture(EFFECT_BACKGROUND_TEXTURE, k, l, 24, 24);
-    //                if (statusEffectInstance.isDurationBelow(200)) {
-    //                    int m = statusEffectInstance.getDuration();
-    //                    n = 10 - m / 20;
-    //                    f = MathHelper.clamp((float) m / 10.0f / 5.0f * 0.5f, 0.0f, 0.5f) + MathHelper.cos((float) m * (float) Math.PI / 5.0f) * MathHelper.clamp((float) n / 10.0f * 0.25f, 0.0f, 0.25f);
-    //                }
-    //            }
-    //            Sprite sprite = statusEffectSpriteManager.getSprite(statusEffect);
-    //            n = k;
-    //            int o = l;
-    //            float g = f;
-    //            int finalN = n;
-    //            list.add(() -> {
-    //                context.setShaderColor(1.0f, 1.0f, 1.0f, g);
-    //                context.drawSprite(finalN + 3, o + 3, 0, 18, 18, sprite);
-    //                context.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-    //            });
-    //        }
-    //        list.forEach(Runnable::run);
-//
-    //        ci.cancel();
-    //    }
-    //}
+    /**
+     * @author Mojang
+     * @reason Why Not?
+     */
+
+    @Inject(method = "renderStatusEffectOverlay", at = @At("HEAD"), cancellable = true)
+    protected void renderStatusEffectOverlay(DrawContext context, float tickDelta, CallbackInfo ci) {
+        if (JavaSettingsSender.Companion.getSettings().getBoolean("design", "extend_status_effect_info")) {
+            KFJ.INSTANCE.renderEffectHUDExtended(context, InGameHudMixin.EFFECT_BACKGROUND_AMBIENT_TEXTURE, InGameHudMixin.EFFECT_BACKGROUND_TEXTURE);
+            ci.cancel();
+        } else if (WidgetRenderer.Companion.getEffectWidget().getOriginalPosY() != 0) {
+            KFJ.INSTANCE.renderEffectHUD(context, InGameHudMixin.EFFECT_BACKGROUND_AMBIENT_TEXTURE, InGameHudMixin.EFFECT_BACKGROUND_TEXTURE);
+            ci.cancel();
+        }
+    }
 }
