@@ -91,7 +91,9 @@ class MainOptionsScreen : Screen(Text.empty()) {
         if(animationState.animation==AnimationState.MIDDLE_ANIMATION)
             animationFrame = 1f
 
-        context.fill((this.width/4) +4,0, (this.width-this.width/4-2)-2,this.height,
+        context.fill(
+            ((this.width/4) +4+6-6*animationFrame).toInt(),0,
+            ((this.width-this.width/4-2)-2+6-6*animationFrame).toInt(),this.height,
             ((0x88*animationFrame).toLong()*0x1000000).toInt()
         )
 
