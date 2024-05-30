@@ -203,5 +203,8 @@
   "bewisclient.widgets.description.show_block_icon": "Set if the Block Icon should be shown",
   "bewisclient.widgets.description.show_health_information": "Set if the Health of entities should be shown",
   "bewisclient.widgets.enabled": "Enabled",
-  "bewisclient.widgets.description.enabled": "Set if this widget should be shown"
+  "bewisclient.widgets.description.enabled": "Set if this widget should be shown",
+  "bewisclient.gui.cleaner_debug_menu": "Cleaner Debug Menu",
+  "bewisclient.gui.shulker_box_tooltip": "Shulker Box Tooltip",
+  "bewisclient.gui.tnt_timer": "TNT Timer"
 }
