@@ -100,7 +100,7 @@ public abstract class InGameHudMixin {
                 for (Text t : tooltipList) {
                     b++;
                     int l;
-                    int yOff = tooltipList.size()*11-b*11;
+                    int yOff = tooltipList.size()*9-b*9;
                     int i = this.getTextRenderer().getWidth((StringVisitable)t);
                     int j = (context.getScaledWindowWidth() - i) / 2;
                     int k = context.getScaledWindowHeight() - 59;
