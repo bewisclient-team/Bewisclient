@@ -116,7 +116,8 @@ object ElementList {
         arrayListOf(
                 TitleOptionsElement("gui.util"),
                 BooleanOptionsElement("%extend_status_effect_info", "extend_status_effect_info","extend_status_effect_info", "design"),
-                FloatOptionsElement("%fire_height", "fire_height", "fire_height", "design")
+                FloatOptionsElement("%fire_height", "fire_height", "fire_height", "design"),
+                BooleanOptionsElement("%screenshot_folder_open", "screenshot_folder_open", "screenshot_folder_open", "general")
         )
     }
 

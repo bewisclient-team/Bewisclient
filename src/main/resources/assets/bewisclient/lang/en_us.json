@@ -206,5 +206,8 @@
   "bewisclient.widgets.description.enabled": "Set if this widget should be shown",
   "bewisclient.gui.cleaner_debug_menu": "Cleaner Debug Menu",
   "bewisclient.gui.shulker_box_tooltip": "Shulker Box Tooltip",
-  "bewisclient.gui.tnt_timer": "TNT Timer"
+  "bewisclient.gui.tnt_timer": "TNT Timer",
+  "bewisclient.screenshot.folder": "[OPEN FOLDER]",
+  "bewisclient.screenshot_folder_open": "Show screenshot open folder button",
+  "bewisclient.description.screenshot_folder_open": "Shows a button to open the folder, where the screenshot got saved"
 }

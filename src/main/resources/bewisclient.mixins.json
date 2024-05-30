@@ -23,6 +23,7 @@
     "MouseMixin",
     "PlayerEntityRendererMixin",
     "ScreenMixin",
+    "ScreenshotRecorderMixin",
     "SimpleOptionMixin",
     "SkinTexturesMixin",
     "TextFieldWidgetMixin",
