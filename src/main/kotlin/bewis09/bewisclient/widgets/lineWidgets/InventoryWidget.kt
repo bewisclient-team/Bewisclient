@@ -16,6 +16,7 @@ class InventoryWidget: Widget("inventory") {
 
     override fun render(drawContext: DrawContext) {
         RenderSystem.setShaderColor(1f,1f,1f,getProperty(Settings.TRANSPARENCY))
+        drawContext.matrices.push()
         drawContext.matrices.scale(getScale(),getScale(),1F)
         RenderSystem.enableBlend()
         drawContext.drawTexture(Identifier,getPosX(),getPosY(),getOriginalWidth(),getOriginalHeight(),0f,0f,getOriginalWidth(),getOriginalHeight(),180,60)
@@ -29,7 +30,7 @@ class InventoryWidget: Widget("inventory") {
             }
         }
 
-        drawContext.matrices.scale(1/getScale(),1/getScale(),1F)
+        drawContext.matrices.pop()
     }
 
     override fun getOriginalWidth(): Int {

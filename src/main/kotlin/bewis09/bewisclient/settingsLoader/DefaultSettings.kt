@@ -25,7 +25,8 @@ object DefaultSettings {
             Pair("scoreboardsize",SliderInfo(0.2f,1.2f,2)),
             Pair("blockhit.alpha",SliderInfo(0.0f,1.0f,2)),
             Pair(".lava_view",SliderInfo(0.0f,1.0f,2)),
-            Pair("fullbright.value",SliderInfo(0.0f,10.0f,1))
+            Pair("fullbright.value",SliderInfo(0.0f,10.0f,1)),
+            Pair("scoreboard.scale",SliderInfo(0.5f,1.5f,2))
     )
 
     val arrays: HashMap<String,ArrayList<String>> = hashMapOf(
@@ -65,11 +66,15 @@ object DefaultSettings {
         val HI = JsonObject()
         HI.add("maxinfolength", JsonPrimitive(5.0))
         HI.add("held_item_info", JsonPrimitive(false))
+        val SC = JsonObject()
+        SC.add("scale", JsonPrimitive(1.0))
+        SC.add("hide_numbers", JsonPrimitive(false))
         design.add("better_visibility",BV)
         design.add("blockhit",BH)
         design.add("options_menu",OM)
         design.add("fullbright",FB)
         design.add("held_item_info",HI)
+        design.add("scoreboard",SC)
         design.add("fire_height", JsonPrimitive(1.0))
         design.add("disable_pumpkin_overlay", JsonPrimitive(false))
         design.add("shulker_box_tooltip", JsonPrimitive(false))

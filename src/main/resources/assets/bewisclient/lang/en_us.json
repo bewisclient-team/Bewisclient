@@ -209,5 +209,10 @@
   "bewisclient.gui.tnt_timer": "TNT Timer",
   "bewisclient.screenshot.folder": "[OPEN FOLDER]",
   "bewisclient.screenshot_folder_open": "Show screenshot open folder button",
-  "bewisclient.description.screenshot_folder_open": "Shows a button to open the folder, where the screenshot got saved"
+  "bewisclient.description.screenshot_folder_open": "Shows a button to open the folder, where the screenshot got saved",
+  "bewisclient.gui.scoreboard": "Scoreboard",
+  "bewisclient.scoreboard.scale": "Scale",
+  "bewisclient.description.scoreboard.scale": "Set the scale of the scoreboard sidebar",
+  "bewisclient.scoreboard.hide_numbers": "Hide Numbers",
+  "bewisclient.description.scoreboard.hide_numbers": "Hide the numbers of the scoreboard sidebar"
 }

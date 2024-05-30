@@ -79,6 +79,7 @@ class TiwylaWidget: Widget("tiwyla") {
 
     override fun render(drawContext: DrawContext) {
         if(getText().size==0) return
+        drawContext.matrices.push()
         drawContext.matrices.scale(getScale(),getScale(),1F)
         drawContext.fill(getPosX(),getPosY(),getPosX()+getOriginalWidth(),getPosY()+getOriginalHeight(), ColorHelper.Argb.getArgb(((getProperty(Settings.TRANSPARENCY).times(255F)).toInt()),0,0,0))
         drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, getText()[0],getPosX()+getOriginalWidth()/2,getPosY()+4,(0xFF000000L+getProperty(TOP_COLOR).getColor()).toInt())
@@ -95,7 +96,7 @@ class TiwylaWidget: Widget("tiwyla") {
             }
         }
 
-        drawContext.matrices.scale(1/getScale(),1/getScale(),1F)
+        drawContext.matrices.pop()
     }
 
     override fun getOriginalWidth(): Int {

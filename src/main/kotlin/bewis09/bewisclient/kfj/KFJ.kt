@@ -1,11 +1,15 @@
 package bewis09.bewisclient.kfj
 
+import bewis09.bewisclient.MixinStatics
+import bewis09.bewisclient.settingsLoader.SettingsLoader.getBoolean
+import bewis09.bewisclient.settingsLoader.SettingsLoader.getFloat
 import bewis09.bewisclient.util.MathUtil
 import bewis09.bewisclient.widgets.WidgetRenderer
 import com.google.common.collect.Lists
 import com.google.common.collect.Ordering
 import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.MinecraftClient
+import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen
 import net.minecraft.client.texture.Sprite
@@ -13,9 +17,17 @@ import net.minecraft.client.texture.StatusEffectSpriteManager
 import net.minecraft.entity.effect.StatusEffect
 import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.registry.entry.RegistryEntry
+import net.minecraft.scoreboard.*
+import net.minecraft.scoreboard.number.NumberFormat
+import net.minecraft.scoreboard.number.StyledNumberFormat
+import net.minecraft.text.StringVisitable
+import net.minecraft.text.Text
+import net.minecraft.util.Colors
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.MathHelper
+import java.util.*
 import java.util.function.Consumer
+import kotlin.math.max
 
 object KFJ {
     val EFFECT_WIDGET_TEXTURE = Identifier("bewisclient", "gui/effect_widget.png")
@@ -146,5 +158,86 @@ object KFJ {
         }
         list.forEach(Consumer { obj: Runnable -> obj.run() })
         RenderSystem.disableBlend()
+    }
+
+    fun renderScoreboard(context: DrawContext, objective: ScoreboardObjective, SCOREBOARD_ENTRY_COMPARATOR: Comparator<ScoreboardEntry>, SCOREBOARD_JOINER: String) {
+        context.matrices.push()
+
+        val scale = getFloat("design", "scoreboard.scale")
+
+        context.matrices.scale(scale,scale,scale)
+        context.matrices.translate(-MinecraftClient.getInstance().window.scaledWidth.toFloat()+MinecraftClient.getInstance().window.scaledWidth.toFloat()/scale,-MinecraftClient.getInstance().window.scaledWidth.toFloat()/4+MinecraftClient.getInstance().window.scaledWidth.toFloat()/scale/4,0f)
+        val scoreboard: Scoreboard = objective.scoreboard
+        val numberFormat: NumberFormat = objective.getNumberFormatOr(StyledNumberFormat.RED as NumberFormat)
+        val sidebarEntrys =
+            scoreboard.getScoreboardEntries(objective).stream().filter { score: ScoreboardEntry -> !score.hidden() }
+                .sorted(SCOREBOARD_ENTRY_COMPARATOR).limit(15L)
+                .map { scoreboardEntry: ScoreboardEntry ->
+                    val team = scoreboard.getScoreHolderTeam(scoreboardEntry.owner())
+                    val text = scoreboardEntry.name()
+                    val text2 = Team.decorateName(team as AbstractTeam?, text as Text)
+                    val text3 = scoreboardEntry.formatted(numberFormat)
+                    val i: Int = MinecraftClient.getInstance().textRenderer.getWidth(text3 as StringVisitable)
+                    MixinStatics.SidebarEntry(text2 as Text, text3 as Text, i)
+                }.toArray<MixinStatics.SidebarEntry?> { size: Int ->
+                    arrayOfNulls<MixinStatics.SidebarEntry>(
+                        size
+                    )
+                } as Array<MixinStatics.SidebarEntry?>
+        val text: Text = objective.displayName
+        var i: Int
+        var j: Int = MinecraftClient.getInstance().textRenderer.getWidth(text as StringVisitable).also { i = it }
+        val k: Int = MinecraftClient.getInstance().textRenderer.getWidth(SCOREBOARD_JOINER)
+        for (sidebarEntry in sidebarEntrys) {
+            j = max(
+                j.toDouble(),
+                (MinecraftClient.getInstance().textRenderer
+                    .getWidth(sidebarEntry!!.name as StringVisitable) + (if (sidebarEntry.scoreWidth > 0) k + sidebarEntry.scoreWidth else 0)).toDouble()
+            )
+                .toInt()
+        }
+        val l = j
+        context.draw {
+            val length = sidebarEntrys.size
+            Objects.requireNonNull(MinecraftClient.getInstance().textRenderer)
+            val lk = length * 9
+            val m: Int = context.scaledWindowHeight / 2 + lk / 3
+            val o: Int = context.scaledWindowWidth - l - 3
+            val p: Int = context.scaledWindowWidth - 3 + 2
+            val q: Int = MinecraftClient.getInstance().options.getTextBackgroundColor(0.3f)
+            val r: Int = MinecraftClient.getInstance().options.getTextBackgroundColor(0.4f)
+            Objects.requireNonNull(MinecraftClient.getInstance().textRenderer)
+            val s = m - length * 9
+            Objects.requireNonNull(MinecraftClient.getInstance().textRenderer)
+            context.fill(o - 2, s - 9 - 1, p, s - 1, r)
+            context.fill(o - 2, s - 1, p, m, q)
+            val textRenderer: TextRenderer = MinecraftClient.getInstance().textRenderer
+            val n2 = o + l / 2 - i / 2
+            Objects.requireNonNull(MinecraftClient.getInstance().textRenderer)
+            context.drawText(textRenderer, text, n2, s - 9, Colors.WHITE, false)
+            for (t in 0 until length) {
+                val sidebarEntry = sidebarEntrys[t]
+                Objects.requireNonNull(MinecraftClient.getInstance().textRenderer)
+                val u = m - (length - t) * 9
+                context.drawText(
+                    MinecraftClient.getInstance().textRenderer,
+                    sidebarEntry!!.name,
+                    o,
+                    u,
+                    Colors.WHITE,
+                    false
+                )
+                if(getBoolean("design", "scoreboard.hide_numbers")) continue
+                context.drawText(
+                    MinecraftClient.getInstance().textRenderer,
+                    sidebarEntry.score,
+                    p - sidebarEntry.scoreWidth,
+                    u,
+                    Colors.WHITE,
+                    false
+                )
+            }
+        }
+        context.matrices.pop()
     }
 }
