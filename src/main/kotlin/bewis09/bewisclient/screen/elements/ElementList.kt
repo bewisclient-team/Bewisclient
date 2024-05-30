@@ -30,6 +30,14 @@ object ElementList {
         )
     }
 
+    val scoreboard: ()->ArrayList<MainOptionsElement> = {
+        arrayListOf(
+            TitleOptionsElement("gui.scoreboard"),
+            FloatOptionsElement("%scoreboard.scale", "scoreboard.scale", "scoreboard.scale", "design"),
+            BooleanOptionsElement("%scoreboard.hide_numbers", "scoreboard.hide_numbers", "scoreboard.hide_numbers", "design"),
+        )
+    }
+
     val experimental: ()->ArrayList<MainOptionsElement> = {
         val a: ArrayList<MainOptionsElement> = arrayListOf(
             TitleOptionsElement("gui.experimental")
@@ -148,7 +156,6 @@ object ElementList {
             MainOptionsElement("gui.design", "gui.design.description", design(), Identifier("bewisclient", "textures/main_icons/design.png")),
             MainOptionsElement("gui.util", "gui.util.description", util(), Identifier("bewisclient", "textures/main_icons/util.png")),
             MainOptionsElement("gui.cosmetics", "gui.cosmetics.description", { CosmeticsScreen(it) }, Identifier("bewisclient", "textures/main_icons/cosmetics.png")),
-            MainOptionsElement("gui.experimental", "gui.experimental.description", experimental(), Identifier("bewisclient", "textures/main_icons/experimental.png")),
             MultiplePagesOptionsElement(arrayOf(
                 MultiplePagesOptionsElement.MultiplePagesElement(
                     "gui.fullbright",
@@ -199,6 +206,16 @@ object ElementList {
                     "gui.tnt_timer",
                     tnt_timer(),
                     Identifier("bewisclient", "textures/main_icons/tnt_timer.png")
+                ),
+                MultiplePagesOptionsElement.MultiplePagesElement(
+                    "gui.scoreboard",
+                    scoreboard(),
+                    Identifier("bewisclient", "textures/main_icons/scoreboard.png")
+                ),
+                MultiplePagesOptionsElement.MultiplePagesElement(
+                    "gui.experimental",
+                    experimental(),
+                    Identifier("bewisclient", "textures/main_icons/experimental.png")
                 )
             )),
         ).addNewElements()

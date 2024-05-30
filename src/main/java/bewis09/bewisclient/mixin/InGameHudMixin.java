@@ -2,6 +2,7 @@ package bewis09.bewisclient.mixin;
 
 import bewis09.bewisclient.JavaSettingsSender;
 import bewis09.bewisclient.kfj.KFJ;
+import bewis09.bewisclient.settingsLoader.SettingsLoader;
 import bewis09.bewisclient.widgets.WidgetRenderer;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
@@ -15,10 +16,13 @@ import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.item.TooltipType;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.*;
-import net.minecraft.scoreboard.ScoreboardEntry;
+import net.minecraft.scoreboard.*;
+import net.minecraft.scoreboard.number.NumberFormat;
+import net.minecraft.scoreboard.number.StyledNumberFormat;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
@@ -31,6 +35,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static bewis09.bewisclient.MixinStatics.SidebarEntry;
 
 @SuppressWarnings("ALL")
 @Environment(EnvType.CLIENT)
@@ -195,6 +202,14 @@ public abstract class InGameHudMixin {
             ci.cancel();
         } else if (WidgetRenderer.Companion.getEffectWidget().getOriginalPosY() != 0) {
             KFJ.INSTANCE.renderEffectHUD(context, InGameHudMixin.EFFECT_BACKGROUND_AMBIENT_TEXTURE, InGameHudMixin.EFFECT_BACKGROUND_TEXTURE);
+            ci.cancel();
+        }
+    }
+
+    @Inject(method = "renderScoreboardSidebar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/scoreboard/ScoreboardObjective;)V",at=@At("HEAD"),cancellable = true)
+    private void renderScoreboardSidebar(DrawContext context, ScoreboardObjective objective, CallbackInfo ci) {
+        if(SettingsLoader.INSTANCE.getFloat("design","scoreboard.scale")!=1 || SettingsLoader.INSTANCE.getBoolean("design","scoreboard.hide_numbers")) {
+            KFJ.INSTANCE.renderScoreboard(context,objective,SCOREBOARD_ENTRY_COMPARATOR,SCOREBOARD_JOINER);
             ci.cancel();
         }
     }
