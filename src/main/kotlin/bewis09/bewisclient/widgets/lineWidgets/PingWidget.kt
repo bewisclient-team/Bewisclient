@@ -23,13 +23,16 @@ class PingWidget: LineWidget("ping",80,true) {
         return arrayListOf(Bewisclient.getTranslatedString("widgets.ping")+": "+getLatency())
     }
 
+
+
     private fun getLatency(): Int {
         try {
-            if(!MinecraftClient.getInstance().debugHud.shouldShowPacketSizeAndPingCharts()) {
-                (MinecraftClient.getInstance().networkHandler as ClientPlayNetworkHandlerMixin).pingMeasurer.ping()
-            }
 
-            if(v+1000<System.currentTimeMillis()) {
+            if(v+100<System.currentTimeMillis()) {
+                if(!MinecraftClient.getInstance().debugHud.shouldShowPacketSizeAndPingCharts()) {
+                    (MinecraftClient.getInstance().networkHandler as ClientPlayNetworkHandlerMixin).pingMeasurer.ping()
+                }
+
                 var l = 0
                 var o = 0
                 val log = MinecraftClient.getInstance().debugHud.pingLog
