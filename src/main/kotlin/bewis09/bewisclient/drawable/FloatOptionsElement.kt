@@ -21,7 +21,7 @@ class FloatOptionsElement : WidgetOptionsElement {
         this.settings = settings
         this.valueChanged = { a ->
             run {
-                SettingsLoader.set(settings, path, round(((a * (de!!.end - de.start) + de.start).toFloat() * 10f.pow(de.decimalPoints))) / 10f.pow(de.decimalPoints))
+                SettingsLoader.set(settings, path, (round((a*(de!!.end-de.start)+de.start)* 10.0.pow(de.decimalPoints.toDouble()))/ 10.0.pow(de.decimalPoints.toDouble())))
             }
         }
         this.de = DefaultSettings.sliders[path]
@@ -34,7 +34,7 @@ class FloatOptionsElement : WidgetOptionsElement {
         this.settings = settings
         this.valueChanged = { a ->
             run {
-                SettingsLoader.set(settings, path, round(((a * (de!!.end - de.start) + de.start).toFloat() * 10f.pow(de.decimalPoints))) / 10f.pow(de.decimalPoints))
+                SettingsLoader.set(settings, path, (round((a*(de!!.end-de.start)+de.start)* 10.0.pow(de.decimalPoints.toDouble()))/ 10.0.pow(de.decimalPoints.toDouble())))
                 valueChanger(a)
             }
         }

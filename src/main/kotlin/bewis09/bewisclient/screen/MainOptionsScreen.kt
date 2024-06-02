@@ -70,8 +70,8 @@ class MainOptionsScreen : Screen(Text.empty()) {
             }
             if(animationState==AnimationState.LEFT) {
                 slice--
-                scrolls.removeLast()
-                allElements.removeLast()
+                scrolls.removeAt(scrolls.size-1)
+                allElements.removeAt(allElements.size-1)
             }
             if(animationState==AnimationState.RIGHT) {
                 slice++
@@ -91,7 +91,9 @@ class MainOptionsScreen : Screen(Text.empty()) {
         if(animationState.animation==AnimationState.MIDDLE_ANIMATION)
             animationFrame = 1f
 
-        context.fill((this.width/4) +4,0, (this.width-this.width/4-2)-2,this.height,
+        context.fill(
+            ((this.width/4) +4+6-6*animationFrame).toInt(),0,
+            ((this.width-this.width/4-2)-2+6-6*animationFrame).toInt(),this.height,
             ((0x88*animationFrame).toLong()*0x1000000).toInt()
         )
 
@@ -283,10 +285,12 @@ class MainOptionsScreen : Screen(Text.empty()) {
     }
 
     fun openNewSlice(elements: ArrayList<MainOptionsElement>) {
-        allElements.add(elements)
-        scrolls.add(0F)
-        animationState = AnimationState.RIGHT
-        animationStart = System.currentTimeMillis()
+        if(animationState == AnimationState.STABLE) {
+            allElements.add(elements)
+            scrolls.add(0F)
+            animationState = AnimationState.RIGHT
+            animationStart = System.currentTimeMillis()
+        }
     }
 
     override fun close() {

@@ -124,6 +124,7 @@ object SettingsLoader {
     fun getString(settings: String, id: String): String = get(settings, id).asString
     fun getArray(settings: String, id: String): JsonArray = get(settings, id).asJsonArray
     fun getBoolean(settings: String, id: String): Boolean = get(settings, id).asBoolean
+    fun getColorSaver(settings: String, id: String): ColorSaver = ColorSaver.of(get(settings, id).asString)
     fun getJsonObject(settings: String, id: String): JsonObject = get(settings, id).asJsonObject
 
     fun get(settings: String, id: String): JsonPrimitive {

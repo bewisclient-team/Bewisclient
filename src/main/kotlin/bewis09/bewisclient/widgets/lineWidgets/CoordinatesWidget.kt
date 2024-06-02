@@ -31,6 +31,7 @@ class CoordinatesWidget: LineWidget("coordinates",100,false) {
     override fun render(drawContext: DrawContext) {
         super.render(drawContext)
         if(getProperty(SHOW_DIRECTION)) {
+            drawContext.matrices.push()
             drawContext.matrices.scale(getScale(), getScale(), 1F)
             var direction = ""
             val yaw = MinecraftClient.getInstance().player!!.yaw/45+8000000.5
@@ -46,7 +47,7 @@ class CoordinatesWidget: LineWidget("coordinates",100,false) {
             }
             val text = "- $direction -"
             drawContext.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, text, getPosX() + getOriginalWidth() - 6 - MinecraftClient.getInstance().textRenderer.getWidth(text), getPosY() + 4, (0xFF000000L+getProperty(TEXT_COLOR).getColor()).toInt())
-            drawContext.matrices.scale(1 / getScale(), 1 / getScale(), 1F)
+            drawContext.matrices.pop()
         }
     }
 

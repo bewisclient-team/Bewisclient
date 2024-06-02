@@ -78,7 +78,7 @@ abstract class Widget(val id: String): Settings() {
         when (true) {
             K::class.java.name.lowercase().contains("float") -> return SettingsLoader.getFloat("widgets","$id.${setting.id}") as K
             K::class.java.name.lowercase().contains("boolean") -> return SettingsLoader.getBoolean("widgets","$id.${setting.id}") as K
-            K::class.java.name.lowercase().contains("colorsaver") -> return ColorSaver(SettingsLoader.getString("widgets","$id.${setting.id}")) as K
+            K::class.java.name.lowercase().contains("colorsaver") -> return ColorSaver.of(SettingsLoader.getString("widgets","$id.${setting.id}")) as K
             K::class.java.name.lowercase().contains("string") -> return SettingsLoader.getString("widgets","$id.${setting.id}") as K
             else -> {}
         }
