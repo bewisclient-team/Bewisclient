@@ -1,8 +1,11 @@
 package bewis09.bewisclient.kfj
 
 import bewis09.bewisclient.MixinStatics
+import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.settingsLoader.SettingsLoader.getBoolean
+import bewis09.bewisclient.settingsLoader.SettingsLoader.getColorSaver
 import bewis09.bewisclient.settingsLoader.SettingsLoader.getFloat
+import bewis09.bewisclient.util.ColorSaver
 import bewis09.bewisclient.util.MathUtil
 import bewis09.bewisclient.widgets.WidgetRenderer
 import com.google.common.collect.Lists
@@ -12,6 +15,8 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen
+import net.minecraft.client.texture.NativeImage
+import net.minecraft.client.texture.NativeImageBackedTexture
 import net.minecraft.client.texture.Sprite
 import net.minecraft.client.texture.StatusEffectSpriteManager
 import net.minecraft.entity.effect.StatusEffect
@@ -24,6 +29,7 @@ import net.minecraft.text.StringVisitable
 import net.minecraft.text.Text
 import net.minecraft.util.Colors
 import net.minecraft.util.Identifier
+import net.minecraft.util.math.ColorHelper
 import net.minecraft.util.math.MathHelper
 import java.util.*
 import java.util.function.Consumer
@@ -197,6 +203,7 @@ object KFJ {
                 .toInt()
         }
         val l = j
+        @Suppress("DEPRECATION")
         context.draw {
             val length = sidebarEntrys.size
             Objects.requireNonNull(MinecraftClient.getInstance().textRenderer)
@@ -239,5 +246,27 @@ object KFJ {
             }
         }
         context.matrices.pop()
+    }
+
+    fun overlayTexture(texture: NativeImageBackedTexture) {
+        val nativeImage: NativeImage = texture.image!!
+
+        for (i in 0..15) {
+            for (j in 0..15) {
+                if (i < 8) {
+                    nativeImage.setColor(
+                        j, i, ColorHelper.Abgr.getAbgr((1-getFloat("design","blockhit.hit_overlay.alpha")*255).toInt(),ColorHelper.Argb.getBlue(getColorSaver("design", "blockhit.hit_overlay.color").getColor()),ColorHelper.Argb.getGreen(getColorSaver("design", "blockhit.hit_overlay.color").getColor()),ColorHelper.Argb.getRed(getColorSaver("design", "blockhit.hit_overlay.color").getColor()))
+                    )
+                } else {
+                    val k = ((1.0f - j.toFloat() / 15.0f * 0.75f) * 255.0f).toInt()
+                    nativeImage.setColor(j, i, k shl 24 or 0xffffff)
+                }
+            }
+        }
+
+        RenderSystem.activeTexture(33985)
+        texture.bindTexture()
+        nativeImage.upload(0, 0, 0, 0, 0, nativeImage.width, nativeImage.height, false, true, false, false)
+        RenderSystem.activeTexture(33984)
     }
 }

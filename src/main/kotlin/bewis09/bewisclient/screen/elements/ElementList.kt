@@ -52,7 +52,11 @@ object ElementList {
                 TitleOptionsElement("gui.blockhit"),
                 BooleanOptionsElement("%blockhit.enabled", "blockhit.enabled","blockhit.enabled", "design"),
                 ColorPickerElement("%blockhit.color", "blockhit.color", "blockhit.color", "design"),
-                FloatOptionsElement("%blockhit.alpha", "blockhit.alpha", "blockhit.alpha", "design")
+                FloatOptionsElement("%blockhit.alpha", "blockhit.alpha", "blockhit.alpha", "design"),
+                TitleOptionsElement("gui.hit_overlay"),
+                BooleanOptionsElement("%blockhit.hit_overlay.enabled", "blockhit.hit_overlay.enabled","blockhit.hit_overlay.enabled", "design"),
+                ColorPickerElement("%blockhit.hit_overlay.color", "blockhit.hit_overlay.color", "blockhit.hit_overlay.color", "design"),
+                FloatOptionsElement("%blockhit.hit_overlay.alpha", "blockhit.hit_overlay.alpha", "blockhit.hit_overlay.alpha", "design")
         )
     }
 
@@ -116,7 +120,7 @@ object ElementList {
         arrayListOf(
                 TitleOptionsElement("gui.held_item_info"),
                 BooleanOptionsElement("%held_item_info.held_item_info", "held_item_info.held_item_info", "held_item_info", "design"),
-                FloatOptionsElement("%held_item_info.maxinfolength", "held_item_info.maxinfolength", "maxinfolength", "design")
+                FloatOptionsElement("%held_item_info.maxinfolength", "held_item_info.maxinfolength", "maxinfolength", "design"),
         )
     }
 
@@ -173,7 +177,7 @@ object ElementList {
                     Identifier("bewisclient", "textures/main_icons/better_visibility.png")
                 ),
                 MultiplePagesOptionsElement.MultiplePagesElement(
-                    "gui.blockhit",
+                    "gui.blockhit_hit_overlay",
                     blockhit(),
                     Identifier("bewisclient", "textures/main_icons/blockhit.png")
                 ),

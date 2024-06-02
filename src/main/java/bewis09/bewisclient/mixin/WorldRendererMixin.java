@@ -29,7 +29,7 @@ public abstract class WorldRendererMixin {
 
     @Overwrite
     private void drawBlockOutline(MatrixStack matrices, VertexConsumer vertexConsumer, Entity entity, double cameraX, double cameraY, double cameraZ, BlockPos pos, BlockState state) {
-        int in = (((new ColorSaver(Integer.parseInt(JavaSettingsSender.Companion.getSettings().getString("design","blockhit.color").replace("0x",""),16))).getColor())+0x1000000)%0x1000000;
+        int in = (((ColorSaver.Companion.of(Integer.parseInt(JavaSettingsSender.Companion.getSettings().getString("design","blockhit.color").replace("0x",""),16))).getColor())+0x1000000)%0x1000000;
         String str = MathUtil.Companion.zeroBefore(in,6,16);
         try {
             float r = Integer.decode("0x" + str.charAt(0) + str.charAt(1)) / 256f;
