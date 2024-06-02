@@ -1,5 +1,3 @@
-@file:Suppress("CAST_NEVER_SUCCEEDS")
-
 package bewis09.bewisclient.settingsLoader
 
 import bewis09.bewisclient.widgets.WidgetRenderer
@@ -24,6 +22,7 @@ object DefaultSettings {
             Pair("options_menu.scale",SliderInfo(0.5f,1f,2)),
             Pair("scoreboardsize",SliderInfo(0.2f,1.2f,2)),
             Pair("blockhit.alpha",SliderInfo(0.0f,1.0f,2)),
+            Pair("blockhit.hit_overlay.alpha",SliderInfo(0.0f,1.0f,2)),
             Pair(".lava_view",SliderInfo(0.0f,1.0f,2)),
             Pair("fullbright.value",SliderInfo(0.0f,10.0f,1)),
             Pair("scoreboard.scale",SliderInfo(0.5f,1.5f,2))
@@ -55,6 +54,11 @@ object DefaultSettings {
         BH.add("color", JsonPrimitive(0))
         BH.add("alpha", JsonPrimitive(0.4))
         BH.add("enabled", JsonPrimitive(false))
+        val HO = JsonObject()
+        HO.add("color", JsonPrimitive(0))
+        HO.add("alpha", JsonPrimitive(0.33))
+        HO.add("enabled", JsonPrimitive(false))
+        BH.add("hit_overlay", HO)
         val OM = JsonObject()
         OM.add("animation_time", JsonPrimitive(200.0))
         OM.add("scale", JsonPrimitive(0.75))
