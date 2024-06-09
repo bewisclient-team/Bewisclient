@@ -1,5 +1,3 @@
-@file:Suppress("CAST_NEVER_SUCCEEDS")
-
 package bewis09.bewisclient.settingsLoader
 
 import bewis09.bewisclient.widgets.WidgetRenderer
@@ -24,8 +22,10 @@ object DefaultSettings {
             Pair("options_menu.scale",SliderInfo(0.5f,1f,2)),
             Pair("scoreboardsize",SliderInfo(0.2f,1.2f,2)),
             Pair("blockhit.alpha",SliderInfo(0.0f,1.0f,2)),
+            Pair("blockhit.hit_overlay.alpha",SliderInfo(0.0f,1.0f,2)),
             Pair(".lava_view",SliderInfo(0.0f,1.0f,2)),
-            Pair("fullbright.value",SliderInfo(0.0f,10.0f,1))
+            Pair("fullbright.value",SliderInfo(0.0f,10.0f,1)),
+            Pair("scoreboard.scale",SliderInfo(0.5f,1.5f,2))
     )
 
     val arrays: HashMap<String,ArrayList<String>> = hashMapOf(
@@ -54,6 +54,11 @@ object DefaultSettings {
         BH.add("color", JsonPrimitive(0))
         BH.add("alpha", JsonPrimitive(0.4))
         BH.add("enabled", JsonPrimitive(false))
+        val HO = JsonObject()
+        HO.add("color", JsonPrimitive(0))
+        HO.add("alpha", JsonPrimitive(0.33))
+        HO.add("enabled", JsonPrimitive(false))
+        BH.add("hit_overlay", HO)
         val OM = JsonObject()
         OM.add("animation_time", JsonPrimitive(200.0))
         OM.add("scale", JsonPrimitive(0.75))
@@ -65,11 +70,15 @@ object DefaultSettings {
         val HI = JsonObject()
         HI.add("maxinfolength", JsonPrimitive(5.0))
         HI.add("held_item_info", JsonPrimitive(false))
+        val SC = JsonObject()
+        SC.add("scale", JsonPrimitive(1.0))
+        SC.add("hide_numbers", JsonPrimitive(false))
         design.add("better_visibility",BV)
         design.add("blockhit",BH)
         design.add("options_menu",OM)
         design.add("fullbright",FB)
         design.add("held_item_info",HI)
+        design.add("scoreboard",SC)
         design.add("fire_height", JsonPrimitive(1.0))
         design.add("disable_pumpkin_overlay", JsonPrimitive(false))
         design.add("shulker_box_tooltip", JsonPrimitive(false))
@@ -83,6 +92,8 @@ object DefaultSettings {
         general.add("instant_zoom", JsonPrimitive(false))
         general.add("zoom_enabled", JsonPrimitive(true))
         general.add("hard_zoom", JsonPrimitive(false))
+        general.add("tnt_timer", JsonPrimitive(false))
+        general.add("screenshot_folder_open", JsonPrimitive(false))
     }
 
     fun getDefault(string: String): JsonObject {

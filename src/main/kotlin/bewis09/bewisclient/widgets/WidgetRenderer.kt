@@ -12,7 +12,7 @@ import net.minecraft.client.gui.DrawContext
 class WidgetRenderer: HudRenderCallback {
 
     companion object {
-        //val effectWidget = EffectWidget()
+        val effectWidget = EffectWidget()
 
         val widgets = arrayListOf(
                 BiomeWidget(),
@@ -22,7 +22,7 @@ class WidgetRenderer: HudRenderCallback {
                 TiwylaWidget(),
                 PingWidget(),
                 CoordinatesWidget(),
-                //effectWidget,
+                effectWidget,
                 DayWidget(),
                 DaytimeWidget(),
                 KeyWidget(),

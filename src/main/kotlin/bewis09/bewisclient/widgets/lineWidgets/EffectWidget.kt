@@ -3,12 +3,10 @@ package bewis09.bewisclient.widgets.lineWidgets
 import bewis09.bewisclient.screen.WidgetConfigScreen
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.widgets.Widget
-import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
-import kotlin.math.max
 
 class EffectWidget: Widget("effect") {
     override fun render(drawContext: DrawContext) {
@@ -22,7 +20,7 @@ class EffectWidget: Widget("effect") {
     }
 
     override fun getOriginalHeight(): Int {
-        return if(SettingsLoader.getBoolean("design","extend_status_effect_info")) 72 else 50
+        return if(SettingsLoader.getBoolean("design","extend_status_effect_info")) 75 else 52
     }
 
     override fun getOriginalPosX(): Int {
@@ -50,7 +48,7 @@ class EffectWidget: Widget("effect") {
         SettingsLoader.disableAutoSave()
         SettingsLoader.set("widgets","$id.partY", part)
         SettingsLoader.disableAutoSave()
-        SettingsLoader.set("widgets","$id.posY", pos)
+        SettingsLoader.set("widgets","$id.posY", 0f.coerceAtLeast(pos))
     }
 
     override fun getWidgetSettings(): JsonObject {

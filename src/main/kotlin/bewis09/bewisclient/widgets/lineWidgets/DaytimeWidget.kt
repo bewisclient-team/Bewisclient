@@ -25,6 +25,7 @@ class DaytimeWidget: LineWidget("daytime",80,true) {
 
     override fun render(drawContext: DrawContext) {
         val time = (MinecraftClient.getInstance().world?.timeOfDay)?.rem(24000L)
+        drawContext.matrices.push()
         drawContext.matrices.scale(getScale(),getScale(),1F)
         drawContext.fill(getPosX(),getPosY(),getPosX()+getOriginalWidth(),getPosY()+getOriginalHeight(), ColorHelper.Argb.getArgb(((getProperty(Settings.TRANSPARENCY).times(255F)).toInt()),0,0,0))
         if (time != null) {
@@ -34,7 +35,7 @@ class DaytimeWidget: LineWidget("daytime",80,true) {
                 drawContext.fill(getPosX()+2,getPosY()+2,getPosX()+getOriginalWidth()-2,getPosY()+getOriginalHeight()-2, 0x77FF4400)
         }
         drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, getText()[0],getPosX()+getOriginalWidth()/2,getPosY()+4,-1)
-        drawContext.matrices.scale(1/getScale(),1/getScale(),1F)
+        drawContext.matrices.pop()
     }
 
     private fun withZeros(str: Any?): String {
