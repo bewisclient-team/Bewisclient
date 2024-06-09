@@ -34,7 +34,7 @@ public abstract class BackgroundRendererMixin {
             RenderSystem.setShaderFogStart(fogData.fogStart);
             RenderSystem.setShaderFogEnd(fogData.fogEnd);
             RenderSystem.setShaderFogShape(fogData.fogShape);
-        } else if (cameraSubmersionType == CameraSubmersionType.POWDER_SNOW && (JavaSettingsSender.Companion.getSettings().getBoolean("design","better_visibility.power_snow"))) {
+        } else if (cameraSubmersionType == CameraSubmersionType.POWDER_SNOW && (JavaSettingsSender.Companion.getSettings().getBoolean("design","better_visibility.powder_snow"))) {
             fogData.fogStart = -8.0f;
             fogData.fogEnd = viewDistance * 0.5f;
             RenderSystem.setShaderFogStart(fogData.fogStart);
