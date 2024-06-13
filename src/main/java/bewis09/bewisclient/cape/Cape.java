@@ -13,7 +13,7 @@ public class Cape extends AbstractCape {
     private static AbstractCape currentRealCape;
 
     public Cape(String name) {
-        this.identifier = new Identifier("bewisclient","cape/"+name+".png");
+        this.identifier = Identifier.of("bewisclient","cape/"+name+".png");
     }
 
     public Cape(Identifier identifier) {

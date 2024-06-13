@@ -18,10 +18,10 @@ import kotlin.math.ceil
 
 class SnakeScreen: Screen(Text.empty()) {
 
-    val GREEN = Identifier("textures/block/green_terracotta.png")
-    val RED = Identifier("textures/block/red_terracotta.png")
-    val BLUE = Identifier("textures/block/blue_terracotta.png")
-    val MELON = Identifier("textures/block/melon_side.png")
+    val GREEN = Identifier.of("textures/block/green_terracotta.png")
+    val RED = Identifier.of("textures/block/red_terracotta.png")
+    val BLUE = Identifier.of("textures/block/blue_terracotta.png")
+    val MELON = Identifier.of("textures/block/melon_side.png")
 
     var shouldRemoveNext = true
 
@@ -106,19 +106,11 @@ class SnakeScreen: Screen(Text.empty()) {
 
     private fun fillGradient(context: DrawContext, startX: Int, startY: Int, endX: Int, endY: Int, colorStart: Int, colorEnd: Int) {
         val vertexConsumer: VertexConsumer = context.vertexConsumers.getBuffer(RenderLayer.getGui())
-        val f = ColorHelper.Argb.getAlpha(colorStart).toFloat() / 255.0f
-        val g = ColorHelper.Argb.getRed(colorStart).toFloat() / 255.0f
-        val h = ColorHelper.Argb.getGreen(colorStart).toFloat() / 255.0f
-        val i = ColorHelper.Argb.getBlue(colorStart).toFloat() / 255.0f
-        val j = ColorHelper.Argb.getAlpha(colorEnd).toFloat() / 255.0f
-        val k = ColorHelper.Argb.getRed(colorEnd).toFloat() / 255.0f
-        val l = ColorHelper.Argb.getGreen(colorEnd).toFloat() / 255.0f
-        val m = ColorHelper.Argb.getBlue(colorEnd).toFloat() / 255.0f
         val matrix4f: Matrix4f = context.matrices.peek().positionMatrix
-        vertexConsumer.vertex(matrix4f, endX.toFloat(), startY.toFloat(), 5f).color(k, l, m, j).next()
-        vertexConsumer.vertex(matrix4f, startX.toFloat(), startY.toFloat(), 5f).color(g, h, i, f).next()
-        vertexConsumer.vertex(matrix4f, startX.toFloat(), endY.toFloat(), 5f).color(g, h, i, f).next()
-        vertexConsumer.vertex(matrix4f, endX.toFloat(), endY.toFloat(), 5f).color(k, l, m, j).next()
+        vertexConsumer.vertex(matrix4f, endX.toFloat(), startY.toFloat(), 5f).color(colorEnd)
+        vertexConsumer.vertex(matrix4f, startX.toFloat(), startY.toFloat(), 5f).color(colorStart)
+        vertexConsumer.vertex(matrix4f, startX.toFloat(), endY.toFloat(), 5f).color(colorStart)
+        vertexConsumer.vertex(matrix4f, endX.toFloat(), endY.toFloat(), 5f).color(colorEnd)
     }
 
     override fun tick() {

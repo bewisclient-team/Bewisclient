@@ -1,8 +1,6 @@
 package bewis09.bewisclient.widgets.lineWidgets
 
-import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.widgets.Widget
-import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.mojang.blaze3d.systems.RenderSystem
 import com.google.gson.JsonPrimitive
@@ -12,14 +10,14 @@ import net.minecraft.util.Identifier
 
 class InventoryWidget: Widget("inventory") {
 
-    val Identifier = Identifier("bewisclient","textures/inventory_widget.png")
+    val identifier: Identifier = Identifier.of("bewisclient","textures/inventory_widget.png")
 
     override fun render(drawContext: DrawContext) {
         RenderSystem.setShaderColor(1f,1f,1f,getProperty(Settings.TRANSPARENCY))
         drawContext.matrices.push()
         drawContext.matrices.scale(getScale(),getScale(),1F)
         RenderSystem.enableBlend()
-        drawContext.drawTexture(Identifier,getPosX(),getPosY(),getOriginalWidth(),getOriginalHeight(),0f,0f,getOriginalWidth(),getOriginalHeight(),180,60)
+        drawContext.drawTexture(identifier,getPosX(),getPosY(),getOriginalWidth(),getOriginalHeight(),0f,0f,getOriginalWidth(),getOriginalHeight(),180,60)
         RenderSystem.disableBlend()
         RenderSystem.setShaderColor(1f,1f,1f,1f)
 

@@ -8,6 +8,7 @@ import com.google.gson.JsonObject
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
+import net.minecraft.client.render.RenderTickCounter
 
 class WidgetRenderer: HudRenderCallback {
 
@@ -40,7 +41,7 @@ class WidgetRenderer: HudRenderCallback {
         }
     }
 
-    override fun onHudRender(drawContext: DrawContext?, tickDelta: Float) {
+    override fun onHudRender(drawContext: DrawContext?, tickCounter: RenderTickCounter) {
         if(MinecraftClient.getInstance().currentScreen !is WidgetConfigScreen && !MinecraftClient.getInstance().options.hudHidden) {
             widgets.forEach {
                 if (drawContext != null && it.isEnabled()) {

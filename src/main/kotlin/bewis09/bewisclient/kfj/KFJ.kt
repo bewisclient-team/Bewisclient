@@ -36,8 +36,8 @@ import java.util.function.Consumer
 import kotlin.math.max
 
 object KFJ {
-    val EFFECT_WIDGET_TEXTURE = Identifier("bewisclient", "gui/effect_widget.png")
-    val EFFECT_WIDGET_AMBIENT_TEXTURE = Identifier("bewisclient", "gui/effect_widget_ambient.png")
+    val EFFECT_WIDGET_TEXTURE = Identifier.of("bewisclient", "gui/effect_widget.png")
+    val EFFECT_WIDGET_AMBIENT_TEXTURE = Identifier.of("bewisclient", "gui/effect_widget_ambient.png")
 
     fun renderEffectHUD(
         context: DrawContext,

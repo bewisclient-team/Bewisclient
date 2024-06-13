@@ -13,16 +13,14 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.DebugHud;
 import net.minecraft.client.gui.hud.InGameHud;
-import net.minecraft.client.item.TooltipType;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.*;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.scoreboard.*;
-import net.minecraft.scoreboard.number.NumberFormat;
-import net.minecraft.scoreboard.number.StyledNumberFormat;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
@@ -35,16 +33,13 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static bewis09.bewisclient.MixinStatics.SidebarEntry;
 
 @SuppressWarnings("ALL")
 @Environment(EnvType.CLIENT)
 @Mixin(InGameHud.class)
 public abstract class InGameHudMixin {
 
-    private static final Identifier EFFECT_WIDGET = new Identifier("bewisclient", "gui/effect_widget.png");
+    private static final Identifier EFFECT_WIDGET = Identifier.of("bewisclient", "gui/effect_widget.png");
     @Shadow
     @Final
     private static Identifier PUMPKIN_BLUR;
@@ -139,6 +134,8 @@ public abstract class InGameHudMixin {
         }
         list2.add(mutableText);
         stack.getItem().appendTooltip(stack, Item.TooltipContext.DEFAULT, list, TooltipType.BASIC);
+        if((JavaSettingsSender.Companion.getSettings().getBoolean("design","shulker_box_tooltip")))
+            appendShulkerBoxInfo(stack,list);
         ((ItemStackMixin)(Object) stack).invokeAppendTooltip(DataComponentTypes.STORED_ENCHANTMENTS, Item.TooltipContext.DEFAULT, list::add, TooltipType.BASIC);
         ((ItemStackMixin)(Object) stack).invokeAppendTooltip(DataComponentTypes.ENCHANTMENTS, Item.TooltipContext.DEFAULT, list::add, TooltipType.BASIC);
         ((ItemStackMixin)(Object) stack).invokeAppendTooltip(DataComponentTypes.DYED_COLOR, Item.TooltipContext.DEFAULT, list::add, TooltipType.BASIC);
@@ -196,7 +193,7 @@ public abstract class InGameHudMixin {
      */
 
     @Inject(method = "renderStatusEffectOverlay", at = @At("HEAD"), cancellable = true)
-    protected void renderStatusEffectOverlay(DrawContext context, float tickDelta, CallbackInfo ci) {
+    protected void renderStatusEffectOverlay(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
         if (JavaSettingsSender.Companion.getSettings().getBoolean("design", "extend_status_effect_info")) {
             KFJ.INSTANCE.renderEffectHUDExtended(context, InGameHudMixin.EFFECT_BACKGROUND_AMBIENT_TEXTURE, InGameHudMixin.EFFECT_BACKGROUND_TEXTURE);
             ci.cancel();

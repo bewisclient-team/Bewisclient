@@ -9,7 +9,7 @@ import net.minecraft.text.OrderedText
 import net.minecraft.util.Identifier
 import kotlin.math.ceil
 
-class MultiplePagesOptionsElement(val elementList: Array<MultiplePagesElement>): MainOptionsElement("","",Identifier("")) {
+class MultiplePagesOptionsElement(val elementList: Array<MultiplePagesElement>): MainOptionsElement("","",Identifier.of("")) {
     var hoveredElement = -1
 
     override fun render(
