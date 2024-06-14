@@ -30,8 +30,7 @@ public abstract class WolfCollarFeatureRendererMixin extends FeatureRenderer<Wol
         if(wolfEntity.isTamed() && !wolfEntity.isInvisible() && wolfEntity.getDisplayName().getString().equals("Rainbow")) {
             float hue = ((System.currentTimeMillis())%10000)/10000f;
             Color color = new Color(Color.HSBtoRGB(hue,1f,1f));
-            float[] fs = {color.getRed()/255f,color.getGreen()/255f,color.getBlue()/255f};
-            renderModel(this.getContextModel(), SKIN, matrixStack, vertexConsumerProvider, i, wolfEntity, fs[0], fs[1], fs[2]);
+            renderModel(this.getContextModel(), SKIN, matrixStack, vertexConsumerProvider, i, wolfEntity, color.getRGB());
             ci.cancel();
         }
     }

@@ -9,14 +9,16 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 
+import java.awt.*;
+
 public class ShulkerBoxTooltip implements TooltipComponent {
-    public static final Identifier TEXTURE = new Identifier("bewisclient","gui/slot.png");
+    public static final Identifier TEXTURE = Identifier.of("bewisclient","gui/slot.png");
     private final DefaultedList<ItemStack> inventory;
-    private final DyeColor color;
+    private final Color color;
 
     public ShulkerBoxTooltip(ShulkerBoxTooltipData data) {
         this.inventory = data.getInventory();
-        this.color = data.color();
+        this.color = new Color(data.color().getEntityColor());
     }
 
     @Override
@@ -31,8 +33,8 @@ public class ShulkerBoxTooltip implements TooltipComponent {
 
     @Override
     public void drawItems(TextRenderer textRenderer, int x, int y,DrawContext context) {
-        RenderSystem.setShaderColor(color.getColorComponents()[0], color.getColorComponents()[1], color.getColorComponents()[2], 1.0f);
-        context.drawTexture(new Identifier("bewisclient","gui/shulker_box_background.png"),x+1, y+1, 0, 0, 178, 70,178,70);
+        RenderSystem.setShaderColor(color.getRed()/255f, color.getGreen()/255f, color.getBlue()/255f, 1.0f);
+        context.drawTexture(Identifier.of("bewisclient","gui/shulker_box_background.png"),x+1, y+1, 0, 0, 178, 70,178,70);
         int i = 0;
         for(int k = 0; k<3; k++) {
             for(int l = 0; l<9; l++) {
@@ -56,7 +58,7 @@ public class ShulkerBoxTooltip implements TooltipComponent {
     }
 
     private void draw(DrawContext context, int x, int y) {
-        RenderSystem.setShaderColor(color.getColorComponents()[0], color.getColorComponents()[1], color.getColorComponents()[2], 1.0f);
+        RenderSystem.setShaderColor(color.getRed()/255f, color.getGreen()/255f, color.getBlue()/255f, 1.0f);
         context.drawTexture(TEXTURE, x, y, 0, 0, 18, 18, 18, 18);
     }
 

@@ -33,7 +33,7 @@ import java.util.Map
 
 class TiwylaWidget: Widget("tiwyla") {
 
-    var identifier: Identifier = Identifier("extra")
+    var identifier: Identifier = Identifier.of("extra")
 
     companion object {
         val extraInfo = hashMapOf<Block, Property<*>>(

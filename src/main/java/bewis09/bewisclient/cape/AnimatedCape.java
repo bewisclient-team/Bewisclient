@@ -17,7 +17,7 @@ public class AnimatedCape extends AbstractCape {
         this.frameDuration = frameDuration;
         identifierList = new ArrayList<>();
         for (int i = 0; i < frameCount; i++) {
-            identifierList.add(new Identifier("bewisclient","cape/"+name.replace("%20", MathUtil.Companion.zeroBefore(i,withZero?2:1))+".png"));
+            identifierList.add(Identifier.of("bewisclient","cape/"+name.replace("%20", MathUtil.Companion.zeroBefore(i,withZero?2:1))+".png"));
         }
         startTimer();
     }

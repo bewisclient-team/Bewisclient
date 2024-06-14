@@ -5,7 +5,7 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.util.Identifier
 
-class TitleOptionsElement(title: String): MainOptionsElement(title,"", Identifier("")) {
+class TitleOptionsElement(title: String): MainOptionsElement(title,"", Identifier.of("")) {
     override fun render(
         context: DrawContext,
         x: Int,

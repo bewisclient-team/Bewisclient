@@ -1,11 +1,10 @@
 package bewis09.bewisclient.mixin;
 
 import bewis09.bewisclient.JavaSettingsSender;
-import bewis09.bewisclient.settingsLoader.SettingsLoader;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.block.enums.CameraSubmersionType;
 import net.minecraft.client.render.BackgroundRenderer;
 import net.minecraft.client.render.Camera;
-import net.minecraft.client.render.CameraSubmersionType;
 import net.minecraft.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

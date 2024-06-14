@@ -35,14 +35,14 @@ public abstract class TNTEntityRendererMixin extends EntityRenderer<TntEntity> {
         if (d > 64.0) {
             return;
         }
-        Vec3d vec3d = entity.getAttachments().getPointNullable(EntityAttachmentType.NAME_TAG, 0, ((Entity)entity).getYaw(tickDelta));
+        Vec3d vec3d = entity.getAttachments().getPointNullable(EntityAttachmentType.NAME_TAG, 0, entity.getYaw(tickDelta));
         if (vec3d == null) {
             return;
         }
         matrices.push();
         matrices.translate(vec3d.x, vec3d.y+0.2, vec3d.z);
         matrices.multiply(this.dispatcher.getRotation());
-        matrices.scale(-0.015f, -0.015f, 0.015f);
+        matrices.scale(0.015f, -0.015f, 0.015f);
         Matrix4f matrix4f = matrices.peek().getPositionMatrix();
         float f = MinecraftClient.getInstance().options.getTextBackgroundOpacity(0.25f);
         int j = (int)(f * 255.0f) << 24;

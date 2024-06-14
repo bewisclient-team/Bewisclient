@@ -24,8 +24,8 @@ open class MainOptionsElement {
         this.description = description
         this.screen = screen
         this.image = image
-        this.select = Identifier("bewisclient", "textures/sprites/select.png")
-        this.selectHovered = Identifier("bewisclient", "textures/sprites/select_highlighted.png")
+        this.select = Identifier.of("bewisclient", "textures/sprites/select.png")
+        this.selectHovered = Identifier.of("bewisclient", "textures/sprites/select_highlighted.png")
         this.pos = arrayOf(0, 0, 0, 0)
     }
 
@@ -33,8 +33,8 @@ open class MainOptionsElement {
         this.title = title
         this.description = description
         this.image = image
-        this.select = Identifier("bewisclient", "textures/sprites/select.png")
-        this.selectHovered = Identifier("bewisclient", "textures/sprites/select_highlighted.png")
+        this.select = Identifier.of("bewisclient", "textures/sprites/select.png")
+        this.selectHovered = Identifier.of("bewisclient", "textures/sprites/select_highlighted.png")
         this.pos = arrayOf(0, 0, 0, 0)
     }
 
@@ -43,8 +43,8 @@ open class MainOptionsElement {
         this.description = description
         this.elements = elements
         this.image = image
-        this.select = Identifier("bewisclient", "textures/sprites/select.png")
-        this.selectHovered = Identifier("bewisclient", "textures/sprites/select_highlighted.png")
+        this.select = Identifier.of("bewisclient", "textures/sprites/select.png")
+        this.selectHovered = Identifier.of("bewisclient", "textures/sprites/select_highlighted.png")
         this.pos = arrayOf(0, 0, 0, 0)
     }
 

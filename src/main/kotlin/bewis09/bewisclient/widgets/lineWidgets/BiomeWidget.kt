@@ -87,8 +87,8 @@ class BiomeWidget: LineWidget("biome",150, true) {
                 Pair(BiomeKeys.END_BARRENS, "§7")
         )
 
-        val textGetter: (Boolean) -> String = {
-            (if(it) colorCode() else "") + Text.translatable(Identifier(MinecraftClient.getInstance().world?.getBiome(MinecraftClient.getInstance().player?.blockPos
+        val textGetter: (Boolean) -> String = { it ->
+            (if(it) colorCode() else "") + Text.translatable(Identifier.of(MinecraftClient.getInstance().world?.getBiome(MinecraftClient.getInstance().player?.blockPos
                     ?: BlockPos(0, 0, 0))?.let { getBiomeString(it) }).toTranslationKey("biome")).string
         }
 

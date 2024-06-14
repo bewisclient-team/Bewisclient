@@ -80,7 +80,7 @@ class ColorPickerElement(title: String, path: String, private val value: String,
 
         RenderSystem.enableBlend()
         RenderSystem.setShaderColor(if(ColorSaver.of(SettingsLoader.getString(settings,path)).getOriginalColor()<0f) 0.5f else widget2.getValue().toFloat(),if(ColorSaver.of(SettingsLoader.getString(settings,path)).getOriginalColor()<0f) 0.5f else widget2.getValue().toFloat(),if(ColorSaver.of(SettingsLoader.getString(settings,path)).getOriginalColor()<0f) 0.5f else widget2.getValue().toFloat(),alphaModifier/(0xFFFFFFFF.toFloat()))
-        context.drawTexture(Identifier("bewisclient","textures/color_space.png"),x+width-59,y+1,58,58,0f,0f,58,58,58,58)
+        context.drawTexture(Identifier.of("bewisclient","textures/color_space.png"),x+width-59,y+1,58,58,0f,0f,58,58,58,58)
         RenderSystem.setShaderColor(1f,1f,1f,1f)
         RenderSystem.disableBlend()
 
