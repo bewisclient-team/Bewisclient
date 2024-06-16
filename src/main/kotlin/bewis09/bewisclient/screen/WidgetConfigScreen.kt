@@ -103,7 +103,7 @@ class WidgetConfigScreen(var parent: MainOptionsScreen): Screen(Text.empty()) {
                 alphaStart = System.currentTimeMillis()
                 alphaDirection = 1
 
-                parent = MainOptionsScreen()
+                parent = MainOptionsScreen(arrayListOf(ElementList.main()))
                 parent.allElements.add(ElementList.widgets())
                 parent.allElements.add(ElementList.loadWidgetsSingleFromDefault(selected!!.getWidgetSettings(),selected!!.id))
                 parent.scrolls.add(0f)

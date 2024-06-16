@@ -23,6 +23,7 @@
     "MinecraftClientMixin",
     "MouseMixin",
     "OverlayTextureMixin",
+    "PackScreenMixin",
     "PlayerEntityRendererMixin",
     "ScreenMixin",
     "ScreenshotRecorderMixin",

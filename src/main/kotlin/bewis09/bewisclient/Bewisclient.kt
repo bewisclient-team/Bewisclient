@@ -5,6 +5,7 @@ import bewis09.bewisclient.autoUpdate.Updater
 import bewis09.bewisclient.cape.Capes
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.screen.SnakeScreen
+import bewis09.bewisclient.screen.elements.ElementList
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.widgets.WidgetRenderer
 import bewis09.bewisclient.wings.WingFeatureRenderer
@@ -99,7 +100,7 @@ object Bewisclient : ClientModInitializer {
 			}
 
 			while (openOptionScreenKeyBindimg?.wasPressed() == true) {
-				it.setScreen(MainOptionsScreen())
+				it.setScreen(MainOptionsScreen(arrayListOf(ElementList.main())))
 			}
 
 			while (keyBinding1.wasPressed()) {

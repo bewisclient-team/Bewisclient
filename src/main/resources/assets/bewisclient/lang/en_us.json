@@ -222,5 +222,8 @@
   "bewisclient.description.blockhit.hit_overlay.enabled": "Set if the Hit Overlay Color can be customized",
   "bewisclient.description.blockhit.hit_overlay.color": "Set the Hit Overlay Color when you hit a mob",
   "bewisclient.description.blockhit.hit_overlay.alpha": "Set the transparency of the overlay color when you hit a mob",
-  "bewisclient.gui.blockhit_hit_overlay": "Blockhit and Hit Overlay Color"
+  "bewisclient.gui.blockhit_hit_overlay": "Blockhit and Hit Overlay Color",
+  "bewisclient.gui.resource_pack.versions": "Versions",
+  "bewisclient.gui.resource_pack.description": "Description",
+  "bewisclient.gui.resource_pack.gallery": "Gallery"
 }

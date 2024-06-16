@@ -25,10 +25,10 @@ import net.minecraft.util.math.ColorHelper
 import net.minecraft.util.math.MathHelper
 import org.joml.Matrix4f
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.*
 
-@Suppress("CAST_NEVER_SUCCEEDS")
-class MainOptionsScreen : Screen(Text.empty()) {
+open class MainOptionsScreen(var allElements: ArrayList<List<MainOptionsElement>>) : Screen(Text.empty()) {
 
     var animationStart = 0L
     var animatedScreen: Screen? = null
@@ -47,8 +47,6 @@ class MainOptionsScreen : Screen(Text.empty()) {
 
     private val closeTextures: ButtonTextures = ButtonTextures(Identifier.of("bewisclient","textures/sprites/close_button.png"), Identifier.of("bewisclient","textures/sprites/close_button_highlighted.png"))
     private val backTextures: ButtonTextures = ButtonTextures(Identifier.of("bewisclient","textures/sprites/back_button.png"),Identifier.of("bewisclient","textures/sprites/back_button_highlighted.png"))
-
-    var allElements = arrayListOf(ElementList.main())
 
     init {
         animationState = AnimationState.TO_MAIN_SCREEN_UNSTARTED
@@ -181,6 +179,10 @@ class MainOptionsScreen : Screen(Text.empty()) {
         )
         fillGradient(context, (this.width-(this.width/4)-6*animationFrame).toInt()+2,0,this.width- (this.width/4) +2,this.height,
             ((0xFF*animationFrame).toLong()*0x1000000).toInt(), 0)
+
+        if(MinecraftClient.getInstance().world==null) {
+            super.render(context, mouseX, mouseY, delta)
+        }
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {

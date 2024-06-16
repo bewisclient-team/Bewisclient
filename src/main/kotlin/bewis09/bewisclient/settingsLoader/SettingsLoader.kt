@@ -2,6 +2,7 @@ package bewis09.bewisclient.settingsLoader
 
 import bewis09.bewisclient.exception.SettingNotFoundException
 import bewis09.bewisclient.screen.MainOptionsScreen
+import bewis09.bewisclient.screen.elements.ElementList
 import bewis09.bewisclient.util.ColorSaver
 import com.google.gson.Gson
 import com.google.gson.JsonArray
@@ -32,7 +33,8 @@ object SettingsLoader {
         DesignSettings = loadSetting("design")
 
         if(MinecraftClient.getInstance().currentScreen is MainOptionsScreen)
-            (MinecraftClient.getInstance().currentScreen as MainOptionsScreen).startAllAnimation(MainOptionsScreen())
+            (MinecraftClient.getInstance().currentScreen as MainOptionsScreen).startAllAnimation(MainOptionsScreen(arrayListOf(
+                ElementList.main())))
     }
 
     private fun loadSetting(id: String): JsonObject {
