@@ -46,14 +46,14 @@ public class InGameOverlayRendererMixin {
 
         for(int r = 0; r < 2; ++r) {
             matrices.push();
-            matrices.translate((float)(-(r * 2 - 1)) * 0.24F, -0.3F, 0.0F);
+            matrices.translate((float)(-(r * 2 - 1)) * 0.24F, -0.3F+d-1f, 0.0F);
             matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees((float)(r * 2 - 1) * 10.0F));
             Matrix4f matrix4f = matrices.peek().getPositionMatrix();
             BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
-            bufferBuilder.vertex(matrix4f, -0.5F, -0.5F+d-1f, -0.5F).texture(n, p).color(1.0F, 1.0F, 1.0F, 0.9F);
-            bufferBuilder.vertex(matrix4f, 0.5F, -0.5F+d-1f, -0.5F).texture(m, p).color(1.0F, 1.0F, 1.0F, 0.9F);
-            bufferBuilder.vertex(matrix4f, 0.5F, 0.5F+d, -0.5F).texture(m, o).color(1.0F, 1.0F, 1.0F, 0.9F);
-            bufferBuilder.vertex(matrix4f, -0.5F, 0.5F+d, -0.5F).texture(n, o).color(1.0F, 1.0F, 1.0F, 0.9F);
+            bufferBuilder.vertex(matrix4f, -0.5F, -0.5F, -0.5F).texture(n, p).color(1.0F, 1.0F, 1.0F, 0.9F);
+            bufferBuilder.vertex(matrix4f, 0.5F, -0.5F, -0.5F).texture(m, p).color(1.0F, 1.0F, 1.0F, 0.9F);
+            bufferBuilder.vertex(matrix4f, 0.5F, 0.5F, -0.5F).texture(m, o).color(1.0F, 1.0F, 1.0F, 0.9F);
+            bufferBuilder.vertex(matrix4f, -0.5F, 0.5F, -0.5F).texture(n, o).color(1.0F, 1.0F, 1.0F, 0.9F);
             BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
             matrices.pop();
         }
