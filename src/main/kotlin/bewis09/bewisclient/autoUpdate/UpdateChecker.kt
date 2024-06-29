@@ -1,6 +1,5 @@
 package bewis09.bewisclient.autoUpdate
 
-import bewis09.bewisclient.settingsLoader.SettingsLoader
 import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject

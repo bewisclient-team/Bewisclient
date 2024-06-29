@@ -1,6 +1,7 @@
 package bewis09.bewisclient.screen
 
 import bewis09.bewisclient.Bewisclient
+import bewis09.bewisclient.drawable.UsableTexturedButtonWidget
 import bewis09.bewisclient.screen.AddResourcePackScreen.Companion.LOADING_ID
 import bewis09.bewisclient.screen.AddResourcePackScreen.Companion.loadedImages
 import net.minecraft.client.MinecraftClient
@@ -8,14 +9,17 @@ import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.Drawable
 import net.minecraft.client.gui.Element
 import net.minecraft.client.gui.Selectable
+import net.minecraft.client.gui.screen.ButtonTextures
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.widget.ButtonWidget
+import net.minecraft.client.gui.widget.TexturedButtonWidget
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.render.VertexConsumer
 import net.minecraft.text.OrderedText
 import net.minecraft.text.StringVisitable
 import net.minecraft.text.Style
 import net.minecraft.text.Text
+import net.minecraft.util.Identifier
 import org.joml.Matrix4f
 
 class OnlineResourcePackScreen(val parent: Screen, val resourcePack: AddResourcePackScreen.ResourcePack): Screen(Text.empty()) {
@@ -85,6 +89,12 @@ class OnlineResourcePackScreen(val parent: Screen, val resourcePack: AddResource
         addDrawableChild(ButtonWidget.builder(Bewisclient.getTranslationText("gui.resource_pack.versions")) {
 
         }.dimensions((width/4f+(width-40)/3).toInt(),42,(width-40)/6,20).build())
+
+        addDrawableChild(UsableTexturedButtonWidget((width/4f*3).toInt()-20,42,20,20, ButtonTextures(
+            Identifier.of("bewisclient","textures/sprites/download.png"),
+            Identifier.of("bewisclient","textures/sprites/download_highlighted.png"))){
+
+        })
     }
 
     override fun <T> addDrawableChild(drawableElement: T): T where T : Element?, T : Drawable?, T : Selectable? {
