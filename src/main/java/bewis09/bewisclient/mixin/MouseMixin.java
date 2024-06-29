@@ -29,7 +29,7 @@ public class MouseMixin {
 
     @Inject(method = "onMouseScroll", at = @At("HEAD"), cancellable = true)
     public void inject(long window, double horizontal, double vertical, CallbackInfo ci) {
-        if(JavaSettingsSender.Companion.isZoomed()) {
+        if(JavaSettingsSender.Companion.isZoomed() && JavaSettingsSender.Companion.getSettings().getBoolean("general","zoom_enabled")) {
             var a = (ZoomImplementer)(MinecraftClient.getInstance().gameRenderer);
 
             if(a.bewisclient5_0$getGoal()-vertical*0.02>0.009 && a.bewisclient5_0$getGoal()-vertical*0.02<0.4)
