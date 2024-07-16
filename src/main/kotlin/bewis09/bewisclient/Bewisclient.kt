@@ -5,7 +5,6 @@ import bewis09.bewisclient.autoUpdate.Updater
 import bewis09.bewisclient.cape.Capes
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.screen.SnakeScreen
-import bewis09.bewisclient.server.ServerConnection
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.widgets.WidgetRenderer
 import bewis09.bewisclient.wings.WingFeatureRenderer
@@ -26,14 +25,15 @@ import net.minecraft.command.CommandRegistryAccess
 import net.minecraft.text.MutableText
 import net.minecraft.text.Style
 import net.minecraft.text.Text
+import net.minecraft.text.TranslatableTextContent
 import net.minecraft.util.math.Vec3d
 import org.lwjgl.glfw.GLFW
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.awt.event.ActionEvent
 import java.lang.Float.min
 import javax.swing.Timer
 import kotlin.math.max
+
 
 object Bewisclient : ClientModInitializer {
     private val LOGGER: Logger = LoggerFactory.getLogger("bewisclient")
@@ -166,6 +166,10 @@ object Bewisclient : ClientModInitializer {
 
 	fun log(string: Any?) {
 		LOGGER.info(string.toString())
+	}
+
+	fun getTranslationText(key: String, vararg args: Any): MutableText {
+		return MutableText.of(TranslatableTextContent(key, null, args))
 	}
 
 	fun getTranslationText(key: String): MutableText {

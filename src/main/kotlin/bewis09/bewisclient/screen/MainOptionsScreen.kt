@@ -45,8 +45,8 @@ class MainOptionsScreen : Screen(Text.empty()) {
 
     var shouldNotNotifyChange = false
 
-    private val closeTextures: ButtonTextures = ButtonTextures(Identifier("bewisclient","textures/sprites/close_button.png"), Identifier("bewisclient","textures/sprites/close_button_highlighted.png"))
-    private val backTextures: ButtonTextures = ButtonTextures(Identifier("bewisclient","textures/sprites/back_button.png"),Identifier("bewisclient","textures/sprites/back_button_highlighted.png"))
+    private val closeTextures: ButtonTextures = ButtonTextures(Identifier.of("bewisclient","textures/sprites/close_button.png"), Identifier.of("bewisclient","textures/sprites/close_button_highlighted.png"))
+    private val backTextures: ButtonTextures = ButtonTextures(Identifier.of("bewisclient","textures/sprites/back_button.png"),Identifier.of("bewisclient","textures/sprites/back_button_highlighted.png"))
 
     var allElements = arrayListOf(ElementList.main())
 
@@ -70,8 +70,8 @@ class MainOptionsScreen : Screen(Text.empty()) {
             }
             if(animationState==AnimationState.LEFT) {
                 slice--
-                scrolls.removeLast()
-                allElements.removeLast()
+                scrolls.removeAt(scrolls.size-1)
+                allElements.removeAt(allElements.size-1)
             }
             if(animationState==AnimationState.RIGHT) {
                 slice++
@@ -91,7 +91,9 @@ class MainOptionsScreen : Screen(Text.empty()) {
         if(animationState.animation==AnimationState.MIDDLE_ANIMATION)
             animationFrame = 1f
 
-        context.fill((this.width/4) +4,0, (this.width-this.width/4-2)-2,this.height,
+        context.fill(
+            ((this.width/4) +4+6-6*animationFrame).toInt(),0,
+            ((this.width-this.width/4-2)-2+6-6*animationFrame).toInt(),this.height,
             ((0x88*animationFrame).toLong()*0x1000000).toInt()
         )
 
@@ -283,10 +285,12 @@ class MainOptionsScreen : Screen(Text.empty()) {
     }
 
     fun openNewSlice(elements: ArrayList<MainOptionsElement>) {
-        allElements.add(elements)
-        scrolls.add(0F)
-        animationState = AnimationState.RIGHT
-        animationStart = System.currentTimeMillis()
+        if(animationState == AnimationState.STABLE) {
+            allElements.add(elements)
+            scrolls.add(0F)
+            animationState = AnimationState.RIGHT
+            animationStart = System.currentTimeMillis()
+        }
     }
 
     override fun close() {
@@ -306,19 +310,11 @@ class MainOptionsScreen : Screen(Text.empty()) {
 
     private fun fillGradient(context: DrawContext, startX: Int, startY: Int, endX: Int, endY: Int, colorStart: Int, colorEnd: Int) {
         val vertexConsumer: VertexConsumer = context.vertexConsumers.getBuffer(RenderLayer.getGui())
-        val f = ColorHelper.Argb.getAlpha(colorStart).toFloat() / 255.0f
-        val g = ColorHelper.Argb.getRed(colorStart).toFloat() / 255.0f
-        val h = ColorHelper.Argb.getGreen(colorStart).toFloat() / 255.0f
-        val i = ColorHelper.Argb.getBlue(colorStart).toFloat() / 255.0f
-        val j = ColorHelper.Argb.getAlpha(colorEnd).toFloat() / 255.0f
-        val k = ColorHelper.Argb.getRed(colorEnd).toFloat() / 255.0f
-        val l = ColorHelper.Argb.getGreen(colorEnd).toFloat() / 255.0f
-        val m = ColorHelper.Argb.getBlue(colorEnd).toFloat() / 255.0f
         val matrix4f: Matrix4f = context.matrices.peek().positionMatrix
-        vertexConsumer.vertex(matrix4f, endX.toFloat(), startY.toFloat(), 5f).color(k, l, m, j).next()
-        vertexConsumer.vertex(matrix4f, startX.toFloat(), startY.toFloat(), 5f).color(g, h, i, f).next()
-        vertexConsumer.vertex(matrix4f, startX.toFloat(), endY.toFloat(), 5f).color(g, h, i, f).next()
-        vertexConsumer.vertex(matrix4f, endX.toFloat(), endY.toFloat(), 5f).color(k, l, m, j).next()
+        vertexConsumer.vertex(matrix4f, endX.toFloat(), startY.toFloat(), 5f).color(colorEnd)
+        vertexConsumer.vertex(matrix4f, startX.toFloat(), startY.toFloat(), 5f).color(colorStart)
+        vertexConsumer.vertex(matrix4f, startX.toFloat(), endY.toFloat(), 5f).color(colorStart)
+        vertexConsumer.vertex(matrix4f, endX.toFloat(), endY.toFloat(), 5f).color(colorEnd)
     }
 
     fun correctScroll() {

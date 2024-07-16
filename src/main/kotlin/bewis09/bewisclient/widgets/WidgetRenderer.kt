@@ -8,11 +8,12 @@ import com.google.gson.JsonObject
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
+import net.minecraft.client.render.RenderTickCounter
 
 class WidgetRenderer: HudRenderCallback {
 
     companion object {
-        //val effectWidget = EffectWidget()
+        val effectWidget = EffectWidget()
 
         val widgets = arrayListOf(
                 BiomeWidget(),
@@ -22,7 +23,7 @@ class WidgetRenderer: HudRenderCallback {
                 TiwylaWidget(),
                 PingWidget(),
                 CoordinatesWidget(),
-                //effectWidget,
+                effectWidget,
                 DayWidget(),
                 DaytimeWidget(),
                 KeyWidget(),
@@ -40,7 +41,7 @@ class WidgetRenderer: HudRenderCallback {
         }
     }
 
-    override fun onHudRender(drawContext: DrawContext?, tickDelta: Float) {
+    override fun onHudRender(drawContext: DrawContext?, tickCounter: RenderTickCounter) {
         if(MinecraftClient.getInstance().currentScreen !is WidgetConfigScreen && !MinecraftClient.getInstance().options.hudHidden) {
             widgets.forEach {
                 if (drawContext != null && it.isEnabled()) {

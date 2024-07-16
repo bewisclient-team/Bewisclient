@@ -55,8 +55,8 @@ public class WingFeatureRenderer extends FeatureRenderer<AbstractClientPlayerEnt
             part2.pivotX = body.pivotX;
             part2.pivotY = body.pivotY;
             part2.pivotZ = body.pivotZ + 2;
-            part1.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityTranslucentCull(getTexture(entity))), light, 1, 1, 1, 1, 1);
-            part2.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityTranslucentCull(getTexture(entity))), light, 1, 1, 1, 1f, 1);
+            part1.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityTranslucentCull(getTexture(entity))), light, 1);
+            part2.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityTranslucentCull(getTexture(entity))), light, 1);
         }
     }
 

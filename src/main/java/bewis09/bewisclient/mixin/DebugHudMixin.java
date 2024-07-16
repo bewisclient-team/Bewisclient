@@ -111,7 +111,7 @@ public abstract class DebugHudMixin {
                 list.add("Waiting for Chunk...");
             } else {
                 WorldChunk worldChunk2 = this.getChunk();
-                list.add(k==0?j<8?"§c":"§6":"§2"+ "Light: " + Math.max(j, k) + " (sky: " + j + " block: " + k + ")");
+                list.add((k==0?(j<8?"§c":"§6"):"§2")+ "Light: " + Math.max(j, k) + " (sky: " + j + " block: " + k + ")");
                 list.add("Highest Block: " + worldChunk.sampleHeightmap(Heightmap.Type.WORLD_SURFACE, blockPos.getX(), blockPos.getZ()));
                 RegistryEntry<Biome> var27 = this.client.world.getBiome(blockPos);
                 AtomicReference<String> text = new AtomicReference<>(getBiomeString(var27));

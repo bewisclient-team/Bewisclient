@@ -1,7 +1,7 @@
 package bewis09.bewisclient.tooltip;
 
-import net.minecraft.client.item.TooltipData;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.tooltip.TooltipData;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.collection.DefaultedList;
 

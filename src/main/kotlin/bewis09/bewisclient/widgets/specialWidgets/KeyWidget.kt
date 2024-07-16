@@ -10,6 +10,7 @@ import net.minecraft.text.Text
 @Suppress("SameParameterValue")
 class KeyWidget: Widget("keys",) {
     override fun render(drawContext: DrawContext) {
+        drawContext.matrices.push()
         drawContext.matrices.scale(getScale(),getScale(),1F)
         renderKey(20,19,22,0,MinecraftClient.getInstance().options.forwardKey,drawContext)
         renderKey(20,19,0,21,MinecraftClient.getInstance().options.leftKey,drawContext)
@@ -18,7 +19,8 @@ class KeyWidget: Widget("keys",) {
         renderKey(64,0,42,MinecraftClient.getInstance().options.jumpKey,drawContext)
         renderKey(31,0,59,Text.of("LMB"),MinecraftClient.getInstance().options.attackKey,drawContext)
         renderKey(31,33,59,Text.of("RMB"),MinecraftClient.getInstance().options.useKey,drawContext)
-        drawContext.matrices.scale(1/getScale(),1/getScale(),1F)
+
+        drawContext.matrices.pop()
     }
 
     override fun getOriginalWidth(): Int {

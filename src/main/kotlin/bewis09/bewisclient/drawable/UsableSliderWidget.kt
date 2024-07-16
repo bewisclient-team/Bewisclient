@@ -55,7 +55,7 @@ class UsableSliderWidget : SliderWidget {
                 }
                 return p
             } else {
-                return value.toInt().toString()
+                return (round(value).toInt().toString())
             }
         }
     }

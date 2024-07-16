@@ -38,7 +38,7 @@ public class HatFeatureRenderer extends FeatureRenderer<AbstractClientPlayerEnti
                 hat.pivotY = head.pivotY;
                 hat.pivotZ = head.pivotZ;
             }
-            hat.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityTranslucentCull(getTexture(entity))), light, 1, 1, 1, 1, 1);
+            hat.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityTranslucentCull(getTexture(entity))), light, 1);
         }
     }
 
