@@ -1,8 +1,7 @@
-package bewis09.bewisclient.drawable
+package bewis09.bewisclient.drawable.option_elements
 
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.screen.MainOptionsScreen
-import bewis09.bewisclient.settingsLoader.Settings
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
@@ -10,7 +9,7 @@ import net.minecraft.util.math.ColorHelper
 import net.minecraft.util.math.MathHelper
 import kotlin.math.cos
 
-class BooleanOptionsElement : WidgetOptionsElement {
+class BooleanOptionsElement : SettingsOptionsElement {
 
     private val value: String
     private val settings: String

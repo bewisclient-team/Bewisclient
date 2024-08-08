@@ -1,6 +1,6 @@
 package bewis09.bewisclient.api;
 
-import bewis09.bewisclient.drawable.MainOptionsElement;
+import bewis09.bewisclient.drawable.option_elements.MainOptionsElement;
 import bewis09.bewisclient.exception.FalseClassException;
 import bewis09.bewisclient.screen.elements.ElementList;
 import bewis09.bewisclient.widgets.Widget;

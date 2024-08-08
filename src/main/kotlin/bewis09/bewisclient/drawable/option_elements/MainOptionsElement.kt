@@ -1,9 +1,9 @@
-package bewis09.bewisclient.drawable
+package bewis09.bewisclient.drawable.option_elements
 
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.screen.MainOptionsScreen
-import bewis09.bewisclient.settingsLoader.Settings
 import bewis09.bewisclient.settingsLoader.SettingsLoader
+import bewis09.bewisclient.util.Search
 import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
@@ -11,7 +11,7 @@ import net.minecraft.client.gui.screen.Screen
 import net.minecraft.util.Identifier
 import kotlin.math.max
 
-open class MainOptionsElement {
+open class MainOptionsElement: Search.SearchableElement<MainOptionsElement> {
 
     val title: String
     val description: String
@@ -162,5 +162,14 @@ open class MainOptionsElement {
 
     open fun charTyped(chr: Char, modifiers: Int) {
 
+    }
+
+    override fun getChildElementsForSearch(): ArrayList<MainOptionsElement>? {
+        return elements
+    }
+
+    override fun getSearchKeywords(): ArrayList<String> {
+        if(Bewisclient.getTranslatedString(title)== "bewisclient.$title") return arrayListOf()
+        return arrayListOf(Bewisclient.getTranslatedString(title))
     }
 }

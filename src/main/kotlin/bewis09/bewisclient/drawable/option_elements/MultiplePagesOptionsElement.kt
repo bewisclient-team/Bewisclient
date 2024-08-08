@@ -1,12 +1,14 @@
-package bewis09.bewisclient.drawable
+package bewis09.bewisclient.drawable.option_elements
 
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.screen.MainOptionsScreen
+import bewis09.bewisclient.util.Search
 import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.text.OrderedText
 import net.minecraft.util.Identifier
+import java.util.Arrays
 import kotlin.math.ceil
 
 class MultiplePagesOptionsElement(val elementList: Array<MultiplePagesElement>): MainOptionsElement("","",Identifier.of("")) {
@@ -56,8 +58,8 @@ class MultiplePagesOptionsElement(val elementList: Array<MultiplePagesElement>):
             RenderSystem.disableBlend()
 
             val l = MinecraftClient.getInstance().textRenderer.wrapLines(Bewisclient.getTranslationText(multiplePagesElement.title),elementWidth-8)
-            l.forEachIndexed{ i: Int, orderedText: OrderedText ->
-                context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, orderedText,x+elementWidth/2,y+line*84+50+i*9+9-(l.size*4.5).toInt(),-1)
+            l.forEachIndexed{ i1: Int, orderedText: OrderedText ->
+                context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, orderedText,x+elementWidth/2,y+line*84+50+i1*9+9-(l.size*4.5).toInt(),-1)
             }
 
             context.setShaderColor(1f,1f,1f,1f)
@@ -68,7 +70,11 @@ class MultiplePagesOptionsElement(val elementList: Array<MultiplePagesElement>):
         return ceil(elementList.size/(elementsPerRow.toDouble())).toInt()*84-4
     }
 
-    class MultiplePagesElement(val title: String, val elements: ArrayList<MainOptionsElement>, val image: Identifier)
+    class MultiplePagesElement(val title: String, val elements: ArrayList<MainOptionsElement>, val image: Identifier): Search.SearchableElement<MultiplePagesElement> {
+        override fun getSearchKeywords(): ArrayList<String> {
+            return arrayListOf(Bewisclient.getTranslatedString(title))
+        }
+    }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int, screen: MainOptionsScreen) {
         if(hoveredElement!=-1) {
@@ -77,5 +83,23 @@ class MultiplePagesOptionsElement(val elementList: Array<MultiplePagesElement>):
         }
 
         super.mouseClicked(mouseX, mouseY, button, screen)
+    }
+
+    override fun getAdditionalElementsWithKeyword(): (String) -> ArrayList<MainOptionsElement>? {
+        val collection = Search.collect((elementList.toList()))
+
+        return {
+            arrayListOf(MultiplePagesOptionsElement(Search.search(collection,it).toArray(arrayOf())))
+        }
+    }
+
+    override fun getChildElementsForSearch(): ArrayList<MainOptionsElement> {
+        val l = arrayListOf<MainOptionsElement>()
+
+        elementList.forEach {
+            l.addAll(it.elements)
+        }
+
+        return l
     }
 }

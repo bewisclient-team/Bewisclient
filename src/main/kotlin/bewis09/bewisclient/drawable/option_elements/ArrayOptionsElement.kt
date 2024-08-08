@@ -1,22 +1,22 @@
-package bewis09.bewisclient.drawable
+package bewis09.bewisclient.drawable.option_elements
 
 import bewis09.bewisclient.Bewisclient
+import bewis09.bewisclient.drawable.ScalableButtonWidget
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.settingsLoader.DefaultSettings
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
-import net.minecraft.client.gui.widget.ButtonWidget
 import net.minecraft.text.Text
 
-class ArrayOptionsElement(title: String, path: String, private val value: String, private val settings: String) : WidgetOptionsElement(title, path, arrayListOf()) {
+class ArrayOptionsElement(title: String, path: String, private val value: String, private val settings: String) : SettingsOptionsElement(title, path, arrayListOf()) {
 
     private var v = SettingsLoader.getFloat(settings,path).toInt()
 
     private val widget = ScalableButtonWidget.builder(Text.empty()) {
         v += 1
         v %= de.size
-        SettingsLoader.set(settings,path,v.toFloat())
+        SettingsLoader.set(settings, path, v.toFloat())
     }.dimensions(0,0,100,20).build()
 
     private val de = (DefaultSettings.arrays[value] ?: DefaultSettings.arrays["." + value.split(".")[value.split(".").size - 1]])!!

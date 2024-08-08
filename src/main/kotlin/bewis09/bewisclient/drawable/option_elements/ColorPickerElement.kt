@@ -1,6 +1,8 @@
-package bewis09.bewisclient.drawable
+package bewis09.bewisclient.drawable.option_elements
 
 import bewis09.bewisclient.Bewisclient
+import bewis09.bewisclient.drawable.ScalableButtonWidget
+import bewis09.bewisclient.drawable.UsableSliderWidget
 import bewis09.bewisclient.drawable.UsableSliderWidget.Companion.withDecimalPlaces
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.settingsLoader.SettingsLoader
@@ -14,7 +16,7 @@ import net.minecraft.util.math.MathHelper
 import java.awt.Color
 import kotlin.math.roundToInt
 
-class ColorPickerElement(title: String, path: String, private val value: String, private val settings: String): WidgetOptionsElement(title, path, arrayListOf()) {
+class ColorPickerElement(title: String, path: String, private val value: String, private val settings: String): SettingsOptionsElement(title, path, arrayListOf()) {
 
     var posX: Int = 0
     var posY: Int = 0
@@ -30,13 +32,17 @@ class ColorPickerElement(title: String, path: String, private val value: String,
     val static = ScalableButtonWidget.builder(Bewisclient.getTranslationText("color.static")) {
         changing = false
 
-        SettingsLoader.set(settings,path,ColorSaver.of(ColorSaver.of(SettingsLoader.getString(settings,path)).getColor()+0x1000000))
+        SettingsLoader.set(
+            settings,
+            path,
+            ColorSaver.of(ColorSaver.of(SettingsLoader.getString(settings, path)).getColor() + 0x1000000)
+        )
     }.build()
 
     val change = ScalableButtonWidget.builder(Bewisclient.getTranslationText("color.change")) {
         changing = true
 
-        SettingsLoader.set(settings,path,ColorSaver.of((-(widget.getValue()*(19000)+1000)).toInt()))
+        SettingsLoader.set(settings, path, ColorSaver.of((-(widget.getValue() * (19000) + 1000)).toInt()))
     }.build()
 
     val widget = UsableSliderWidget(0, 0, 100, 20, Text.empty(), if(ColorSaver.of(SettingsLoader.getString(settings,path)).getColor()<0)

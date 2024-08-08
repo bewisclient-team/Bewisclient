@@ -1,17 +1,16 @@
 package bewis09.bewisclient.screen.elements
 
 import bewis09.bewisclient.drawable.*
+import bewis09.bewisclient.drawable.option_elements.*
 import bewis09.bewisclient.screen.CosmeticsScreen
 import bewis09.bewisclient.settingsLoader.DefaultSettings
 import bewis09.bewisclient.settingsLoader.SettingsLoader
-import bewis09.bewisclient.util.ColorSaver
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import net.minecraft.client.MinecraftClient
 import net.minecraft.util.Identifier
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.math.exp
 
 object ElementList {
 
@@ -272,8 +271,8 @@ object ElementList {
             }
             value.asJsonPrimitive.isString -> if(str.split("_")[0]=="info")
                             InfoElement("info.$str")
-                        else
-                            StringOptionsElement(key,str,key,"widgets")
+                        else InfoElement("info.$str")
+                            // String Element no longer exists: StringOptionsElement(key,str,key,"widgets")
             else -> WidgetOptionsElement(key,str, arrayListOf())
         }
     }

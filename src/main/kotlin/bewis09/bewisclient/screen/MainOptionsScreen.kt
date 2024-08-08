@@ -1,12 +1,14 @@
 package bewis09.bewisclient.screen
 
 import bewis09.bewisclient.Bewisclient
-import bewis09.bewisclient.drawable.MainOptionsElement
+import bewis09.bewisclient.drawable.option_elements.MainOptionsElement
 import bewis09.bewisclient.drawable.UsableTexturedButtonWidget
 import bewis09.bewisclient.mixin.ScreenMixin
 import bewis09.bewisclient.screen.elements.ElementList
+import bewis09.bewisclient.screen.widget.WidgetConfigScreen
 import bewis09.bewisclient.settingsLoader.Settings
 import bewis09.bewisclient.settingsLoader.SettingsLoader
+import bewis09.bewisclient.util.Search
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.ButtonTextures
@@ -28,7 +30,7 @@ import java.util.*
 import kotlin.math.*
 
 @Suppress("CAST_NEVER_SUCCEEDS")
-class MainOptionsScreen : Screen(Text.empty()) {
+open class MainOptionsScreen : Screen(Text.empty()) {
 
     var animationStart = 0L
     var animatedScreen: Screen? = null
@@ -62,7 +64,7 @@ class MainOptionsScreen : Screen(Text.empty()) {
 
         correctScroll()
         var animationFrame = 1F
-        val animationSpeed = MathHelper.clamp(SettingsLoader.getInt("design","options_menu.animation_time").toInt(),1,500)
+        val animationSpeed = MathHelper.clamp(SettingsLoader.getInt("design","options_menu.animation_time"),1,500)
         if(System.currentTimeMillis() - animationStart >= animationSpeed) {
             if(animationState==AnimationState.TO_OTHER_SCREEN) {
                 client?.setScreen(animatedScreen)
@@ -243,26 +245,13 @@ class MainOptionsScreen : Screen(Text.empty()) {
                     scrolls = arrayListOf(0f)
                     slice = 0
                 } else {
-                    allElements.add(getList(ElementList.main()))
+                    allElements.add(Search.searchWithAdditions(searchCollection,it,additions))
                     scrolls.add(0F)
                     slice++
                 }
             }
         }
         bottomAnimation.add(searchBar!!)
-    }
-
-    fun getList(elements: ArrayList<MainOptionsElement>): ArrayList<MainOptionsElement> {
-        val list: ArrayList<MainOptionsElement> = arrayListOf()
-        for (e in elements) {
-            if(Bewisclient.getTranslatedString(e.title).lowercase(Locale.getDefault()).contains(searchBar!!.text.lowercase(Locale.getDefault())) && e.javaClass!=MainOptionsElement::class.java) {
-                list.add(e)
-            }
-            if(e.elements!=null) {
-                list.addAll(getList(e.elements!!))
-            }
-        }
-        return list
     }
 
     fun startAllAnimation(screen: Screen?) {
@@ -334,6 +323,8 @@ class MainOptionsScreen : Screen(Text.empty()) {
     }
 
     companion object {
+        val searchCollection = Search.collect(ElementList.main())
+        val additions = Search.collectAdditions(ElementList.main())
 
         var laS = 1f/ SettingsLoader.getFloat("design","options_menu.scale")
 

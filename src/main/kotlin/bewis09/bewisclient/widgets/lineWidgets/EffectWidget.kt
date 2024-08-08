@@ -1,6 +1,6 @@
 package bewis09.bewisclient.widgets.lineWidgets
 
-import bewis09.bewisclient.screen.WidgetConfigScreen
+import bewis09.bewisclient.screen.widget.WidgetConfigScreen
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.widgets.Widget
 import com.google.gson.JsonObject

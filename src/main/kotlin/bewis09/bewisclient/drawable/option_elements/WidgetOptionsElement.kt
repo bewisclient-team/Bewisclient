@@ -1,8 +1,7 @@
-package bewis09.bewisclient.drawable
+package bewis09.bewisclient.drawable.option_elements
 
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.screen.MainOptionsScreen
-import bewis09.bewisclient.settingsLoader.Settings
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.MinecraftClient
@@ -66,16 +65,12 @@ open class WidgetOptionsElement(originalTitle: String, val path: String, element
             RenderSystem.disableBlend()
         }
 
-        if(this.javaClass == WidgetOptionsElement::class.java) {
-            val enabled = (SettingsLoader.getBoolean("widgets","$path.enabled"))
+        val enabled = (SettingsLoader.getBoolean("widgets","$path.enabled"))
 
-            val hovered = pos[2]-100 < mouseX && pos[1]+2 < mouseY && pos[2]-24 > mouseX && pos[1]+16 > mouseY
+        context.fill(x + width - 100+(if(allClicked && isSelected) 1 else 0) + if(allClicked) 22 else 0, y + 2-(if(allClicked && isSelected) 1 else 0), x + width - 24+(if(allClicked && isSelected) 1 else 0) + if(allClicked) 22 else 0, y + 16-(if(allClicked && isSelected) 1 else 0), (alphaModifier+(if (enabled) 0x44BB44 else 0xFF0000)).toInt())
+        context.drawBorder(x + width - 100+(if(allClicked && isSelected) 1 else 0) + if(allClicked) 22 else 0, y + 2-(if(allClicked && isSelected) 1 else 0), 76, 14, (alphaModifier+(0xFFFFFF)).toInt())
 
-            context.fill(x + width - 100+(if(allClicked && isSelected) 1 else 0) + if(allClicked) 22 else 0, y + 2-(if(allClicked && isSelected) 1 else 0), x + width - 24+(if(allClicked && isSelected) 1 else 0) + if(allClicked) 22 else 0, y + 16-(if(allClicked && isSelected) 1 else 0), (alphaModifier+(if (enabled) 0x44BB44 else 0xFF0000)).toInt())
-            context.drawBorder(x + width - 100+(if(allClicked && isSelected) 1 else 0) + if(allClicked) 22 else 0, y + 2-(if(allClicked && isSelected) 1 else 0), 76, 14, (alphaModifier+(0xFFFFFF)).toInt())
-
-            context.drawCenteredTextWithShadow(client.textRenderer, if (enabled) Bewisclient.getTranslatedString("enabled") else Bewisclient.getTranslatedString("disabled"), x + width - 62+(if(allClicked && isSelected) 1 else 0) + if(allClicked) 22 else 0, y + 5-(if(allClicked && isSelected) 1 else 0), (alphaModifier+0xFFFFFF).toInt())
-        }
+        context.drawCenteredTextWithShadow(client.textRenderer, if (enabled) Bewisclient.getTranslatedString("enabled") else Bewisclient.getTranslatedString("disabled"), x + width - 62+(if(allClicked && isSelected) 1 else 0) + if(allClicked) 22 else 0, y + 5-(if(allClicked && isSelected) 1 else 0), (alphaModifier+0xFFFFFF).toInt())
 
         return height
     }
@@ -89,5 +84,9 @@ open class WidgetOptionsElement(originalTitle: String, val path: String, element
         }
 
         super.mouseClicked(mouseX, mouseY, button, screen)
+    }
+
+    override fun getChildElementsForSearch(): ArrayList<MainOptionsElement>? {
+        return null
     }
 }

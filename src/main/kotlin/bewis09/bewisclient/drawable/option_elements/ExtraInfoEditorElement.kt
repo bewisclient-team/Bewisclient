@@ -1,4 +1,4 @@
-package bewis09.bewisclient.drawable
+package bewis09.bewisclient.drawable.option_elements
 
 import bewis09.bewisclient.screen.MainOptionsScreen
 import net.minecraft.client.gui.DrawContext

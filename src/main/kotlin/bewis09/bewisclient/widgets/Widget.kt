@@ -1,7 +1,7 @@
 package bewis09.bewisclient.widgets
 
 import bewis09.bewisclient.mixin.BossBarHudMixin
-import bewis09.bewisclient.screen.WidgetConfigScreen
+import bewis09.bewisclient.screen.widget.WidgetConfigScreen
 import bewis09.bewisclient.settingsLoader.Settings
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.util.ColorSaver

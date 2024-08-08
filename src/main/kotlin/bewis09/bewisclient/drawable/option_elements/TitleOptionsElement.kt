@@ -1,4 +1,4 @@
-package bewis09.bewisclient.drawable
+package bewis09.bewisclient.drawable.option_elements
 
 import bewis09.bewisclient.Bewisclient
 import net.minecraft.client.MinecraftClient
@@ -18,5 +18,9 @@ class TitleOptionsElement(title: String): MainOptionsElement(title,"", Identifie
         context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer,Bewisclient.getTranslationText(title),x+width/2,y+5,-1)
 
         return 20
+    }
+
+    override fun getSearchKeywords(): ArrayList<String> {
+        return arrayListOf()
     }
 }

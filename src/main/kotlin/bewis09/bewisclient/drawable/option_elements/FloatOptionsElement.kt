@@ -1,17 +1,17 @@
-package bewis09.bewisclient.drawable
+package bewis09.bewisclient.drawable.option_elements
 
 import bewis09.bewisclient.Bewisclient
+import bewis09.bewisclient.drawable.UsableSliderWidget
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.settingsLoader.DefaultSettings
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.text.Text
-import kotlin.math.log
 import kotlin.math.pow
 import kotlin.math.round
 
-class FloatOptionsElement : WidgetOptionsElement {
+class FloatOptionsElement : SettingsOptionsElement {
 
     private val value: String
     private val settings: String

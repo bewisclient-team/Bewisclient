@@ -2,7 +2,7 @@ package bewis09.bewisclient.widgets.lineWidgets
 
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.mixin.ClientPlayNetworkHandlerMixin
-import bewis09.bewisclient.screen.WidgetConfigScreen
+import bewis09.bewisclient.screen.widget.WidgetConfigScreen
 import com.google.gson.JsonObject
 import net.minecraft.client.MinecraftClient
 

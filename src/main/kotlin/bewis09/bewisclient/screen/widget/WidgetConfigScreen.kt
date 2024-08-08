@@ -1,6 +1,7 @@
-package bewis09.bewisclient.screen
+package bewis09.bewisclient.screen.widget
 
 import bewis09.bewisclient.Bewisclient
+import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.screen.elements.ElementList
 import bewis09.bewisclient.settingsLoader.Settings
 import bewis09.bewisclient.settingsLoader.SettingsLoader
