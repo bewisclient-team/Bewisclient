@@ -85,11 +85,16 @@ class MultiplePagesOptionsElement(val elementList: Array<MultiplePagesElement>):
         super.mouseClicked(mouseX, mouseY, button, screen)
     }
 
-    override fun getAdditionalElementsWithKeyword(): (String) -> ArrayList<MainOptionsElement>? {
+    override fun getElementByKeywordLamba(): (String) -> MainOptionsElement? {
         val collection = Search.collect((elementList.toList()))
 
         return {
-            arrayListOf(MultiplePagesOptionsElement(Search.search(collection,it).toArray(arrayOf())))
+            val results = Search.search(it,collection)
+
+            if(results.isNotEmpty())
+                MultiplePagesOptionsElement(results.toArray(arrayOf()))
+            else
+                null
         }
     }
 

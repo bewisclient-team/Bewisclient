@@ -47,6 +47,8 @@ open class MainOptionsScreen : Screen(Text.empty()) {
 
     var shouldNotNotifyChange = false
 
+    var shouldNotRedoFocus = false
+
     private val closeTextures: ButtonTextures = ButtonTextures(Identifier.of("bewisclient","textures/sprites/close_button.png"), Identifier.of("bewisclient","textures/sprites/close_button_highlighted.png"))
     private val backTextures: ButtonTextures = ButtonTextures(Identifier.of("bewisclient","textures/sprites/back_button.png"),Identifier.of("bewisclient","textures/sprites/back_button_highlighted.png"))
 
@@ -239,18 +241,23 @@ open class MainOptionsScreen : Screen(Text.empty()) {
         }.dimensions(width/4*3-1-width/6,height-24,width/6-29,20).build()))
         searchBar = addDrawableChild(TextFieldWidget(MinecraftClient.getInstance().textRenderer,width/2+4-width/12,height-24,width/6-8,20,Text.empty()))
         searchBar?.setChangedListener {
-            if(!shouldNotNotifyChange) {
+            if (!shouldNotNotifyChange) {
                 if (it == "") {
                     allElements = arrayListOf(ElementList.main())
                     scrolls = arrayListOf(0f)
                     slice = 0
                 } else {
-                    allElements.add(Search.searchWithAdditions(searchCollection,it,additions))
-                    scrolls.add(0F)
-                    slice++
+                    allElements = arrayListOf(Search.search(it, searchCollection))
+                    scrolls = arrayListOf(0f)
+                    slice = 0
                 }
             }
         }
+        if(!shouldNotRedoFocus) {
+            searchBar?.isFocused = true
+            focused = searchBar
+        }
+        shouldNotRedoFocus = true
         bottomAnimation.add(searchBar!!)
     }
 
@@ -262,7 +269,7 @@ open class MainOptionsScreen : Screen(Text.empty()) {
 
     fun goBack() {
         if(animationState==AnimationState.STABLE)
-            if(slice>0 && searchBar?.text=="") {
+            if(slice>0) {
                 shouldNotNotifyChange = true
                 searchBar?.text = ""
                 animationState = AnimationState.LEFT
@@ -324,7 +331,6 @@ open class MainOptionsScreen : Screen(Text.empty()) {
 
     companion object {
         val searchCollection = Search.collect(ElementList.main())
-        val additions = Search.collectAdditions(ElementList.main())
 
         var laS = 1f/ SettingsLoader.getFloat("design","options_menu.scale")
 
