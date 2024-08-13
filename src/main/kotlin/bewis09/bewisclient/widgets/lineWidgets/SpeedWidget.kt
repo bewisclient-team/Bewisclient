@@ -1,7 +1,6 @@
 package bewis09.bewisclient.widgets.lineWidgets
 
 import bewis09.bewisclient.Bewisclient
-import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import kotlin.math.round
@@ -13,7 +12,7 @@ class SpeedWidget: LineWidget("speed",80,true) {
     }
 
     private fun withEndZero(str: Any): String {
-        var strD = str.toString();
+        var strD = str.toString()
         while (strD.split(".")[1].length<2) {
             strD+="0"
         }

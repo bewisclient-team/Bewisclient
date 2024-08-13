@@ -18,7 +18,6 @@ public record Hat(Identifier texture) {
         try {
             current_hat = HATS[(int) JavaSettingsSender.Companion.getSettings().get("design", Settings.Companion.getSettings().getHAT())];
         } catch (Exception e) {
-            e.printStackTrace();
             current_hat = EMPTY;
         }
     }

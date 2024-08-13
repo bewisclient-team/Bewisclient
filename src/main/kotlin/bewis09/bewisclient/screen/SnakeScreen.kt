@@ -11,17 +11,16 @@ import net.minecraft.client.sound.PositionedSoundInstance
 import net.minecraft.sound.SoundEvents
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
-import net.minecraft.util.math.ColorHelper
 import org.joml.Matrix4f
 import org.lwjgl.glfw.GLFW
 import kotlin.math.ceil
 
 class SnakeScreen: Screen(Text.empty()) {
 
-    val GREEN = Identifier.of("textures/block/green_terracotta.png")
-    val RED = Identifier.of("textures/block/red_terracotta.png")
-    val BLUE = Identifier.of("textures/block/blue_terracotta.png")
-    val MELON = Identifier.of("textures/block/melon_side.png")
+    val GREEN = Identifier.of("textures/block/green_terracotta.png")!!
+    val RED = Identifier.of("textures/block/red_terracotta.png")!!
+    val BLUE = Identifier.of("textures/block/blue_terracotta.png")!!
+    val MELON = Identifier.of("textures/block/melon_side.png")!!
 
     var shouldRemoveNext = true
 
@@ -139,7 +138,7 @@ class SnakeScreen: Screen(Text.empty()) {
             return
         }
         SNAKE.add(new)
-        if(APPLE != new && !shouldNotRemove) SNAKE.removeFirst()
+        if(APPLE != new && !shouldNotRemove) SNAKE.removeAt(0)
         else if(APPLE == new) {
             MinecraftClient.getInstance().soundManager.play(PositionedSoundInstance.master(SoundEvents.BLOCK_NOTE_BLOCK_BELL, 1.0f))
             score++

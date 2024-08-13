@@ -16,6 +16,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.awt.*;
+import java.util.Objects;
 
 @Mixin(WolfCollarFeatureRenderer.class)
 public abstract class WolfCollarFeatureRendererMixin extends FeatureRenderer<WolfEntity, WolfEntityModel<WolfEntity>> {
@@ -27,7 +28,7 @@ public abstract class WolfCollarFeatureRendererMixin extends FeatureRenderer<Wol
 
     @Inject(method = "render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/entity/passive/WolfEntity;FFFFFF)V",at=@At("HEAD"), cancellable = true)
     public void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, WolfEntity wolfEntity, float f, float g, float h, float j, float k, float l, CallbackInfo ci) {
-        if(wolfEntity.isTamed() && !wolfEntity.isInvisible() && wolfEntity.getDisplayName().getString().equals("Rainbow")) {
+        if(wolfEntity.isTamed() && !wolfEntity.isInvisible() && Objects.requireNonNull(wolfEntity.getDisplayName()).getString().equals("Rainbow")) {
             float hue = ((System.currentTimeMillis())%10000)/10000f;
             Color color = new Color(Color.HSBtoRGB(hue,1f,1f));
             renderModel(this.getContextModel(), SKIN, matrixStack, vertexConsumerProvider, i, wolfEntity, color.getRGB());

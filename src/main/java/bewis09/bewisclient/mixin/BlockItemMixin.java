@@ -1,7 +1,6 @@
 package bewis09.bewisclient.mixin;
 
 import bewis09.bewisclient.JavaSettingsSender;
-import bewis09.bewisclient.settingsLoader.Settings;
 import bewis09.bewisclient.tooltip.ShulkerBoxTooltipData;
 import net.minecraft.block.Block;
 import net.minecraft.block.ShulkerBoxBlock;

@@ -25,10 +25,7 @@ import org.joml.Quaternionf
 import org.joml.Vector3f
 import org.lwjgl.glfw.GLFW
 import java.util.*
-import kotlin.math.atan
-import kotlin.math.cos
-import kotlin.math.max
-import kotlin.math.min
+import kotlin.math.*
 
 class CosmeticsScreen(private val parent: MainOptionsScreen) : Screen(Text.empty()) {
     var isReversed: Boolean = false
@@ -42,7 +39,7 @@ class CosmeticsScreen(private val parent: MainOptionsScreen) : Screen(Text.empty
     override fun render(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
 
         if(alphaStart==-1L) {
-            alphaStart= System.currentTimeMillis();
+            alphaStart= System.currentTimeMillis()
         }
 
         val animationSpeed = MathHelper.clamp(SettingsLoader.get(
@@ -60,7 +57,7 @@ class CosmeticsScreen(private val parent: MainOptionsScreen) : Screen(Text.empty
         }
 
         var sdfji = MathHelper.clamp((System.currentTimeMillis() - alphaStart)/animationSpeed,0f,1f)
-        sdfji = Math.abs(alphaDirection-sdfji)
+        sdfji = abs(alphaDirection-sdfji)
         sdfji = ((1- cos(Math.PI * sdfji))/2).toFloat()
 
         context.setShaderColor(1f,1f,1f,sdfji)
@@ -131,6 +128,7 @@ class CosmeticsScreen(private val parent: MainOptionsScreen) : Screen(Text.empty
     }
 
     fun renderButtons(context: DrawContext?, mouseX: Int, mouseY: Int, delta: Float, alpha: Float) {
+        @Suppress("CAST_NEVER_SUCCEEDS")
         for (drawable in (this as ScreenMixin).getDrawables()) {
             if(alpha>0.1) {
                 if (drawable is ClickableWidget)
@@ -246,8 +244,7 @@ class CosmeticsScreen(private val parent: MainOptionsScreen) : Screen(Text.empty
     private val scrollbarThumbHeight: Int
         get() = ((height * height) / contentsHeight.toFloat()).toInt()
 
-    val contentsHeight: Int
-        get() = 395
+    val contentsHeight: Int = 395
 
     private fun setScrollY(maxScrollY: Double) {
         scrollY = max(0.0, min(-this.maxScrollY.toDouble(), maxScrollY))
@@ -259,8 +256,7 @@ class CosmeticsScreen(private val parent: MainOptionsScreen) : Screen(Text.empty
         return true
     }
 
-    private val deltaYPerScroll: Double
-        get() = 20.0
+    private val deltaYPerScroll: Double = 20.0
 
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
         val bl = keyCode == GLFW.GLFW_KEY_UP

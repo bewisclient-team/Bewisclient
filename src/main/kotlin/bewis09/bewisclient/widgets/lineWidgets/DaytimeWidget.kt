@@ -1,6 +1,5 @@
 package bewis09.bewisclient.widgets.lineWidgets
 
-import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import net.minecraft.client.MinecraftClient
@@ -41,7 +40,7 @@ class DaytimeWidget: LineWidget("daytime",80,true) {
     private fun withZeros(str: Any?): String {
         var strD = ""
         if(str!=null) {
-            strD = str.toString();
+            strD = str.toString()
         }
         while (strD.length<2) {
             strD= "0$strD"

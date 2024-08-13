@@ -14,9 +14,9 @@ import net.minecraft.util.Identifier;
 
 public class HatFeatureRenderer extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
     
-    ModelPart head;
-    ModelPart hat;
-    PlayerEntityModel<AbstractClientPlayerEntity> model;
+    final ModelPart head;
+    final ModelPart hat;
+    final PlayerEntityModel<AbstractClientPlayerEntity> model;
     
     public HatFeatureRenderer(FeatureRendererContext<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> context) {
         super(context);

@@ -16,7 +16,7 @@ import java.util.Locale;
 
 @Mixin(MinecraftClient.class)
 public class MinecraftClientMixin {
-    @Inject(method = "stop",at = @At("HEAD"))
+    @Inject(method = "stop",at = @At("HEAD"), cancellable = true)
     private void inject(CallbackInfo ci) throws IOException {
         if (!System.getProperty("os.name").toLowerCase(Locale.getDefault()).contains("win")) {
             ci.cancel();

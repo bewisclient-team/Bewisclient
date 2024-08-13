@@ -3,12 +3,10 @@ package bewis09.bewisclient.drawable
 import bewis09.bewisclient.screen.MainOptionsScreen
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
-import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.tooltip.Tooltip
 import net.minecraft.client.gui.widget.ButtonWidget
-import net.minecraft.client.gui.widget.ButtonWidget.Builder
 import net.minecraft.text.Text
 import net.minecraft.util.Util
 import net.minecraft.util.math.MathHelper

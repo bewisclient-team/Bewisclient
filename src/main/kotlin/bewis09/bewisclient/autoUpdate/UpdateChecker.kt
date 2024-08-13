@@ -1,6 +1,5 @@
 package bewis09.bewisclient.autoUpdate
 
-import bewis09.bewisclient.settingsLoader.SettingsLoader
 import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
@@ -13,7 +12,7 @@ import java.util.*
 object UpdateChecker {
     fun checkForUpdates(): JsonObject? {
         try {
-            val scanner = Scanner(URL("https://api.modrinth.com/v2/project/bewisclient/version").openStream())
+            @Suppress("DEPRECATION") val scanner = Scanner(URL("https://api.modrinth.com/v2/project/bewisclient/version").openStream())
             val response = scanner.nextLine()
             scanner.close()
 

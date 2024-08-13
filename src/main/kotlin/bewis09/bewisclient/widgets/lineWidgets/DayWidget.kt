@@ -6,7 +6,7 @@ import net.minecraft.client.MinecraftClient
 
 class DayWidget: LineWidget("days",80,true) {
     override fun getText(): ArrayList<String> {
-        return arrayListOf(Bewisclient.getTranslatedString("widgets.day")+" "+ (MinecraftClient.getInstance().world?.getTimeOfDay()?.div(24000L) ?: 0))
+        return arrayListOf(Bewisclient.getTranslatedString("widgets.day")+" "+ (MinecraftClient.getInstance().world?.timeOfDay?.div(24000L) ?: 0))
     }
 
     override fun getWidgetSettings(): JsonObject {

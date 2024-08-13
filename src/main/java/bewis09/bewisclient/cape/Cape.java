@@ -1,7 +1,5 @@
 package bewis09.bewisclient.cape;
 
-import bewis09.bewisclient.mixin.SkinTexturesMixin;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
 
 public class Cape extends AbstractCape {
@@ -14,10 +12,6 @@ public class Cape extends AbstractCape {
 
     public Cape(String name) {
         this.identifier = Identifier.of("bewisclient","cape/"+name+".png");
-    }
-
-    public Cape(Identifier identifier) {
-        this.identifier = identifier;
     }
 
     public static AbstractCape getCurrentCape() {

@@ -1,6 +1,5 @@
 package bewis09.bewisclient.drawable
 
-import bewis09.bewisclient.Bewisclient
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.ButtonTextures
 import net.minecraft.client.gui.widget.TexturedButtonWidget

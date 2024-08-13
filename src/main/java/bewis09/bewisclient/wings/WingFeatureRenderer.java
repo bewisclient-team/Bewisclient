@@ -17,9 +17,9 @@ import static java.lang.Math.cos;
 
 public class WingFeatureRenderer extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
 
-    ModelPart body;
-    ModelPart part1;
-    ModelPart part2;
+    final ModelPart body;
+    final ModelPart part1;
+    final ModelPart part2;
 
     public static int wing_animation_duration;
 

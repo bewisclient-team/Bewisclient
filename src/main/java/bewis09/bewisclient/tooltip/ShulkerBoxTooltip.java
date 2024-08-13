@@ -5,7 +5,6 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 
@@ -23,12 +22,12 @@ public class ShulkerBoxTooltip implements TooltipComponent {
 
     @Override
     public int getHeight() {
-        return this.getRows() * 18 + 6+16;
+        return 3 * 18 + 6+16;
     }
 
     @Override
     public int getWidth(TextRenderer textRenderer) {
-        return this.getColumns() * 18 + 2+16;
+        return 9 * 18 + 2+16;
     }
 
     @Override
@@ -60,13 +59,5 @@ public class ShulkerBoxTooltip implements TooltipComponent {
     private void draw(DrawContext context, int x, int y) {
         RenderSystem.setShaderColor(color.getRed()/255f, color.getGreen()/255f, color.getBlue()/255f, 1.0f);
         context.drawTexture(TEXTURE, x, y, 0, 0, 18, 18, 18, 18);
-    }
-
-    private int getColumns() {
-        return 9;
-    }
-
-    private int getRows() {
-        return 3;
     }
 }

@@ -20,7 +20,7 @@ class ContactElement(title: String, val url: String): MainOptionsElement("%conta
 
         val height = 24+10*descriptionLines.size
 
-        val isSelected = x+(if (!allClicked) (width-20) else 0) < mouseX && y < mouseY && x+width > mouseX && y+height > mouseY;
+        val isSelected = x+(if (!allClicked) (width-20) else 0) < mouseX && y < mouseY && x+width > mouseX && y+height > mouseY
 
         pos = arrayOf(x,y,x+width,y+height)
 

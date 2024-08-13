@@ -36,7 +36,7 @@ class BooleanOptionsElement : SettingsOptionsElement<Boolean> {
 
         val height = 24+10*descriptionLines.size
 
-        val isSelected = x+width-20 < mouseX && y < mouseY && x+width > mouseX && y+height > mouseY;
+        val isSelected = x+width-20 < mouseX && y < mouseY && x+width > mouseX && y+height > mouseY
 
         pos = arrayOf(x,y,x+width,y+height)
 

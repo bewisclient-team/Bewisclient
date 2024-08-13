@@ -28,7 +28,7 @@ public abstract class LivingEntityMixin extends Entity {
     }
 
     @Unique
-    StatusEffectInstance instance = new StatusEffectInstance(StatusEffects.NIGHT_VISION,1000,0,true,false,false);
+    final StatusEffectInstance instance = new StatusEffectInstance(StatusEffects.NIGHT_VISION,1000,0,true,false,false);
 
     @Inject(method = "hasStatusEffect",at=@At("HEAD"), cancellable = true)
     public void inject(RegistryEntry<StatusEffect> effect, CallbackInfoReturnable<Boolean> cir) {

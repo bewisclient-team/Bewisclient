@@ -71,7 +71,7 @@ open class MainOptionsElement: Settings, Search.SearchableElement<MainOptionsEle
         pos = arrayOf(x,y,x+width,y+height)
 
         if(!allClicked) {
-            isSelected = x+width-20 < mouseX && y < mouseY && x+width > mouseX && y+height > mouseY;
+            isSelected = x+width-20 < mouseX && y < mouseY && x+width > mouseX && y+height > mouseY
 
             context.fill(x, y, x + width - (22), y + height, alphaModifier.toInt())
             context.drawBorder(x, y, width - (22), height, (alphaModifier + 0xFFFFFF).toInt())

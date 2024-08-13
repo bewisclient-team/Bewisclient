@@ -8,7 +8,7 @@ import net.minecraft.client.option.KeyBinding
 import net.minecraft.text.Text
 
 @Suppress("SameParameterValue")
-class KeyWidget: Widget("keys",) {
+class KeyWidget: Widget("keys") {
     override fun render(drawContext: DrawContext,x:Int,y:Int) {
         drawContext.matrices.push()
         drawContext.matrices.scale(getScale(),getScale(),1F)

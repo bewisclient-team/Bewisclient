@@ -17,7 +17,6 @@ public record Wing(Identifier texture) {
         try {
             current_wing = WINGS[(int) JavaSettingsSender.Companion.getSettings().get("design", Settings.Companion.getSettings().getWING())];
         } catch (Exception e) {
-            e.printStackTrace();
             current_wing = EMPTY;
         }
     }

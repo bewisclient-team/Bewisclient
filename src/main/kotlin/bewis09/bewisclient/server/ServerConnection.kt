@@ -1,9 +1,8 @@
+@file:Suppress("UNUSED_VARIABLE")
+
 package bewis09.bewisclient.server
 
 import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 import net.minecraft.client.MinecraftClient
 import java.net.URI
 import java.net.http.HttpClient
@@ -12,6 +11,7 @@ import java.net.http.WebSocket.Builder
 import java.net.http.WebSocket.Listener
 import java.util.concurrent.CompletionStage
 
+@Suppress("unused")
 class ServerConnection {
     val gson: Gson = Gson()
 
@@ -42,13 +42,13 @@ class ServerConnection {
         }
     }
 
-    data class SendMessage (val type: String, val data: Any) {}
+    data class SendMessage (val type: String, val data: Any)
 
-    data class ServerData (val url: String, val uuid: String, val cosmeticsData: Cosmetics?) {}
+    data class ServerData (val url: String, val uuid: String, val cosmeticsData: Cosmetics?)
 
-    data class ServerGetData (val url: String, val players: ServerPlayer) {}
+    data class ServerGetData (val url: String, val players: ServerPlayer)
 
-    data class Cosmetics (val icon: String, val cape: String, val hat: String, val wing: String) {}
+    data class Cosmetics (val icon: String, val cape: String, val hat: String, val wing: String)
 
     data class ServerPlayer (val uuid: String, val cosmeticsData: Cosmetics)
 }
