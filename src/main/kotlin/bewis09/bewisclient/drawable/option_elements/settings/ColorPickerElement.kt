@@ -22,7 +22,7 @@ class ColorPickerElement(
     path: Array<String>,
     id: SettingsLoader.TypedSettingID<ColorSaver>,
     private val settings: String
-): SettingsOptionsElement<ColorSaver>(title, path, id, arrayListOf()) {
+): SettingsOptionsElement<ColorSaver>(title, path, id) {
 
     var posX: Int = 0
     var posY: Int = 0

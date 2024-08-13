@@ -1,6 +1,6 @@
 package bewis09.bewisclient.api
 
-import bewis09.bewisclient.drawable.option_elements.MainOptionsElement
+import bewis09.bewisclient.drawable.option_elements.OptionsElement
 import bewis09.bewisclient.exception.FalseClassException
 import bewis09.bewisclient.screen.ElementList.newMainOptionsElements
 import bewis09.bewisclient.widgets.Widget
@@ -11,6 +11,7 @@ import net.minecraft.block.Block
 import net.minecraft.entity.EntityType
 import net.minecraft.state.property.Property
 
+@Suppress("unused")
 object KotlinAPIEntryPoint {
     fun addBlockExtraInfoPair(block:Block, property: Property<*>) {
         TiwylaWidget.extraInfo[block] = property
@@ -20,9 +21,9 @@ object KotlinAPIEntryPoint {
         entityExtraInfo[entityType] = entityListener
     }
 
-    fun addMainOptionsElement(m: MainOptionsElement) {
-        if(m.javaClass!=MainOptionsElement::class.java) {
-            throw FalseClassException(m,MainOptionsElement::class.java)
+    fun addMainOptionsElement(m: OptionsElement) {
+        if(m.javaClass!=OptionsElement::class.java) {
+            throw FalseClassException(m,OptionsElement::class.java)
         }
         newMainOptionsElements.add { m }
     }

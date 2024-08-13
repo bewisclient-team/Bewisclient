@@ -2,7 +2,6 @@ package bewis09.bewisclient.drawable.option_elements
 
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.screen.MainOptionsScreen
-import bewis09.bewisclient.settingsLoader.Settings
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.util.Search
 import com.mojang.blaze3d.systems.RenderSystem
@@ -12,52 +11,38 @@ import net.minecraft.client.gui.screen.Screen
 import net.minecraft.util.Identifier
 import kotlin.math.max
 
-open class MainOptionsElement: Settings, Search.SearchableElement<MainOptionsElement> {
+open class MainOptionsElement: OptionsElement, Search.SearchableElement<OptionsElement> {
 
-    val title: String
-    val description: String
     var screen: ((MainOptionsScreen) -> Screen)? = null
-    var elements: ArrayList<MainOptionsElement>? = null
+    var elements: ArrayList<OptionsElement>? = null
     val image: Identifier
 
-    constructor(title: String, description: String, screen: ((MainOptionsScreen) -> Screen), image: Identifier) {
-        this.title = title
-        this.description = description
+    constructor(title: String, description: String, screen: ((MainOptionsScreen) -> Screen), image: Identifier): super(title,description) {
         this.screen = screen
         this.image = image
         this.select = Identifier.of("bewisclient", "textures/sprites/select.png")
         this.selectHovered = Identifier.of("bewisclient", "textures/sprites/select_highlighted.png")
-        this.pos = arrayOf(0, 0, 0, 0)
     }
 
-    constructor(title: String, description: String, image: Identifier) {
-        this.title = title
-        this.description = description
+    constructor(title: String, description: String, image: Identifier): super(title,description) {
         this.image = image
         this.select = Identifier.of("bewisclient", "textures/sprites/select.png")
         this.selectHovered = Identifier.of("bewisclient", "textures/sprites/select_highlighted.png")
-        this.pos = arrayOf(0, 0, 0, 0)
     }
 
-    constructor(title: String, description: String, elements: ArrayList<MainOptionsElement>, image: Identifier) {
-        this.title = title
-        this.description = description
+    constructor(title: String, description: String, elements: ArrayList<OptionsElement>, image: Identifier): super(title,description) {
         this.elements = elements
         this.image = image
         this.select = Identifier.of("bewisclient", "textures/sprites/select.png")
         this.selectHovered = Identifier.of("bewisclient", "textures/sprites/select_highlighted.png")
-        this.pos = arrayOf(0, 0, 0, 0)
     }
 
     val select: Identifier
     val selectHovered: Identifier
 
-    var pos: Array<Int>
-
     var allClicked: Boolean = false
 
-    open fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {
-
+    override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {
         val client = MinecraftClient.getInstance()
 
         allClicked = SettingsLoader.get("design", OPTIONS_MENU, ALL_CLICK)
@@ -132,7 +117,7 @@ open class MainOptionsElement: Settings, Search.SearchableElement<MainOptionsEle
         return height
     }
 
-    open fun mouseClicked(mouseX: Double, mouseY: Double, button: Int, screen: MainOptionsScreen) {
+    override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int, screen: MainOptionsScreen) {
         val isSelected = pos[2] - 20 < mouseX && pos[1] < mouseY && pos[2] > mouseX && pos[3] > mouseY
         if (!allClicked) {
             if (isSelected) {
@@ -154,28 +139,7 @@ open class MainOptionsElement: Settings, Search.SearchableElement<MainOptionsEle
         }
     }
 
-    open fun mouseReleased(mouseX: Double, mouseY: Double, button: Int) {
-
-    }
-
-    open fun onDrag(mouseX: Double, mouseY: Double, deltaX: Double, deltaY: Double, button: Int) {
-
-    }
-
-    open fun keyPressed(keyCode:Int, scanCode:Int, modifiers:Int) {
-
-    }
-
-    open fun charTyped(chr: Char, modifiers: Int) {
-
-    }
-
-    override fun getChildElementsForSearch(): ArrayList<MainOptionsElement>? {
+    override fun getChildElementsForSearch(): ArrayList<OptionsElement>? {
         return elements
-    }
-
-    override fun getSearchKeywords(): ArrayList<String> {
-        if(Bewisclient.getTranslatedString(title)== "bewisclient.$title") return arrayListOf()
-        return arrayListOf(Bewisclient.getTranslatedString(title))
     }
 }

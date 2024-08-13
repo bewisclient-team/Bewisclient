@@ -11,6 +11,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.state.property.Property;
 
+@SuppressWarnings("unused")
 public class JavaAPIEntryPoint {
     public static void addBlockExtraInfoPair(Block block, Property<?> property) {
         TiwylaWidget.Companion.getExtraInfo().put(block,property);
@@ -25,8 +26,8 @@ public class JavaAPIEntryPoint {
     }
 
     public static void addMainOptionsElement(MainOptionsElement m) {
-        if(m.getClass()!=MainOptionsElement.class) {
-            throw new FalseClassException(m,MainOptionsElement.class);
+        if(m.getClass()!= MainOptionsElement.class) {
+            throw new FalseClassException(m, MainOptionsElement.class);
         }
         ElementList.INSTANCE.getNewMainOptionsElements().add(() -> m);
     }

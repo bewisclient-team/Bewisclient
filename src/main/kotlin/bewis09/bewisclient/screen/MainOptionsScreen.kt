@@ -1,7 +1,7 @@
 package bewis09.bewisclient.screen
 
 import bewis09.bewisclient.Bewisclient
-import bewis09.bewisclient.drawable.option_elements.MainOptionsElement
+import bewis09.bewisclient.drawable.option_elements.OptionsElement
 import bewis09.bewisclient.drawable.UsableTexturedButtonWidget
 import bewis09.bewisclient.mixin.ScreenMixin
 import bewis09.bewisclient.screen.widget.WidgetConfigScreen
@@ -283,7 +283,7 @@ open class MainOptionsScreen : Screen(Text.empty()) {
             }
     }
 
-    fun openNewSlice(elements: ArrayList<MainOptionsElement>) {
+    fun openNewSlice(elements: ArrayList<OptionsElement>) {
         if(animationState == AnimationState.STABLE) {
             allElements.add(elements)
             scrolls.add(0F)

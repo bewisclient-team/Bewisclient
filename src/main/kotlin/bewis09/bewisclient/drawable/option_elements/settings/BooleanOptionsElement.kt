@@ -15,12 +15,20 @@ class BooleanOptionsElement : SettingsOptionsElement<Boolean> {
     private val settings: String
     val valueChanger: (Boolean)->Unit
 
-    constructor(title: String, path: Array<String>, id: SettingsLoader.TypedSettingID<Boolean>, settings: String) : super(title, path, id, arrayListOf()) {
+    constructor(title: String, path: Array<String>, id: SettingsLoader.TypedSettingID<Boolean>, settings: String) : super(
+        title,
+        path,
+        id
+    ) {
         this.settings = settings
         this.valueChanger = {}
     }
 
-    constructor(title: String, path: Array<String>, id: SettingsLoader.TypedSettingID<Boolean>, settings: String, valueChanger: (Boolean) -> Unit) : super(title, path, id, arrayListOf()) {
+    constructor(title: String, path: Array<String>, id: SettingsLoader.TypedSettingID<Boolean>, settings: String, valueChanger: (Boolean) -> Unit) : super(
+        title,
+        path,
+        id
+    ) {
         this.settings = settings
         this.valueChanger = valueChanger
     }

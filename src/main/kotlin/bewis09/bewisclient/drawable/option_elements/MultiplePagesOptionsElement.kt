@@ -11,7 +11,7 @@ import net.minecraft.text.OrderedText
 import net.minecraft.util.Identifier
 import kotlin.math.ceil
 
-class MultiplePagesOptionsElement(val elementList: Array<MultiplePagesElement>, val minElementWidth: Int, val widgetEnableSetter: Boolean): MainOptionsElement("","",Identifier.of("")) {
+class MultiplePagesOptionsElement(val elementList: Array<MultiplePagesElement>, val minElementWidth: Int, val widgetEnableSetter: Boolean): OptionsElement("","") {
     var hoveredElement = -1
     var widgetHoveredElement = -1
 
@@ -140,18 +140,18 @@ class MultiplePagesOptionsElement(val elementList: Array<MultiplePagesElement>, 
 
     class MultiplePagesElement : Search.SearchableElement<MultiplePagesElement> {
         val title: String
-        val elements: ArrayList<MainOptionsElement>
+        val elements: ArrayList<OptionsElement>
         val image: Identifier?
         val description: String?
 
-        constructor(title: String, elements: ArrayList<MainOptionsElement>, image: Identifier) {
+        constructor(title: String, elements: ArrayList<OptionsElement>, image: Identifier) {
             this.title = title
             this.elements = elements
             this.image = image
             this.description = null
         }
 
-        constructor(title: String, elements: ArrayList<MainOptionsElement>, description: String) {
+        constructor(title: String, elements: ArrayList<OptionsElement>, description: String) {
             this.title = title
             this.elements = elements
             this.image = null
@@ -182,7 +182,7 @@ class MultiplePagesOptionsElement(val elementList: Array<MultiplePagesElement>, 
         super.mouseClicked(mouseX, mouseY, button, screen)
     }
 
-    override fun getElementByKeywordLamba(): (String) -> MainOptionsElement? {
+    override fun getElementByKeywordLamba(): (String) -> OptionsElement? {
         val collection = Search.collect((elementList.toList()))
 
         return {
@@ -195,8 +195,8 @@ class MultiplePagesOptionsElement(val elementList: Array<MultiplePagesElement>, 
         }
     }
 
-    override fun getChildElementsForSearch(): ArrayList<MainOptionsElement> {
-        val l = arrayListOf<MainOptionsElement>()
+    override fun getChildElementsForSearch(): ArrayList<OptionsElement> {
+        val l = arrayListOf<OptionsElement>()
 
         elementList.forEach {
             l.addAll(it.elements)

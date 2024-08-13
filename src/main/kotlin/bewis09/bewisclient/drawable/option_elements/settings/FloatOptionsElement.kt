@@ -15,7 +15,11 @@ class FloatOptionsElement : SettingsOptionsElement<Float> {
 
     private val settings: String
 
-    constructor(title: String, path: Array<String>, id: SettingsLoader.TypedSettingID<Float>, settings: String) : super(title, path, id, arrayListOf()) {
+    constructor(title: String, path: Array<String>, id: SettingsLoader.TypedSettingID<Float>, settings: String) : super(
+        title,
+        path,
+        id
+    ) {
         this.settings = settings
         this.valueChanged = { a ->
             run {
@@ -32,7 +36,11 @@ class FloatOptionsElement : SettingsOptionsElement<Float> {
         this.widget = UsableSliderWidget(0, 0, 100, 20, Text.empty(), ((SettingsLoader.get(settings, path, id) - de?.start!!) / (de.end - de.start)).toDouble(), de.end, de.start, de.decimalPoints, valueChanged)
     }
 
-    constructor(title: String, path: Array<String>, id: SettingsLoader.TypedSettingID<Float>, settings: String, valueChanger: (Double) -> Unit) : super(title, path, id, arrayListOf()) {
+    constructor(title: String, path: Array<String>, id: SettingsLoader.TypedSettingID<Float>, settings: String, valueChanger: (Double) -> Unit) : super(
+        title,
+        path,
+        id
+    ) {
         this.settings = settings
         this.valueChanged = { a ->
             run {

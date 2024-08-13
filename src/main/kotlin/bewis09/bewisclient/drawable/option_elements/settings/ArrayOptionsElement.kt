@@ -14,7 +14,7 @@ class ArrayOptionsElement(
     path: Array<String>,
     id: SettingsLoader.TypedSettingID<Float>,
     private val settings: String
-) : SettingsOptionsElement<Float>(title, path, id, arrayListOf()) {
+) : SettingsOptionsElement<Float>(title, path, id) {
 
     private var v = SettingsLoader.get(settings, path, id).toInt()
 

@@ -4,9 +4,8 @@ import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.screen.MainOptionsScreen
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
-import net.minecraft.util.Identifier
 
-class InfoElement(text: String): MainOptionsElement("",text, arrayListOf(), Identifier.of("")) {
+class InfoElement(text: String): OptionsElement("",text) {
     override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {
         val client = MinecraftClient.getInstance()
         val descriptionLines = client.textRenderer.wrapLines(Bewisclient.getTranslationText(description),width-12)

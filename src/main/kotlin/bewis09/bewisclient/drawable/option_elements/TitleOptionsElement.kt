@@ -3,9 +3,8 @@ package bewis09.bewisclient.drawable.option_elements
 import bewis09.bewisclient.Bewisclient
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
-import net.minecraft.util.Identifier
 
-class TitleOptionsElement(vararg val titles: String): MainOptionsElement(titles.last(),"", Identifier.of("")) {
+class TitleOptionsElement(vararg val titles: String): OptionsElement(titles.last(),"") {
     override fun render(
         context: DrawContext,
         x: Int,

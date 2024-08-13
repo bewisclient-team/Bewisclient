@@ -6,8 +6,8 @@ import net.minecraft.client.gui.DrawContext
 import net.minecraft.util.Identifier
 import kotlin.math.roundToInt
 
-class WidgetPreviewOptionsElement(val widget: Widget?): MainOptionsElement("","",Identifier.of("")) {
-    override fun getElementByKeywordLamba(): (String) -> MainOptionsElement? {
+class WidgetPreviewOptionsElement(val widget: Widget?): OptionsElement("","") {
+    override fun getElementByKeywordLamba(): (String) -> OptionsElement? {
         return { null }
     }
 

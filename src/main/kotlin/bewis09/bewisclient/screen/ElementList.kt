@@ -2,6 +2,7 @@ package bewis09.bewisclient.screen
 
 import bewis09.bewisclient.drawable.option_elements.*
 import bewis09.bewisclient.drawable.option_elements.settings.*
+import bewis09.bewisclient.exception.WidgetToElementLoadingException
 import bewis09.bewisclient.settingsLoader.DefaultSettings
 import bewis09.bewisclient.settingsLoader.Settings
 import bewis09.bewisclient.settingsLoader.SettingsLoader
@@ -32,7 +33,7 @@ object ElementList: Settings() {
         )
     })
 
-    val widgets: ()->ArrayList<MainOptionsElement> = {
+    val widgets: ()->ArrayList<OptionsElement> = {
         arrayListOf(
             TitleOptionsElement("gui.widgets"),
             MultiplePagesOptionsElement(
@@ -41,9 +42,9 @@ object ElementList: Settings() {
         )
     }
 
-    val newMainOptionsElements: ArrayList<()->MainOptionsElement> = arrayListOf()
+    val newMainOptionsElements: ArrayList<()->OptionsElement> = arrayListOf()
 
-    val design: ()->ArrayList<MainOptionsElement> = {
+    val design: ()->ArrayList<OptionsElement> = {
         arrayListOf(
                 TitleOptionsElement("gui.design"),
                 FloatOptionsElement("%options_menu.animation_time", OPTIONS_MENU,ANIMATION_TIME, "design"),
@@ -52,7 +53,7 @@ object ElementList: Settings() {
         )
     }
 
-    val scoreboard: ()->ArrayList<MainOptionsElement> = {
+    val scoreboard: ()->ArrayList<OptionsElement> = {
         arrayListOf(
             TitleOptionsElement("gui.scoreboard"),
             FloatOptionsElement("%scoreboard.scale", SCOREBOARD,SCALE, "design"),
@@ -60,8 +61,8 @@ object ElementList: Settings() {
         )
     }
 
-    val experimental: ()->ArrayList<MainOptionsElement> = {
-        val a: ArrayList<MainOptionsElement> = arrayListOf(
+    val experimental: ()->ArrayList<OptionsElement> = {
+        val a: ArrayList<OptionsElement> = arrayListOf(
             TitleOptionsElement("gui.experimental")
         )
         if(System.getProperty("os.name").lowercase(Locale.getDefault()).contains("win"))
@@ -69,7 +70,7 @@ object ElementList: Settings() {
         a
     }
 
-    val blockhit: ()->ArrayList<MainOptionsElement> = {
+    val blockhit: ()->ArrayList<OptionsElement> = {
         arrayListOf(
                 TitleOptionsElement("gui.blockhit"),
                 BooleanOptionsElement("%blockhit.enabled", BLOCKHIT,ENABLED, "design"),
@@ -82,7 +83,7 @@ object ElementList: Settings() {
         )
     }
 
-    val fullbright: ()->ArrayList<MainOptionsElement> = {
+    val fullbright: ()->ArrayList<OptionsElement> = {
         arrayListOf(
                 TitleOptionsElement("gui.fullbright"),
                 BooleanOptionsElement("%fullbright.enabled", FULLBRIGHT,ENABLED, "design") {
@@ -104,7 +105,7 @@ object ElementList: Settings() {
         )
     }
 
-    val better_visibility: ()->ArrayList<MainOptionsElement> = {
+    val better_visibility: ()->ArrayList<OptionsElement> = {
         arrayListOf(
                 TitleOptionsElement("gui.better_visibility"),
                 BooleanOptionsElement("%better_visibility.lava", BETTER_VISIBILITY,LAVA, "design"),
@@ -115,7 +116,7 @@ object ElementList: Settings() {
         )
     }
 
-    val contact: ()->ArrayList<MainOptionsElement> = {
+    val contact: ()->ArrayList<OptionsElement> = {
         arrayListOf(
                 TitleOptionsElement("gui.contact"),
                 ContactElement("modrinth","https://modrinth.com/mod/bewisclient"),
@@ -125,7 +126,7 @@ object ElementList: Settings() {
         )
     }
 
-    val zoom: ()->ArrayList<MainOptionsElement> = {
+    val zoom: ()->ArrayList<OptionsElement> = {
         arrayListOf(
                 TitleOptionsElement("gui.zoom"),
                 BooleanOptionsElement("%gui.zoom_enabled", arrayOf(), ZOOM_ENABLED, "general"),
@@ -134,7 +135,7 @@ object ElementList: Settings() {
         )
     }
 
-    val pumpkin: ()->ArrayList<MainOptionsElement> = {
+    val pumpkin: ()->ArrayList<OptionsElement> = {
         arrayListOf(
                 TitleOptionsElement("gui.pumpkin"),
                 BooleanOptionsElement("%pumpkin_overlay.disable_pumpkin_overlay", arrayOf(),DISABLE_PUMPKIN_OVERLAY, "design"),
@@ -142,7 +143,7 @@ object ElementList: Settings() {
         )
     }
 
-    val held_item_info: ()->ArrayList<MainOptionsElement> = {
+    val held_item_info: ()->ArrayList<OptionsElement> = {
         arrayListOf(
                 TitleOptionsElement("gui.held_item_info"),
                 BooleanOptionsElement("%held_item_info.held_item_info", HELD_ITEM_INFO,HELD_ITEM_INFO_ENABLED, "design"),
@@ -150,7 +151,7 @@ object ElementList: Settings() {
         )
     }
 
-    val util: ()->ArrayList<MainOptionsElement> = {
+    val util: ()->ArrayList<OptionsElement> = {
         arrayListOf(
                 TitleOptionsElement("gui.util"),
                 BooleanOptionsElement("%extend_status_effect_info", arrayOf(),EXTEND_STATUS_EFFECT_INFO, "design"),
@@ -159,21 +160,21 @@ object ElementList: Settings() {
         )
     }
 
-    val cleaner_debug_menu: ()->ArrayList<MainOptionsElement> = {
+    val cleaner_debug_menu: ()->ArrayList<OptionsElement> = {
         arrayListOf(
             TitleOptionsElement("gui.cleaner_debug_menu"),
             BooleanOptionsElement("%cleaner_debug_menu", arrayOf(),CLEANER_DEBUG_MENU, "design")
         )
     }
 
-    val shulker_box_tooltip: ()->ArrayList<MainOptionsElement> = {
+    val shulker_box_tooltip: ()->ArrayList<OptionsElement> = {
         arrayListOf(
             TitleOptionsElement("gui.shulker_box_tooltip"),
             BooleanOptionsElement("%shulker_box_tooltip", arrayOf(), SHULKER_BOX_TOOLTIP, "design"),
         )
     }
 
-    val tnt_timer: ()->ArrayList<MainOptionsElement> = {
+    val tnt_timer: ()->ArrayList<OptionsElement> = {
         arrayListOf(
             TitleOptionsElement("gui.tnt_timer"),
             BooleanOptionsElement("%tnt_timer", arrayOf(),TNT_TIMER, "general"),
@@ -255,7 +256,7 @@ object ElementList: Settings() {
         val map: ArrayList<MultiplePagesOptionsElement.MultiplePagesElement> = arrayListOf()
 
         def.entrySet().forEach { v ->
-            val m: ArrayList<MainOptionsElement> = arrayListOf(
+            val m: ArrayList<OptionsElement> = arrayListOf(
                 TitleOptionsElement("gui.widgets","widgets."+v.key)
             )
 
@@ -277,8 +278,8 @@ object ElementList: Settings() {
         return map
     }
 
-    fun loadWidgetsSingleFromDefault(widget: Widget,def: JsonObject, vkey: String): ArrayList<MainOptionsElement> {
-        val map: ArrayList<MainOptionsElement> = arrayListOf(
+    fun loadWidgetsSingleFromDefault(widget: Widget,def: JsonObject, vkey: String): ArrayList<OptionsElement> {
+        val map: ArrayList<OptionsElement> = arrayListOf(
             TitleOptionsElement("gui.widgets", "widgets.$vkey")
         )
 
@@ -293,7 +294,7 @@ object ElementList: Settings() {
         return map
     }
 
-    private fun loadWidget(str: String, key:String,value: JsonElement): MainOptionsElement {
+    private fun loadWidget(str: String, key:String,value: JsonElement): OptionsElement {
         return when (true) {
             value.asJsonPrimitive.isBoolean -> BooleanOptionsElement(key, arrayOf(str),
                 SettingsLoader.TypedSettingID(key), "widgets")
@@ -309,12 +310,12 @@ object ElementList: Settings() {
                             InfoElement("info.$str")
                         else InfoElement("info.$str")
                             // String Element no longer exists: StringOptionsElement(key,str,key,"widgets")
-            else -> SettingsOptionsElement<Any>(key,arrayOf(str),SettingsLoader.TypedSettingID(key), arrayListOf())
+            else -> throw WidgetToElementLoadingException(key,value)
         }
     }
 }
 
-fun ArrayList<MainOptionsElement>.addNewElements(): ArrayList<MainOptionsElement> {
+fun ArrayList<OptionsElement>.addNewElements(): ArrayList<OptionsElement> {
     ElementList.newMainOptionsElements.forEach {
         this.add(it())
     }
