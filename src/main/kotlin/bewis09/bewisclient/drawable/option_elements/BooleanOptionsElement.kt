@@ -2,6 +2,7 @@ package bewis09.bewisclient.drawable.option_elements
 
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.screen.MainOptionsScreen
+import bewis09.bewisclient.screen.elements.ElementList.dependentDisabler
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
@@ -30,6 +31,8 @@ class BooleanOptionsElement : SettingsOptionsElement {
     var animationStart = 0L
 
     override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {
+        if(dependentDisabler.contains(path) && !dependentDisabler[path]!!()) return -4
+
         val client = MinecraftClient.getInstance()
 
         val descriptionLines = client.textRenderer.wrapLines(Bewisclient.getTranslationText(description),width-34)
@@ -83,6 +86,8 @@ class BooleanOptionsElement : SettingsOptionsElement {
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int, screen: MainOptionsScreen) {
+        if(dependentDisabler.contains(path) && !dependentDisabler[path]!!()) return
+
         if ( pos[2] - 20 < mouseX && pos[1] < mouseY && pos[2] > mouseX && pos[3] > mouseY) {
             screen.playDownSound(MinecraftClient.getInstance().soundManager)
 

@@ -28,8 +28,8 @@ class CoordinatesWidget: LineWidget("coordinates",100,false) {
         return if (getProperty(SHOW_BIOME)) 130 else 100
     }
 
-    override fun render(drawContext: DrawContext) {
-        super.render(drawContext)
+    override fun render(drawContext: DrawContext,x:Int,y:Int) {
+        super.render(drawContext,x,y)
         if(getProperty(SHOW_DIRECTION)) {
             drawContext.matrices.push()
             drawContext.matrices.scale(getScale(), getScale(), 1F)
@@ -46,7 +46,7 @@ class CoordinatesWidget: LineWidget("coordinates",100,false) {
                 7 -> direction="SE"
             }
             val text = "- $direction -"
-            drawContext.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, text, getPosX() + getOriginalWidth() - 6 - MinecraftClient.getInstance().textRenderer.getWidth(text), getPosY() + 4, (0xFF000000L+getProperty(TEXT_COLOR).getColor()).toInt())
+            drawContext.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, text, x + getOriginalWidth() - 6 - MinecraftClient.getInstance().textRenderer.getWidth(text), y + 4, (0xFF000000L+getProperty(TEXT_COLOR).getColor()).toInt())
             drawContext.matrices.pop()
         }
     }
@@ -55,7 +55,7 @@ class CoordinatesWidget: LineWidget("coordinates",100,false) {
         val list = super.getWidgetSettings(.7f,5f,1f,5f,-1f)
         list.add("show_biome", JsonPrimitive(false))
         list.add("show_direction", JsonPrimitive(false))
-        list.add("colorcode_biome", JsonPrimitive(false))
+        list.add("colorcode_biome", JsonPrimitive(true))
         return list
     }
 }

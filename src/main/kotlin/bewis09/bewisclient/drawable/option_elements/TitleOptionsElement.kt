@@ -5,7 +5,7 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.util.Identifier
 
-class TitleOptionsElement(title: String): MainOptionsElement(title,"", Identifier.of("")) {
+class TitleOptionsElement(vararg val titles: String): MainOptionsElement(titles.last(),"", Identifier.of("")) {
     override fun render(
         context: DrawContext,
         x: Int,
@@ -15,7 +15,8 @@ class TitleOptionsElement(title: String): MainOptionsElement(title,"", Identifie
         mouseY: Int,
         alphaModifier: Long
     ): Int {
-        context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer,Bewisclient.getTranslationText(title),x+width/2,y+5,-1)
+        context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer,
+            titles.joinToString(" >> ") { Bewisclient.getTranslatedString(it) },x+width/2,y+5,-1)
 
         return 20
     }

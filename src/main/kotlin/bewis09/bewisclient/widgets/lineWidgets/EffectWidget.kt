@@ -9,9 +9,9 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 
 class EffectWidget: Widget("effect") {
-    override fun render(drawContext: DrawContext) {
+    override fun render(drawContext: DrawContext,x:Int,y:Int) {
         if(MinecraftClient.getInstance().currentScreen is WidgetConfigScreen) {
-            drawContext.fill(getScreenWidth()-5, getPosY(), getScreenWidth() , getPosY() + getHeight(), 0xAA000000.toInt())
+            drawContext.fill(getScreenWidth()-5, y, getScreenWidth() , y + getHeight(), 0xAA000000.toInt())
         }
     }
 

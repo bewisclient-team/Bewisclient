@@ -12,19 +12,19 @@ class InventoryWidget: Widget("inventory") {
 
     val identifier: Identifier = Identifier.of("bewisclient","textures/inventory_widget.png")
 
-    override fun render(drawContext: DrawContext) {
+    override fun render(drawContext: DrawContext,x:Int,y:Int) {
         RenderSystem.setShaderColor(1f,1f,1f,getProperty(Settings.TRANSPARENCY))
         drawContext.matrices.push()
         drawContext.matrices.scale(getScale(),getScale(),1F)
         RenderSystem.enableBlend()
-        drawContext.drawTexture(identifier,getPosX(),getPosY(),getOriginalWidth(),getOriginalHeight(),0f,0f,getOriginalWidth(),getOriginalHeight(),180,60)
+        drawContext.drawTexture(identifier,x,y,getOriginalWidth(),getOriginalHeight(),0f,0f,getOriginalWidth(),getOriginalHeight(),180,60)
         RenderSystem.disableBlend()
         RenderSystem.setShaderColor(1f,1f,1f,1f)
 
         for (i in 0 .. 8) {
             for (j in 0 .. 2) {
-                drawContext.drawItem(MinecraftClient.getInstance().player?.inventory?.getStack(j*9+i+9),getPosX()+i*20+2,getPosY()+j*20+2)
-                drawContext.drawItemInSlot(MinecraftClient.getInstance().textRenderer,MinecraftClient.getInstance().player?.inventory?.getStack(j*9+i+9),getPosX()+i*20+2,getPosY()+j*20+2)
+                drawContext.drawItem(MinecraftClient.getInstance().player?.inventory?.getStack(j*9+i+9),x+i*20+2,y+j*20+2)
+                drawContext.drawItemInSlot(MinecraftClient.getInstance().textRenderer,MinecraftClient.getInstance().player?.inventory?.getStack(j*9+i+9),x+i*20+2,y+j*20+2)
             }
         }
 

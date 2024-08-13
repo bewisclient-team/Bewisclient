@@ -108,6 +108,7 @@ open class MainOptionsScreen : Screen(Text.empty()) {
         val width = (this.width* scale.toDouble()).toInt()
         val height = (this.height* scale.toDouble()).toInt()
 
+        context.matrices.push()
         context.matrices.scale(1f/ scale,1f/ scale,1f/ scale)
 
         var h = 4 + scrolls[slice].toInt()
@@ -158,14 +159,13 @@ open class MainOptionsScreen : Screen(Text.empty()) {
 
         context.disableScissor()
 
-        context.matrices.scale(scale, scale, scale)
+        context.matrices.pop()
 
+        context.matrices.push()
         context.matrices.translate(0f,0f,3f)
 
         context.enableScissor((this.width/4) +4,(this.height-28*animationFrame).toInt(), (this.width-this.width/4-2)-2,this.height)
-
         context.fill(0,0,width,height, 0xAA000000.toInt())
-
         context.disableScissor()
 
         context.fill((this.width/4) +4,(this.height-28*animationFrame).toInt(), (this.width-this.width/4-2)-2,this.height,
@@ -178,7 +178,7 @@ open class MainOptionsScreen : Screen(Text.empty()) {
             drawable.render(context, mouseX, mouseY, delta)
         }
 
-        context.matrices.translate(0f,0f,-3f)
+        context.matrices.pop()
 
         fillGradient(context, (this.width/4) -2,0, ((this.width/4)+6*animationFrame).toInt()-2,this.height,0,
             ((0xFF*animationFrame).toLong()*0x1000000).toInt()
@@ -241,6 +241,11 @@ open class MainOptionsScreen : Screen(Text.empty()) {
         }.dimensions(width/4*3-1-width/6,height-24,width/6-29,20).build()))
         searchBar = addDrawableChild(TextFieldWidget(MinecraftClient.getInstance().textRenderer,width/2+4-width/12,height-24,width/6-8,20,Text.empty()))
         searchBar?.setChangedListener {
+            if(animationState!=AnimationState.STABLE) {
+                if(it!="")
+                    searchBar!!.text=""
+                return@setChangedListener
+            }
             if (!shouldNotNotifyChange) {
                 if (it == "") {
                     allElements = arrayListOf(ElementList.main())

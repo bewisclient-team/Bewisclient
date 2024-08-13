@@ -2,6 +2,7 @@ package bewis09.bewisclient.widgets.lineWidgets
 
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.mixin.ClientPlayNetworkHandlerMixin
+import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.screen.widget.WidgetConfigScreen
 import com.google.gson.JsonObject
 import net.minecraft.client.MinecraftClient
@@ -16,14 +17,12 @@ class PingWidget: LineWidget("ping",80,true) {
     }
 
     override fun getText(): ArrayList<String> {
-        if(MinecraftClient.getInstance().isInSingleplayer && MinecraftClient.getInstance().currentScreen is WidgetConfigScreen)
+        if(MinecraftClient.getInstance().isInSingleplayer && (MinecraftClient.getInstance().currentScreen is WidgetConfigScreen || MinecraftClient.getInstance().currentScreen is MainOptionsScreen))
             return arrayListOf("${Bewisclient.getTranslatedString("widgets.ping")}: 99")
         if(getLatency()<=0)
             return arrayListOf(Bewisclient.getTranslatedString("widgets.loading"))
         return arrayListOf(Bewisclient.getTranslatedString("widgets.ping")+": "+getLatency())
     }
-
-
 
     private fun getLatency(): Int {
         try {

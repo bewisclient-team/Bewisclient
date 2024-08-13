@@ -106,7 +106,7 @@ class WidgetConfigScreen(var parent: MainOptionsScreen): Screen(Text.empty()) {
 
                 parent = MainOptionsScreen()
                 parent.allElements.add(ElementList.widgets())
-                parent.allElements.add(ElementList.loadWidgetsSingleFromDefault(selected!!.getWidgetSettings(),selected!!.id))
+                parent.allElements.add(ElementList.loadWidgetsSingleFromDefault(selected!!,selected!!.getWidgetSettings(),selected!!.id))
                 parent.scrolls.add(0f)
                 parent.scrolls.add(0f)
                 parent.slice = 2

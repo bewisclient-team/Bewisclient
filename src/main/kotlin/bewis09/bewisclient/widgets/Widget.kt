@@ -5,18 +5,18 @@ import bewis09.bewisclient.screen.widget.WidgetConfigScreen
 import bewis09.bewisclient.settingsLoader.Settings
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.util.ColorSaver
-import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
-import java.util.*
 import kotlin.math.abs
-import kotlin.math.log
 import kotlin.math.roundToInt
 
 abstract class Widget(val id: String): Settings() {
-    abstract fun render(drawContext: DrawContext)
+    fun render(drawContext: DrawContext) {
+        render(drawContext,getPosX(),getPosY())
+    }
+    abstract fun render(drawContext: DrawContext,x:Int,y:Int)
 
     abstract fun getOriginalWidth(): Int
     abstract fun getOriginalHeight(): Int

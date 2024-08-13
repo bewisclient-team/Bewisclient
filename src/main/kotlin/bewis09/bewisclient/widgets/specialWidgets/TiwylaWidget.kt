@@ -77,22 +77,22 @@ class TiwylaWidget: Widget("tiwyla") {
         return getTextFromType(MinecraftClient.getInstance().crosshairTarget)
     }
 
-    override fun render(drawContext: DrawContext) {
+    override fun render(drawContext: DrawContext,x:Int,y:Int) {
         if(getText().size==0) return
         drawContext.matrices.push()
         drawContext.matrices.scale(getScale(),getScale(),1F)
-        drawContext.fill(getPosX(),getPosY(),getPosX()+getOriginalWidth(),getPosY()+getOriginalHeight(), ColorHelper.Argb.getArgb(((getProperty(Settings.TRANSPARENCY).times(255F)).toInt()),0,0,0))
-        drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, getText()[0],getPosX()+getOriginalWidth()/2,getPosY()+4,(0xFF000000L+getProperty(TOP_COLOR).getColor()).toInt())
+        drawContext.fill(x,y,x+getOriginalWidth(),y+getOriginalHeight(), ColorHelper.Argb.getArgb(((getProperty(Settings.TRANSPARENCY).times(255F)).toInt()),0,0,0))
+        drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, getText()[0],x+getOriginalWidth()/2,y+4,(0xFF000000L+getProperty(TOP_COLOR).getColor()).toInt())
         drawContext.matrices.scale(0.7F,0.7F,1F)
         for ((index, text) in getText().iterator().withIndex()) {
             if(index!=0)
-                drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer,if (text.split("%")[0]=="cTH") convertToHearths(text.split("%")[1].toDouble(),text.split("%")[2].toDouble(),text.split("%")[3].toDouble()) else Text.of(text),((getPosX()+getOriginalWidth()/2)/0.7F).toInt(),((getPosY()+8*index+8)/0.7F).toInt(),(0xFF000000L+getProperty(BOTTOM_COLOR).getColor()).toInt())
+                drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer,if (text.split("%")[0]=="cTH") convertToHearths(text.split("%")[1].toDouble(),text.split("%")[2].toDouble(),text.split("%")[3].toDouble()) else Text.of(text),((x+getOriginalWidth()/2)/0.7F).toInt(),((y+8*index+8)/0.7F).toInt(),(0xFF000000L+getProperty(BOTTOM_COLOR).getColor()).toInt())
         }
         drawContext.matrices.scale(1/0.7F,1/0.7F,1F)
         val hitResult = MinecraftClient.getInstance().crosshairTarget
         if (hitResult is BlockHitResult) {
             if (getProperty(SHOW_BLOCK_ICON)) {
-                drawContext.drawItem(ItemStack(MinecraftClient.getInstance().world!!.getBlockState(hitResult.blockPos).block),getPosX()+10,getPosY()+12)
+                drawContext.drawItem(ItemStack(MinecraftClient.getInstance().world!!.getBlockState(hitResult.blockPos).block),x+10,y+12)
             }
         }
 

@@ -5,6 +5,7 @@ import bewis09.bewisclient.drawable.ScalableButtonWidget
 import bewis09.bewisclient.drawable.UsableSliderWidget
 import bewis09.bewisclient.drawable.UsableSliderWidget.Companion.withDecimalPlaces
 import bewis09.bewisclient.screen.MainOptionsScreen
+import bewis09.bewisclient.screen.elements.ElementList.dependentDisabler
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.util.ColorSaver
 import com.mojang.blaze3d.systems.RenderSystem
@@ -66,6 +67,7 @@ class ColorPickerElement(title: String, path: String, private val value: String,
     }
 
     override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {
+        if(dependentDisabler.contains(path) && !dependentDisabler[path]!!()) return -4
 
         if(changing) {
             val color = convertRGBtoHSB(ColorSaver.of(SettingsLoader.getString(settings, path)))
@@ -162,6 +164,8 @@ class ColorPickerElement(title: String, path: String, private val value: String,
     }
 
     override fun onDrag(mouseX: Double, mouseY: Double, deltaX: Double, deltaY: Double, button: Int) {
+        if(dependentDisabler.contains(path) && !dependentDisabler[path]!!()) return
+
         if (clicked && !widget.active) {
             posX = MathHelper.clamp((mouseX-pos[2]+60).toInt(),1,58)
             posY = MathHelper.clamp((mouseY-pos[1]).toInt(),1,58)
@@ -175,6 +179,8 @@ class ColorPickerElement(title: String, path: String, private val value: String,
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int, screen: MainOptionsScreen) {
+        if(dependentDisabler.contains(path) && dependentDisabler[path]!!()) return
+
         if(widget.isHovered)
             hClicked = true
         if(widget2.isHovered)

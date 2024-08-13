@@ -1,10 +1,11 @@
 package bewis09.bewisclient.screen.elements
 
-import bewis09.bewisclient.drawable.*
 import bewis09.bewisclient.drawable.option_elements.*
 import bewis09.bewisclient.screen.CosmeticsScreen
 import bewis09.bewisclient.settingsLoader.DefaultSettings
 import bewis09.bewisclient.settingsLoader.SettingsLoader
+import bewis09.bewisclient.widgets.Widget
+import bewis09.bewisclient.widgets.WidgetRenderer
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import net.minecraft.client.MinecraftClient
@@ -16,7 +17,26 @@ object ElementList {
 
     private val excludedProperties = arrayOf("posX","posY","partX","partY","effect")
 
-    val widgets: ()->ArrayList<MainOptionsElement> = { loadWidgetsFromDefault(DefaultSettings.getDefault("widgets")) }
+    val dependentDisabler = hashMapOf(Pair("biome.text_color") {
+        !SettingsLoader.getBoolean(
+            "widgets",
+            "biome.colorcode_biome"
+        )
+    },Pair("coordinates.colorcode_biome") {
+        SettingsLoader.getBoolean(
+            "widgets",
+            "coordinates.show_biome"
+        )
+    })
+
+    val widgets: ()->ArrayList<MainOptionsElement> = {
+        arrayListOf(
+            TitleOptionsElement("gui.widgets"),
+            MultiplePagesOptionsElement(
+                loadWidgetsFromDefault(DefaultSettings.getDefault("widgets")).toArray(arrayOf()),100,true
+            )
+        )
+    }
 
     val newMainOptionsElements: ArrayList<()->MainOptionsElement> = arrayListOf()
 
@@ -220,18 +240,16 @@ object ElementList {
                     experimental(),
                     Identifier.of("bewisclient", "textures/main_icons/experimental.png")
                 )
-            )),
+            ),70,false),
         ).addNewElements()
     }
 
-    fun loadWidgetsFromDefault(def: JsonObject): ArrayList<MainOptionsElement> {
-        val map: ArrayList<MainOptionsElement> = arrayListOf(
-            TitleOptionsElement("gui.widgets")
-        )
+    fun loadWidgetsFromDefault(def: JsonObject): ArrayList<MultiplePagesOptionsElement.MultiplePagesElement> {
+        val map: ArrayList<MultiplePagesOptionsElement.MultiplePagesElement> = arrayListOf()
 
         def.entrySet().forEach { v ->
             val m: ArrayList<MainOptionsElement> = arrayListOf(
-                TitleOptionsElement("widgets."+v.key)
+                TitleOptionsElement("gui.widgets","widgets."+v.key)
             )
 
             v.value.asJsonObject.entrySet().forEach {
@@ -239,21 +257,31 @@ object ElementList {
                     m.add(loadWidget(v.key + "." + it.key, it.key, it.value))
             }
 
+            var a: Widget? = null
+            WidgetRenderer.widgets.forEach {
+                if (it.id == v.key) a = it
+            }
+            m.add(WidgetPreviewOptionsElement(a))
+
             if (!excludedProperties.contains(v.key))
-                map.add(WidgetOptionsElement(v.key, v.key, m))
+                map.add(MultiplePagesOptionsElement.MultiplePagesElement("widgets."+v.key, m,"widgets.description."+v.key))
         }
 
         return map
     }
 
-    fun loadWidgetsSingleFromDefault(def: JsonObject, vkey: String): ArrayList<MainOptionsElement> {
-        val map: ArrayList<MainOptionsElement> = arrayListOf()
+    fun loadWidgetsSingleFromDefault(widget: Widget,def: JsonObject, vkey: String): ArrayList<MainOptionsElement> {
+        val map: ArrayList<MainOptionsElement> = arrayListOf(
+            TitleOptionsElement("gui.widgets", "widgets.$vkey")
+        )
 
         def.entrySet().forEach {
             if (!excludedProperties.contains(vkey) && !excludedProperties.contains(it.key)) {
                 map.add(loadWidget(vkey + "." + it.key, it.key, it.value))
             }
         }
+
+        map.add(WidgetPreviewOptionsElement(widget))
 
         return map
     }
