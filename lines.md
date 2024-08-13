@@ -11,3 +11,6 @@ Lines of Code:
 - 2024-05-28: 5763
 - 2024-08-07: 6457
 - 2024-08-12: 6659
+
+Only counting the source code lines from now on
+- 2024-08-13: 5710 (7185)

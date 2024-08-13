@@ -70,6 +70,8 @@ open class MainOptionsElement: Settings, Search.SearchableElement<MainOptionsEle
 
         pos = arrayOf(x,y,x+width,y+height)
 
+        context.matrices.push()
+
         if(!allClicked) {
             isSelected = x+width-20 < mouseX && y < mouseY && x+width > mouseX && y+height > mouseY
 
@@ -78,26 +80,27 @@ open class MainOptionsElement: Settings, Search.SearchableElement<MainOptionsEle
         } else {
             isSelected = x < mouseX && y < mouseY && x+width > mouseX && y+height > mouseY
 
-            if(!isSelected) {
-                context.fill(x, y, x + width, y + height, alphaModifier.toInt())
-                context.drawBorder(x, y, width, height, (alphaModifier + 0xFFFFFF).toInt())
-            } else {
-                context.fill(x-1, y-1, x + width+1, y + height+1, alphaModifier.toInt())
-                context.drawBorder(x-1, y-1, width+2, height+2, (alphaModifier + 0xAAAAFF).toInt())
+            if(isSelected) {
+                context.matrices.translate(x.toFloat(),y.toFloat(),0f)
+                context.matrices.scale(1+2f/width,1+2f/width,1f)
+                context.matrices.translate(-x.toFloat()-1,-y.toFloat()-height/width,0f)
             }
+
+            context.fill(x, y, x + width, y + height, alphaModifier.toInt())
+            context.drawBorder(x, y, width, height, (alphaModifier + (if(isSelected) 0xAAAAFF else 0xFFFFFF)).toInt())
         }
 
         RenderSystem.enableBlend()
 
         context.setShaderColor(1F,1F,1F, (alphaModifier.toFloat()/0xFFFFFFFF))
-        context.drawTexture(image,x+6-(if(allClicked && isSelected) 1 else 0),y+6-(if(allClicked && isSelected) 1 else 0),32+(if(allClicked && isSelected) 2 else 0),32+(if(allClicked && isSelected) 2 else 0),0F,0F,32,32,32,32)
+        context.drawTexture(image,x+6,y+6,32,32,0F,0F,32,32,32,32)
         context.setShaderColor(1F,1F,1F, 1F)
 
         RenderSystem.disableBlend()
 
-        context.drawTextWithShadow(client.textRenderer,Bewisclient.getTranslationText(title),x+44+(if(allClicked && isSelected) 1 else 0),y+6-(if(allClicked && isSelected) 1 else 0),(alphaModifier+0xFFFFFF).toInt())
+        context.drawTextWithShadow(client.textRenderer,Bewisclient.getTranslationText(title),x+44,y+6,(alphaModifier+0xFFFFFF).toInt())
         descriptionLines.iterator().withIndex().forEach { (index, line) ->
-            context.drawTextWithShadow(client.textRenderer, line, x + 44+(if(allClicked && isSelected) 1 else 0), y + 20 + 10 * index -(if(allClicked && isSelected) 1 else 0), (alphaModifier + 0x808080).toInt())
+            context.drawTextWithShadow(client.textRenderer, line, x + 44, y + 20 + 10 * index, (alphaModifier + 0x808080).toInt())
         }
 
         if(!allClicked) {
@@ -123,6 +126,8 @@ open class MainOptionsElement: Settings, Search.SearchableElement<MainOptionsEle
 
             RenderSystem.disableBlend()
         }
+
+        context.matrices.pop()
 
         return height
     }

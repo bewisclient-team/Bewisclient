@@ -59,8 +59,6 @@ open class MainOptionsScreen : Screen(Text.empty()) {
 
         context!!
 
-        context.fill(0,0,width,height, 0xAA000000.toInt())
-
         correctScroll()
         var animationFrame = 1F
         val animationSpeed = MathHelper.clamp(SettingsLoader.get(
@@ -96,8 +94,10 @@ open class MainOptionsScreen : Screen(Text.empty()) {
         if(animationState.animation==AnimationState.MIDDLE_ANIMATION)
             animationFrame = 1f
 
+        context.fill(0,0,width,height,  ((0xAA*animationFrame).toLong()*0x1000000).toInt())
+
         context.fill(
-            ((this.width/4) +4+6-6*animationFrame).toInt(),0,
+            ((this.width/4) +4-6+6*animationFrame).toInt(),0,
             ((this.width-this.width/4-2)-2+6-6*animationFrame).toInt(),this.height,
             ((0x88*animationFrame).toLong()*0x1000000).toInt()
         )
@@ -165,13 +165,10 @@ open class MainOptionsScreen : Screen(Text.empty()) {
         context.matrices.push()
         context.matrices.translate(0f,0f,3f)
 
-        context.enableScissor((this.width/4) +4,(this.height-28*animationFrame).toInt(), (this.width-this.width/4-2)-2,this.height)
-        context.fill(0,0,width,height, 0xAA000000.toInt())
+        context.enableScissor(((this.width/4) +4-6+6*animationFrame).toInt(),(this.height-28*animationFrame).toInt(),
+            ((this.width-this.width/4-2)-2+6-6*animationFrame).toInt(),this.height)
+        context.fill(0,0,width,height, ((0xD0*animationFrame).toLong()*0x1000000).toInt())
         context.disableScissor()
-
-        context.fill((this.width/4) +4,(this.height-28*animationFrame).toInt(), (this.width-this.width/4-2)-2,this.height,
-            0xAA000000.toInt()
-        )
 
         for (drawable in (this as ScreenMixin).getDrawables()) {
             if(drawable is ClickableWidget)
