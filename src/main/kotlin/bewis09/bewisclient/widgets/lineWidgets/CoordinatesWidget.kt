@@ -7,7 +7,7 @@ import net.minecraft.client.gui.DrawContext
 
 class CoordinatesWidget: LineWidget("coordinates",100,false) {
     override fun getText(): ArrayList<String> {
-        return if(getProperty(SHOW_BIOME)) {
+        return if(getProperty(SHOW_BIOME,*SELECT_PARTS)) {
             arrayListOf(
                     "X: "+MinecraftClient.getInstance().player?.blockX,
                     "Y: "+MinecraftClient.getInstance().player?.blockY,
@@ -24,12 +24,12 @@ class CoordinatesWidget: LineWidget("coordinates",100,false) {
     }
 
     override fun getOriginalWidth(): Int {
-        return if (getProperty(SHOW_BIOME)) 130 else 100
+        return if (getProperty(SHOW_BIOME,*SELECT_PARTS)) 130 else 100
     }
 
     override fun render(drawContext: DrawContext,x:Int,y:Int) {
         super.render(drawContext,x,y)
-        if(getProperty(SHOW_DIRECTION)) {
+        if(getProperty(SHOW_DIRECTION,*SELECT_PARTS)) {
             drawContext.matrices.push()
             drawContext.matrices.scale(getScale(), getScale(), 1F)
             var direction = ""
@@ -52,9 +52,14 @@ class CoordinatesWidget: LineWidget("coordinates",100,false) {
 
     override fun getWidgetSettings(): JsonObject {
         val list = super.getWidgetSettings(.7f,5f,1f,5f,-1f)
-        list.add("show_biome", JsonPrimitive(false))
-        list.add("show_direction", JsonPrimitive(false))
-        list.add("colorcode_biome", JsonPrimitive(true))
+
+        val elements = JsonObject()
+
+        elements.add(SHOW_BIOME.id,JsonPrimitive(true))
+        elements.add(SHOW_DIRECTION.id,JsonPrimitive(true))
+
+        list.add(SELECT_PARTS[0],elements)
+        list.add(COLORCODE_BIOME.id, JsonPrimitive(true))
         return list
     }
 }

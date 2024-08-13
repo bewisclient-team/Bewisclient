@@ -87,6 +87,18 @@ abstract class Widget(val id: String): Settings() {
     }
 
     @Suppress("unchecked_cast")
+    inline fun <reified K> getProperty(setting: SettingsLoader.TypedSettingID<K>, vararg path: String): K {
+        when (true) {
+            K::class.java.name.lowercase().contains("float") -> return SettingsLoader.get("widgets",setting as SettingsLoader.TypedSettingID<Float>,id,*path) as K
+            K::class.java.name.lowercase().contains("boolean") -> return SettingsLoader.get("widgets",setting as SettingsLoader.TypedSettingID<Boolean>,id,*path) as K
+            K::class.java.name.lowercase().contains("colorsaver") -> return SettingsLoader.get("widgets",setting as SettingsLoader.TypedSettingID<ColorSaver>,id,*path) as K
+            K::class.java.name.lowercase().contains("string") -> return SettingsLoader.get("widgets",setting as SettingsLoader.TypedSettingID<String>,id,*path) as K
+            else -> {}
+        }
+        throw ClassCastException()
+    }
+
+    @Suppress("unchecked_cast")
     inline fun <reified K> setProperty(setting: SettingsLoader.TypedSettingID<K>, value: K) {
         when (value) {
             is Number -> SettingsLoader.set("widgets",value,setting as SettingsLoader.TypedSettingID<Float>,id)
@@ -144,14 +156,14 @@ abstract class Widget(val id: String): Settings() {
     fun getWidgetSettings(size: Float,posX: Float,partX: Float,posY: Float,partY: Float): JsonObject {
         val jsonObject = JsonObject()
 
-        jsonObject.add("enabled", JsonPrimitive(true))
-        jsonObject.add("transparency", JsonPrimitive(0.43f))
-        jsonObject.add("size", JsonPrimitive(size))
-        jsonObject.add("posX", JsonPrimitive(posX))
-        jsonObject.add("partX", JsonPrimitive(partX))
-        jsonObject.add("posY", JsonPrimitive(posY))
-        jsonObject.add("partY", JsonPrimitive(partY))
-        jsonObject.add("text_color", JsonPrimitive("0xFFFFFF"))
+        jsonObject.add(ENABLED.id, JsonPrimitive(true))
+        jsonObject.add(TRANSPARENCY.id, JsonPrimitive(0.43f))
+        jsonObject.add(SIZE.id, JsonPrimitive(size))
+        jsonObject.add(POSX.id, JsonPrimitive(posX))
+        jsonObject.add(PARTX.id, JsonPrimitive(partX))
+        jsonObject.add(POSY.id, JsonPrimitive(posY))
+        jsonObject.add(PARTY.id, JsonPrimitive(partY))
+        jsonObject.add(TEXT_COLOR.id, JsonPrimitive("0xFFFFFF"))
 
         return jsonObject
     }

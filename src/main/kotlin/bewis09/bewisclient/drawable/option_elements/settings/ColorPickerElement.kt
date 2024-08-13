@@ -21,8 +21,8 @@ class ColorPickerElement(
     title: String,
     path: Array<String>,
     id: SettingsLoader.TypedSettingID<ColorSaver>,
-    private val settings: String
-): SettingsOptionsElement<ColorSaver>(title, path, id) {
+    settings: String
+): SettingsOptionsElement<ColorSaver>(title, settings, path, id) {
 
     var posX: Int = 0
     var posY: Int = 0
@@ -31,50 +31,49 @@ class ColorPickerElement(
 
     var hClicked = false
 
-    val colorStart = convertRGBtoHSB(SettingsLoader.get(settings, path, id))
+    val colorStart = convertRGBtoHSB(get())
 
-    var changing = SettingsLoader.get(settings, path, id).getColor()<0
+    var changing = get().getColor()<0
 
     val static = ScalableButtonWidget.builder(Bewisclient.getTranslationText("color.static")) {
         changing = false
 
-        SettingsLoader.set(
-            settings,
-            ColorSaver.of(SettingsLoader.get(settings, path, id).getColor() + 0x1000000), path, id
-        )
+        set(ColorSaver.of(get().getColor() + 0x1000000))
     }.build()
 
     val change = ScalableButtonWidget.builder(Bewisclient.getTranslationText("color.change")) {
         changing = true
 
-        SettingsLoader.set(settings, ColorSaver.of((-(widget.getValue() * (19000) + 1000)).toInt()), path, id)
+        set(ColorSaver.of((-(widget.getValue() * (19000) + 1000)).toInt()))
     }.build()
 
-    val widget = UsableSliderWidget(0, 0, 100, 20, Text.empty(), if(SettingsLoader.get(settings, path, id).getColor()<0)
-        (((SettingsLoader.get(settings, path, id).getOriginalColor()*-1).toDouble())-1000)/19000 else 9/19.0, 20000F, 1000F, -2, {
-        SettingsLoader.set(settings, ColorSaver.of((-(it*(19000F)+1000F)).roundToInt()), path, id)
+    val widget = UsableSliderWidget(0, 0, 100, 20, Text.empty(), if(get().getColor()<0)
+        (((get().getOriginalColor()*-1).toDouble())-1000)/19000 else 9/19.0, 20000F, 1000F, -2, {
+        set(ColorSaver.of((-(it*(19000F)+1000F)).roundToInt()))
     },{
         Text.of(Bewisclient.getTranslatedString("gui.speed")+": "+withDecimalPlaces((it)*19+1,2)+" ${Bewisclient.getTranslatedString("seconds")}")
     })
 
     val widget2 = UsableSliderWidget(0, 0, 100, 20, Text.empty(),
-            if(SettingsLoader.get(settings, path, id).getColor()>0) colorStart[2].toDouble() else 1.0, 1F, 0F, 2, {
-        SettingsLoader.set(settings, ColorSaver.of(convertRGBtoHSB(posX/60f,posY/60f,it.toFloat())+0x1000000), path, id)
+            if(get().getColor()>0) colorStart[2].toDouble() else 1.0, 1F, 0F, 2, {
+        set(ColorSaver.of(convertRGBtoHSB(posX/60f,posY/60f,it.toFloat())+0x1000000))
     },{
         Text.of(Bewisclient.getTranslatedString("gui.brightness")+": "+withDecimalPlaces(it,2))
     })
 
     init {
-        val color = convertRGBtoHSB(SettingsLoader.get(settings, path, id))
+        val color = convertRGBtoHSB(get())
         posX = MathHelper.clamp((color[0]*60).toInt(),0,58)
         posY = MathHelper.clamp((color[1]*60).toInt(),0,58)
     }
+
+    override fun getTypeParameter(): String = "colorsaver"
 
     override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {
         if(dependentDisabler.contains(toPointNotation(path, id)) && !dependentDisabler[toPointNotation(path, id)]!!()) return -4
 
         if(changing) {
-            val color = convertRGBtoHSB(SettingsLoader.get(settings, path, id))
+            val color = convertRGBtoHSB(get())
             posX = MathHelper.clamp((color[0] * 60).toInt(), 0, 58)
             posY = MathHelper.clamp((color[1] * 60).toInt(), 0, 58)
         }
@@ -91,17 +90,13 @@ class ColorPickerElement(
         context.fill(x+width-60,y,x+width,y+60, alphaModifier.toInt())
 
         RenderSystem.enableBlend()
-        RenderSystem.setShaderColor(if(SettingsLoader.get(settings, path, id).getOriginalColor()<0f) 0.5f else widget2.getValue().toFloat(),if(SettingsLoader.get(
-                settings,
-                path,
-                id
-            ).getOriginalColor()<0f) 0.5f else widget2.getValue().toFloat(),if(SettingsLoader.get(settings, path, id).getOriginalColor()<0f) 0.5f else widget2.getValue().toFloat(),alphaModifier/(0xFFFFFFFF.toFloat()))
+        RenderSystem.setShaderColor(if(get().getOriginalColor()<0f) 0.5f else widget2.getValue().toFloat(),if(get().getOriginalColor()<0f) 0.5f else widget2.getValue().toFloat(),if(SettingsLoader.get(settings, path, id).getOriginalColor()<0f) 0.5f else widget2.getValue().toFloat(),alphaModifier/(0xFFFFFFFF.toFloat()))
         context.drawTexture(Identifier.of("bewisclient","textures/color_space.png"),x+width-59,y+1,58,58,0f,0f,58,58,58,58)
         RenderSystem.setShaderColor(1f,1f,1f,1f)
         RenderSystem.disableBlend()
 
-        context.drawBorder(x+width-61,y-1,62,62, (alphaModifier+ SettingsLoader.get(settings, path, id).getColor()).toInt())
-        context.drawBorder(x+width-60,y,60,60, (alphaModifier+ (SettingsLoader.get(settings, path, id).getColor())).toInt())
+        context.drawBorder(x+width-61,y-1,62,62, (alphaModifier+ get().getColor()).toInt())
+        context.drawBorder(x+width-60,y,60,60, (alphaModifier+ (get().getColor())).toInt())
 
         context.drawBorder(x+width-60+posX-1,y+posY-1,3,3, alphaModifier.toInt())
 
@@ -178,11 +173,8 @@ class ColorPickerElement(
             posX = MathHelper.clamp((mouseX-pos[2]+60).toInt(),1,58)
             posY = MathHelper.clamp((mouseY-pos[1]).toInt(),1,58)
 
-            SettingsLoader.set(
-                settings,
+            set(
                 ColorSaver.of(convertRGBtoHSB((posX-1)/58f,(posY-1)/58f,widget2.getValue().toFloat())+0x1000000),
-                path,
-                id
             )
         }
         if(widget.isHovered && hClicked && widget.active)
@@ -208,7 +200,7 @@ class ColorPickerElement(
             posX = (mouseX-pos[2]+60).toInt()
             posY = (mouseY-pos[1]).toInt()
 
-            SettingsLoader.set(settings, ColorSaver.of(convertRGBtoHSB((posX-1)/58f,(posY-1)/58f)+0x1000000), path, id)
+            set(ColorSaver.of(convertRGBtoHSB((posX-1)/58f,(posY-1)/58f)+0x1000000))
         }
         static.mouseClicked(mouseX, mouseY,button)
         change.mouseClicked(mouseX, mouseY,button)

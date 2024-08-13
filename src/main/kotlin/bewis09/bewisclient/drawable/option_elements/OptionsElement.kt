@@ -9,6 +9,11 @@ import net.minecraft.client.gui.DrawContext
 abstract class OptionsElement(val title: String, val description: String) : Settings(), Search.SearchableElement<OptionsElement> {
     var pos = arrayOf(0, 0, 0, 0)
 
+    /**
+     * Renders the element on the screen
+     *
+     * @param context The [DrawContext] used to
+     */
     abstract fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int
 
     open fun mouseClicked(mouseX: Double, mouseY: Double, button: Int, screen: MainOptionsScreen) {

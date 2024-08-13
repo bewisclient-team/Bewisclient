@@ -12,24 +12,23 @@ import kotlin.math.cos
 
 class BooleanOptionsElement : SettingsOptionsElement<Boolean> {
 
-    private val settings: String
     val valueChanger: (Boolean)->Unit
 
     constructor(title: String, path: Array<String>, id: SettingsLoader.TypedSettingID<Boolean>, settings: String) : super(
         title,
+        settings,
         path,
         id
     ) {
-        this.settings = settings
         this.valueChanger = {}
     }
 
     constructor(title: String, path: Array<String>, id: SettingsLoader.TypedSettingID<Boolean>, settings: String, valueChanger: (Boolean) -> Unit) : super(
         title,
+        settings,
         path,
         id
     ) {
-        this.settings = settings
         this.valueChanger = valueChanger
     }
 
@@ -94,6 +93,8 @@ class BooleanOptionsElement : SettingsOptionsElement<Boolean> {
         return height
     }
 
+    override fun getTypeParameter(): String = "boolean"
+
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int, screen: MainOptionsScreen) {
         if(dependentDisabler.contains(SettingsLoader.toPointNotation(path,id)) && !dependentDisabler[SettingsLoader.toPointNotation(path,id)]!!()) return
 
@@ -101,8 +102,8 @@ class BooleanOptionsElement : SettingsOptionsElement<Boolean> {
             screen.playDownSound(MinecraftClient.getInstance().soundManager)
 
             animationStart = System.currentTimeMillis()
-            val b = !SettingsLoader.get(settings, path, id)
-            SettingsLoader.set(settings, b, path, id)
+            val b = !get()
+            set(b)
 
             valueChanger(b)
         }

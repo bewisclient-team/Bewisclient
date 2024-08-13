@@ -29,7 +29,8 @@ object ElementList: Settings() {
         SettingsLoader.get(
             "widgets",
             SHOW_BIOME,
-            "coordinates"
+            "coordinates",
+            *SELECT_PARTS
         )
     })
 
@@ -296,6 +297,7 @@ object ElementList: Settings() {
 
     private fun loadWidget(str: String, key:String,value: JsonElement): OptionsElement {
         return when (true) {
+            value.isJsonObject -> MultipleBooleanOptionsElement(key,"widgets", arrayOf(str,key),*value.asJsonObject.asMap().keys.toTypedArray())
             value.asJsonPrimitive.isBoolean -> BooleanOptionsElement(key, arrayOf(str),
                 SettingsLoader.TypedSettingID(key), "widgets")
             (value.asJsonPrimitive.isString && value.asString.startsWith("0x")) -> ColorPickerElement(key,arrayOf(str),SettingsLoader.TypedSettingID(key),"widgets")
@@ -307,8 +309,8 @@ object ElementList: Settings() {
                     ArrayOptionsElement(key,arrayOf(str),SettingsLoader.TypedSettingID(key),"widgets")
             }
             value.asJsonPrimitive.isString -> if(str.split("_")[0]=="info")
-                            InfoElement("info.$str")
-                        else InfoElement("info.$str")
+                            InfoElement("info.$key")
+                        else InfoElement("info.$key")
                             // String Element no longer exists: StringOptionsElement(key,str,key,"widgets")
             else -> throw WidgetToElementLoadingException(key,value)
         }

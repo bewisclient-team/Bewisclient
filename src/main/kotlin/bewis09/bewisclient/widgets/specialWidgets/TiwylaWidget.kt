@@ -91,7 +91,7 @@ class TiwylaWidget: Widget("tiwyla") {
         drawContext.matrices.scale(1/0.7F,1/0.7F,1F)
         val hitResult = MinecraftClient.getInstance().crosshairTarget
         if (hitResult is BlockHitResult) {
-            if (getProperty(SHOW_BLOCK_ICON)) {
+            if (getProperty(SHOW_BLOCK_ICON,*SELECT_PARTS)) {
                 drawContext.drawItem(ItemStack(MinecraftClient.getInstance().world!!.getBlockState(hitResult.blockPos).block),x+10,y+12)
             }
         }
@@ -219,9 +219,9 @@ class TiwylaWidget: Widget("tiwyla") {
         return no
     }
 
-    private fun getTextFromEntity(hitResult: EntityHitResult, entity: Entity):ArrayList<String> {
+    private fun getTextFromEntity(@Suppress("UNUSED_PARAMETER") hitResult: EntityHitResult, entity: Entity):ArrayList<String> {
         return if(entity is LivingEntity)
-            if(MinecraftClient.getInstance().isInSingleplayer && getProperty(SHOW_HEALTH_INFORMATION)) {
+            if(MinecraftClient.getInstance().isInSingleplayer && getProperty(SHOW_HEALTH_INFORMATION,*SELECT_PARTS)) {
                 arrayListOf(
                         entity.name.string,
                         "cTH%${entity.health}%${entity.maxHealth}%${entity.absorptionAmount}",
@@ -274,20 +274,25 @@ class TiwylaWidget: Widget("tiwyla") {
     override fun getWidgetSettings(): JsonObject {
         val jsonObject = JsonObject()
 
-        jsonObject.add("enabled", JsonPrimitive(true))
-        jsonObject.add("transparency", JsonPrimitive(0.43))
-        jsonObject.add("size", JsonPrimitive(1))
-        jsonObject.add("posX", JsonPrimitive(5))
-        jsonObject.add("partX", JsonPrimitive(0))
-        jsonObject.add("posY", JsonPrimitive(5))
-        jsonObject.add("partY", JsonPrimitive(-1))
-        jsonObject.add("top_color", JsonPrimitive("0xFFFFFF"))
-        jsonObject.add("bottom_color", JsonPrimitive("0xFFFFFF"))
-        jsonObject.add("first_line",JsonPrimitive(6F))
-        jsonObject.add("second_line",JsonPrimitive(1F))
-        jsonObject.add("third_line",JsonPrimitive(5F))
-        jsonObject.add("show_block_icon",JsonPrimitive(true))
-        jsonObject.add("show_health_information",JsonPrimitive(true))
+        jsonObject.add(ENABLED.id, JsonPrimitive(true))
+        jsonObject.add(TRANSPARENCY.id, JsonPrimitive(0.43))
+        jsonObject.add(SIZE.id, JsonPrimitive(1))
+        jsonObject.add(POSX.id, JsonPrimitive(5))
+        jsonObject.add(PARTX.id, JsonPrimitive(0))
+        jsonObject.add(POSY.id, JsonPrimitive(5))
+        jsonObject.add(PARTY.id, JsonPrimitive(-1))
+        jsonObject.add(TOP_COLOR.id, JsonPrimitive("0xFFFFFF"))
+        jsonObject.add(BOTTOM_COLOR.id, JsonPrimitive("0xFFFFFF"))
+        jsonObject.add(FIRST_LINE.id,JsonPrimitive(6F))
+        jsonObject.add(SECOND_LINE.id,JsonPrimitive(1F))
+        jsonObject.add(THIRD_LINE.id,JsonPrimitive(5F))
+
+        val elements = JsonObject()
+
+        elements.add(SHOW_BLOCK_ICON.id,JsonPrimitive(true))
+        elements.add(SHOW_HEALTH_INFORMATION.id,JsonPrimitive(true))
+
+        jsonObject.add(SELECT_PARTS[0],elements)
         jsonObject.add("info_tiwyla_health_removed",JsonPrimitive(""))
 
         return jsonObject

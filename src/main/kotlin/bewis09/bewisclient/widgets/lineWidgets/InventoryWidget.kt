@@ -42,13 +42,13 @@ class InventoryWidget: Widget("inventory") {
     override fun getWidgetSettings(): JsonObject {
         val jsonObject = JsonObject()
 
-        jsonObject.add("enabled", JsonPrimitive(true))
-        jsonObject.add("transparency", JsonPrimitive(1))
-        jsonObject.add("size", JsonPrimitive(1))
-        jsonObject.add("posX", JsonPrimitive(5))
-        jsonObject.add("partX", JsonPrimitive(1))
-        jsonObject.add("posY", JsonPrimitive(5))
-        jsonObject.add("partY", JsonPrimitive(1))
+        jsonObject.add(ENABLED.id, JsonPrimitive(true))
+        jsonObject.add(TRANSPARENCY.id, JsonPrimitive(1))
+        jsonObject.add(SIZE.id, JsonPrimitive(1))
+        jsonObject.add(POSX.id, JsonPrimitive(5))
+        jsonObject.add(PARTX.id, JsonPrimitive(1))
+        jsonObject.add(POSY.id, JsonPrimitive(5))
+        jsonObject.add(PARTY.id, JsonPrimitive(1))
 
         return jsonObject
     }

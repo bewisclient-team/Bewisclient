@@ -2,6 +2,7 @@ package bewis09.bewisclient.drawable.option_elements
 
 import bewis09.bewisclient.screen.MainOptionsScreen.Companion.scale
 import bewis09.bewisclient.widgets.Widget
+import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.util.Identifier
 import kotlin.math.roundToInt
@@ -24,6 +25,9 @@ class WidgetPreviewOptionsElement(val widget: Widget?): OptionsElement("","") {
 
         context.matrices.pop()
 
+        RenderSystem.enableBlend()
+        context.setShaderColor(1F,1F,1F, (alphaModifier.toFloat()/0xFFFFFFFF))
+
         context.drawTexture(Identifier.of("textures/block/light_blue_concrete.png"),
             ((x+width/2)/scale-widget.getOriginalWidth()/2).roundToInt()-2, ((y/scale)).roundToInt()+1,
             (widget.getOriginalWidth())+4, ((widget.getOriginalHeight()))+4,0f,0f,(widget.getOriginalWidth())+4,((widget.getOriginalHeight()))+4,32,32)
@@ -42,6 +46,9 @@ class WidgetPreviewOptionsElement(val widget: Widget?): OptionsElement("","") {
         context.matrices.scale(1/widget.getScale(), 1/widget.getScale(), 1/widget.getScale())
 
         widget.render(context,(((x+width/2)/scale-widget.getOriginalWidth()/2)).roundToInt(), ((y/scale+3f)).roundToInt())
+
+        context.setShaderColor(1F,1F,1F, 1F)
+        RenderSystem.disableBlend()
 
         context.matrices.pop()
 

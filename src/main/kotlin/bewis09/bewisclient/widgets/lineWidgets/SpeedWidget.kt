@@ -21,7 +21,7 @@ class SpeedWidget: LineWidget("speed",80,true) {
 
     override fun getWidgetSettings(): JsonObject {
         val list = super.getWidgetSettings(0.7f,5f,1f,71f,-1f)
-        list.add("vertical_speed", JsonPrimitive(false))
+        list.add(VERTICAL_SPEED.id, JsonPrimitive(false))
         return list
     }
 }

@@ -13,22 +13,15 @@ import kotlin.math.round
 
 class FloatOptionsElement : SettingsOptionsElement<Float> {
 
-    private val settings: String
-
     constructor(title: String, path: Array<String>, id: SettingsLoader.TypedSettingID<Float>, settings: String) : super(
         title,
+        settings,
         path,
         id
     ) {
-        this.settings = settings
         this.valueChanged = { a ->
             run {
-                SettingsLoader.set(
-                    settings,
-                    (round((a*(de!!.end-de.start)+de.start)* 10.0.pow(de.decimalPoints.toDouble()))/ 10.0.pow(de.decimalPoints.toDouble())),
-                    path,
-                    id
-                )
+                set((round((a*(de!!.end-de.start)+de.start)* 10.0.pow(de.decimalPoints.toDouble()))/ 10.0.pow(de.decimalPoints.toDouble())).toFloat())
             }
         }
         this.de = DefaultSettings.sliders[toPointNotation(path,id)]
@@ -38,24 +31,19 @@ class FloatOptionsElement : SettingsOptionsElement<Float> {
 
     constructor(title: String, path: Array<String>, id: SettingsLoader.TypedSettingID<Float>, settings: String, valueChanger: (Double) -> Unit) : super(
         title,
+        settings,
         path,
         id
     ) {
-        this.settings = settings
         this.valueChanged = { a ->
             run {
-                SettingsLoader.set(
-                    settings,
-                    (round((a*(de!!.end-de.start)+de.start)* 10.0.pow(de.decimalPoints.toDouble()))/ 10.0.pow(de.decimalPoints.toDouble())),
-                    path,
-                    id
-                )
+                set((round((a*(de!!.end-de.start)+de.start)* 10.0.pow(de.decimalPoints.toDouble()))/ 10.0.pow(de.decimalPoints.toDouble())).toFloat())
                 valueChanger(a)
             }
         }
         this.de = DefaultSettings.sliders[toPointNotation(path,id)]
                 ?: DefaultSettings.sliders[".$id"]
-        this.widget = UsableSliderWidget(0, 0, 100, 20, Text.empty(), ((SettingsLoader.get(settings, path, id) - de?.start!!) / (de.end - de.start)).toDouble(), de.end, de.start, de.decimalPoints, valueChanged)
+        this.widget = UsableSliderWidget(0, 0, 100, 20, Text.empty(), ((get() - de?.start!!) / (de.end - de.start)).toDouble(), de.end, de.start, de.decimalPoints, valueChanged)
     }
 
     val valueChanged: (Double) -> Unit
@@ -96,6 +84,8 @@ class FloatOptionsElement : SettingsOptionsElement<Float> {
 
         return height
     }
+
+    override fun getTypeParameter(): String = "float"
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int, screen: MainOptionsScreen) {
         if(widget.isHovered)

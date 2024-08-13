@@ -33,6 +33,11 @@ open class Settings {
     val SHOW_HEALTH_INFORMATION = createBoolean("show_health_information")
     val SHOW_PROGRESS_BAR = createBoolean("show_progress_bar")
     val VERTICAL_SPEED = createBoolean("vertical_speed")
+    val SHOW_SPACE_BAR = createBoolean("show_space_bar")
+    val SHOW_MOVEMENT_KEYS = createBoolean("show_movement_keys")
+    val SHOW_MOUSE_BUTTON = createBoolean("show_mouse_button")
+    val SHOW_CPS = createBoolean("show_cps")
+    val SELECT_PARTS = arrayOf("select_parts")
 
     val SPEED = arrayOf("speed")
 

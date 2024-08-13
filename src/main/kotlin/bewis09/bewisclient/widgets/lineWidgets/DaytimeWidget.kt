@@ -50,7 +50,7 @@ class DaytimeWidget: LineWidget("daytime",80,true) {
 
     override fun getWidgetSettings(): JsonObject {
         val list = super.getWidgetSettings(.7f,5f,1f,83f,-1f)
-        list.add("24Clock", JsonPrimitive(d))
+        list.add(CLOCK24.id, JsonPrimitive(d))
         return list
     }
 }

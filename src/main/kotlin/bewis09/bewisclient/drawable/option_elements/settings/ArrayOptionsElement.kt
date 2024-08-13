@@ -13,15 +13,15 @@ class ArrayOptionsElement(
     title: String,
     path: Array<String>,
     id: SettingsLoader.TypedSettingID<Float>,
-    private val settings: String
-) : SettingsOptionsElement<Float>(title, path, id) {
+    settings: String
+) : SettingsOptionsElement<Float>(title, settings, path, id) {
 
-    private var v = SettingsLoader.get(settings, path, id).toInt()
+    private var v = get().toInt()
 
     private val widget = ScalableButtonWidget.builder(Text.empty()) {
         v += 1
         v %= de.size
-        SettingsLoader.set(settings, v.toFloat(), path, id)
+        set(v.toFloat())
     }.dimensions(0,0,100,20).build()
 
     private val de = (DefaultSettings.arrays[toPointNotation(path,id)] ?: DefaultSettings.arrays[".${id}"])!!
@@ -58,6 +58,8 @@ class ArrayOptionsElement(
 
         return height
     }
+
+    override fun getTypeParameter(): String = "float"
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int, screen: MainOptionsScreen) {
         widget.mouseClicked(mouseX, mouseY, button)
