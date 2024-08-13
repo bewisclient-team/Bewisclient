@@ -1,7 +1,7 @@
 package bewis09.bewisclient.mixin;
 
 import bewis09.bewisclient.JavaSettingsSender;
-import bewis09.bewisclient.settingsLoader.SettingsLoader;
+import bewis09.bewisclient.settingsLoader.Settings;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -32,7 +32,7 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Inject(method = "hasStatusEffect",at=@At("HEAD"), cancellable = true)
     public void inject(RegistryEntry<StatusEffect> effect, CallbackInfoReturnable<Boolean> cir) {
-        if(effect == StatusEffects.NIGHT_VISION && JavaSettingsSender.Companion.getSettings().getBoolean("design","fullbright.night_vision") && MinecraftClient.getInstance().cameraEntity!=null) {
+        if(effect == StatusEffects.NIGHT_VISION && JavaSettingsSender.Companion.getSettings().get("design", Settings.Companion.getSettings().getFULLBRIGHT(),Settings.Companion.getSettings().getNIGHT_VISION()) && MinecraftClient.getInstance().cameraEntity!=null) {
             if (this.getName().getString().equals(MinecraftClient.getInstance().cameraEntity.getName().getString())) {
                 cir.setReturnValue(true);
             }
@@ -41,7 +41,7 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Inject(method = "getStatusEffect",at=@At("HEAD"), cancellable = true)
     public void injectNext(RegistryEntry<StatusEffect> effect, CallbackInfoReturnable<StatusEffectInstance> cir) {
-        if(effect == StatusEffects.NIGHT_VISION && JavaSettingsSender.Companion.getSettings().getBoolean("design","fullbright.night_vision") && MinecraftClient.getInstance().cameraEntity!=null) {
+        if(effect == StatusEffects.NIGHT_VISION && JavaSettingsSender.Companion.getSettings().get("design",Settings.Companion.getSettings().getFULLBRIGHT(),Settings.Companion.getSettings().getNIGHT_VISION()) && MinecraftClient.getInstance().cameraEntity!=null) {
             if (this.getName().equals(MinecraftClient.getInstance().cameraEntity.getName())) {
                 cir.setReturnValue(instance);
             }

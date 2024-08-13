@@ -1,4 +1,4 @@
-package bewis09.bewisclient.drawable.option_elements
+package bewis09.bewisclient.drawable.option_elements.settings
 
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.drawable.ScalableButtonWidget
@@ -9,17 +9,22 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.text.Text
 
-class ArrayOptionsElement(title: String, path: String, private val value: String, private val settings: String) : SettingsOptionsElement(title, path, arrayListOf()) {
+class ArrayOptionsElement(
+    title: String,
+    path: Array<String>,
+    id: SettingsLoader.TypedSettingID<Float>,
+    private val settings: String
+) : SettingsOptionsElement<Float>(title, path, id, arrayListOf()) {
 
-    private var v = SettingsLoader.getFloat(settings,path).toInt()
+    private var v = SettingsLoader.get(settings, path, id).toInt()
 
     private val widget = ScalableButtonWidget.builder(Text.empty()) {
         v += 1
         v %= de.size
-        SettingsLoader.set(settings, path, v.toFloat())
+        SettingsLoader.set(settings, v.toFloat(), path, id)
     }.dimensions(0,0,100,20).build()
 
-    private val de = (DefaultSettings.arrays[value] ?: DefaultSettings.arrays["." + value.split(".")[value.split(".").size - 1]])!!
+    private val de = (DefaultSettings.arrays[toPointNotation(path,id)] ?: DefaultSettings.arrays[".${id}"])!!
 
     override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {
         val client = MinecraftClient.getInstance()

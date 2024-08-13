@@ -1,4 +1,4 @@
-package bewis09.bewisclient.drawable.option_elements
+package bewis09.bewisclient.drawable.option_elements.settings
 
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.drawable.UsableSliderWidget
@@ -11,36 +11,43 @@ import net.minecraft.text.Text
 import kotlin.math.pow
 import kotlin.math.round
 
-class FloatOptionsElement : SettingsOptionsElement {
+class FloatOptionsElement : SettingsOptionsElement<Float> {
 
-    private val value: String
     private val settings: String
 
-    constructor(title: String, path: String, value: String, settings: String) : super(title, path, arrayListOf()) {
-        this.value = value
+    constructor(title: String, path: Array<String>, id: SettingsLoader.TypedSettingID<Float>, settings: String) : super(title, path, id, arrayListOf()) {
         this.settings = settings
         this.valueChanged = { a ->
             run {
-                SettingsLoader.set(settings, path, (round((a*(de!!.end-de.start)+de.start)* 10.0.pow(de.decimalPoints.toDouble()))/ 10.0.pow(de.decimalPoints.toDouble())))
+                SettingsLoader.set(
+                    settings,
+                    (round((a*(de!!.end-de.start)+de.start)* 10.0.pow(de.decimalPoints.toDouble()))/ 10.0.pow(de.decimalPoints.toDouble())),
+                    path,
+                    id
+                )
             }
         }
-        this.de = DefaultSettings.sliders[path]
-                ?: DefaultSettings.sliders["."+value.split(".")[value.split(".").size - 1]]
-        this.widget = UsableSliderWidget(0, 0, 100, 20, Text.empty(), ((SettingsLoader.getFloat(settings, path) - de?.start!!) / (de.end - de.start)).toDouble(), de.end, de.start, de.decimalPoints, valueChanged)
+        this.de = DefaultSettings.sliders[toPointNotation(path,id)]
+                ?: DefaultSettings.sliders[".$id"]
+        this.widget = UsableSliderWidget(0, 0, 100, 20, Text.empty(), ((SettingsLoader.get(settings, path, id) - de?.start!!) / (de.end - de.start)).toDouble(), de.end, de.start, de.decimalPoints, valueChanged)
     }
 
-    constructor(title: String, path: String, value: String, settings: String, valueChanger: (Double)->Unit) : super(title, path, arrayListOf()) {
-        this.value = value
+    constructor(title: String, path: Array<String>, id: SettingsLoader.TypedSettingID<Float>, settings: String, valueChanger: (Double) -> Unit) : super(title, path, id, arrayListOf()) {
         this.settings = settings
         this.valueChanged = { a ->
             run {
-                SettingsLoader.set(settings, path, (round((a*(de!!.end-de.start)+de.start)* 10.0.pow(de.decimalPoints.toDouble()))/ 10.0.pow(de.decimalPoints.toDouble())))
+                SettingsLoader.set(
+                    settings,
+                    (round((a*(de!!.end-de.start)+de.start)* 10.0.pow(de.decimalPoints.toDouble()))/ 10.0.pow(de.decimalPoints.toDouble())),
+                    path,
+                    id
+                )
                 valueChanger(a)
             }
         }
-        this.de = DefaultSettings.sliders[path]
-                ?: DefaultSettings.sliders["." + value.split(".")[value.split(".").size - 1]]
-        this.widget = UsableSliderWidget(0, 0, 100, 20, Text.empty(), ((SettingsLoader.getFloat(settings, path) - de?.start!!) / (de.end - de.start)).toDouble(), de.end, de.start, de.decimalPoints, valueChanged)
+        this.de = DefaultSettings.sliders[toPointNotation(path,id)]
+                ?: DefaultSettings.sliders[".$id"]
+        this.widget = UsableSliderWidget(0, 0, 100, 20, Text.empty(), ((SettingsLoader.get(settings, path, id) - de?.start!!) / (de.end - de.start)).toDouble(), de.end, de.start, de.decimalPoints, valueChanged)
     }
 
     val valueChanged: (Double) -> Unit

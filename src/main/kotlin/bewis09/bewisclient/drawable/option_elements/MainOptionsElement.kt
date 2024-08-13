@@ -2,6 +2,7 @@ package bewis09.bewisclient.drawable.option_elements
 
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.screen.MainOptionsScreen
+import bewis09.bewisclient.settingsLoader.Settings
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.util.Search
 import com.mojang.blaze3d.systems.RenderSystem
@@ -11,7 +12,7 @@ import net.minecraft.client.gui.screen.Screen
 import net.minecraft.util.Identifier
 import kotlin.math.max
 
-open class MainOptionsElement: Search.SearchableElement<MainOptionsElement> {
+open class MainOptionsElement: Settings, Search.SearchableElement<MainOptionsElement> {
 
     val title: String
     val description: String
@@ -59,7 +60,7 @@ open class MainOptionsElement: Search.SearchableElement<MainOptionsElement> {
 
         val client = MinecraftClient.getInstance()
 
-        allClicked = SettingsLoader.getBoolean("design","options_menu.all_click")
+        allClicked = SettingsLoader.get("design", OPTIONS_MENU, ALL_CLICK)
 
         val descriptionLines = client.textRenderer.wrapLines(Bewisclient.getTranslationText(description),width-(if(allClicked) 50 else 72))
 

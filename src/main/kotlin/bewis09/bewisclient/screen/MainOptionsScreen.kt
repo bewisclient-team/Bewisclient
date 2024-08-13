@@ -4,7 +4,6 @@ import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.drawable.option_elements.MainOptionsElement
 import bewis09.bewisclient.drawable.UsableTexturedButtonWidget
 import bewis09.bewisclient.mixin.ScreenMixin
-import bewis09.bewisclient.screen.elements.ElementList
 import bewis09.bewisclient.screen.widget.WidgetConfigScreen
 import bewis09.bewisclient.settingsLoader.Settings
 import bewis09.bewisclient.settingsLoader.SettingsLoader
@@ -23,13 +22,11 @@ import net.minecraft.client.sound.SoundManager
 import net.minecraft.sound.SoundEvents
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
-import net.minecraft.util.math.ColorHelper
 import net.minecraft.util.math.MathHelper
 import org.joml.Matrix4f
 import java.util.*
 import kotlin.math.*
 
-@Suppress("CAST_NEVER_SUCCEEDS")
 open class MainOptionsScreen : Screen(Text.empty()) {
 
     var animationStart = 0L
@@ -66,7 +63,11 @@ open class MainOptionsScreen : Screen(Text.empty()) {
 
         correctScroll()
         var animationFrame = 1F
-        val animationSpeed = MathHelper.clamp(SettingsLoader.getInt("design","options_menu.animation_time"),1,500)
+        val animationSpeed = MathHelper.clamp(SettingsLoader.get(
+            "design",
+            Settings.Settings.OPTIONS_MENU,
+            Settings.Settings.ANIMATION_TIME
+        ),1f,500f)
         if(System.currentTimeMillis() - animationStart >= animationSpeed) {
             if(animationState==AnimationState.TO_OTHER_SCREEN) {
                 client?.setScreen(animatedScreen)
@@ -337,14 +338,14 @@ open class MainOptionsScreen : Screen(Text.empty()) {
     companion object {
         val searchCollection = Search.collect(ElementList.main())
 
-        var laS = 1f/ SettingsLoader.getFloat("design","options_menu.scale")
+        var laS = 1f/ SettingsLoader.get("design", Settings.Settings.OPTIONS_MENU, Settings.Settings.SCALE)
 
         var clicked = false
 
         val scale: Float
             get() {
                 if(!clicked) {
-                    laS = 1f/SettingsLoader.getFloat("design","options_menu.scale")
+                    laS = 1f/SettingsLoader.get("design", Settings.Settings.OPTIONS_MENU, Settings.Settings.SCALE)
                 }
                 return laS
             }

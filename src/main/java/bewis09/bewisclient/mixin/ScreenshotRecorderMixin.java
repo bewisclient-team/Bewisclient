@@ -1,6 +1,7 @@
 package bewis09.bewisclient.mixin;
 
 import bewis09.bewisclient.Bewisclient;
+import bewis09.bewisclient.settingsLoader.Settings;
 import bewis09.bewisclient.settingsLoader.SettingsLoader;
 import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.texture.NativeImage;
@@ -17,7 +18,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.io.File;
@@ -45,7 +45,7 @@ public abstract class ScreenshotRecorderMixin {
 
     @Inject(method = "saveScreenshotInner", at = @At("HEAD"), cancellable = true)
     private static void inject(File gameDirectory, @Nullable String fileName, Framebuffer framebuffer, Consumer<Text> messageReceiver, CallbackInfo ci) {
-        if(SettingsLoader.INSTANCE.getBoolean("general","screenshot_folder_open")) {
+        if(SettingsLoader.INSTANCE.get("general", Settings.Companion.getSettings().getSCREENSHOT_OPEN_FOLDER())) {
             NativeImage nativeImage = takeScreenshot(framebuffer);
             File file = new File(gameDirectory, SCREENSHOTS_DIRECTORY);
             file.mkdir();

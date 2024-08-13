@@ -1,6 +1,7 @@
 package bewis09.bewisclient.hat;
 
 import bewis09.bewisclient.JavaSettingsSender;
+import bewis09.bewisclient.settingsLoader.Settings;
 import net.minecraft.util.Identifier;
 
 public record Hat(Identifier texture) {
@@ -15,7 +16,7 @@ public record Hat(Identifier texture) {
 
     static {
         try {
-            current_hat = HATS[JavaSettingsSender.Companion.getSettings().getInt("design","hat")];
+            current_hat = HATS[(int) JavaSettingsSender.Companion.getSettings().get("design", Settings.Companion.getSettings().getHAT())];
         } catch (Exception e) {
             e.printStackTrace();
             current_hat = EMPTY;

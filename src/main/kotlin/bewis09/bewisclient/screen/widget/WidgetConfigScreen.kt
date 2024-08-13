@@ -2,7 +2,7 @@ package bewis09.bewisclient.screen.widget
 
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.screen.MainOptionsScreen
-import bewis09.bewisclient.screen.elements.ElementList
+import bewis09.bewisclient.screen.ElementList
 import bewis09.bewisclient.settingsLoader.Settings
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.widgets.Widget
@@ -34,7 +34,11 @@ class WidgetConfigScreen(var parent: MainOptionsScreen): Screen(Text.empty()) {
             alphaStart= System.currentTimeMillis()
         }
 
-        val animationSpeed = MathHelper.clamp(SettingsLoader.getFloat("design","options_menu.animation_time").toInt(),1,500).toFloat()
+        val animationSpeed = MathHelper.clamp(SettingsLoader.get(
+            "design",
+            Settings.Settings.OPTIONS_MENU,
+            Settings.Settings.ANIMATION_TIME
+        ).toInt(),1,500).toFloat()
 
         if(alphaDirection ==1 && (System.currentTimeMillis() - alphaStart)/animationSpeed>1) {
             MinecraftClient.getInstance().setScreen(parent)
@@ -77,7 +81,7 @@ class WidgetConfigScreen(var parent: MainOptionsScreen): Screen(Text.empty()) {
                         Bewisclient.getTranslationText("widgets." + selected?.id),
                         Bewisclient.getTranslationText("screen.info.shift").formatted(Formatting.GRAY),
                         Bewisclient.getTranslationText("screen.info.right").formatted(Formatting.GRAY),
-                        Bewisclient.getTranslationText("screen.info.scroll").formatted(Formatting.GRAY).append(" (${selected!!.getProperty(Settings.Settings.SCALE)})")
+                        Bewisclient.getTranslationText("screen.info.scroll").formatted(Formatting.GRAY).append(" (${selected!!.getProperty(Settings.Settings.SIZE)})")
                 ) as List<Text>?, mouseX, mouseY)
             }
         }
@@ -100,7 +104,7 @@ class WidgetConfigScreen(var parent: MainOptionsScreen): Screen(Text.empty()) {
                 _sel_element = selected!!
                 _sel_xOffset = (mouseX - selected!!.getOriginalPosX()).toInt()
                 _sel_yOffset = (mouseY - selected!!.getOriginalPosY()).toInt()
-            } else if(button == 1  && selected?.id!="effect") {
+            } else if(button == 1  && selected!!.id!="effect") {
                 alphaStart = System.currentTimeMillis()
                 alphaDirection = 1
 
@@ -123,7 +127,7 @@ class WidgetConfigScreen(var parent: MainOptionsScreen): Screen(Text.empty()) {
 
     override fun mouseScrolled(mouseX: Double, mouseY: Double, horizontalAmount: Double, verticalAmount: Double): Boolean {
         if(selected!=null) {
-            selected!!.setProperty(Settings.Settings.SCALE, MathHelper.clamp((round((selected!!.getProperty(Settings.Settings.SCALE)+verticalAmount.toFloat()/10f)*100)/100f),0.2f,2f))
+            selected!!.setProperty(Settings.Settings.SIZE, MathHelper.clamp((round((selected!!.getProperty(Settings.Settings.SIZE)+verticalAmount.toFloat()/10f)*100)/100f),0.2f,2f))
         }
         return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)
     }

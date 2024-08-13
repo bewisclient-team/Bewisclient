@@ -7,13 +7,14 @@ import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.ConfirmLinkScreen
+import net.minecraft.util.Identifier
 import net.minecraft.util.Util
 
-class ContactElement(title: String, val url: String): SettingsOptionsElement("%contact.$title", "", arrayListOf()) {
+class ContactElement(title: String, val url: String): MainOptionsElement("%contact.$title", "", Identifier.of("")) {
     override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {
         val client = MinecraftClient.getInstance()
 
-        allClicked = SettingsLoader.getBoolean("design","options_menu.all_click")
+        allClicked = SettingsLoader.get("design", OPTIONS_MENU, ALL_CLICK)
 
         val descriptionLines = client.textRenderer.wrapLines(Bewisclient.getTranslationText(description),width-if(!allClicked)(34)else 12)
 

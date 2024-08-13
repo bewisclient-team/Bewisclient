@@ -1,6 +1,7 @@
 package bewis09.bewisclient.wings;
 
 import bewis09.bewisclient.JavaSettingsSender;
+import bewis09.bewisclient.settingsLoader.Settings;
 import net.minecraft.util.Identifier;
 
 public record Wing(Identifier texture) {
@@ -14,7 +15,7 @@ public record Wing(Identifier texture) {
 
     static {
         try {
-            current_wing = WINGS[JavaSettingsSender.Companion.getSettings().getInt("design","wing")];
+            current_wing = WINGS[(int) JavaSettingsSender.Companion.getSettings().get("design", Settings.Companion.getSettings().getWING())];
         } catch (Exception e) {
             e.printStackTrace();
             current_wing = EMPTY;

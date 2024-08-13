@@ -92,7 +92,7 @@ class MultiplePagesOptionsElement(val elementList: Array<MultiplePagesElement>, 
             if(widgetEnableSetter) {
                 val isWidgetHovered = mouseX>x+(elementWidthFloat*inline)&&mouseX<x+(elementWidthFloat*inline)+elementWidth&&mouseY>y+line*height+height-19&&mouseY<y+line*height+height-4
 
-                val enabled = (SettingsLoader.getBoolean("widgets", "${multiplePagesElement.title.replace("widgets.","")}.enabled"))
+                val enabled = (SettingsLoader.get("widgets", ENABLED, multiplePagesElement.title.replace("widgets.","")))
 
                 if(!isWidgetHovered) {
                     context.fill(
@@ -171,8 +171,12 @@ class MultiplePagesOptionsElement(val elementList: Array<MultiplePagesElement>, 
         if(widgetHoveredElement!=-1) {
             screen.playDownSound(MinecraftClient.getInstance().soundManager)
 
-            val enabled = (SettingsLoader.getBoolean("widgets","${elementList[widgetHoveredElement].title.replace("widgets.","")}.enabled"))
-            SettingsLoader.set("widgets","${elementList[widgetHoveredElement].title.replace("widgets.","")}.enabled", !enabled)
+            val enabled = (SettingsLoader.get("widgets",ENABLED,
+                elementList[widgetHoveredElement].title.replace("widgets.","")
+            ))
+            SettingsLoader.set("widgets", !enabled,ENABLED,
+                elementList[widgetHoveredElement].title.replace("widgets.","")
+            )
         }
 
         super.mouseClicked(mouseX, mouseY, button, screen)

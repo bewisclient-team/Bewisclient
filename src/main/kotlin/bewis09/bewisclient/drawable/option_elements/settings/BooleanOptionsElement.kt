@@ -1,8 +1,8 @@
-package bewis09.bewisclient.drawable.option_elements
+package bewis09.bewisclient.drawable.option_elements.settings
 
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.screen.MainOptionsScreen
-import bewis09.bewisclient.screen.elements.ElementList.dependentDisabler
+import bewis09.bewisclient.screen.ElementList.dependentDisabler
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
@@ -10,20 +10,17 @@ import net.minecraft.util.math.ColorHelper
 import net.minecraft.util.math.MathHelper
 import kotlin.math.cos
 
-class BooleanOptionsElement : SettingsOptionsElement {
+class BooleanOptionsElement : SettingsOptionsElement<Boolean> {
 
-    private val value: String
     private val settings: String
     val valueChanger: (Boolean)->Unit
 
-    constructor(title: String, path: String, value: String, settings: String) : super(title, path, arrayListOf()) {
-        this.value = value
+    constructor(title: String, path: Array<String>, id: SettingsLoader.TypedSettingID<Boolean>, settings: String) : super(title, path, id, arrayListOf()) {
         this.settings = settings
         this.valueChanger = {}
     }
 
-    constructor(title: String, path: String, value: String, settings: String, valueChanger: (Boolean)->Unit) : super(title, path, arrayListOf()) {
-        this.value = value
+    constructor(title: String, path: Array<String>, id: SettingsLoader.TypedSettingID<Boolean>, settings: String, valueChanger: (Boolean) -> Unit) : super(title, path, id, arrayListOf()) {
         this.settings = settings
         this.valueChanger = valueChanger
     }
@@ -31,7 +28,7 @@ class BooleanOptionsElement : SettingsOptionsElement {
     var animationStart = 0L
 
     override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {
-        if(dependentDisabler.contains(path) && !dependentDisabler[path]!!()) return -4
+        if(dependentDisabler.contains(SettingsLoader.toPointNotation(path,id)) && !dependentDisabler[SettingsLoader.toPointNotation(path,id)]!!()) return -4
 
         val client = MinecraftClient.getInstance()
 
@@ -53,9 +50,13 @@ class BooleanOptionsElement : SettingsOptionsElement {
 
         val middleX = x+width-10
 
-        val enabled = SettingsLoader.getBoolean(settings,path)
+        val enabled = SettingsLoader.get(settings, path, id)
 
-        var progress = MathHelper.clamp((System.currentTimeMillis() - animationStart)/SettingsLoader.getFloat("design","options_menu.animation_time"),0F,1F)
+        var progress = MathHelper.clamp((System.currentTimeMillis() - animationStart)/SettingsLoader.get(
+            "design",
+            OPTIONS_MENU,
+            ANIMATION_TIME
+        ),0F,1F)
 
         if(enabled) {
             progress = 1-progress
@@ -86,14 +87,14 @@ class BooleanOptionsElement : SettingsOptionsElement {
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int, screen: MainOptionsScreen) {
-        if(dependentDisabler.contains(path) && !dependentDisabler[path]!!()) return
+        if(dependentDisabler.contains(SettingsLoader.toPointNotation(path,id)) && !dependentDisabler[SettingsLoader.toPointNotation(path,id)]!!()) return
 
         if ( pos[2] - 20 < mouseX && pos[1] < mouseY && pos[2] > mouseX && pos[3] > mouseY) {
             screen.playDownSound(MinecraftClient.getInstance().soundManager)
 
             animationStart = System.currentTimeMillis()
-            val b = !SettingsLoader.getBoolean(settings,path)
-            SettingsLoader.set(settings,path,b)
+            val b = !SettingsLoader.get(settings, path, id)
+            SettingsLoader.set(settings, b, path, id)
 
             valueChanger(b)
         }

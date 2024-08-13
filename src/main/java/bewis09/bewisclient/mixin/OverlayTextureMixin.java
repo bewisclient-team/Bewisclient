@@ -1,10 +1,9 @@
 package bewis09.bewisclient.mixin;
 
 import bewis09.bewisclient.kfj.KFJ;
+import bewis09.bewisclient.settingsLoader.Settings;
 import bewis09.bewisclient.settingsLoader.SettingsLoader;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,7 +18,7 @@ public class OverlayTextureMixin {
 
     @Inject(method = "<init>",at=@At("RETURN"))
     private void inject(CallbackInfo ci) {
-        if(SettingsLoader.INSTANCE.getBoolean("design","blockhit.hit_overlay.enabled"))
+        if(SettingsLoader.INSTANCE.get("design", Settings.Companion.getSettings().getHIT_OVERLAY(),Settings.Companion.getSettings().getENABLED()))
             KFJ.INSTANCE.overlayTexture(texture);
     }
 }

@@ -1,11 +1,8 @@
 package bewis09.bewisclient.kfj
 
 import bewis09.bewisclient.MixinStatics
-import bewis09.bewisclient.settingsLoader.SettingsLoader
-import bewis09.bewisclient.settingsLoader.SettingsLoader.getBoolean
-import bewis09.bewisclient.settingsLoader.SettingsLoader.getColorSaver
-import bewis09.bewisclient.settingsLoader.SettingsLoader.getFloat
-import bewis09.bewisclient.util.ColorSaver
+import bewis09.bewisclient.settingsLoader.Settings
+import bewis09.bewisclient.settingsLoader.SettingsLoader.get
 import bewis09.bewisclient.util.MathUtil
 import bewis09.bewisclient.widgets.WidgetRenderer
 import com.google.common.collect.Lists
@@ -35,9 +32,9 @@ import java.util.*
 import java.util.function.Consumer
 import kotlin.math.max
 
-object KFJ {
-    val EFFECT_WIDGET_TEXTURE = Identifier.of("bewisclient", "gui/effect_widget.png")
-    val EFFECT_WIDGET_AMBIENT_TEXTURE = Identifier.of("bewisclient", "gui/effect_widget_ambient.png")
+object KFJ: Settings() {
+    val EFFECT_WIDGET_TEXTURE = Identifier.of("bewisclient", "gui/effect_widget.png")!!
+    val EFFECT_WIDGET_AMBIENT_TEXTURE = Identifier.of("bewisclient", "gui/effect_widget_ambient.png")!!
 
     fun renderEffectHUD(
         context: DrawContext,
@@ -169,7 +166,7 @@ object KFJ {
     fun renderScoreboard(context: DrawContext, objective: ScoreboardObjective, SCOREBOARD_ENTRY_COMPARATOR: Comparator<ScoreboardEntry>, SCOREBOARD_JOINER: String) {
         context.matrices.push()
 
-        val scale = getFloat("design", "scoreboard.scale")
+        val scale = get("design", SCOREBOARD, SCALE)
 
         context.matrices.scale(scale,scale,scale)
         context.matrices.translate(-MinecraftClient.getInstance().window.scaledWidth.toFloat()+MinecraftClient.getInstance().window.scaledWidth.toFloat()/scale,-MinecraftClient.getInstance().window.scaledWidth.toFloat()/4+MinecraftClient.getInstance().window.scaledWidth.toFloat()/scale/4,0f)
@@ -234,7 +231,7 @@ object KFJ {
                     Colors.WHITE,
                     false
                 )
-                if(getBoolean("design", "scoreboard.hide_numbers")) continue
+                if(get("design", SCOREBOARD, HIDE_NUMBERS)) continue
                 context.drawText(
                     MinecraftClient.getInstance().textRenderer,
                     sidebarEntry.score,
@@ -255,7 +252,13 @@ object KFJ {
             for (j in 0..15) {
                 if (i < 8) {
                     nativeImage.setColor(
-                        j, i, ColorHelper.Abgr.getAbgr((1-getFloat("design","blockhit.hit_overlay.alpha")*255).toInt(),ColorHelper.Argb.getBlue(getColorSaver("design", "blockhit.hit_overlay.color").getColor()),ColorHelper.Argb.getGreen(getColorSaver("design", "blockhit.hit_overlay.color").getColor()),ColorHelper.Argb.getRed(getColorSaver("design", "blockhit.hit_overlay.color").getColor()))
+                        j, i, ColorHelper.Abgr.getAbgr((1- get("design", HIT_OVERLAY, ALPHA) *255).toInt(),ColorHelper.Argb.getBlue(
+                            get("design", HIT_OVERLAY, COLOR)
+                                .getColor()),ColorHelper.Argb.getGreen(
+                            get("design", HIT_OVERLAY, COLOR)
+                                .getColor()),ColorHelper.Argb.getRed(
+                            get("design", HIT_OVERLAY, COLOR)
+                                .getColor()))
                     )
                 } else {
                     val k = ((1.0f - j.toFloat() / 15.0f * 0.75f) * 255.0f).toInt()

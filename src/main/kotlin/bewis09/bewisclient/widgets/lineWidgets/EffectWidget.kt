@@ -20,7 +20,7 @@ class EffectWidget: Widget("effect") {
     }
 
     override fun getOriginalHeight(): Int {
-        return if(SettingsLoader.getBoolean("design","extend_status_effect_info")) 75 else 52
+        return if(SettingsLoader.get("design",EXTEND_STATUS_EFFECT_INFO)) 75 else 52
     }
 
     override fun getOriginalPosX(): Int {
@@ -46,9 +46,9 @@ class EffectWidget: Widget("effect") {
             part = 1F
         }
         SettingsLoader.disableAutoSave()
-        SettingsLoader.set("widgets","$id.partY", part)
+        setProperty(PARTY,part)
         SettingsLoader.disableAutoSave()
-        SettingsLoader.set("widgets","$id.posY", 0f.coerceAtLeast(pos))
+        setProperty(POSY,0f.coerceAtLeast(pos))
     }
 
     override fun getWidgetSettings(): JsonObject {

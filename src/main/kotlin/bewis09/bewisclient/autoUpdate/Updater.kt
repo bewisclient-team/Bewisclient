@@ -1,13 +1,13 @@
 package bewis09.bewisclient.autoUpdate
 
 import bewis09.bewisclient.Bewisclient.Companion.Companion.update
+import bewis09.bewisclient.settingsLoader.Settings
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import com.google.gson.JsonObject
 import net.fabricmc.loader.api.FabricLoader
 import org.apache.commons.io.FileUtils
 import java.io.ByteArrayInputStream
 import java.io.File
-import java.io.InputStream
 import java.net.URI
 import java.util.*
 import kotlin.io.path.pathString
@@ -19,7 +19,7 @@ object Updater {
             return
         }
 
-        if(!SettingsLoader.getBoolean("general","experimental.auto_update")) return
+        if(!SettingsLoader.get("general", Settings.Settings.EXPERIMENTAL, Settings.Settings.AUTO_UPDATE)) return
 
         val file = File(FabricLoader.getInstance().gameDir.pathString+"\\bewisclient\\download\\"+ update!!["name"].asString.lowercase(
             Locale.getDefault()

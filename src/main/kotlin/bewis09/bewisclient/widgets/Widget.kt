@@ -21,7 +21,7 @@ abstract class Widget(val id: String): Settings() {
     abstract fun getOriginalWidth(): Int
     abstract fun getOriginalHeight(): Int
 
-    open fun getScale(): Float = getProperty(Settings.SCALE)
+    open fun getScale(): Float = getProperty(Settings.SIZE)
 
     open fun isEnabled(): Boolean = getProperty(Settings.ENABLED)
 
@@ -74,23 +74,25 @@ abstract class Widget(val id: String): Settings() {
     fun getWidth(): Int = (getScale() * getOriginalWidth()).roundToInt()
     fun getHeight(): Int = (getScale() * getOriginalHeight()).roundToInt()
 
+    @Suppress("unchecked_cast")
     inline fun <reified K> getProperty(setting: SettingsLoader.TypedSettingID<K>): K {
         when (true) {
-            K::class.java.name.lowercase().contains("float") -> return SettingsLoader.getFloat("widgets","$id.${setting.id}") as K
-            K::class.java.name.lowercase().contains("boolean") -> return SettingsLoader.getBoolean("widgets","$id.${setting.id}") as K
-            K::class.java.name.lowercase().contains("colorsaver") -> return ColorSaver.of(SettingsLoader.getString("widgets","$id.${setting.id}")) as K
-            K::class.java.name.lowercase().contains("string") -> return SettingsLoader.getString("widgets","$id.${setting.id}") as K
+            K::class.java.name.lowercase().contains("float") -> return SettingsLoader.get("widgets",setting as SettingsLoader.TypedSettingID<Float>,id) as K
+            K::class.java.name.lowercase().contains("boolean") -> return SettingsLoader.get("widgets",setting as SettingsLoader.TypedSettingID<Boolean>,id) as K
+            K::class.java.name.lowercase().contains("colorsaver") -> return SettingsLoader.get("widgets",setting as SettingsLoader.TypedSettingID<ColorSaver>,id) as K
+            K::class.java.name.lowercase().contains("string") -> return SettingsLoader.get("widgets",setting as SettingsLoader.TypedSettingID<String>,id) as K
             else -> {}
         }
         throw ClassCastException()
     }
 
+    @Suppress("unchecked_cast")
     inline fun <reified K> setProperty(setting: SettingsLoader.TypedSettingID<K>, value: K) {
-        when (true) {
-            K::class.java.name.lowercase().contains("float") -> SettingsLoader.set("widgets","$id.${setting.id}",value as Float)
-            K::class.java.name.lowercase().contains("boolean") -> SettingsLoader.set("widgets","$id.${setting.id}",value as Boolean)
-            K::class.java.name.lowercase().contains("colorsaver") -> SettingsLoader.set("widgets","$id.${setting.id}",value as ColorSaver)
-            K::class.java.name.lowercase().contains("string") -> SettingsLoader.set("widgets","$id.${setting.id}",value as String)
+        when (value) {
+            is Number -> SettingsLoader.set("widgets",value,setting as SettingsLoader.TypedSettingID<Float>,id)
+            is Boolean -> SettingsLoader.set("widgets",value,setting as SettingsLoader.TypedSettingID<Boolean>,id)
+            is ColorSaver -> SettingsLoader.set("widgets",value,setting as SettingsLoader.TypedSettingID<ColorSaver>,id)
+            is String -> SettingsLoader.set("widgets",value,setting as SettingsLoader.TypedSettingID<String>,id)
             else -> {}
         }
     }
@@ -114,9 +116,9 @@ abstract class Widget(val id: String): Settings() {
         if(part!=0f && abs(pos-2.5)<5 && !sneak)
             pos = 5f
         SettingsLoader.disableAutoSave()
-        SettingsLoader.set("widgets","$id.partX", part)
+        setProperty(PARTX,part)
         SettingsLoader.disableAutoSave()
-        SettingsLoader.set("widgets","$id.posX", pos)
+        setProperty(POSX,pos)
     }
 
     open fun setPropertyPosY(value: Float, allV: Int, wV: Int, sneak: Boolean) {
@@ -132,9 +134,9 @@ abstract class Widget(val id: String): Settings() {
         if(abs(pos-2.5)<5 && !sneak)
             pos = 5f
         SettingsLoader.disableAutoSave()
-        SettingsLoader.set("widgets","$id.partY", part)
+        setProperty(PARTY,part)
         SettingsLoader.disableAutoSave()
-        SettingsLoader.set("widgets","$id.posY", pos)
+        setProperty(POSY,pos)
     }
 
     abstract fun getWidgetSettings(): JsonObject

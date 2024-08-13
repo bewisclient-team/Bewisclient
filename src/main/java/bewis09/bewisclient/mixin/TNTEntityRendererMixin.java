@@ -1,16 +1,15 @@
 package bewis09.bewisclient.mixin;
 
 import bewis09.bewisclient.JavaSettingsSender;
+import bewis09.bewisclient.settingsLoader.Settings;
 import bewis09.bewisclient.util.MathUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.TntEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAttachmentType;
 import net.minecraft.entity.TntEntity;
 import net.minecraft.util.Colors;
@@ -29,7 +28,7 @@ public abstract class TNTEntityRendererMixin extends EntityRenderer<TntEntity> {
 
     @Inject(method = "render(Lnet/minecraft/entity/TntEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at=@At("RETURN"))
     public void inject(TntEntity entity, float yaw, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo ci) {
-        if(!JavaSettingsSender.Companion.getSettings().getBoolean("general","tnt_timer")) return;
+        if(!JavaSettingsSender.Companion.getSettings().get("general", Settings.Companion.getSettings().getTNT_TIMER())) return;
 
         double d = this.dispatcher.getSquaredDistanceToCamera(entity);
         if (d > 64.0) {

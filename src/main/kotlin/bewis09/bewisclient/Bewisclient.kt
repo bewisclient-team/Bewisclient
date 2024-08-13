@@ -5,6 +5,7 @@ import bewis09.bewisclient.autoUpdate.Updater
 import bewis09.bewisclient.cape.Capes
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.screen.SnakeScreen
+import bewis09.bewisclient.settingsLoader.Settings.Companion.Settings
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.widgets.WidgetRenderer
 import bewis09.bewisclient.wings.WingFeatureRenderer
@@ -41,8 +42,8 @@ object Bewisclient : ClientModInitializer {
 	var openOptionScreenKeyBindimg: KeyBinding? = null
 	var zoomBinding: KeyBinding? = null
 
-	var posOld = Vec3d.ZERO
-	var posNew = Vec3d.ZERO
+	var posOld = Vec3d.ZERO!!
+	var posNew = Vec3d.ZERO!!
 
 	var speed = 0.0
 
@@ -92,7 +93,7 @@ object Bewisclient : ClientModInitializer {
 				posOld = posNew
 				posNew = it.player!!.pos
 
-				speed = if(SettingsLoader.getBoolean("widgets","speed.vertical_speed"))
+				speed = if(SettingsLoader.get("widgets", Settings.SPEED,Settings.VERTICAL_SPEED))
 					posNew.subtract(posOld).length()
 				else
 					posNew.subtract(posOld).horizontalLength()
@@ -103,40 +104,97 @@ object Bewisclient : ClientModInitializer {
 			}
 
 			while (keyBinding1.wasPressed()) {
-				SettingsLoader.set("design","fullbright.enabled",true)
-				SettingsLoader.set("design","fullbright.value",if(SettingsLoader.getFloat("design","fullbright.value")<=1) 10f else 1f)
-				MinecraftClient.getInstance().options.gamma.value = SettingsLoader.getFloat("design","fullbright.value").toDouble()
-				printGammaMessage(SettingsLoader.getFloat("design","fullbright.value")/10)
+				SettingsLoader.set(
+					"design", true, Settings.FULLBRIGHT,
+					Settings.ENABLED
+				)
+				SettingsLoader.set(
+					"design", if(SettingsLoader.get(
+							"design", Settings.FULLBRIGHT,
+							Settings.FULLBRIGHT_VALUE
+						)<=1) 10f else 1f, Settings.FULLBRIGHT,
+					Settings.FULLBRIGHT_VALUE
+				)
+				MinecraftClient.getInstance().options.gamma.value = SettingsLoader.get(
+					"design", Settings.FULLBRIGHT,
+					Settings.FULLBRIGHT_VALUE
+				).toDouble()
+				printGammaMessage(SettingsLoader.get(
+					"design", Settings.FULLBRIGHT,
+					Settings.FULLBRIGHT_VALUE
+				)/10)
 			}
 			while (keyBinding2.wasPressed()) {
-				SettingsLoader.set("design","fullbright.enabled",true)
-				SettingsLoader.set("design","fullbright.value",min(10f,SettingsLoader.getFloat("design","fullbright.value")+0.25f))
-				MinecraftClient.getInstance().options.gamma.value = SettingsLoader.getFloat("design","fullbright.value").toDouble()
-				printGammaMessage(SettingsLoader.getFloat("design","fullbright.value")/10)
+				SettingsLoader.set(
+					"design", true, Settings.FULLBRIGHT,
+					Settings.ENABLED
+				)
+				SettingsLoader.set(
+					"design", min(10f,SettingsLoader.get(
+						"design", Settings.FULLBRIGHT,
+						Settings.FULLBRIGHT_VALUE
+					)+0.25f), Settings.FULLBRIGHT,
+					Settings.FULLBRIGHT_VALUE
+				)
+				MinecraftClient.getInstance().options.gamma.value = SettingsLoader.get(
+					"design", Settings.FULLBRIGHT,
+					Settings.FULLBRIGHT_VALUE
+				).toDouble()
+				printGammaMessage(SettingsLoader.get(
+					"design", Settings.FULLBRIGHT,
+					Settings.FULLBRIGHT_VALUE
+				)/10)
 			}
 			while (keyBinding3.wasPressed()) {
-				SettingsLoader.set("design","fullbright.enabled",true)
-				SettingsLoader.set("design","fullbright.value",max(0f,SettingsLoader.getFloat("design","fullbright.value")-0.25f))
-				MinecraftClient.getInstance().options.gamma.value = SettingsLoader.getFloat("design","fullbright.value").toDouble()
-				printGammaMessage(SettingsLoader.getFloat("design","fullbright.value")/10)
+				SettingsLoader.set(
+					"design", true, Settings.FULLBRIGHT,
+					Settings.ENABLED
+				)
+				SettingsLoader.set(
+					"design", max(0f,SettingsLoader.get(
+						"design", Settings.FULLBRIGHT,
+						Settings.FULLBRIGHT_VALUE
+					)-0.25f), Settings.FULLBRIGHT,
+					Settings.FULLBRIGHT_VALUE
+				)
+				MinecraftClient.getInstance().options.gamma.value = SettingsLoader.get(
+					"design", Settings.FULLBRIGHT,
+					Settings.FULLBRIGHT_VALUE
+				).toDouble()
+				printGammaMessage(SettingsLoader.get(
+					"design", Settings.FULLBRIGHT,
+					Settings.FULLBRIGHT_VALUE
+				)/10)
 			}
 			while (keyBinding4.wasPressed()) {
-				SettingsLoader.set("design","fullbright.night_vision",!SettingsLoader.getBoolean("design","fullbright.night_vision"))
+				SettingsLoader.set(
+					"design", !SettingsLoader.get(
+						"design", Settings.FULLBRIGHT,
+						Settings.NIGHT_VISION
+					), Settings.FULLBRIGHT,
+					Settings.NIGHT_VISION
+				)
 				assert(MinecraftClient.getInstance().player != null)
-				MinecraftClient.getInstance().player!!.sendMessage(Text.translatable("bewisclient.night_vision." + (if (SettingsLoader.getBoolean("design","fullbright.night_vision")) "enabled" else "disabled")).setStyle(
-						Style.EMPTY.withColor(if (SettingsLoader.getBoolean("design","fullbright.night_vision")) 0xFFFF00 else 0xFF0000)
+				MinecraftClient.getInstance().player!!.sendMessage(Text.translatable("bewisclient.night_vision." + (if (SettingsLoader.get(
+						"design", Settings.FULLBRIGHT,
+						Settings.NIGHT_VISION
+					)) "enabled" else "disabled")).setStyle(
+						Style.EMPTY.withColor(if (SettingsLoader.get(
+								"design", Settings.FULLBRIGHT,
+								Settings.NIGHT_VISION
+							)) 0xFFFF00 else 0xFF0000)
 				), true)
 			}
-			if(SettingsLoader.getBoolean("general","zoom_enabled")) {
+			if(SettingsLoader.get("general",Settings.ZOOM_ENABLED)) {
 				if (zoomBinding?.isPressed == true) {
 					JavaSettingsSender.isZoomed = true
 					if (pt == null)
 						pt = MinecraftClient.getInstance().options.smoothCameraEnabled
-					if(!SettingsLoader.getBoolean("general","hard_zoom"))
+					if(!SettingsLoader.get("general", Settings.HARD_ZOOM))
 						MinecraftClient.getInstance().options.smoothCameraEnabled = true
 				} else {
 					JavaSettingsSender.isZoomed = false
-					if (pt != null && !SettingsLoader.getBoolean("general","hard_zoom"))
+					if (pt != null && !SettingsLoader.get("general",Settings.HARD_ZOOM))
 						MinecraftClient.getInstance().options.smoothCameraEnabled = pt!!
 					pt = null
 				}

@@ -1,5 +1,6 @@
 package bewis09.bewisclient.mixin;
 
+import bewis09.bewisclient.settingsLoader.Settings;
 import bewis09.bewisclient.settingsLoader.SettingsLoader;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.OverlayTexture;
@@ -24,10 +25,10 @@ public class GameRendererMixin {
 
     @Inject(method = "getOverlayTexture", at = @At("HEAD"))
     public void getOverlayTexture(CallbackInfoReturnable<OverlayTexture> cir) {
-        if(SettingsLoader.INSTANCE.getFloat("design", "blockhit.hit_overlay.alpha")!=alpha || SettingsLoader.INSTANCE.getColorSaver("design", "blockhit.hit_overlay.color").getColor()!=hitColor || SettingsLoader.INSTANCE.getBoolean("design","blockhit.hit_overlay.enabled")!=hitColorEnabled) {
-            hitColor = SettingsLoader.INSTANCE.getColorSaver("design", "blockhit.hit_overlay.color").getColor();
-            hitColorEnabled = SettingsLoader.INSTANCE.getBoolean("design","blockhit.hit_overlay.enabled");
-            alpha = SettingsLoader.INSTANCE.getFloat("design", "blockhit.hit_overlay.alpha");
+        if(SettingsLoader.INSTANCE.get("design", Settings.Companion.getSettings().getHIT_OVERLAY(),Settings.Companion.getSettings().getALPHA())!=alpha || SettingsLoader.INSTANCE.get("design", Settings.Companion.getSettings().getHIT_OVERLAY(),Settings.Companion.getSettings().getCOLOR()).getColor()!=hitColor || SettingsLoader.INSTANCE.get("design",Settings.Companion.getSettings().getHIT_OVERLAY(),Settings.Companion.getSettings().getENABLED())!=hitColorEnabled) {
+            hitColor = SettingsLoader.INSTANCE.get("design", Settings.Companion.getSettings().getHIT_OVERLAY(),Settings.Companion.getSettings().getCOLOR()).getColor();
+            hitColorEnabled = SettingsLoader.INSTANCE.get("design",Settings.Companion.getSettings().getHIT_OVERLAY(),Settings.Companion.getSettings().getENABLED());
+            alpha = SettingsLoader.INSTANCE.get("design", Settings.Companion.getSettings().getHIT_OVERLAY(),Settings.Companion.getSettings().getALPHA());
             overlayTexture.close();
             overlayTexture = new OverlayTexture();
         }

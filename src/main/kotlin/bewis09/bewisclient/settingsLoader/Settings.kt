@@ -1,33 +1,116 @@
 package bewis09.bewisclient.settingsLoader
 
+import bewis09.bewisclient.settingsLoader.SettingsLoader.TypedSettingID
 import bewis09.bewisclient.util.ColorSaver
 
 open class Settings {
-    val SCALE: SettingsLoader.TypedSettingID<Float> = SettingsLoader.TypedSettingID("size")
-    val OPTIONS_SCALE: SettingsLoader.TypedSettingID<Float> = SettingsLoader.TypedSettingID("scale")
-    val POSX: SettingsLoader.TypedSettingID<Float> = SettingsLoader.TypedSettingID("posX")
-    val POSY: SettingsLoader.TypedSettingID<Float> = SettingsLoader.TypedSettingID("posY")
-    val PARTX: SettingsLoader.TypedSettingID<Float> = SettingsLoader.TypedSettingID("partX")
-    val TRANSPARENCY: SettingsLoader.TypedSettingID<Float> = SettingsLoader.TypedSettingID("transparency")
-    val ENABLED: SettingsLoader.TypedSettingID<Boolean> = SettingsLoader.TypedSettingID("enabled")
-    val PARTY: SettingsLoader.TypedSettingID<Float> = SettingsLoader.TypedSettingID("partY")
-    val CLOCK24: SettingsLoader.TypedSettingID<Boolean> = SettingsLoader.TypedSettingID("24Clock")
-    val ANIMATION_TIME: SettingsLoader.TypedSettingID<Float> = SettingsLoader.TypedSettingID("animation_time")
-    val FIRST_LINE: SettingsLoader.TypedSettingID<Float> = SettingsLoader.TypedSettingID("first_line")
-    val SECOND_LINE: SettingsLoader.TypedSettingID<Float> = SettingsLoader.TypedSettingID("second_line")
-    val THIRD_LINE: SettingsLoader.TypedSettingID<Float> = SettingsLoader.TypedSettingID("third_line")
-    val SHOW_BIOME: SettingsLoader.TypedSettingID<Boolean> = SettingsLoader.TypedSettingID("show_biome")
-    val SHOW_DIRECTION: SettingsLoader.TypedSettingID<Boolean> = SettingsLoader.TypedSettingID("show_direction")
-    val COLORCODE_BIOME: SettingsLoader.TypedSettingID<Boolean> = SettingsLoader.TypedSettingID("colorcode_biome")
-    val CPS_ELEMENTS: SettingsLoader.TypedSettingID<Float> = SettingsLoader.TypedSettingID("cps_elements")
-    val TEXT_COLOR: SettingsLoader.TypedSettingID<ColorSaver> = SettingsLoader.TypedSettingID("text_color")
-    val TOP_COLOR: SettingsLoader.TypedSettingID<ColorSaver> = SettingsLoader.TypedSettingID("top_color")
-    val BOTTOM_COLOR: SettingsLoader.TypedSettingID<ColorSaver> = SettingsLoader.TypedSettingID("bottom_color")
-    val SHOW_BLOCK_ICON: SettingsLoader.TypedSettingID<Boolean> = SettingsLoader.TypedSettingID("show_block_icon")
-    val SHOW_HEALTH_INFORMATION: SettingsLoader.TypedSettingID<Boolean> = SettingsLoader.TypedSettingID("show_health_information")
-    val SHOW_PROGRESS_BAR: SettingsLoader.TypedSettingID<Boolean> = SettingsLoader.TypedSettingID("show_progress_bar")
+    
+    // General
+    val ENABLED = createBoolean("enabled")
+    val TEXT_COLOR = createColor("text_color")
+    val COLOR = createColor("color")
+    val ALPHA = createFloat("alpha")
+    val SCALE = createFloat("scale")
+
+    // Widgets
+    val SIZE = createFloat("size")
+    val POSX = createFloat("posX")
+    val POSY = createFloat("posY")
+    val PARTX = createFloat("partX")
+    val TRANSPARENCY = createFloat("transparency")
+    val PARTY = createFloat("partY")
+    val CLOCK24 = createBoolean("24Clock")
+    val FIRST_LINE = createFloat("first_line")
+    val SECOND_LINE = createFloat("second_line")
+    val THIRD_LINE = createFloat("third_line")
+    val SHOW_BIOME = createBoolean("show_biome")
+    val SHOW_DIRECTION = createBoolean("show_direction")
+    val COLORCODE_BIOME = createBoolean("colorcode_biome")
+    val CPS_ELEMENTS = createFloat("cps_elements")
+    val TOP_COLOR = createColor("top_color")
+    val BOTTOM_COLOR = createColor("bottom_color")
+    val SHOW_BLOCK_ICON = createBoolean("show_block_icon")
+    val SHOW_HEALTH_INFORMATION = createBoolean("show_health_information")
+    val SHOW_PROGRESS_BAR = createBoolean("show_progress_bar")
+    val VERTICAL_SPEED = createBoolean("vertical_speed")
+
+    val SPEED = arrayOf("speed")
+
+    // Options Menu
+    val OPTIONS_MENU = arrayOf("options_menu")
+    val ANIMATION_TIME = createFloat("animation_time")
+    val ALL_CLICK = createBoolean("all_click")
+    
+    // Scoreboard
+    val SCOREBOARD = arrayOf("scoreboard")
+    val HIDE_NUMBERS = createBoolean("hide_numbers")
+    
+    // Experimental
+    val EXPERIMENTAL = arrayOf("experimental")
+    val AUTO_UPDATE = createBoolean("auto_update")
+
+    // Blockhit
+    val BLOCKHIT = arrayOf("blockhit")
+    val HIT_OVERLAY = arrayOf("blockhit","hit_overlay")
+
+    // Fullbright
+    val FULLBRIGHT = arrayOf("fullbright")
+    val FULLBRIGHT_VALUE = createFloat("value")
+    val NIGHT_VISION = createBoolean("night_vision")
+
+    // Categories
+    val WIDGETS = "widgets"
+    val DESIGN = "design"
+    val GENERAL = "general"
+    
+    // Better Visibility
+    val BETTER_VISIBILITY = arrayOf("better_visibility")
+    val LAVA_VIEW = createFloat("lava_view")
+    val LAVA = createBoolean("lava")
+    val NETHER = createBoolean("nether")
+    val WATER = createBoolean("water")
+    val POWDER_SNOW = createBoolean("powder_snow")
+    
+    // Zoom
+    val ZOOM_ENABLED = createBoolean("zoom_enabled")
+    val INSTANT_ZOOM = createBoolean("instant_zoom")
+    val HARD_ZOOM = createBoolean("hard_zoom")
+    
+    // Pumpkin
+    val DISABLE_PUMPKIN_OVERLAY = createBoolean("disable_pumpkin_overlay")
+    val SHOW_PUMPKIN_ICON = createBoolean("show_pumpkin_icon")
+
+    // Held Item Info
+    val HELD_ITEM_INFO = arrayOf("held_item_info")
+    val HELD_ITEM_INFO_ENABLED = createBoolean("held_item_info")
+    val MAX_INFO_LENGTH = createFloat("maxinfolength")
+    
+    // Util
+    val EXTEND_STATUS_EFFECT_INFO = createBoolean("extend_status_effect_info")
+    val FIRE_HEIGHT = createFloat("fire_height")
+    val SCREENSHOT_OPEN_FOLDER = createBoolean("screenshot_folder_open")
+
+    // Cleaner Debug Menu
+    val CLEANER_DEBUG_MENU = createBoolean("cleaner_debug_menu")
+
+    // Shulker Box Tooltip
+    val SHULKER_BOX_TOOLTIP = createBoolean("shulker_box_tooltip")
+
+    // TNT Timer
+    val TNT_TIMER = createBoolean("tnt_timer")
+
+    // Cosmetics
+    val CAPE = createFloat("cape")
+    val WING = createFloat("wing")
+    val HAT = createFloat("hat")
+    
+    fun toPointNotation(path: Array<String>, id: TypedSettingID<*>) = path.joinToString(".")+"."+id.id
 
     companion object {
         val Settings: Settings = Settings()
     }
+    
+    fun createBoolean(s: String) = TypedSettingID<Boolean>(s)
+    fun createColor(s: String) = TypedSettingID<ColorSaver>(s)
+    fun createFloat(s: String) = TypedSettingID<Float>(s)
 }

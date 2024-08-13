@@ -2,6 +2,7 @@ package bewis09.bewisclient.mixin;
 
 import bewis09.bewisclient.JavaSettingsSender;
 import bewis09.bewisclient.kfj.KFJ;
+import bewis09.bewisclient.settingsLoader.Settings;
 import bewis09.bewisclient.settingsLoader.SettingsLoader;
 import bewis09.bewisclient.widgets.WidgetRenderer;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -84,8 +85,8 @@ public abstract class InGameHudMixin {
 
     @Inject(method = "renderOverlay", at = @At("HEAD"), cancellable = true)
     public void inject(DrawContext context, Identifier texture, float opacity, CallbackInfo ci) {
-        if (((boolean) JavaSettingsSender.Companion.getSettings().getBoolean("design","disable_pumpkin_overlay")) && texture == PUMPKIN_BLUR) {
-            if (JavaSettingsSender.Companion.getSettings().getBoolean("design","show_pumpkin_icon"))
+        if (((boolean) JavaSettingsSender.Companion.getSettings().get("design", Settings.Companion.getSettings().getDISABLE_PUMPKIN_OVERLAY())) && texture == PUMPKIN_BLUR) {
+            if (JavaSettingsSender.Companion.getSettings().get("design",Settings.Companion.getSettings().getSHOW_PUMPKIN_ICON()))
                 context.drawItem(Items.CARVED_PUMPKIN.getDefaultStack(), scaledWidth / 2 + 94, scaledHeight - 20);
             RenderSystem.enableBlend();
             ci.cancel();
@@ -94,7 +95,7 @@ public abstract class InGameHudMixin {
 
     @Inject(method = "renderHeldItemTooltip", at = @At("HEAD"), cancellable = true)
     public void renderHeldItemTooltip(DrawContext context, CallbackInfo ci) {
-        if (JavaSettingsSender.Companion.getSettings().getBoolean("design","held_item_info.held_item_info")) {
+        if (JavaSettingsSender.Companion.getSettings().get("design",Settings.Companion.getSettings().getHELD_ITEM_INFO(),Settings.Companion.getSettings().getHELD_ITEM_INFO_ENABLED())) {
             this.client.getProfiler().push("selectedItemName");
             if (this.heldItemTooltipFade > 0 && !this.currentStack.isEmpty()) {
                 List<Text> tooltipList = getTooltipFromItem(this.currentStack);
@@ -134,7 +135,7 @@ public abstract class InGameHudMixin {
         }
         list2.add(mutableText);
         stack.getItem().appendTooltip(stack, Item.TooltipContext.DEFAULT, list, TooltipType.BASIC);
-        if((JavaSettingsSender.Companion.getSettings().getBoolean("design","shulker_box_tooltip")))
+        if((JavaSettingsSender.Companion.getSettings().get("design",Settings.Companion.getSettings().getSHULKER_BOX_TOOLTIP())))
             appendShulkerBoxInfo(stack,list);
         ((ItemStackMixin)(Object) stack).invokeAppendTooltip(DataComponentTypes.STORED_ENCHANTMENTS, Item.TooltipContext.DEFAULT, list::add, TooltipType.BASIC);
         ((ItemStackMixin)(Object) stack).invokeAppendTooltip(DataComponentTypes.ENCHANTMENTS, Item.TooltipContext.DEFAULT, list::add, TooltipType.BASIC);
@@ -146,8 +147,8 @@ public abstract class InGameHudMixin {
         }
         boolean b = false;
         int i = 0;
-        if ((JavaSettingsSender.Companion.getSettings().getFloat("design","held_item_info.maxinfolength") != 10f)) {
-            while (list2.size() > (((float) JavaSettingsSender.Companion.getSettings().getFloat("design","held_item_info.maxinfolength"))) + 1) {
+        if ((JavaSettingsSender.Companion.getSettings().get("design",Settings.Companion.getSettings().getHELD_ITEM_INFO(),Settings.Companion.getSettings().getMAX_INFO_LENGTH()) != 10f)) {
+            while (list2.size() > (((float) JavaSettingsSender.Companion.getSettings().get("design",Settings.Companion.getSettings().getHELD_ITEM_INFO(),Settings.Companion.getSettings().getMAX_INFO_LENGTH()))) + 1) {
                 i++;
                 list2.remove(list2.size() - 1);
                 b = true;
@@ -194,7 +195,7 @@ public abstract class InGameHudMixin {
 
     @Inject(method = "renderStatusEffectOverlay", at = @At("HEAD"), cancellable = true)
     protected void renderStatusEffectOverlay(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
-        if (JavaSettingsSender.Companion.getSettings().getBoolean("design", "extend_status_effect_info")) {
+        if (JavaSettingsSender.Companion.getSettings().get("design", Settings.Companion.getSettings().getEXTEND_STATUS_EFFECT_INFO())) {
             KFJ.INSTANCE.renderEffectHUDExtended(context, InGameHudMixin.EFFECT_BACKGROUND_AMBIENT_TEXTURE, InGameHudMixin.EFFECT_BACKGROUND_TEXTURE);
             ci.cancel();
         } else if (WidgetRenderer.Companion.getEffectWidget().getOriginalPosY() != 0) {
@@ -205,7 +206,7 @@ public abstract class InGameHudMixin {
 
     @Inject(method = "renderScoreboardSidebar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/scoreboard/ScoreboardObjective;)V",at=@At("HEAD"),cancellable = true)
     private void renderScoreboardSidebar(DrawContext context, ScoreboardObjective objective, CallbackInfo ci) {
-        if(SettingsLoader.INSTANCE.getFloat("design","scoreboard.scale")!=1 || SettingsLoader.INSTANCE.getBoolean("design","scoreboard.hide_numbers")) {
+        if(SettingsLoader.INSTANCE.get("design",Settings.Companion.getSettings().getSCOREBOARD(),Settings.Companion.getSettings().getSCALE())!=1 || SettingsLoader.INSTANCE.get("design",Settings.Companion.getSettings().getSCOREBOARD(),Settings.Companion.getSettings().getHIDE_NUMBERS())) {
             KFJ.INSTANCE.renderScoreboard(context,objective,SCOREBOARD_ENTRY_COMPARATOR,SCOREBOARD_JOINER);
             ci.cancel();
         }

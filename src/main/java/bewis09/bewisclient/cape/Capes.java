@@ -1,8 +1,7 @@
 package bewis09.bewisclient.cape;
 
 import bewis09.bewisclient.JavaSettingsSender;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.Identifier;
+import bewis09.bewisclient.settingsLoader.Settings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +23,8 @@ public class Capes {
         CAPES = capes.toArray(new AbstractCape[0]);
 
         try {
-            Cape.setCurrentCape(Capes.CAPES[JavaSettingsSender.Companion.getSettings().getInt("design","cape")]);
-            Cape.setCurrentRealCape(Capes.CAPES[JavaSettingsSender.Companion.getSettings().getInt("design","cape")]);
+            Cape.setCurrentCape(Capes.CAPES[(int) JavaSettingsSender.Companion.getSettings().get("design", Settings.Companion.getSettings().getCAPE())]);
+            Cape.setCurrentRealCape(Capes.CAPES[(int) JavaSettingsSender.Companion.getSettings().get("design", Settings.Companion.getSettings().getCAPE())]);
         } catch (Exception ignored){
             Cape.setCurrentRealCape(null);
             Cape.setCurrentCape(null);

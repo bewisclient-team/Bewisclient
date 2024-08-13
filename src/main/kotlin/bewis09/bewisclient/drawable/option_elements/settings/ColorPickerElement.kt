@@ -1,11 +1,11 @@
-package bewis09.bewisclient.drawable.option_elements
+package bewis09.bewisclient.drawable.option_elements.settings
 
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.drawable.ScalableButtonWidget
 import bewis09.bewisclient.drawable.UsableSliderWidget
 import bewis09.bewisclient.drawable.UsableSliderWidget.Companion.withDecimalPlaces
 import bewis09.bewisclient.screen.MainOptionsScreen
-import bewis09.bewisclient.screen.elements.ElementList.dependentDisabler
+import bewis09.bewisclient.screen.ElementList.dependentDisabler
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.util.ColorSaver
 import com.mojang.blaze3d.systems.RenderSystem
@@ -17,7 +17,12 @@ import net.minecraft.util.math.MathHelper
 import java.awt.Color
 import kotlin.math.roundToInt
 
-class ColorPickerElement(title: String, path: String, private val value: String, private val settings: String): SettingsOptionsElement(title, path, arrayListOf()) {
+class ColorPickerElement(
+    title: String,
+    path: Array<String>,
+    id: SettingsLoader.TypedSettingID<ColorSaver>,
+    private val settings: String
+): SettingsOptionsElement<ColorSaver>(title, path, id, arrayListOf()) {
 
     var posX: Int = 0
     var posY: Int = 0
@@ -26,51 +31,50 @@ class ColorPickerElement(title: String, path: String, private val value: String,
 
     var hClicked = false
 
-    val colorStart = convertRGBtoHSB(ColorSaver.of(SettingsLoader.getString(settings,path)))
+    val colorStart = convertRGBtoHSB(SettingsLoader.get(settings, path, id))
 
-    var changing = ColorSaver.of(SettingsLoader.getString(settings,path)).getColor()<0
+    var changing = SettingsLoader.get(settings, path, id).getColor()<0
 
     val static = ScalableButtonWidget.builder(Bewisclient.getTranslationText("color.static")) {
         changing = false
 
         SettingsLoader.set(
             settings,
-            path,
-            ColorSaver.of(ColorSaver.of(SettingsLoader.getString(settings, path)).getColor() + 0x1000000)
+            ColorSaver.of(SettingsLoader.get(settings, path, id).getColor() + 0x1000000), path, id
         )
     }.build()
 
     val change = ScalableButtonWidget.builder(Bewisclient.getTranslationText("color.change")) {
         changing = true
 
-        SettingsLoader.set(settings, path, ColorSaver.of((-(widget.getValue() * (19000) + 1000)).toInt()))
+        SettingsLoader.set(settings, ColorSaver.of((-(widget.getValue() * (19000) + 1000)).toInt()), path, id)
     }.build()
 
-    val widget = UsableSliderWidget(0, 0, 100, 20, Text.empty(), if(ColorSaver.of(SettingsLoader.getString(settings,path)).getColor()<0)
-        (((ColorSaver.of(SettingsLoader.getString(settings,path)).getOriginalColor()*-1).toDouble())-1000)/19000 else 9/19.0, 20000F, 1000F, -2, {
-        SettingsLoader.set(settings,path,ColorSaver.of((-(it*(19000F)+1000F)).roundToInt()))
+    val widget = UsableSliderWidget(0, 0, 100, 20, Text.empty(), if(SettingsLoader.get(settings, path, id).getColor()<0)
+        (((SettingsLoader.get(settings, path, id).getOriginalColor()*-1).toDouble())-1000)/19000 else 9/19.0, 20000F, 1000F, -2, {
+        SettingsLoader.set(settings, ColorSaver.of((-(it*(19000F)+1000F)).roundToInt()), path, id)
     },{
         Text.of(Bewisclient.getTranslatedString("gui.speed")+": "+withDecimalPlaces((it)*19+1,2)+" ${Bewisclient.getTranslatedString("seconds")}")
     })
 
     val widget2 = UsableSliderWidget(0, 0, 100, 20, Text.empty(),
-            if(ColorSaver.of(SettingsLoader.getString(settings,path)).getColor()>0) colorStart[2].toDouble() else 1.0, 1F, 0F, 2, {
-        SettingsLoader.set(settings,path,ColorSaver.of(convertRGBtoHSB(posX/60f,posY/60f,it.toFloat())+0x1000000))
+            if(SettingsLoader.get(settings, path, id).getColor()>0) colorStart[2].toDouble() else 1.0, 1F, 0F, 2, {
+        SettingsLoader.set(settings, ColorSaver.of(convertRGBtoHSB(posX/60f,posY/60f,it.toFloat())+0x1000000), path, id)
     },{
         Text.of(Bewisclient.getTranslatedString("gui.brightness")+": "+withDecimalPlaces(it,2))
     })
 
     init {
-        val color = convertRGBtoHSB(ColorSaver.of(SettingsLoader.getString(settings,path)))
+        val color = convertRGBtoHSB(SettingsLoader.get(settings, path, id))
         posX = MathHelper.clamp((color[0]*60).toInt(),0,58)
         posY = MathHelper.clamp((color[1]*60).toInt(),0,58)
     }
 
     override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {
-        if(dependentDisabler.contains(path) && !dependentDisabler[path]!!()) return -4
+        if(dependentDisabler.contains(toPointNotation(path, id)) && !dependentDisabler[toPointNotation(path, id)]!!()) return -4
 
         if(changing) {
-            val color = convertRGBtoHSB(ColorSaver.of(SettingsLoader.getString(settings, path)))
+            val color = convertRGBtoHSB(SettingsLoader.get(settings, path, id))
             posX = MathHelper.clamp((color[0] * 60).toInt(), 0, 58)
             posY = MathHelper.clamp((color[1] * 60).toInt(), 0, 58)
         }
@@ -87,13 +91,17 @@ class ColorPickerElement(title: String, path: String, private val value: String,
         context.fill(x+width-60,y,x+width,y+60, alphaModifier.toInt())
 
         RenderSystem.enableBlend()
-        RenderSystem.setShaderColor(if(ColorSaver.of(SettingsLoader.getString(settings,path)).getOriginalColor()<0f) 0.5f else widget2.getValue().toFloat(),if(ColorSaver.of(SettingsLoader.getString(settings,path)).getOriginalColor()<0f) 0.5f else widget2.getValue().toFloat(),if(ColorSaver.of(SettingsLoader.getString(settings,path)).getOriginalColor()<0f) 0.5f else widget2.getValue().toFloat(),alphaModifier/(0xFFFFFFFF.toFloat()))
+        RenderSystem.setShaderColor(if(SettingsLoader.get(settings, path, id).getOriginalColor()<0f) 0.5f else widget2.getValue().toFloat(),if(SettingsLoader.get(
+                settings,
+                path,
+                id
+            ).getOriginalColor()<0f) 0.5f else widget2.getValue().toFloat(),if(SettingsLoader.get(settings, path, id).getOriginalColor()<0f) 0.5f else widget2.getValue().toFloat(),alphaModifier/(0xFFFFFFFF.toFloat()))
         context.drawTexture(Identifier.of("bewisclient","textures/color_space.png"),x+width-59,y+1,58,58,0f,0f,58,58,58,58)
         RenderSystem.setShaderColor(1f,1f,1f,1f)
         RenderSystem.disableBlend()
 
-        context.drawBorder(x+width-61,y-1,62,62, (alphaModifier+ ColorSaver.of(SettingsLoader.getString(settings,path)).getColor()).toInt())
-        context.drawBorder(x+width-60,y,60,60, (alphaModifier+ (ColorSaver.of(SettingsLoader.getString(settings,path)).getColor())).toInt())
+        context.drawBorder(x+width-61,y-1,62,62, (alphaModifier+ SettingsLoader.get(settings, path, id).getColor()).toInt())
+        context.drawBorder(x+width-60,y,60,60, (alphaModifier+ (SettingsLoader.get(settings, path, id).getColor())).toInt())
 
         context.drawBorder(x+width-60+posX-1,y+posY-1,3,3, alphaModifier.toInt())
 
@@ -164,13 +172,18 @@ class ColorPickerElement(title: String, path: String, private val value: String,
     }
 
     override fun onDrag(mouseX: Double, mouseY: Double, deltaX: Double, deltaY: Double, button: Int) {
-        if(dependentDisabler.contains(path) && !dependentDisabler[path]!!()) return
+        if(dependentDisabler.contains(toPointNotation(path, id)) && !dependentDisabler[toPointNotation(path, id)]!!()) return
 
         if (clicked && !widget.active) {
             posX = MathHelper.clamp((mouseX-pos[2]+60).toInt(),1,58)
             posY = MathHelper.clamp((mouseY-pos[1]).toInt(),1,58)
 
-            SettingsLoader.set(settings,path,ColorSaver.of(convertRGBtoHSB((posX-1)/58f,(posY-1)/58f,widget2.getValue().toFloat())+0x1000000))
+            SettingsLoader.set(
+                settings,
+                ColorSaver.of(convertRGBtoHSB((posX-1)/58f,(posY-1)/58f,widget2.getValue().toFloat())+0x1000000),
+                path,
+                id
+            )
         }
         if(widget.isHovered && hClicked && widget.active)
             widget.mouseDragged(mouseX,mouseY,button,deltaX,deltaY)
@@ -179,7 +192,7 @@ class ColorPickerElement(title: String, path: String, private val value: String,
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int, screen: MainOptionsScreen) {
-        if(dependentDisabler.contains(path) && dependentDisabler[path]!!()) return
+        if(dependentDisabler.contains(toPointNotation(path, id)) && dependentDisabler[toPointNotation(path, id)]!!()) return
 
         if(widget.isHovered)
             hClicked = true
@@ -195,7 +208,7 @@ class ColorPickerElement(title: String, path: String, private val value: String,
             posX = (mouseX-pos[2]+60).toInt()
             posY = (mouseY-pos[1]).toInt()
 
-            SettingsLoader.set(settings,value,ColorSaver.of(convertRGBtoHSB((posX-1)/58f,(posY-1)/58f)+0x1000000))
+            SettingsLoader.set(settings, ColorSaver.of(convertRGBtoHSB((posX-1)/58f,(posY-1)/58f)+0x1000000), path, id)
         }
         static.mouseClicked(mouseX, mouseY,button)
         change.mouseClicked(mouseX, mouseY,button)
