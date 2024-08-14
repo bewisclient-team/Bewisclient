@@ -9,6 +9,7 @@ import net.minecraft.client.MinecraftClient
 
 class PingWidget: LineWidget("ping",80,true) {
 
+    // TODO Document
     var value = 0
     var v = System.currentTimeMillis()
 

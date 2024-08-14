@@ -11,6 +11,7 @@ import net.minecraft.text.OrderedText
 import net.minecraft.util.Identifier
 import kotlin.math.ceil
 
+// TODO Document
 class MultiplePagesOptionsElement(val elementList: Array<MultiplePagesElement>, val minElementWidth: Int, val widgetEnableSetter: Boolean): OptionsElement("","") {
     var hoveredElement = -1
     var widgetHoveredElement = -1
@@ -138,12 +139,18 @@ class MultiplePagesOptionsElement(val elementList: Array<MultiplePagesElement>, 
         return ceil(elementList.size/(elementsPerRow.toDouble())).toInt()*height-4
     }
 
+    /**
+     * The class of the individual elements
+     */
     class MultiplePagesElement : Search.SearchableElement<MultiplePagesElement> {
+
+        // TODO Document
         val title: String
         val elements: ArrayList<OptionsElement>
         val image: Identifier?
         val description: String?
 
+        // TODO Document
         constructor(title: String, elements: ArrayList<OptionsElement>, image: Identifier) {
             this.title = title
             this.elements = elements
@@ -151,6 +158,7 @@ class MultiplePagesOptionsElement(val elementList: Array<MultiplePagesElement>, 
             this.description = null
         }
 
+        // TODO Document
         constructor(title: String, elements: ArrayList<OptionsElement>, description: String) {
             this.title = title
             this.elements = elements

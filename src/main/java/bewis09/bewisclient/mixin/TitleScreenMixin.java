@@ -1,7 +1,7 @@
 package bewis09.bewisclient.mixin;
 
-import bewis09.bewisclient.JavaSettingsSender;
 import bewis09.bewisclient.settingsLoader.Settings;
+import bewis09.bewisclient.settingsLoader.SettingsLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
@@ -20,7 +20,7 @@ public class TitleScreenMixin extends Screen {
 
     @Inject(method = "init",at=@At("HEAD"))
     private void init(CallbackInfo ci) {
-        if(JavaSettingsSender.Companion.getSettings().get("design", Settings.Companion.getSettings().getFULLBRIGHT(),Settings.Companion.getSettings().getENABLED()))
-            MinecraftClient.getInstance().options.getGamma().setValue((double) JavaSettingsSender.Companion.getSettings().get("design",Settings.Companion.getSettings().getFULLBRIGHT(),Settings.Companion.getSettings().getFULLBRIGHT_VALUE()));
+        if(SettingsLoader.INSTANCE.get("design", Settings.Companion.getSettings().getFULLBRIGHT(),Settings.Companion.getSettings().getENABLED()))
+            MinecraftClient.getInstance().options.getGamma().setValue((double) SettingsLoader.INSTANCE.get("design",Settings.Companion.getSettings().getFULLBRIGHT(),Settings.Companion.getSettings().getFULLBRIGHT_VALUE()));
     }
 }

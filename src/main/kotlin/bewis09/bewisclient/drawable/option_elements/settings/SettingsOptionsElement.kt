@@ -10,6 +10,12 @@ abstract class SettingsOptionsElement<K>(
     val path: Array<String>,
     val id: SettingsLoader.TypedSettingID<K>
 ): OptionsElement(if (originalTitle.toCharArray()[0] =='%') originalTitle.drop(1) else "widgets.$originalTitle", if (originalTitle.toCharArray()[0] =='%') "description."+originalTitle.drop(1) else "widgets.description.$originalTitle") {
+
+    /**
+     * Sets the value of the setting
+     *
+     * @param value The new value
+     */
     @Suppress("UNCHECKED_CAST")
     fun set(value: K) {
         when (value) {
@@ -21,6 +27,9 @@ abstract class SettingsOptionsElement<K>(
         }
     }
 
+    /**
+     * @return The current value of the setting
+     */
     @Suppress("unchecked_cast")
     fun get(): K {
         when (true) {

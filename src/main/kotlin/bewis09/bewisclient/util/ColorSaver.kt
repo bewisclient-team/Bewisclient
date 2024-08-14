@@ -2,6 +2,7 @@ package bewis09.bewisclient.util
 
 import java.awt.Color
 
+// TODO Document
 class ColorSaver private constructor(private val color: Int) {
 
     companion object {

@@ -27,6 +27,7 @@ import org.lwjgl.glfw.GLFW
 import java.util.*
 import kotlin.math.*
 
+// TODO Document
 class CosmeticsScreen(private val parent: MainOptionsScreen) : Screen(Text.empty()) {
     var isReversed: Boolean = false
     private var scrollY = 0.0

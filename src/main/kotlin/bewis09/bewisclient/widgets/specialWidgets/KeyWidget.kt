@@ -9,6 +9,7 @@ import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.option.KeyBinding
 import net.minecraft.text.Text
 
+// TODO Document
 @Suppress("SameParameterValue")
 class KeyWidget: Widget("keys") {
     override fun render(drawContext: DrawContext,x:Int,y:Int) {

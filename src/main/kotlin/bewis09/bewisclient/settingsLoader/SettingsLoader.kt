@@ -120,6 +120,8 @@ object SettingsLoader: Settings() {
      *
      * @param K The Type of the values being stored
      * @param id The id of the setting. Should not contain the path and should not contain periods
+     *
+     * @see [Settings]
      */
     open class TypedSettingID<K>(val id: String) {
         override fun equals(other: Any?): Boolean {
@@ -146,6 +148,8 @@ object SettingsLoader: Settings() {
      * @param path A collection of the path steps
      *
      * @sample [bewis09.bewisclient.doc.Samples.setString]
+     *
+     * @see [Settings]
      */
     fun set(settings: String, value: String, id: TypedSettingID<String>, vararg path: String) = set(settings,(path).toMutableList()+id.id,JsonPrimitive(value))
 
@@ -158,6 +162,8 @@ object SettingsLoader: Settings() {
      * @param path A collection of the path steps
      *
      * @sample [bewis09.bewisclient.doc.Samples.setNumber]
+     *
+     * @see [Settings]
      */
     fun set(settings: String, value: Number, id: TypedSettingID<out Number>, vararg path: String) = set(settings,(path).toMutableList()+id.id,JsonPrimitive(value))
 
@@ -170,6 +176,8 @@ object SettingsLoader: Settings() {
      * @param path A collection of the path steps
      *
      * @sample [bewis09.bewisclient.doc.Samples.setBoolean]
+     *
+     * @see [Settings]
      */
     fun set(settings: String, value: Boolean, id: TypedSettingID<Boolean>, vararg path: String) = set(settings,(path).toMutableList()+id.id,JsonPrimitive(value))
 
@@ -182,6 +190,8 @@ object SettingsLoader: Settings() {
      * @param path A collection of the path steps
      *
      * @sample [bewis09.bewisclient.doc.Samples.setColorSaver]
+     *
+     * @see [Settings]
      */
     fun set(settings: String, value: ColorSaver, id: TypedSettingID<ColorSaver>, vararg path: String) = set(settings,(path).toMutableList()+id.id,JsonPrimitive(value.toString()))
 
@@ -194,6 +204,8 @@ object SettingsLoader: Settings() {
      * @param id The ID of the Setting. Should not contain the path
      *
      * @sample [bewis09.bewisclient.doc.Samples.setStringArray]
+     *
+     * @see [Settings]
      */
     fun set(settings: String, value: String, path: Array<String>, id: TypedSettingID<String>) = set(settings,(path).toMutableList()+id.id,JsonPrimitive(value))
 
@@ -206,6 +218,8 @@ object SettingsLoader: Settings() {
      * @param id The ID of the Setting. Should not contain the path
      *
      * @sample [bewis09.bewisclient.doc.Samples.setNumberArray]
+     *
+     * @see [Settings]
      */
     fun set(settings: String, value: Number, path: Array<String>, id: TypedSettingID<out Number>) = set(settings,(path).toMutableList()+id.id,JsonPrimitive(value))
 
@@ -218,6 +232,8 @@ object SettingsLoader: Settings() {
      * @param id The ID of the Setting. Should not contain the path
      *
      * @sample [bewis09.bewisclient.doc.Samples.setBooleanArray]
+     *
+     * @see [Settings]
      */
     fun set(settings: String, value: Boolean, path: Array<String>, id: TypedSettingID<Boolean>) = set(settings,(path).toMutableList()+id.id,JsonPrimitive(value))
 
@@ -230,6 +246,8 @@ object SettingsLoader: Settings() {
      * @param id The ID of the Setting. Should not contain the path
      *
      * @sample [bewis09.bewisclient.doc.Samples.setColorSaverArray]
+     *
+     * @see [Settings]
      */
     fun set(settings: String, value: ColorSaver, path: Array<String>, id: TypedSettingID<ColorSaver>) = set(settings,(path).toMutableList()+id.id,JsonPrimitive(value.toString()))
 
@@ -241,6 +259,8 @@ object SettingsLoader: Settings() {
      * @param id The ID of the Setting containing the path
      *
      * @sample [set]
+     *
+     * @see [Settings]
      */
     private fun set(settings: String, id: List<String>, value: JsonElement) {
         settingMap = HashMap()
@@ -284,6 +304,8 @@ object SettingsLoader: Settings() {
      * @throws SettingNotFoundException if the setting hasn't been found
      *
      * @sample [bewis09.bewisclient.doc.Samples.getFloat]
+     *
+     * @see [Settings]
      */
     fun get(settings: String, id: TypedSettingID<Float>, vararg path: String): Float = getUntyped(settings, id, path).asFloat
 
@@ -300,6 +322,8 @@ object SettingsLoader: Settings() {
      * @throws SettingNotFoundException if the setting hasn't been found
      *
      * @sample [bewis09.bewisclient.doc.Samples.getInt]
+     *
+     * @see [Settings]
      */
     fun get(settings: String, id: TypedSettingID<Int>, vararg path: String): Int = getUntyped(settings, id, path).asInt
 
@@ -315,6 +339,8 @@ object SettingsLoader: Settings() {
      * @throws SettingNotFoundException if the setting hasn't been found
      *
      * @sample [bewis09.bewisclient.doc.Samples.getString]
+     *
+     * @see [Settings]
      */
     fun get(settings: String, id: TypedSettingID<String>, vararg path: String): String = getUntyped(settings, id, path).asString
 
@@ -331,6 +357,8 @@ object SettingsLoader: Settings() {
      * @throws SettingNotFoundException if the setting hasn't been found
      *
      * @sample [bewis09.bewisclient.doc.Samples.getJsonArray]
+     *
+     * @see [Settings]
      */
     fun get(settings: String, id: TypedSettingID<JsonArray>, vararg path: String): JsonArray = getUntyped(settings, id, path).asJsonArray
 
@@ -346,6 +374,8 @@ object SettingsLoader: Settings() {
      * @throws SettingNotFoundException if the setting hasn't been found
      *
      * @sample [bewis09.bewisclient.doc.Samples.getBoolean]
+     *
+     * @see [Settings]
      */
     fun get(settings: String, id: TypedSettingID<Boolean>, vararg path: String): Boolean = getUntyped(settings, id, path).asBoolean
 
@@ -362,6 +392,8 @@ object SettingsLoader: Settings() {
      * @throws SettingNotFoundException if the setting hasn't been found
      *
      * @sample [bewis09.bewisclient.doc.Samples.getColorSaver]
+     *
+     * @see [Settings]
      */
     fun get(settings: String, id: TypedSettingID<ColorSaver>, vararg path: String): ColorSaver = ColorSaver.of(getUntyped(settings, id, path).asString)
 
@@ -378,6 +410,8 @@ object SettingsLoader: Settings() {
      * @throws SettingNotFoundException if the setting hasn't been found
      *
      * @sample [bewis09.bewisclient.doc.Samples.getJsonObject]
+     *
+     * @see [Settings]
      */
     fun get(settings: String, id: TypedSettingID<JsonObject>, vararg path: String): JsonObject = getUntyped(settings, id, path).asJsonObject
 
@@ -394,6 +428,8 @@ object SettingsLoader: Settings() {
      * @throws SettingNotFoundException if the setting hasn't been found
      *
      * @sample [bewis09.bewisclient.doc.Samples.getFloatArray]
+     *
+     * @see [Settings]
      */
     fun get(settings: String, path: Array<String>, id: TypedSettingID<Float>): Float = getUntyped(settings, id, path).asFloat
 
@@ -410,6 +446,8 @@ object SettingsLoader: Settings() {
      * @throws SettingNotFoundException if the setting hasn't been found
      *
      * @sample [bewis09.bewisclient.doc.Samples.getIntArray]
+     *
+     * @see [Settings]
      */
     fun get(settings: String, path: Array<String>, id: TypedSettingID<Int>): Int = getUntyped(settings, id, path).asInt
 
@@ -425,6 +463,8 @@ object SettingsLoader: Settings() {
      * @throws SettingNotFoundException if the setting hasn't been found
      *
      * @sample [bewis09.bewisclient.doc.Samples.getStringArray]
+     *
+     * @see [Settings]
      */
     fun get(settings: String, path: Array<String>, id: TypedSettingID<String>): String = getUntyped(settings, id, path).asString
 
@@ -441,6 +481,8 @@ object SettingsLoader: Settings() {
      * @throws SettingNotFoundException if the setting hasn't been found
      *
      * @sample [bewis09.bewisclient.doc.Samples.getJsonArrayArray]
+     *
+     * @see [Settings]
      */
     fun get(settings: String, path: Array<String>, id: TypedSettingID<JsonArray>): JsonArray = getUntyped(settings, id, path).asJsonArray
 
@@ -456,6 +498,8 @@ object SettingsLoader: Settings() {
      * @throws SettingNotFoundException if the setting hasn't been found
      *
      * @sample [bewis09.bewisclient.doc.Samples.getBooleanArray]
+     *
+     * @see [Settings]
      */
     fun get(settings: String, path: Array<String>, id: TypedSettingID<Boolean>): Boolean = getUntyped(settings, id, path).asBoolean
 
@@ -472,6 +516,8 @@ object SettingsLoader: Settings() {
      * @throws SettingNotFoundException if the setting hasn't been found
      *
      * @sample [bewis09.bewisclient.doc.Samples.getColorSaverArray]
+     *
+     * @see [Settings]
      */
     fun get(settings: String, path: Array<String>, id: TypedSettingID<ColorSaver>): ColorSaver = ColorSaver.of(getUntyped(settings, id, path).asString)
 
@@ -488,6 +534,8 @@ object SettingsLoader: Settings() {
      * @throws SettingNotFoundException if the setting hasn't been found
      *
      * @sample [bewis09.bewisclient.doc.Samples.getJsonObjectArray]
+     *
+     * @see [Settings]
      */
     fun get(settings: String, path: Array<String>, id: TypedSettingID<JsonObject>): JsonObject = getUntyped(settings, id, path).asJsonObject
 
@@ -503,6 +551,8 @@ object SettingsLoader: Settings() {
      * @throws SettingNotFoundException if the setting hasn't been found
      *
      * @sample [get]
+     *
+     * @see [Settings]
      */
     private fun getUntyped(settings: String, id: TypedSettingID<*>, path: Array<out String>): JsonElement {
         return getUntyped(settings, getSettings(settings).asJsonObject, id, path, 0)
@@ -524,6 +574,8 @@ object SettingsLoader: Settings() {
      * @throws SettingNotFoundException if [iteration] is bigger than 1 (Which indicates that the setting hasn't been found in the given [JsonObject] and the default [JsonObject])
      *
      * @sample [getUntyped]
+     *
+     * @see [Settings]
      */
     fun getUntyped(sID: String, settings: JsonObject, id: TypedSettingID<*>, path: Array<out String>, iteration: Int): JsonPrimitive {
         val rId = path.toMutableList()+id.id

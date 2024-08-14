@@ -4,6 +4,7 @@ import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.ButtonTextures
 import net.minecraft.client.gui.widget.TexturedButtonWidget
 
+// TODO Document
 class UsableTexturedButtonWidget(x: Int, y: Int, width: Int, height: Int, textures: ButtonTextures?, pressAction: PressAction?) : TexturedButtonWidget(x, y, width, height, textures, pressAction) {
     override fun renderWidget(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
         val identifier = textures[this.isNarratable, this.isSelected]

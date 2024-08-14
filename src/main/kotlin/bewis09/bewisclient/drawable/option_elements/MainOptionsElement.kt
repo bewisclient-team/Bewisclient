@@ -11,6 +11,7 @@ import net.minecraft.client.gui.screen.Screen
 import net.minecraft.util.Identifier
 import kotlin.math.max
 
+// TODO Document
 open class MainOptionsElement: OptionsElement, Search.SearchableElement<OptionsElement> {
 
     var screen: ((MainOptionsScreen) -> Screen)? = null

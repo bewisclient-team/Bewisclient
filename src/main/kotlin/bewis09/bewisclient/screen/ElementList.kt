@@ -15,6 +15,7 @@ import net.minecraft.util.Identifier
 import java.util.*
 import kotlin.collections.ArrayList
 
+// TODO Document
 object ElementList: Settings() {
 
     private val excludedProperties = arrayOf("posX","posY","partX","partY","effect")

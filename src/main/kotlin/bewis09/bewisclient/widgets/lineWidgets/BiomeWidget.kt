@@ -17,6 +17,7 @@ class BiomeWidget: LineWidget("biome",150, true) {
         return arrayListOf(textGetter(getProperty(COLORCODE_BIOME)))
     }
 
+    // TODO Document
     companion object {
 
         val biomeCodes = hashMapOf(

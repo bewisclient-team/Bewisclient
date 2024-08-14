@@ -12,7 +12,7 @@ import java.net.URI
 import java.util.*
 import kotlin.io.path.pathString
 
-
+// TODO Document
 object Updater {
     fun downloadVersion(version: JsonObject) {
         if (!System.getProperty("os.name").lowercase(Locale.getDefault()).contains("win")) {

@@ -1,8 +1,8 @@
 package bewis09.bewisclient.drawable.option_elements.settings
 
 import bewis09.bewisclient.Bewisclient
-import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.screen.ElementList.dependentDisabler
+import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
@@ -12,8 +12,12 @@ import kotlin.math.cos
 
 class BooleanOptionsElement : SettingsOptionsElement<Boolean> {
 
+    /**
+     * Gets executed when the value gets changed
+     */
     val valueChanger: (Boolean)->Unit
 
+    // TODO Document
     constructor(title: String, path: Array<String>, id: SettingsLoader.TypedSettingID<Boolean>, settings: String) : super(
         title,
         settings,
@@ -23,6 +27,7 @@ class BooleanOptionsElement : SettingsOptionsElement<Boolean> {
         this.valueChanger = {}
     }
 
+    // TODO Document
     constructor(title: String, path: Array<String>, id: SettingsLoader.TypedSettingID<Boolean>, settings: String, valueChanger: (Boolean) -> Unit) : super(
         title,
         settings,
@@ -32,6 +37,7 @@ class BooleanOptionsElement : SettingsOptionsElement<Boolean> {
         this.valueChanger = valueChanger
     }
 
+    // TODO Document
     var animationStart = 0L
 
     override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {

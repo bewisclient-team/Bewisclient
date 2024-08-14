@@ -11,6 +11,7 @@ import net.minecraft.text.Text
 import kotlin.math.pow
 import kotlin.math.round
 
+// TODO Document
 class FloatOptionsElement : SettingsOptionsElement<Float> {
 
     constructor(title: String, path: Array<String>, id: SettingsLoader.TypedSettingID<Float>, settings: String) : super(
@@ -21,12 +22,12 @@ class FloatOptionsElement : SettingsOptionsElement<Float> {
     ) {
         this.valueChanged = { a ->
             run {
-                set((round((a*(de!!.end-de.start)+de.start)* 10.0.pow(de.decimalPoints.toDouble()))/ 10.0.pow(de.decimalPoints.toDouble())).toFloat())
+                set((round((a*(range!!.end-range.start)+range.start)* 10.0.pow(range.decimalPoints.toDouble()))/ 10.0.pow(range.decimalPoints.toDouble())).toFloat())
             }
         }
-        this.de = DefaultSettings.sliders[toPointNotation(path,id)]
+        this.range = DefaultSettings.sliders[toPointNotation(path,id)]
                 ?: DefaultSettings.sliders[".$id"]
-        this.widget = UsableSliderWidget(0, 0, 100, 20, Text.empty(), ((SettingsLoader.get(settings, path, id) - de?.start!!) / (de.end - de.start)).toDouble(), de.end, de.start, de.decimalPoints, valueChanged)
+        this.widget = UsableSliderWidget(0, 0, 100, 20, Text.empty(), ((SettingsLoader.get(settings, path, id) - range?.start!!) / (range.end - range.start)).toDouble(), range.end, range.start, range.decimalPoints, valueChanged)
     }
 
     constructor(title: String, path: Array<String>, id: SettingsLoader.TypedSettingID<Float>, settings: String, valueChanger: (Double) -> Unit) : super(
@@ -37,21 +38,33 @@ class FloatOptionsElement : SettingsOptionsElement<Float> {
     ) {
         this.valueChanged = { a ->
             run {
-                set((round((a*(de!!.end-de.start)+de.start)* 10.0.pow(de.decimalPoints.toDouble()))/ 10.0.pow(de.decimalPoints.toDouble())).toFloat())
+                set((round((a*(range!!.end-range.start)+range.start)* 10.0.pow(range.decimalPoints.toDouble()))/ 10.0.pow(range.decimalPoints.toDouble())).toFloat())
                 valueChanger(a)
             }
         }
-        this.de = DefaultSettings.sliders[toPointNotation(path,id)]
+        this.range = DefaultSettings.sliders[toPointNotation(path,id)]
                 ?: DefaultSettings.sliders[".$id"]
-        this.widget = UsableSliderWidget(0, 0, 100, 20, Text.empty(), ((get() - de?.start!!) / (de.end - de.start)).toDouble(), de.end, de.start, de.decimalPoints, valueChanged)
+        this.widget = UsableSliderWidget(0, 0, 100, 20, Text.empty(), ((get() - range?.start!!) / (range.end - range.start)).toDouble(), range.end, range.start, range.decimalPoints, valueChanged)
     }
 
+    /**
+     * Gets executed when the value gets changed
+     */
     val valueChanged: (Double) -> Unit
 
-    private val de: DefaultSettings.SliderInfo?
+    /**
+     * The information about the range and the step size of the fader
+     */
+    private val range: DefaultSettings.SliderInfo?
 
+    /**
+     * The [UsableSliderWidget] that gets displayed
+     */
     val widget: UsableSliderWidget
 
+    /**
+     * Indicates if the [widget] is being clicked
+     */
     var clicked = false
 
     override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {

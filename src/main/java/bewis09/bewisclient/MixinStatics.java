@@ -6,8 +6,11 @@ import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 
+// TODO Document
 @SuppressWarnings("ALL")
 public class MixinStatics {
+    public static Boolean isZoomed = true;
+
     public static ArrayList<Integer> OwnPlayerSkinTextures = new ArrayList<>();
 
     @Environment(value = EnvType.CLIENT)

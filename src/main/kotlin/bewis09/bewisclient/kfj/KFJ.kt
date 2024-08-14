@@ -32,6 +32,7 @@ import java.util.*
 import java.util.function.Consumer
 import kotlin.math.max
 
+// TODO Document
 object KFJ: Settings() {
     val EFFECT_WIDGET_TEXTURE = Identifier.of("bewisclient", "gui/effect_widget.png")!!
     val EFFECT_WIDGET_AMBIENT_TEXTURE = Identifier.of("bewisclient", "gui/effect_widget_ambient.png")!!

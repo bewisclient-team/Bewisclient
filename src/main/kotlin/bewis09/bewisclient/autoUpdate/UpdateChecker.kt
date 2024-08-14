@@ -9,6 +9,7 @@ import net.minecraft.SharedConstants
 import java.net.URL
 import java.util.*
 
+// TODO Document
 object UpdateChecker {
     fun checkForUpdates(): JsonObject? {
         try {

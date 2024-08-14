@@ -4,8 +4,8 @@ import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.drawable.ScalableButtonWidget
 import bewis09.bewisclient.drawable.UsableSliderWidget
 import bewis09.bewisclient.drawable.UsableSliderWidget.Companion.withDecimalPlaces
-import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.screen.ElementList.dependentDisabler
+import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.util.ColorSaver
 import com.mojang.blaze3d.systems.RenderSystem
@@ -17,6 +17,7 @@ import net.minecraft.util.math.MathHelper
 import java.awt.Color
 import kotlin.math.roundToInt
 
+// TODO Document
 class ColorPickerElement(
     title: String,
     path: Array<String>,
@@ -24,29 +25,52 @@ class ColorPickerElement(
     settings: String
 ): SettingsOptionsElement<ColorSaver>(title, settings, path, id) {
 
+    /**
+     * The x-position of the current color on the grid between 0 and 58
+     */
     var posX: Int = 0
+
+    /**
+     * The y-position of the current color on the grid between 0 and 58
+     */
     var posY: Int = 0
 
+    /**
+     * Indicates if the speed fader is clicked
+     */
     var clicked = false
 
+    /**
+     * Indicates if the brightness fader is clicked
+     */
     var hClicked = false
 
-    val colorStart = convertRGBtoHSB(get())
-
+    /**
+     * Indicates if the color is currently in the changing state
+     */
     var changing = get().getColor()<0
 
+    /**
+     * The [ScalableButtonWidget] for the static option
+     */
     val static = ScalableButtonWidget.builder(Bewisclient.getTranslationText("color.static")) {
         changing = false
 
         set(ColorSaver.of(get().getColor() + 0x1000000))
     }.build()
 
+    /**
+     * The [ScalableButtonWidget] for the change option
+     */
     val change = ScalableButtonWidget.builder(Bewisclient.getTranslationText("color.change")) {
         changing = true
 
         set(ColorSaver.of((-(widget.getValue() * (19000) + 1000)).toInt()))
     }.build()
 
+    /**
+     * The [UsableSliderWidget] for the speed when changing
+     */
     val widget = UsableSliderWidget(0, 0, 100, 20, Text.empty(), if(get().getColor()<0)
         (((get().getOriginalColor()*-1).toDouble())-1000)/19000 else 9/19.0, 20000F, 1000F, -2, {
         set(ColorSaver.of((-(it*(19000F)+1000F)).roundToInt()))
@@ -54,9 +78,12 @@ class ColorPickerElement(
         Text.of(Bewisclient.getTranslatedString("gui.speed")+": "+withDecimalPlaces((it)*19+1,2)+" ${Bewisclient.getTranslatedString("seconds")}")
     })
 
+    /**
+     * The [UsableSliderWidget] for the brightness when static
+     */
     val widget2 = UsableSliderWidget(0, 0, 100, 20, Text.empty(),
-            if(get().getColor()>0) colorStart[2].toDouble() else 1.0, 1F, 0F, 2, {
-        set(ColorSaver.of(convertRGBtoHSB(posX/60f,posY/60f,it.toFloat())+0x1000000))
+            if(get().getColor()>0) convertRGBtoHSB(get())[2].toDouble() else 1.0, 1F, 0F, 2, {
+        set(ColorSaver.of(convertHSBtoRGB(posX/60f,posY/60f,it.toFloat())+0x1000000))
     },{
         Text.of(Bewisclient.getTranslatedString("gui.brightness")+": "+withDecimalPlaces(it,2))
     })
@@ -150,16 +177,40 @@ class ColorPickerElement(
         return 60
     }
 
-    fun convertRGBtoHSB(hue: Float, saturation: Float): Int {
+    /**
+     * Converts HSB to RGB with a static brightness of 1
+     *
+     * @param hue The hue (0-1)
+     * @param saturation The saturation (0-1)
+     *
+     * @return The color as an RGB-Integer
+     */
+    fun convertHSBtoRGB(hue: Float, saturation: Float): Int {
         val rgb: Int = Color.HSBtoRGB(hue, saturation, 1f)
         return Color(rgb).rgb
     }
 
-    fun convertRGBtoHSB(hue: Float, saturation: Float, brightness: Float): Int {
+    /**
+     * Converts HSB to RGB with a static brightness of 1
+     *
+     * @param hue The hue (0-1)
+     * @param saturation The saturation (0-1)
+     * @param brightness The brightness (0-1)
+     *
+     * @return The color as an RGB-Integer
+     */
+    fun convertHSBtoRGB(hue: Float, saturation: Float, brightness: Float): Int {
         val rgb: Int = Color.HSBtoRGB(hue, saturation, brightness)
         return Color(rgb).rgb
     }
 
+    /**
+     * Converts a [ColorSaver] to an HSB [FloatArray]
+     *
+     * @param color The [ColorSaver] that gets converted
+     *
+     * @return The HSB value as a FloatArray
+     */
     fun convertRGBtoHSB(color: ColorSaver): FloatArray {
         val c = Color(color.getColor())
         val rgb: FloatArray = Color.RGBtoHSB(c.red,c.green,c.blue,null)
@@ -174,7 +225,7 @@ class ColorPickerElement(
             posY = MathHelper.clamp((mouseY-pos[1]).toInt(),1,58)
 
             set(
-                ColorSaver.of(convertRGBtoHSB((posX-1)/58f,(posY-1)/58f,widget2.getValue().toFloat())+0x1000000),
+                ColorSaver.of(convertHSBtoRGB((posX-1)/58f,(posY-1)/58f,widget2.getValue().toFloat())+0x1000000),
             )
         }
         if(widget.isHovered && hClicked && widget.active)
@@ -200,7 +251,7 @@ class ColorPickerElement(
             posX = (mouseX-pos[2]+60).toInt()
             posY = (mouseY-pos[1]).toInt()
 
-            set(ColorSaver.of(convertRGBtoHSB((posX-1)/58f,(posY-1)/58f)+0x1000000))
+            set(ColorSaver.of(convertHSBtoRGB((posX-1)/58f,(posY-1)/58f)+0x1000000))
         }
         static.mouseClicked(mouseX, mouseY,button)
         change.mouseClicked(mouseX, mouseY,button)

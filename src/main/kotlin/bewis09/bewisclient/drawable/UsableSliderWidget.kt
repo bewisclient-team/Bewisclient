@@ -6,6 +6,7 @@ import net.minecraft.text.Text
 import kotlin.math.pow
 import kotlin.math.round
 
+// TODO Document
 class UsableSliderWidget : SliderWidget {
 
     val maxValue: Float

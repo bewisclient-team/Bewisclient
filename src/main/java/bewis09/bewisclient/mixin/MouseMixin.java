@@ -1,9 +1,10 @@
 package bewis09.bewisclient.mixin;
 
 import bewis09.bewisclient.Bewisclient;
-import bewis09.bewisclient.JavaSettingsSender;
+import bewis09.bewisclient.MixinStatics;
 import bewis09.bewisclient.ZoomImplementer;
 import bewis09.bewisclient.settingsLoader.Settings;
+import bewis09.bewisclient.settingsLoader.SettingsLoader;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -30,7 +31,7 @@ public class MouseMixin {
 
     @Inject(method = "onMouseScroll", at = @At("HEAD"), cancellable = true)
     public void inject(long window, double horizontal, double vertical, CallbackInfo ci) {
-        if(JavaSettingsSender.Companion.isZoomed() && JavaSettingsSender.Companion.getSettings().get("general", Settings.Companion.getSettings().getZOOM_ENABLED())) {
+        if(MixinStatics.isZoomed && SettingsLoader.INSTANCE.get("general", Settings.Companion.getSettings().getZOOM_ENABLED())) {
             var a = (ZoomImplementer)(MinecraftClient.getInstance().gameRenderer);
 
             if(a.bewisclient5_0$getGoal()-vertical*0.02>0.009 && a.bewisclient5_0$getGoal()-vertical*0.02<0.4)

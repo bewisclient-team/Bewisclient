@@ -3,6 +3,7 @@ package bewis09.bewisclient.settingsLoader
 import bewis09.bewisclient.settingsLoader.SettingsLoader.TypedSettingID
 import bewis09.bewisclient.util.ColorSaver
 
+// TODO Document
 open class Settings {
     
     // General

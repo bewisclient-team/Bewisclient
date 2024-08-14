@@ -10,6 +10,7 @@ import net.minecraft.util.collection.DefaultedList;
 
 import java.awt.*;
 
+// TODO Document
 public class ShulkerBoxTooltip implements TooltipComponent {
     public static final Identifier TEXTURE = Identifier.of("bewisclient","gui/slot.png");
     private final DefaultedList<ItemStack> inventory;

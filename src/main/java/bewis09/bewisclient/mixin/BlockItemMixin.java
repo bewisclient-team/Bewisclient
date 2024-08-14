@@ -1,6 +1,6 @@
 package bewis09.bewisclient.mixin;
 
-import bewis09.bewisclient.JavaSettingsSender;
+import bewis09.bewisclient.settingsLoader.SettingsLoader;
 import bewis09.bewisclient.tooltip.ShulkerBoxTooltipData;
 import net.minecraft.block.Block;
 import net.minecraft.block.ShulkerBoxBlock;
@@ -34,7 +34,7 @@ public abstract class BlockItemMixin extends Item {
    @SuppressWarnings("all")
    @Override
    public Optional<TooltipData> getTooltipData(ItemStack stack) {
-       if(getBlock() instanceof ShulkerBoxBlock && (JavaSettingsSender.Companion.getSettings().get("design", bewis09.bewisclient.settingsLoader.Settings.Companion.getSettings().getSHULKER_BOX_TOOLTIP()))) {
+       if(getBlock() instanceof ShulkerBoxBlock && (SettingsLoader.INSTANCE.get("design", bewis09.bewisclient.settingsLoader.Settings.Companion.getSettings().getSHULKER_BOX_TOOLTIP()))) {
            DefaultedList<ItemStack> stacks = DefaultedList.ofSize(27, ItemStack.EMPTY);
            if(stack.getComponents().getOrDefault(DataComponentTypes.CONTAINER,null)!=null) {
                stack.getComponents().getOrDefault(DataComponentTypes.CONTAINER,null).copyTo(stacks);
@@ -46,6 +46,6 @@ public abstract class BlockItemMixin extends Item {
 
    @Inject(method = "appendTooltip",at=@At("HEAD"),cancellable = true)
    public void inject(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type, CallbackInfo ci) {
-       if(getBlock() instanceof ShulkerBoxBlock && JavaSettingsSender.Companion.getSettings().get("design", bewis09.bewisclient.settingsLoader.Settings.Companion.getSettings().getSHULKER_BOX_TOOLTIP())) ci.cancel();
+       if(getBlock() instanceof ShulkerBoxBlock && SettingsLoader.INSTANCE.get("design", bewis09.bewisclient.settingsLoader.Settings.Companion.getSettings().getSHULKER_BOX_TOOLTIP())) ci.cancel();
    }
 }

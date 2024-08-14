@@ -6,6 +6,7 @@ import net.minecraft.util.Identifier;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO Document
 public class AnimatedCape extends AbstractCape {
 
     private final int frameCount;

@@ -4,6 +4,7 @@ import net.minecraft.util.Identifier;
 
 import javax.swing.*;
 
+// TODO Document
 public abstract class AbstractCape {
 
     int frame = 0;

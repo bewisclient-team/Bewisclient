@@ -1,9 +1,8 @@
 package bewis09.bewisclient.mixin;
 
-import bewis09.bewisclient.JavaSettingsSender;
 import bewis09.bewisclient.settingsLoader.Settings;
+import bewis09.bewisclient.settingsLoader.SettingsLoader;
 import bewis09.bewisclient.util.MathUtil;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderer;
@@ -28,7 +27,7 @@ public abstract class TNTEntityRendererMixin extends EntityRenderer<TntEntity> {
 
     @Inject(method = "render(Lnet/minecraft/entity/TntEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at=@At("RETURN"))
     public void inject(TntEntity entity, float yaw, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo ci) {
-        if(!JavaSettingsSender.Companion.getSettings().get("general", Settings.Companion.getSettings().getTNT_TIMER())) return;
+        if(!SettingsLoader.INSTANCE.get("general", Settings.Companion.getSettings().getTNT_TIMER())) return;
 
         double d = this.dispatcher.getSquaredDistanceToCamera(entity);
         if (d > 64.0) {
@@ -43,8 +42,6 @@ public abstract class TNTEntityRendererMixin extends EntityRenderer<TntEntity> {
         matrices.multiply(this.dispatcher.getRotation());
         matrices.scale(0.015f, -0.015f, 0.015f);
         Matrix4f matrix4f = matrices.peek().getPositionMatrix();
-        float f = MinecraftClient.getInstance().options.getTextBackgroundOpacity(0.25f);
-        int j = (int)(f * 255.0f) << 24;
         TextRenderer textRenderer = this.getTextRenderer();
         final var s = MathUtil.Companion.withAfterCommaZero(entity.getFuse()/20f,2)+"s";
         float g = (float) -textRenderer.getWidth(s) / 2;

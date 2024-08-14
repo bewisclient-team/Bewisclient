@@ -10,6 +10,7 @@ import net.minecraft.util.Identifier
 
 class InventoryWidget: Widget("inventory") {
 
+    // TODO Document
     val identifier: Identifier = Identifier.of("bewisclient","textures/inventory_widget.png")
 
     override fun render(drawContext: DrawContext,x:Int,y:Int) {

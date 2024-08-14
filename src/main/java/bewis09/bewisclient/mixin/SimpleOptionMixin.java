@@ -1,8 +1,8 @@
 package bewis09.bewisclient.mixin;
 
 import bewis09.bewisclient.Bewisclient;
-import bewis09.bewisclient.JavaSettingsSender;
 import bewis09.bewisclient.settingsLoader.Settings;
+import bewis09.bewisclient.settingsLoader.SettingsLoader;
 import com.mojang.serialization.Codec;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -49,8 +49,8 @@ public abstract class SimpleOptionMixin<T> {
 
     @Inject(method="createWidget(Lnet/minecraft/client/option/GameOptions;IIILjava/util/function/Consumer;)Lnet/minecraft/client/gui/widget/ClickableWidget;",at=@At("HEAD"),cancellable = true)
     public void createButton(GameOptions options, int x, int y, int width, Consumer<T> changeCallback, CallbackInfoReturnable<ClickableWidget> cir) {
-        if(JavaSettingsSender.Companion.getSettings().get("design", Settings.Companion.getSettings().getFULLBRIGHT(),Settings.Companion.getSettings().getENABLED()) &&(MinecraftClient.getInstance().options.getGamma().getValue()!=JavaSettingsSender.Companion.getSettings().get("design",Settings.Companion.getSettings().getFULLBRIGHT(),Settings.Companion.getSettings().getFULLBRIGHT_VALUE()))) MinecraftClient.getInstance().options.getGamma().setValue((double) JavaSettingsSender.Companion.getSettings().get("design",Settings.Companion.getSettings().getFULLBRIGHT(),Settings.Companion.getSettings().getFULLBRIGHT_VALUE()));
-        if(this.codec==MinecraftClient.getInstance().options.getGamma().getCodec()&&JavaSettingsSender.Companion.getSettings().get("design",Settings.Companion.getSettings().getFULLBRIGHT(),Settings.Companion.getSettings().getENABLED())) {
+        if(SettingsLoader.INSTANCE.get("design", Settings.Companion.getSettings().getFULLBRIGHT(),Settings.Companion.getSettings().getENABLED()) &&(MinecraftClient.getInstance().options.getGamma().getValue()!=SettingsLoader.INSTANCE.get("design",Settings.Companion.getSettings().getFULLBRIGHT(),Settings.Companion.getSettings().getFULLBRIGHT_VALUE()))) MinecraftClient.getInstance().options.getGamma().setValue((double) SettingsLoader.INSTANCE.get("design",Settings.Companion.getSettings().getFULLBRIGHT(),Settings.Companion.getSettings().getFULLBRIGHT_VALUE()));
+        if(this.codec==MinecraftClient.getInstance().options.getGamma().getCodec()&&SettingsLoader.INSTANCE.get("design",Settings.Companion.getSettings().getFULLBRIGHT(),Settings.Companion.getSettings().getENABLED())) {
             ButtonWidget b = ButtonWidget.builder(Bewisclient.INSTANCE.getTranslationText("fullbright"),null).dimensions(x, y, width, 20).build();
             b.active = false;
             cir.setReturnValue(b);

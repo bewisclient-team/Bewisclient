@@ -1,8 +1,9 @@
 package bewis09.bewisclient.mixin;
 
-import bewis09.bewisclient.JavaSettingsSender;
+import bewis09.bewisclient.MixinStatics;
 import bewis09.bewisclient.ZoomImplementer;
 import bewis09.bewisclient.settingsLoader.Settings;
+import bewis09.bewisclient.settingsLoader.SettingsLoader;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.Camera;
@@ -37,11 +38,11 @@ public class ZoomMixin implements ZoomImplementer {
 
     @Inject(method = "getFov",at=@At("RETURN"),cancellable = true)
     private void getFov(Camera camera, float tickDelta, boolean changingFov, CallbackInfoReturnable<Double> cir) {
-        if(JavaSettingsSender.Companion.getSettings().get("general", Settings.Companion.getSettings().getZOOM_ENABLED())) {
-            if (!JavaSettingsSender.Companion.getSettings().get("general",Settings.Companion.getSettings().getINSTANT_ZOOM())) {
-                if (JavaSettingsSender.Companion.isZoomed() != lastZoomed || zoomgoal != lastZoomGoal) {
+        if(SettingsLoader.INSTANCE.get("general", Settings.Companion.getSettings().getZOOM_ENABLED())) {
+            if (!SettingsLoader.INSTANCE.get("general",Settings.Companion.getSettings().getINSTANT_ZOOM())) {
+                if (MixinStatics.isZoomed != lastZoomed || zoomgoal != lastZoomGoal) {
                     zoomStart = getZoomFactor();
-                    if (!JavaSettingsSender.Companion.isZoomed()) {
+                    if (!MixinStatics.isZoomed) {
                         if (lastZoomed) {
                             zoomEnd = 1;
                             zoomgoal = 0.23f;
@@ -52,10 +53,10 @@ public class ZoomMixin implements ZoomImplementer {
                     lastZoomGoal = zoomgoal;
                     zoomStartTime = System.currentTimeMillis();
                 }
-                lastZoomed = JavaSettingsSender.Companion.isZoomed();
+                lastZoomed = MixinStatics.isZoomed;
                 cir.setReturnValue(getZoomFactor() * cir.getReturnValue());
             } else {
-                cir.setReturnValue(cir.getReturnValue() * (JavaSettingsSender.Companion.isZoomed() ? zoomgoal : 1));
+                cir.setReturnValue(cir.getReturnValue() * (MixinStatics.isZoomed ? zoomgoal : 1));
             }
         }
     }

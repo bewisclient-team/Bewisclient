@@ -1,7 +1,7 @@
 package bewis09.bewisclient.mixin;
 
-import bewis09.bewisclient.JavaSettingsSender;
 import bewis09.bewisclient.settingsLoader.Settings;
+import bewis09.bewisclient.settingsLoader.SettingsLoader;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.InGameOverlayRenderer;
@@ -25,7 +25,7 @@ public class InGameOverlayRendererMixin {
 
     @Overwrite
     private static void renderFireOverlay(MinecraftClient client, MatrixStack matrices) {
-        float d = JavaSettingsSender.Companion.getSettings().get("design", Settings.Companion.getSettings().getFIRE_HEIGHT());
+        float d = SettingsLoader.INSTANCE.get("design", Settings.Companion.getSettings().getFIRE_HEIGHT());
         RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
         RenderSystem.depthFunc(519);
         RenderSystem.depthMask(false);
@@ -43,7 +43,6 @@ public class InGameOverlayRendererMixin {
         float n = MathHelper.lerp(l, g, h);
         float o = MathHelper.lerp(l, i, k);
         float p = MathHelper.lerp(l, j, k);
-        float q = 1.0F;
 
         for(int r = 0; r < 2; ++r) {
             matrices.push();

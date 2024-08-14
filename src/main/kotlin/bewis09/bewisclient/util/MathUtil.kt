@@ -2,6 +2,8 @@ package bewis09.bewisclient.util
 
 import kotlin.math.pow
 
+// TODO Document
+@Suppress("unused")
 class MathUtil {
     companion object {
         fun inRangeThen(i: Double, range: Double, distance: Double): Double {

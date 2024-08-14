@@ -2,6 +2,7 @@ package bewis09.bewisclient.cape;
 
 import net.minecraft.util.Identifier;
 
+// TODO Document
 public class Cape extends AbstractCape {
 
     final Identifier identifier;

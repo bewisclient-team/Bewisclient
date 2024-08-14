@@ -31,6 +31,7 @@ import net.minecraft.util.math.ColorHelper
 import java.util.*
 import java.util.Map
 
+// TODO Document
 class TiwylaWidget: Widget("tiwyla") {
 
     var identifier: Identifier = Identifier.of("extra")

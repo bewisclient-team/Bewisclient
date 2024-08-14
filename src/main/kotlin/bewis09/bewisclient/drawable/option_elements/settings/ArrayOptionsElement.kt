@@ -9,6 +9,7 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.text.Text
 
+// TODO Document
 class ArrayOptionsElement(
     title: String,
     path: Array<String>,
@@ -16,15 +17,24 @@ class ArrayOptionsElement(
     settings: String
 ) : SettingsOptionsElement<Float>(title, settings, path, id) {
 
+    /**
+     * The index of the current value
+     */
     private var v = get().toInt()
 
+    /**
+     * The [ScalableButtonWidget] that gets displayed
+     */
     private val widget = ScalableButtonWidget.builder(Text.empty()) {
         v += 1
-        v %= de.size
+        v %= array.size
         set(v.toFloat())
     }.dimensions(0,0,100,20).build()
 
-    private val de = (DefaultSettings.arrays[toPointNotation(path,id)] ?: DefaultSettings.arrays[".${id}"])!!
+    /**
+     * The array of the possible options
+     */
+    private val array = (DefaultSettings.arrays[toPointNotation(path,id)] ?: DefaultSettings.arrays[".${id}"])!!
 
     override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {
         val client = MinecraftClient.getInstance()
@@ -33,7 +43,7 @@ class ArrayOptionsElement(
 
         val height = 24+10*descriptionLines.size
 
-        widget.message = Bewisclient.getTranslationText(de[v])
+        widget.message = Bewisclient.getTranslationText(array[v])
 
         widget.x = x+width-107
         widget.y = y+height/2-10

@@ -1,8 +1,8 @@
 package bewis09.bewisclient.mixin;
 
 import bewis09.bewisclient.Bewisclient;
-import bewis09.bewisclient.JavaSettingsSender;
 import bewis09.bewisclient.settingsLoader.Settings;
+import bewis09.bewisclient.settingsLoader.SettingsLoader;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import org.spongepowered.asm.mixin.Mixin;
@@ -22,7 +22,7 @@ public class MinecraftClientMixin {
             ci.cancel();
         }
 
-        if(Bewisclient.Companion.Companion.getUpdate()!=null && JavaSettingsSender.Companion.getSettings().get("general", Settings.Companion.getSettings().getEXPERIMENTAL(),Settings.Companion.getSettings().getAUTO_UPDATE())) {
+        if(Bewisclient.Companion.Companion.getUpdate()!=null && SettingsLoader.INSTANCE.get("general", Settings.Companion.getSettings().getEXPERIMENTAL(),Settings.Companion.getSettings().getAUTO_UPDATE())) {
             var javaHome = System.getProperty("java.home");
             var f = new File(javaHome);
             f = new File(f, "bin");

@@ -11,6 +11,7 @@ import java.util.*
 
 class DaytimeWidget: LineWidget("daytime",80,true) {
 
+    // TODO Document
     private val dateFormat: DateFormat = DateFormat.getTimeInstance(DateFormat.DEFAULT, Locale.getDefault())
     private val d = !((dateFormat as SimpleDateFormat).toPattern().contains("a"))
 

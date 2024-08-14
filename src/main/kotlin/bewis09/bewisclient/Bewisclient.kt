@@ -35,7 +35,7 @@ import java.lang.Float.min
 import javax.swing.Timer
 import kotlin.math.max
 
-
+// TODO Document
 object Bewisclient : ClientModInitializer {
     private val LOGGER: Logger = LoggerFactory.getLogger("bewisclient")
 
@@ -187,13 +187,13 @@ object Bewisclient : ClientModInitializer {
 			}
 			if(SettingsLoader.get("general",Settings.ZOOM_ENABLED)) {
 				if (zoomBinding?.isPressed == true) {
-					JavaSettingsSender.isZoomed = true
+					MixinStatics.isZoomed = true
 					if (pt == null)
 						pt = MinecraftClient.getInstance().options.smoothCameraEnabled
 					if(!SettingsLoader.get("general", Settings.HARD_ZOOM))
 						MinecraftClient.getInstance().options.smoothCameraEnabled = true
 				} else {
-					JavaSettingsSender.isZoomed = false
+					MixinStatics.isZoomed = false
 					if (pt != null && !SettingsLoader.get("general",Settings.HARD_ZOOM))
 						MinecraftClient.getInstance().options.smoothCameraEnabled = pt!!
 					pt = null
@@ -222,6 +222,7 @@ object Bewisclient : ClientModInitializer {
 				.append(": ").append((gamma * 1000f).toString() + "%"), true)
 	}
 
+	@Suppress("unused")
 	fun log(string: Any?) {
 		LOGGER.info(string.toString())
 	}

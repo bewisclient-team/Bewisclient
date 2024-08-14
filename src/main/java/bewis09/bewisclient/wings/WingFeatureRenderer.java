@@ -15,6 +15,7 @@ import net.minecraft.util.math.MathHelper;
 
 import static java.lang.Math.cos;
 
+// TODO Document
 public class WingFeatureRenderer extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
 
     final ModelPart body;

@@ -17,6 +17,7 @@ import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.round
 
+// TODO Document
 class WidgetConfigScreen(var parent: MainOptionsScreen): Screen(Text.empty()) {
 
     private var selected: Widget? = null

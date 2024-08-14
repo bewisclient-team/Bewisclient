@@ -14,6 +14,7 @@ import kotlin.math.cos
 import kotlin.math.max
 import kotlin.math.sin
 
+// TODO Document
 open class ScalableButtonWidget(x: Int, y: Int, width: Int, height: Int, message: Text?, onPress: PressAction?) : ButtonWidget(x, y, width, height, message, onPress, null) {
 
     override fun drawScrollableText(context: DrawContext?, textRenderer: TextRenderer?, xMargin: Int, color: Int) {

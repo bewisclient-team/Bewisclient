@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 
+// TODO Document
 object DefaultSettings {
 
     val gson = Gson()
@@ -62,7 +63,7 @@ object DefaultSettings {
         val OM = JsonObject()
         OM.add("animation_time", JsonPrimitive(200.0))
         OM.add("scale", JsonPrimitive(0.75))
-        OM.add("all_click", JsonPrimitive(false))
+        OM.add("all_click", JsonPrimitive(true))
         val FB = JsonObject()
         FB.add("night_vision", JsonPrimitive(false))
         FB.add("value", JsonPrimitive(1.0))

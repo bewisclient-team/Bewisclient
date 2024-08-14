@@ -8,6 +8,10 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 
 class MultipleBooleanOptionsElement(title: String, val settings: String, val path: Array<String>, vararg val subElements: String): OptionsElement(title,"") {
+
+    /**
+     * The index of the setting that is currently hovered over
+     */
     var selected = -1
 
     override fun render(
