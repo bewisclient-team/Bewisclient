@@ -10,12 +10,17 @@ import net.minecraft.util.collection.DefaultedList;
 
 import java.awt.*;
 
-// TODO Document
+/**
+ * The {@link TooltipComponent} for the ShulkerBoxTooltip
+ */
 public class ShulkerBoxTooltip implements TooltipComponent {
     public static final Identifier TEXTURE = Identifier.of("bewisclient","gui/slot.png");
     private final DefaultedList<ItemStack> inventory;
     private final Color color;
 
+    /**
+     * @param data The {@link ShulkerBoxTooltipData} of the Shulker Box
+     */
     public ShulkerBoxTooltip(ShulkerBoxTooltipData data) {
         this.inventory = data.getInventory();
         this.color = new Color(data.color().getEntityColor());
@@ -46,6 +51,15 @@ public class ShulkerBoxTooltip implements TooltipComponent {
         }
     }
 
+    /**
+     * Draws a slot
+     *
+     * @param x The x-position of the slot
+     * @param y The y-position of the slot
+     * @param index The index of the slot
+     * @param textRenderer The {@link TextRenderer}
+     * @param context The {@link DrawContext} that the slot gets rendered on
+     */
     private void drawSlot(int x, int y, int index, TextRenderer textRenderer, DrawContext context) {
         if (index >= this.inventory.size()) {
             return;
@@ -57,6 +71,13 @@ public class ShulkerBoxTooltip implements TooltipComponent {
         context.drawItem(itemStack, x + 1, y + 1);
     }
 
+    /**
+     * Draws the background texture
+     *
+     * @param x The x-position of the texture
+     * @param y The y-position of the texture
+     * @param context The {@link DrawContext} that the texture gets rendered on
+     */
     private void draw(DrawContext context, int x, int y) {
         RenderSystem.setShaderColor(color.getRed()/255f, color.getGreen()/255f, color.getBlue()/255f, 1.0f);
         context.drawTexture(TEXTURE, x, y, 0, 0, 18, 18, 18, 18);

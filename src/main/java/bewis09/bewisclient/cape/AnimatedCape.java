@@ -1,24 +1,41 @@
 package bewis09.bewisclient.cape;
 
-import bewis09.bewisclient.util.MathUtil;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO Document
+/**
+ * The class for the animated capes
+ */
 public class AnimatedCape extends AbstractCape {
 
+    /**
+     * The amount of frames
+     */
     private final int frameCount;
+
+    /**
+     * The list of Identifiers
+     */
     private final List<Identifier> identifierList;
+
+    /**
+     * The duration of the animation
+     */
     private final int frameDuration;
 
-    public AnimatedCape(int frameCount, String name, int frameDuration, boolean withZero) {
+    /**
+     * @param frameCount The amount of frames
+     * @param name The name of the cape
+     * @param frameDuration The duration of the animation
+     */
+    public AnimatedCape(int frameCount, String name, int frameDuration) {
         this.frameCount = frameCount;
         this.frameDuration = frameDuration;
         identifierList = new ArrayList<>();
         for (int i = 0; i < frameCount; i++) {
-            identifierList.add(Identifier.of("bewisclient","cape/"+name.replace("%20", MathUtil.Companion.zeroBefore(i,withZero?2:1))+".png"));
+            identifierList.add(Identifier.of("bewisclient","cape/"+name.replace("%20", String.valueOf(i))+".png"));
         }
         startTimer();
     }

@@ -3,7 +3,7 @@
 package bewis09.bewisclient.widgets.specialWidgets
 
 import bewis09.bewisclient.Bewisclient
-import bewis09.bewisclient.api.JavaAPIEntryPoint.EntityListener
+import bewis09.bewisclient.api.APIEntryPoint.EntityListener
 import bewis09.bewisclient.mixin.ClientPlayerInteractionManagerMixin
 import bewis09.bewisclient.widgets.Widget
 import com.google.gson.JsonObject

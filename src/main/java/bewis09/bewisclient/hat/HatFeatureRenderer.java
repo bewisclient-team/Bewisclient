@@ -12,13 +12,15 @@ import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
-// TODO Document
+/**
+ * The {@link FeatureRenderer} for the hat
+ */
 public class HatFeatureRenderer extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
     
     final ModelPart head;
     final ModelPart hat;
     final PlayerEntityModel<AbstractClientPlayerEntity> model;
-    
+
     public HatFeatureRenderer(FeatureRendererContext<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> context) {
         super(context);
         model = context.getModel();

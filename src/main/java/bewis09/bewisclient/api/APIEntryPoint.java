@@ -11,7 +11,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.state.property.Property;
 
 @SuppressWarnings("unused")
-public class JavaAPIEntryPoint {
+public class APIEntryPoint {
     /**
      * Allows you to add your custom external information about the block the player is looking at in the TIWYLA Widget
      *
