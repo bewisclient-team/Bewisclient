@@ -3,13 +3,39 @@ package bewis09.bewisclient.drawable.option_elements
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.settingsLoader.Settings
+import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.util.Search
 import net.minecraft.client.gui.DrawContext
+import net.minecraft.util.Identifier
 
+/**
+ * An options element that gets displayed in the [MainOptionsScreen]
+ *
+ * @param title The title of the element
+ * @param description The description of the element
+ */
 abstract class OptionsElement(val title: String, val description: String) : Settings(), Search.SearchableElement<OptionsElement> {
 
-    // TODO Document
+    /**
+     * The [Identifier] for the texture of the button to go to the next page
+     */
+    val select: Identifier = Identifier.of("bewisclient", "textures/sprites/select.png")
+
+    /**
+     * The [Identifier] for the texture of the button to go to the next page when hovered
+     */
+    val selectHovered: Identifier = Identifier.of("bewisclient", "textures/sprites/select_highlighted.png")
+
+    /**
+     * The current position of the widget (x, y, width, height)
+     */
     var pos = arrayOf(0, 0, 0, 0)
+
+    /**
+     * Indicates if the [ALL_CLICK] setting is turned on, where you can click at an entire [MainOptionsElement] to get to the corresponding screen
+     */
+    val allClicked: Boolean
+        get() = SettingsLoader.get("design", OPTIONS_MENU, ALL_CLICK)
 
     /**
      * Renders the element on the screen

@@ -1,5 +1,6 @@
 package bewis09.bewisclient.widgets.lineWidgets
 
+import bewis09.bewisclient.util.MathUtil
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import net.minecraft.client.MinecraftClient
@@ -9,17 +10,15 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
+/**
+ * A [LineWidget] which displays the current time of the day
+ */
 class DaytimeWidget: LineWidget("daytime",80,true) {
-
-    // TODO Document
-    private val dateFormat: DateFormat = DateFormat.getTimeInstance(DateFormat.DEFAULT, Locale.getDefault())
-    private val d = !((dateFormat as SimpleDateFormat).toPattern().contains("a"))
-
     override fun getText(): ArrayList<String> {
-        val time = (MinecraftClient.getInstance().world?.timeOfDay?.plus(6000L))?.rem(24000L)
-        val hour = withZeros(if (!getProperty(Settings.CLOCK24)) if (time?.div(1000L)==12L) time.div(1000L) else if (time?.div(1000L)==0L) 12 else time?.div(1000L)?.rem(12L) else time?.div(1000L))
-        val minute = withZeros((time?.rem(1000L)?.times(60)?.div(1000))?.toInt())
-        val am = if (!getProperty(Settings.CLOCK24)) if (time?.div(1000L)!! <12L) "AM" else "PM" else ""
+        val time = (MinecraftClient.getInstance().world!!.timeOfDay.plus(6000L)).rem(24000L)
+        val hour = MathUtil.zeroBefore((if (!getProperty(Settings.CLOCK24)) if (time.div(1000L)==12L) time.div(1000L) else if (time.div(1000L)==0L) 12 else time.div(1000L).rem(12L) else time.div(1000L)).toInt(),2)
+        val minute = MathUtil.zeroBefore((time.rem(1000L).times(60).div(1000)).toInt(),2)
+        val am = if (!getProperty(Settings.CLOCK24)) if (time.div(1000L) <12L) "AM" else "PM" else ""
         return arrayListOf("$hour:$minute $am")
     }
 
@@ -38,20 +37,9 @@ class DaytimeWidget: LineWidget("daytime",80,true) {
         drawContext.matrices.pop()
     }
 
-    private fun withZeros(str: Any?): String {
-        var strD = ""
-        if(str!=null) {
-            strD = str.toString()
-        }
-        while (strD.length<2) {
-            strD= "0$strD"
-        }
-        return strD
-    }
-
     override fun getWidgetSettings(): JsonObject {
         val list = super.getWidgetSettings(.7f,5f,1f,83f,-1f)
-        list.add(CLOCK24.id, JsonPrimitive(d))
+        list.add(CLOCK24.id, JsonPrimitive(!((DateFormat.getTimeInstance(DateFormat.DEFAULT, Locale.getDefault())) as SimpleDateFormat).toPattern().contains("a")))
         return list
     }
 }

@@ -4,6 +4,11 @@ import bewis09.bewisclient.Bewisclient
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 
+/**
+ * An [OptionsElement] which displays a title
+ *
+ * @param titles The translation keys of the titles that are separated by ">>"
+ */
 class TitleOptionsElement(vararg val titles: String): OptionsElement(titles.last(),"") {
     override fun render(
         context: DrawContext,

@@ -5,6 +5,13 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.util.math.ColorHelper
 
+/**
+ * A [Widget] with multiple lines of text
+ *
+ * @param id The id of the widget
+ * @param widget_width The width of the widget, if it is not changing
+ * @param centered Indicates if the text should be centered
+ */
 abstract class LineWidget(id: String, protected val widget_width: Int, private val centered: Boolean) : Widget(id) {
     override fun render(drawContext: DrawContext,x:Int,y:Int) {
         drawContext.matrices.push()

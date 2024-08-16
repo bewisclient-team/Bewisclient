@@ -6,13 +6,18 @@ import bewis09.bewisclient.settingsLoader.SettingsLoader;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO Document
+/**
+ * A class for storing and registering capes
+ */
 public class Capes {
 
     public static final AbstractCape GOLDEN_CREEPER = new AnimatedCape(32,"golden_creeper_%20",80);
     public static final AbstractCape MINECON_2011 = new Cape("minecon2011");
     public static final AbstractCape WORLD = new Cape("world");
 
+    /**
+     * A collection of all capes
+     */
     public static final AbstractCape[] CAPES;
 
     static {
@@ -32,6 +37,9 @@ public class Capes {
         }
     }
 
+    /**
+     * Method to execute the static code
+     */
     public static void register() {
     }
 }

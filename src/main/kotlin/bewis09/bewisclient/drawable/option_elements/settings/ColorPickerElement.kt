@@ -17,7 +17,14 @@ import net.minecraft.util.math.MathHelper
 import java.awt.Color
 import kotlin.math.roundToInt
 
-// TODO Document
+/**
+ * A [SettingsOptionsElement] which changes a color
+ *
+ * @param title The title of the element and gets converted to the description string
+ * @param settings The category of settings the setting
+ * @param path The path to the setting
+ * @param id The id of the setting
+ */
 class ColorPickerElement(
     title: String,
     path: Array<String>,

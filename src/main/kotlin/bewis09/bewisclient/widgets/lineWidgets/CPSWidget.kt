@@ -5,6 +5,9 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 
+/**
+ * A [LineWidget] which displays the current CPS
+ */
 class CPSWidget: LineWidget("cps",80,true) {
     override fun getText(): ArrayList<String> {
         when (getProperty(CPS_ELEMENTS)) {

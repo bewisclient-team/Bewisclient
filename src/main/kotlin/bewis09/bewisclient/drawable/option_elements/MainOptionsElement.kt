@@ -2,7 +2,6 @@ package bewis09.bewisclient.drawable.option_elements
 
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.screen.MainOptionsScreen
-import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.util.Search
 import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.MinecraftClient
@@ -11,42 +10,50 @@ import net.minecraft.client.gui.screen.Screen
 import net.minecraft.util.Identifier
 import kotlin.math.max
 
-// TODO Document
+/**
+ * An [OptionsElement] that links to a new page and is used in the first page of the [MainOptionsScreen]
+ */
 open class MainOptionsElement: OptionsElement, Search.SearchableElement<OptionsElement> {
 
+    /**
+     * A lamba that returns the [Screen] that the [MainOptionsElement] should link to
+     */
     var screen: ((MainOptionsScreen) -> Screen)? = null
+
+    /**
+     * An [ArrayList] of type [OptionsElement] which will be displayed when opening a new page
+     */
     var elements: ArrayList<OptionsElement>? = null
+
+    /**
+     * The image that should be displayed when rendering the [MainOptionsElement]
+     */
     val image: Identifier
 
+    /**
+     * @param title The title of the element
+     * @param description The description of the element
+     * @param screen A lamba that returns the [Screen] that the [MainOptionsElement] should link to
+     * @param image The image that should be displayed when rendering the [MainOptionsElement]
+     */
     constructor(title: String, description: String, screen: ((MainOptionsScreen) -> Screen), image: Identifier): super(title,description) {
         this.screen = screen
         this.image = image
-        this.select = Identifier.of("bewisclient", "textures/sprites/select.png")
-        this.selectHovered = Identifier.of("bewisclient", "textures/sprites/select_highlighted.png")
     }
 
-    constructor(title: String, description: String, image: Identifier): super(title,description) {
-        this.image = image
-        this.select = Identifier.of("bewisclient", "textures/sprites/select.png")
-        this.selectHovered = Identifier.of("bewisclient", "textures/sprites/select_highlighted.png")
-    }
-
+    /**
+     * @param title The title of the element
+     * @param description The description of the element
+     * @param elements An [ArrayList] of type [OptionsElement] which will be displayed when opening a new page
+     * @param image The image that should be displayed when rendering the [MainOptionsElement]
+     */
     constructor(title: String, description: String, elements: ArrayList<OptionsElement>, image: Identifier): super(title,description) {
         this.elements = elements
         this.image = image
-        this.select = Identifier.of("bewisclient", "textures/sprites/select.png")
-        this.selectHovered = Identifier.of("bewisclient", "textures/sprites/select_highlighted.png")
     }
-
-    val select: Identifier
-    val selectHovered: Identifier
-
-    var allClicked: Boolean = false
 
     override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {
         val client = MinecraftClient.getInstance()
-
-        allClicked = SettingsLoader.get("design", OPTIONS_MENU, ALL_CLICK)
 
         val descriptionLines = client.textRenderer.wrapLines(Bewisclient.getTranslationText(description),width-(if(allClicked) 50 else 72))
 

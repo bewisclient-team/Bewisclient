@@ -9,7 +9,9 @@ import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.option.KeyBinding
 import net.minecraft.text.Text
 
-// TODO Document
+/**
+ * A [Widget] which displays the movement keys and mouse buttons that are currently pressed
+ */
 @Suppress("SameParameterValue")
 class KeyWidget: Widget("keys") {
     override fun render(drawContext: DrawContext,x:Int,y:Int) {
@@ -45,25 +47,68 @@ class KeyWidget: Widget("keys") {
         return (if(getProperty(SHOW_MOVEMENT_KEYS,*SELECT_PARTS)) 40 else -2)+(if(getProperty(SHOW_SPACE_BAR,*SELECT_PARTS)) 17 else 0)+(if(getProperty(SHOW_MOUSE_BUTTON,*SELECT_PARTS)) 17 else 0)
     }
 
+    /**
+     * Renders a key with the text of the [keyBinding] and a height of 15
+     *
+     * @param width The width of the key
+     * @param x The relative x-coordinate of the key
+     * @param y The relative y-coordinate of the key
+     * @param keyBinding The [KeyBinding] that gets drawn
+     * @param drawContext The [DrawContext] for drawing
+     */
     private fun renderKey(width: Int, x:Int, y:Int, keyBinding: KeyBinding, drawContext: DrawContext) {
         renderKey(width, 15, x, y, keyBinding.boundKeyLocalizedText, keyBinding, drawContext)
     }
 
+    /**
+     * Renders a key with the text of the [keyBinding]
+     *
+     * @param width The width of the key
+     * @param height The height of the key
+     * @param x The relative x-coordinate of the key
+     * @param y The relative y-coordinate of the key
+     * @param keyBinding The [KeyBinding] that gets drawn
+     * @param drawContext The [DrawContext] for drawing
+     */
     private fun renderKey(width: Int, height: Int, x:Int, y:Int, keyBinding: KeyBinding, drawContext: DrawContext) {
         renderKey(width, height, x, y, keyBinding.boundKeyLocalizedText, keyBinding, drawContext)
     }
 
+    /**
+     * Renders a key with a specialised Text that gets highlighted if the [keyBinding] is pressed. The height is specified as 15
+     *
+     * @param width The width of the key
+     * @param x The relative x-coordinate of the key
+     * @param y The relative y-coordinate of the key
+     * @param keyBinding The [KeyBinding] that gets drawn
+     * @param drawContext The [DrawContext] for drawing
+     */
     private fun renderKey(width: Int, x:Int, y:Int, text: Text, keyBinding: KeyBinding, drawContext: DrawContext) {
         renderKey(width, 15, x, y, text, keyBinding, drawContext)
     }
 
+    /**
+     * Renders a key with a specialised Text that gets highlighted if the [keyBinding] is pressed
+     *
+     * @param width The width of the key
+     * @param height The height of the key
+     * @param x The relative x-coordinate of the key
+     * @param y The relative y-coordinate of the key
+     * @param keyBinding The [KeyBinding] that gets drawn
+     * @param drawContext The [DrawContext] for drawing
+     */
     private fun renderKey(width: Int, height: Int, x:Int, y:Int, text: Text, keyBinding: KeyBinding, drawContext: DrawContext) {
-        drawContext.fill(x,y,x+width,y+height,getAlphaModifier() + if (keyBinding.isPressed) 0xFFFFFF else 0x000000)
+        drawContext.fill(x,y,x+width,y+height,
+            (getAlphaModifier() + if (keyBinding.isPressed) 0xFFFFFF else 0x000000).toInt()
+        )
         drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer,text,x+width/2,y+((height-9)/2+1),(0xFF000000L+getProperty(TEXT_COLOR).getColor()).toInt())
     }
 
-    private fun getAlphaModifier(): Int {
-        return (getProperty(TRANSPARENCY).times(255f)).toInt()*0x1000000
+    /**
+     * @return A modifier that can be added to any RGB color to make a ARGB color out of it with the [TRANSPARENCY] as alpha
+     */
+    private fun getAlphaModifier(): Long {
+        return (getProperty(TRANSPARENCY).times(255f)).toLong()*0x1000000
     }
 
     override fun getWidgetSettings(): JsonObject {

@@ -241,7 +241,7 @@ object Bewisclient : ClientModInitializer {
 
 	fun wing() {
 		Timer(50) {
-			WingFeatureRenderer.wing_animation_duration = (WingFeatureRenderer.wing_animation_duration + 1) % 60
+			WingFeatureRenderer.wing_animation_frame = (WingFeatureRenderer.wing_animation_frame + 1) % 60
 		}.start()
 	}
 

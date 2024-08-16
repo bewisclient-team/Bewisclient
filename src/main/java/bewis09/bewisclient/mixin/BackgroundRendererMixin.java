@@ -1,5 +1,6 @@
 package bewis09.bewisclient.mixin;
 
+import bewis09.bewisclient.MixinStatics;
 import bewis09.bewisclient.settingsLoader.Settings;
 import bewis09.bewisclient.settingsLoader.SettingsLoader;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -17,7 +18,7 @@ public abstract class BackgroundRendererMixin {
     @Inject(method = "applyFog",at=@At("RETURN"))
     private static void applyFog(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, float tickDelta, CallbackInfo ci) {
         CameraSubmersionType cameraSubmersionType = camera.getSubmersionType();
-        BackgroundRenderer.FogData fogData = new BackgroundRenderer.FogData(fogType);
+        MixinStatics.FogData fogData = new MixinStatics.FogData(fogType);
         if (cameraSubmersionType == CameraSubmersionType.LAVA && (SettingsLoader.INSTANCE.get("design", Settings.Companion.getSettings().getBETTER_VISIBILITY(),Settings.Companion.getSettings().getLAVA()))) {
             fogData.fogStart = -8.0f;
             fogData.fogEnd = viewDistance * ((SettingsLoader.INSTANCE.get("design",Settings.Companion.getSettings().getBETTER_VISIBILITY(),Settings.Companion.getSettings().getLAVA_VIEW())));

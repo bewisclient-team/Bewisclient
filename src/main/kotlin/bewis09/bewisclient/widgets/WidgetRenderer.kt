@@ -2,6 +2,7 @@ package bewis09.bewisclient.widgets
 
 import bewis09.bewisclient.screen.widget.WidgetConfigScreen
 import bewis09.bewisclient.widgets.lineWidgets.*
+import bewis09.bewisclient.widgets.specialWidgets.InventoryWidget
 import bewis09.bewisclient.widgets.specialWidgets.KeyWidget
 import bewis09.bewisclient.widgets.specialWidgets.TiwylaWidget
 import com.google.gson.JsonObject

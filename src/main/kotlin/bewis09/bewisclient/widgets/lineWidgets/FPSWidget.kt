@@ -3,6 +3,9 @@ package bewis09.bewisclient.widgets.lineWidgets
 import com.google.gson.JsonObject
 import net.minecraft.client.MinecraftClient
 
+/**
+ * A [LineWidget] which displays the current FPS
+ */
 class FPSWidget: LineWidget("fps",80,true) {
     override fun getText(): ArrayList<String> {
         return arrayListOf(MinecraftClient.getInstance().currentFps.toString()+" FPS")

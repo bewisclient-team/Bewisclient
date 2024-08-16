@@ -5,6 +5,11 @@ import bewis09.bewisclient.screen.MainOptionsScreen
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 
+/**
+ * An [OptionsElement] which displays an information
+ *
+ * @param text The translation key of the text
+ */
 class InfoElement(text: String): OptionsElement("",text) {
     override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {
         val client = MinecraftClient.getInstance()

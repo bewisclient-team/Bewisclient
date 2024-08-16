@@ -6,6 +6,9 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import kotlin.math.round
 
+/**
+ * A [LineWidget] which displays the current speed
+ */
 class SpeedWidget: LineWidget("speed",80,true) {
 
     override fun getText(): ArrayList<String> {

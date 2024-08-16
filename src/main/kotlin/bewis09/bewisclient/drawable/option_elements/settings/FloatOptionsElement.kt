@@ -11,7 +11,9 @@ import net.minecraft.text.Text
 import kotlin.math.pow
 import kotlin.math.round
 
-// TODO Document
+/**
+ * A [SettingsOptionsElement] which sets a float and displays a fader
+ */
 class FloatOptionsElement : SettingsOptionsElement<Float> {
 
     constructor(title: String, path: Array<String>, id: SettingsLoader.TypedSettingID<Float>, settings: String) : super(

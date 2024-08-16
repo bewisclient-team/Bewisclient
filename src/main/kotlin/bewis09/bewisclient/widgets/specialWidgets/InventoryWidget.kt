@@ -1,13 +1,16 @@
-package bewis09.bewisclient.widgets.lineWidgets
+package bewis09.bewisclient.widgets.specialWidgets
 
 import bewis09.bewisclient.widgets.Widget
 import com.google.gson.JsonObject
-import com.mojang.blaze3d.systems.RenderSystem
 import com.google.gson.JsonPrimitive
+import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.util.Identifier
 
+/**
+ * A [Widget] which displays the current content of the own inventory
+ */
 class InventoryWidget: Widget("inventory") {
 
     // TODO Document

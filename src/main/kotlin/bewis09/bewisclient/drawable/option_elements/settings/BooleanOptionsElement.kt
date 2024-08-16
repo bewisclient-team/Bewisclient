@@ -10,6 +10,9 @@ import net.minecraft.util.math.ColorHelper
 import net.minecraft.util.math.MathHelper
 import kotlin.math.cos
 
+/**
+ * A [SettingsOptionsElement] which changes a true-false setting
+ */
 class BooleanOptionsElement : SettingsOptionsElement<Boolean> {
 
     /**
@@ -17,7 +20,12 @@ class BooleanOptionsElement : SettingsOptionsElement<Boolean> {
      */
     val valueChanger: (Boolean)->Unit
 
-    // TODO Document
+    /**
+     * @param title The title of the element and gets converted to the description string
+     * @param settings The category of settings the setting
+     * @param path The path to the setting
+     * @param id The id of the setting
+     */
     constructor(title: String, path: Array<String>, id: SettingsLoader.TypedSettingID<Boolean>, settings: String) : super(
         title,
         settings,
@@ -27,7 +35,12 @@ class BooleanOptionsElement : SettingsOptionsElement<Boolean> {
         this.valueChanger = {}
     }
 
-    // TODO Document
+    /**
+     * @param title The title of the element and gets converted to the description string
+     * @param settings The category of settings the setting
+     * @param path The path to the setting
+     * @param id The id of the setting
+     */
     constructor(title: String, path: Array<String>, id: SettingsLoader.TypedSettingID<Boolean>, settings: String, valueChanger: (Boolean) -> Unit) : super(
         title,
         settings,
@@ -37,7 +50,11 @@ class BooleanOptionsElement : SettingsOptionsElement<Boolean> {
         this.valueChanger = valueChanger
     }
 
-    // TODO Document
+    /**
+     * The time of the start of the animation in ms in unix time
+     *
+     * @see [System.currentTimeMillis]
+     */
     var animationStart = 0L
 
     override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {

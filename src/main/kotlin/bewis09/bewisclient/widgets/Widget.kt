@@ -12,6 +12,11 @@ import net.minecraft.client.gui.DrawContext
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
+/**
+ * A widget that gets rendered on the screen and displays in-game-information
+ *
+ * @param id The id of the widget
+ */
 abstract class Widget(val id: String): Settings() {
     /**
      * Renders the widget that the position that is set in the settings

@@ -3,6 +3,8 @@ package bewis09.bewisclient;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.BackgroundRenderer;
+import net.minecraft.client.render.FogShape;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.text.Text;
 
@@ -34,6 +36,21 @@ public class MixinStatics {
             this.name = name;
             this.score = score;
             this.scoreWidth = scoreWidth;
+        }
+    }
+
+    /**
+     * A class originally used in the {@link BackgroundRenderer} class
+     */
+    @Environment(value=EnvType.CLIENT)
+    public static class FogData {
+        public final BackgroundRenderer.FogType fogType;
+        public float fogStart;
+        public float fogEnd;
+        public FogShape fogShape = FogShape.SPHERE;
+
+        public FogData(BackgroundRenderer.FogType fogType) {
+            this.fogType = fogType;
         }
     }
 }

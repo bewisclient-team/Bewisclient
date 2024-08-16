@@ -5,6 +5,9 @@ import com.google.gson.JsonPrimitive
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 
+/**
+ * A [LineWidget] which displays the current coordinates and if enabled the orientation and biome
+ */
 class CoordinatesWidget: LineWidget("coordinates",100,false) {
     override fun getText(): ArrayList<String> {
         return if(getProperty(SHOW_BIOME,*SELECT_PARTS)) {

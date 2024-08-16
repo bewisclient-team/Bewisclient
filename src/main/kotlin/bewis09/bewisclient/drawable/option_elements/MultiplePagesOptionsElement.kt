@@ -1,6 +1,7 @@
 package bewis09.bewisclient.drawable.option_elements
 
 import bewis09.bewisclient.Bewisclient
+import bewis09.bewisclient.drawable.option_elements.MultiplePagesOptionsElement.MultiplePagesElement
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.util.Search
@@ -11,9 +12,23 @@ import net.minecraft.text.OrderedText
 import net.minecraft.util.Identifier
 import kotlin.math.ceil
 
-// TODO Document
+/**
+ * An [OptionsElement] for displaying multiple elements in a grid
+ *
+ * @param elementList An [Array] of the [MultiplePagesElement] that should be displayed
+ * @param minElementWidth The minimum width of a single [MultiplePagesElement]
+ * @param widgetEnableSetter Indicates if a button to change the [ENABLED] state of a widget should be displayed
+ */
 class MultiplePagesOptionsElement(val elementList: Array<MultiplePagesElement>, val minElementWidth: Int, val widgetEnableSetter: Boolean): OptionsElement("","") {
+
+    /**
+     * The index of the [MultiplePagesElement] that is currently hovered over
+     */
     var hoveredElement = -1
+
+    /**
+     * The index of the [MultiplePagesElement] on which the button to enable/disable the widget is hovered
+     */
     var widgetHoveredElement = -1
 
     override fun render(
@@ -144,13 +159,33 @@ class MultiplePagesOptionsElement(val elementList: Array<MultiplePagesElement>, 
      */
     class MultiplePagesElement : Search.SearchableElement<MultiplePagesElement> {
 
-        // TODO Document
+        /**
+         * The title of the [MultiplePagesElement]
+         */
         val title: String
+
+        /**
+         * The elements that should be shown when clicking on the [MultiplePagesElement]
+         */
         val elements: ArrayList<OptionsElement>
+
+        /**
+         * The image that should be rendered in the [MultiplePagesElement]
+         */
         val image: Identifier?
+
+        /**
+         * The description of the [MultiplePagesElement]
+         */
         val description: String?
 
-        // TODO Document
+        /**
+         * You can either add an image or a description
+         *
+         * @param title The title of the [MultiplePagesElement]
+         * @param elements The elements that should be shown when clicking on the [MultiplePagesElement]
+         * @param image The image that should be rendered in the [MultiplePagesElement]
+         */
         constructor(title: String, elements: ArrayList<OptionsElement>, image: Identifier) {
             this.title = title
             this.elements = elements
@@ -158,7 +193,13 @@ class MultiplePagesOptionsElement(val elementList: Array<MultiplePagesElement>, 
             this.description = null
         }
 
-        // TODO Document
+        /**
+         * You can either add an image or a description
+         *
+         * @param title The title of the [MultiplePagesElement]
+         * @param elements The elements that should be shown when clicking on the [MultiplePagesElement]
+         * @param description The description of the [MultiplePagesElement]
+         */
         constructor(title: String, elements: ArrayList<OptionsElement>, description: String) {
             this.title = title
             this.elements = elements

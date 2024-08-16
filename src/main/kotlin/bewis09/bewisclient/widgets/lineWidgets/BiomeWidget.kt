@@ -11,6 +11,9 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.biome.Biome
 import net.minecraft.world.biome.BiomeKeys
 
+/**
+ * A [LineWidget] which displays the current biome
+ */
 class BiomeWidget: LineWidget("biome",150, true) {
 
     override fun getText(): ArrayList<String> {

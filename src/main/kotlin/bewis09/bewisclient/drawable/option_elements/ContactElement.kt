@@ -2,19 +2,21 @@ package bewis09.bewisclient.drawable.option_elements
 
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.screen.MainOptionsScreen
-import bewis09.bewisclient.settingsLoader.SettingsLoader
 import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.ConfirmLinkScreen
-import net.minecraft.util.Identifier
 import net.minecraft.util.Util
 
-class ContactElement(title: String, val url: String): MainOptionsElement("contact.$title", "contact.description.$title", Identifier.of("")) {
+/**
+ * An [OptionsElement] which allows you to open a link to a website where you can interact with the developer
+ *
+ * @param title The title of the element and gets converted to the description string
+ * @param url The URL of the website
+ */
+class ContactElement(title: String, val url: String): OptionsElement("contact.$title", "description.contact.$title") {
     override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {
         val client = MinecraftClient.getInstance()
-
-        allClicked = SettingsLoader.get("design", OPTIONS_MENU, ALL_CLICK)
 
         val descriptionLines = client.textRenderer.wrapLines(Bewisclient.getTranslationText(description),width-if(!allClicked)(34)else 12)
 
@@ -24,22 +26,30 @@ class ContactElement(title: String, val url: String): MainOptionsElement("contac
 
         pos = arrayOf(x,y,x+width,y+height)
 
+        context.matrices.push()
+
+        if(isSelected) {
+            context.matrices.translate(x.toFloat(),y.toFloat(),0f)
+            context.matrices.scale(1+2f/width,1+2f/width,1f)
+            context.matrices.translate(-1-x.toFloat(),-y.toFloat()-height/width,0f)
+        }
+
         context.fill(
-                x-(if(allClicked && isSelected) 1 else 0),
-                y-(if(allClicked && isSelected) 1 else 0),
-                x+width-(if(!allClicked) 22 else 0)+(if(allClicked && isSelected) 1 else 0),
-                y+height+(if(allClicked && isSelected) 1 else 0),
+                x,
+                y,
+                x+width-(if(!allClicked) 22 else 0),
+                y+height,
                 alphaModifier.toInt())
         context.drawBorder(
-                x-(if(allClicked && isSelected) 1 else 0),
-                y-(if(allClicked && isSelected) 1 else 0),
-                width-(if(!allClicked) 22 else 0)+(if(allClicked && isSelected) 2 else 0),
-                height+(if(allClicked && isSelected) 2 else 0),
+                x,
+                y,
+                width-(if(!allClicked) 22 else 0),
+                height,
                 (alphaModifier+if(allClicked && isSelected) (0xAAAAFF) else (0xFFFFFF)).toInt())
 
-        context.drawTextWithShadow(client.textRenderer, Bewisclient.getTranslationText(title),x+6-(if(allClicked && isSelected) 1 else 0),y+6,(alphaModifier+0xFFFFFF).toInt())
+        context.drawTextWithShadow(client.textRenderer, Bewisclient.getTranslationText(title),x+6,y+6,(alphaModifier+0xFFFFFF).toInt())
         descriptionLines.iterator().withIndex().forEach { (index, line) ->
-            context.drawTextWithShadow(client.textRenderer, line, x + 6-(if(allClicked && isSelected) 1 else 0), y + 20 + 10 * index, (alphaModifier + 0x808080).toInt())
+            context.drawTextWithShadow(client.textRenderer, line, x + 6, y + 20 + 10 * index, (alphaModifier + 0x808080).toInt())
         }
 
         if(!allClicked) {
@@ -66,6 +76,8 @@ class ContactElement(title: String, val url: String): MainOptionsElement("contac
 
             RenderSystem.disableBlend()
         }
+
+        context.matrices.pop()
 
         return height
     }

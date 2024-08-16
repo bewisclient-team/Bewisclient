@@ -7,6 +7,11 @@ import net.minecraft.client.gui.DrawContext
 import net.minecraft.util.Identifier
 import kotlin.math.roundToInt
 
+/**
+ * An [OptionsElement] for displaying a preview of a [Widget]
+ *
+ * @param widget The [Widget] that should be rendered
+ */
 class WidgetPreviewOptionsElement(val widget: Widget?): OptionsElement("","") {
     override fun getElementByKeywordLamba(): (String) -> OptionsElement? {
         return { null }

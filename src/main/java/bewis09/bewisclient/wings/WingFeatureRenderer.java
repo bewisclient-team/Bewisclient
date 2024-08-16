@@ -24,7 +24,10 @@ public class WingFeatureRenderer extends FeatureRenderer<AbstractClientPlayerEnt
     final ModelPart part1;
     final ModelPart part2;
 
-    public static int wing_animation_duration;
+    /**
+     * Indicates in which state the animation is in
+     */
+    public static int wing_animation_frame;
 
     public WingFeatureRenderer(FeatureRendererContext<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> context) {
         super(context);
@@ -42,7 +45,7 @@ public class WingFeatureRenderer extends FeatureRenderer<AbstractClientPlayerEnt
     @Override
     public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, AbstractClientPlayerEntity entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
         if (!entity.isInvisible() && !entity.isSpectator() && entity == MinecraftClient.getInstance().player) {
-            var sdfji = MathHelper.clamp((wing_animation_duration-30)/30f,-1f,1f);
+            var sdfji = MathHelper.clamp((wing_animation_frame -30)/30f,-1f,1f);
             sdfji = (float) (1- cos(Math.PI * sdfji))/2;
             sdfji = (sdfji+1)*30;
 

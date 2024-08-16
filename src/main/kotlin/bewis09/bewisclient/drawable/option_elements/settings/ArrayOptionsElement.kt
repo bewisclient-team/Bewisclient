@@ -9,7 +9,14 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.text.Text
 
-// TODO Document
+/**
+ * A [SettingsOptionsElement] which displays a button where you can cycle through an array
+ *
+ * @param title The title of the element and gets converted to the description string
+ * @param settings The category of settings the setting
+ * @param path The path to the setting
+ * @param id The id of the setting
+ */
 class ArrayOptionsElement(
     title: String,
     path: Array<String>,

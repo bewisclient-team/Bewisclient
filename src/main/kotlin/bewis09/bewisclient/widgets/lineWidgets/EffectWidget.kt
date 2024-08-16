@@ -8,6 +8,9 @@ import com.google.gson.JsonPrimitive
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 
+/**
+ * A [Widget] which only exists for the settings, but doesn't display anything. The real rendering happens in the [net.minecraft.client.gui.hud.InGameHud] and is changed in [bewis09.bewisclient.mixin.InGameHudMixin]. The setting that can be by this is the y-coordinate of the status effect overlay
+ */
 class EffectWidget: Widget("effect") {
     override fun render(drawContext: DrawContext,x:Int,y:Int) {
         if(MinecraftClient.getInstance().currentScreen is WidgetConfigScreen) {

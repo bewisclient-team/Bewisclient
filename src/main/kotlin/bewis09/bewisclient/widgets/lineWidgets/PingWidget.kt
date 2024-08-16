@@ -7,6 +7,9 @@ import bewis09.bewisclient.screen.widget.WidgetConfigScreen
 import com.google.gson.JsonObject
 import net.minecraft.client.MinecraftClient
 
+/**
+ * A [LineWidget] which displays the current latency of the server connection. Doesn't display in singleplayer worlds
+ */
 class PingWidget: LineWidget("ping",80,true) {
 
     // TODO Document
