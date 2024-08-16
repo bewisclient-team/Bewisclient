@@ -12,8 +12,14 @@ import net.minecraft.client.MinecraftClient
  */
 class PingWidget: LineWidget("ping",80,true) {
 
-    // TODO Document
+    /**
+     * The current latency cached, so that there isn't a packet send every render tick
+     */
     var value = 0
+
+    /**
+     * The last time in milliseconds when the latency was requested
+     */
     var v = System.currentTimeMillis()
 
     override fun isEnabled(): Boolean {
@@ -28,6 +34,9 @@ class PingWidget: LineWidget("ping",80,true) {
         return arrayListOf(Bewisclient.getTranslatedString("widgets.ping")+": "+getLatency())
     }
 
+    /**
+     * @return the latency in milliseconds
+     */
     private fun getLatency(): Int {
         try {
 

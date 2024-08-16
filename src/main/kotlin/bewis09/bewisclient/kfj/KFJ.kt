@@ -32,11 +32,23 @@ import java.util.*
 import java.util.function.Consumer
 import kotlin.math.max
 
-// TODO Document
+/**
+ * A class used to write code that is executed in a mixin in kotlin
+ */
 object KFJ: Settings() {
+    /**
+     * The texture used for the background of the remaining time of a status effect
+     */
     val EFFECT_WIDGET_TEXTURE = Identifier.of("bewisclient", "gui/effect_widget.png")!!
+
+    /**
+     * The texture used for the background of the remaining time of a status effect when it is an ambient effect
+     */
     val EFFECT_WIDGET_AMBIENT_TEXTURE = Identifier.of("bewisclient", "gui/effect_widget_ambient.png")!!
 
+    /**
+     * @see [bewis09.bewisclient.mixin.InGameHudMixin.renderStatusEffectOverlay]
+     */
     fun renderEffectHUD(
         context: DrawContext,
         EFFECT_BACKGROUND_AMBIENT_TEXTURE: Identifier,
@@ -95,6 +107,9 @@ object KFJ: Settings() {
         RenderSystem.disableBlend()
     }
 
+    /**
+     * @see [bewis09.bewisclient.mixin.InGameHudMixin.renderStatusEffectOverlay]
+     */
     fun renderEffectHUDExtended(
         context: DrawContext,
         EFFECT_BACKGROUND_AMBIENT_TEXTURE: Identifier,
@@ -164,6 +179,9 @@ object KFJ: Settings() {
         RenderSystem.disableBlend()
     }
 
+    /**
+     * @see [bewis09.bewisclient.mixin.InGameHudMixin.renderScoreboardSidebar]
+     */
     fun renderScoreboard(context: DrawContext, objective: ScoreboardObjective, SCOREBOARD_ENTRY_COMPARATOR: Comparator<ScoreboardEntry>, SCOREBOARD_JOINER: String) {
         context.matrices.push()
 
@@ -246,6 +264,9 @@ object KFJ: Settings() {
         context.matrices.pop()
     }
 
+    /**
+     * @see [bewis09.bewisclient.mixin.OverlayTextureMixin.inject]
+     */
     fun overlayTexture(texture: NativeImageBackedTexture) {
         val nativeImage: NativeImage = texture.image!!
 

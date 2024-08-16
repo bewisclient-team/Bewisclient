@@ -1,8 +1,8 @@
 package bewis09.bewisclient.screen
 
 import bewis09.bewisclient.Bewisclient
-import bewis09.bewisclient.drawable.option_elements.OptionsElement
 import bewis09.bewisclient.drawable.UsableTexturedButtonWidget
+import bewis09.bewisclient.drawable.option_elements.OptionsElement
 import bewis09.bewisclient.mixin.ScreenMixin
 import bewis09.bewisclient.screen.widget.WidgetConfigScreen
 import bewis09.bewisclient.settingsLoader.Settings
@@ -24,32 +24,78 @@ import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.MathHelper
 import org.joml.Matrix4f
-import java.util.*
 import kotlin.math.*
 
-// TODO Document
+/**
+ * The main options screen for Bewisclient options
+ */
 open class MainOptionsScreen : Screen(Text.empty()) {
 
+    /**
+     * The time when the animation started
+     *
+     * @see System.currentTimeMillis
+     */
     var animationStart = 0L
+
+    /**
+     * The screen that should be shown after the animation, if it isn't another page of the [MainOptionsScreen]
+     */
     var animatedScreen: Screen? = null
+
+    /**
+     * The current state of the animation
+     */
     var animationState = AnimationState.STABLE
 
+    /**
+     * The searchbar at the bottom of the screen
+     */
     private var searchBar: TextFieldWidget? = null
+
+    /**
+     * An [ArrayList] of all elements that should be animated to the bottom
+     */
     private var bottomAnimation: ArrayList<ClickableWidget> = arrayListOf()
 
+    /**
+     * Indicates on which page the screen is currently on (0=Main Menu, then increasing)
+     */
     var slice = 0
 
+    /**
+     * The height of all elements used to limit the amount that can be scrolled down
+     */
     private var totalHeight = 0
 
+    /**
+     * An [ArrayList] of the amount that is scrolled down for each slice
+     */
     var scrolls = arrayListOf(0F)
 
+    /**
+     * Indicates if the [searchBar] text can be changed without changing the content of the screen
+     */
     var shouldNotNotifyChange = false
 
+    /**
+     * Indicates if the focus should be reset to the [searchBar] if [init] is executed. When creating the screen it is true, after the first [init] it gets set to false
+     */
     var shouldNotRedoFocus = false
 
+    /**
+     * The textures of the close button
+     */
     private val closeTextures: ButtonTextures = ButtonTextures(Identifier.of("bewisclient","textures/sprites/close_button.png"), Identifier.of("bewisclient","textures/sprites/close_button_highlighted.png"))
+
+    /**
+     * The textures of the back button
+     */
     private val backTextures: ButtonTextures = ButtonTextures(Identifier.of("bewisclient","textures/sprites/back_button.png"),Identifier.of("bewisclient","textures/sprites/back_button_highlighted.png"))
 
+    /**
+     * An [ArrayList] of type [ArrayList] which collects the collection of every [OptionsElement] on each slice
+     */
     var allElements = arrayListOf(ElementList.main())
 
     init {
@@ -64,8 +110,8 @@ open class MainOptionsScreen : Screen(Text.empty()) {
         var animationFrame = 1F
         val animationSpeed = MathHelper.clamp(SettingsLoader.get(
             "design",
-            Settings.Settings.OPTIONS_MENU,
-            Settings.Settings.ANIMATION_TIME
+            Settings.OPTIONS_MENU,
+            Settings.ANIMATION_TIME
         ),1f,500f)
         if(System.currentTimeMillis() - animationStart >= animationSpeed) {
             if(animationState==AnimationState.TO_OTHER_SCREEN) {
@@ -92,7 +138,7 @@ open class MainOptionsScreen : Screen(Text.empty()) {
         }
 
         val middleAnimationFrame = animationFrame
-        if(animationState.animation==AnimationState.MIDDLE_ANIMATION)
+        if(animationState==AnimationState.LEFT || animationState==AnimationState.RIGHT)
             animationFrame = 1f
 
         context.fill(0,0,width,height,  ((0xAA*animationFrame).toLong()*0x1000000).toInt())
@@ -265,12 +311,20 @@ open class MainOptionsScreen : Screen(Text.empty()) {
         bottomAnimation.add(searchBar!!)
     }
 
+    /**
+     * Start an animation to another screen
+     *
+     * @param screen The screen that the animation should go to or null if the screen should close
+     */
     fun startAllAnimation(screen: Screen?) {
         animationState = AnimationState.TO_OTHER_SCREEN
         animationStart = System.currentTimeMillis()
         animatedScreen = screen
     }
 
+    /**
+     * Goes back to the last slice or closes the screen if the current slice is the first one
+     */
     fun goBack() {
         if(animationState==AnimationState.STABLE)
             if(slice>0) {
@@ -284,6 +338,11 @@ open class MainOptionsScreen : Screen(Text.empty()) {
             }
     }
 
+    /**
+     * Adds a new slice and starts an animation to it
+     *
+     * @param elements Every [OptionsElement] of the new slice
+     */
     fun openNewSlice(elements: ArrayList<OptionsElement>) {
         if(animationState == AnimationState.STABLE) {
             allElements.add(elements)
@@ -297,17 +356,53 @@ open class MainOptionsScreen : Screen(Text.empty()) {
         goBack()
     }
 
-    enum class AnimationState(val animation: AnimationState?) {
-        ALL_ANIMATION(null),
-        MIDDLE_ANIMATION(null),
-        STABLE(null),
-        TO_OTHER_SCREEN(ALL_ANIMATION),
-        TO_MAIN_SCREEN(ALL_ANIMATION),
-        TO_MAIN_SCREEN_UNSTARTED(ALL_ANIMATION),
-        LEFT(MIDDLE_ANIMATION),
-        RIGHT(MIDDLE_ANIMATION)
+    /**
+     * An enum for indicating the state of the animation
+     */
+    enum class AnimationState {
+
+        /**
+         * Indicates that there is no animation running
+         */
+        STABLE,
+
+        /**
+         * Indicates that there is an animation to another screen
+         */
+        TO_OTHER_SCREEN,
+
+        /**
+         * Indicates that there is an animation from another screen
+         */
+        TO_MAIN_SCREEN,
+
+        /**
+         * Indicates that there is an animation from another screen that hasn't started. Only used when creating the screen
+         */
+        TO_MAIN_SCREEN_UNSTARTED,
+
+        /**
+         * Indicates that there is an animation to the slice before the current one
+         */
+        LEFT,
+
+        /**
+         * Indicates that there is an animation to a new slice
+         */
+        RIGHT
     }
 
+    /**
+     * Fills a gradient from the left to the right
+     *
+     * @param context The [DrawContext] for drawing
+     * @param startX The x-coordinate of the start of the gradient
+     * @param startY The y-coordinate of the start of the gradient
+     * @param endX The x-coordinate of the end of the gradient
+     * @param endY The y-coordinate of the end of the gradient
+     * @param colorStart The color on the left of the gradient
+     * @param colorEnd The color on the right of the gradient
+     */
     private fun fillGradient(context: DrawContext, startX: Int, startY: Int, endX: Int, endY: Int, colorStart: Int, colorEnd: Int) {
         val vertexConsumer: VertexConsumer = context.vertexConsumers.getBuffer(RenderLayer.getGui())
         val matrix4f: Matrix4f = context.matrices.peek().positionMatrix
@@ -317,6 +412,9 @@ open class MainOptionsScreen : Screen(Text.empty()) {
         vertexConsumer.vertex(matrix4f, endX.toFloat(), endY.toFloat(), 5f).color(colorEnd)
     }
 
+    /**
+     * Corrects the scroll in the correct range
+     */
     fun correctScroll() {
         scrolls[slice]=max((height* scale -32-totalHeight),scrolls[slice])
         scrolls[slice]=min(0f,scrolls[slice])
@@ -329,21 +427,40 @@ open class MainOptionsScreen : Screen(Text.empty()) {
         return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)
     }
 
+    /**
+     * Plays the button click sound
+     *
+     * @param soundManager The [SoundManager] used for playing the sound
+     */
     fun playDownSound(soundManager: SoundManager) {
         soundManager.play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0f))
     }
 
     companion object {
+        /**
+         * A collection of the lambas for the search
+         *
+         * @see [Search]
+         */
         val searchCollection = Search.collect(ElementList.main())
 
-        var laS = 1f/ SettingsLoader.get("design", Settings.Settings.OPTIONS_MENU, Settings.Settings.SCALE)
+        /**
+         * The cached scale, that cannot change while clicking a mouse button for preventing scale change, while fading the scale fader
+         */
+        var laS = 1f/ SettingsLoader.get("design", Settings.OPTIONS_MENU, Settings.SCALE)
 
+        /**
+         * Indicates if a mouse button is clicked
+         */
         var clicked = false
 
+        /**
+         * The scale factor of the [MainOptionsScreen]
+         */
         val scale: Float
             get() {
                 if(!clicked) {
-                    laS = 1f/SettingsLoader.get("design", Settings.Settings.OPTIONS_MENU, Settings.Settings.SCALE)
+                    laS = 1f/SettingsLoader.get("design", Settings.OPTIONS_MENU, Settings.SCALE)
                 }
                 return laS
             }

@@ -68,7 +68,7 @@ public abstract class DebugHudMixin {
 
     @Inject(method = "getLeftText", at = @At("HEAD"), cancellable = true)
     public void inject(CallbackInfoReturnable<List<String>> cir) {
-        if (SettingsLoader.INSTANCE.get("design", Settings.Companion.getSettings().getCLEANER_DEBUG_MENU())) {
+        if (SettingsLoader.INSTANCE.get("design", Settings.Companion.getCLEANER_DEBUG_MENU())) {
             List<String> list = new ArrayList<>();
             String var10003 = SharedConstants.getGameVersion().getName();
             list.add("Minecraft " + var10003 + " (" + this.client.getGameVersion() + "/" + ClientBrandRetriever.getClientModName() + ("release".equalsIgnoreCase(this.client.getVersionType()) ? "" : "/" + this.client.getVersionType()) + ")");

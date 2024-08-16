@@ -15,7 +15,9 @@ import org.joml.Matrix4f
 import org.lwjgl.glfw.GLFW
 import kotlin.math.ceil
 
-// TODO Document
+/**
+ * Just don't fuck with it. It works...
+ */
 class SnakeScreen: Screen(Text.empty()) {
 
     val GREEN = Identifier.of("textures/block/green_terracotta.png")!!

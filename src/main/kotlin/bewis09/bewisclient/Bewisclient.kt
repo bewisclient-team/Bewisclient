@@ -5,7 +5,7 @@ import bewis09.bewisclient.autoUpdate.Updater
 import bewis09.bewisclient.cape.Capes
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.screen.SnakeScreen
-import bewis09.bewisclient.settingsLoader.Settings.Companion.Settings
+import bewis09.bewisclient.settingsLoader.Settings
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.widgets.WidgetRenderer
 import bewis09.bewisclient.wings.WingFeatureRenderer

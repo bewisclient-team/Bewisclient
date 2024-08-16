@@ -16,9 +16,9 @@ import java.util.*
 class DaytimeWidget: LineWidget("daytime",80,true) {
     override fun getText(): ArrayList<String> {
         val time = (MinecraftClient.getInstance().world!!.timeOfDay.plus(6000L)).rem(24000L)
-        val hour = MathUtil.zeroBefore((if (!getProperty(Settings.CLOCK24)) if (time.div(1000L)==12L) time.div(1000L) else if (time.div(1000L)==0L) 12 else time.div(1000L).rem(12L) else time.div(1000L)).toInt(),2)
+        val hour = MathUtil.zeroBefore((if (!getProperty(CLOCK24)) if (time.div(1000L)==12L) time.div(1000L) else if (time.div(1000L)==0L) 12 else time.div(1000L).rem(12L) else time.div(1000L)).toInt(),2)
         val minute = MathUtil.zeroBefore((time.rem(1000L).times(60).div(1000)).toInt(),2)
-        val am = if (!getProperty(Settings.CLOCK24)) if (time.div(1000L) <12L) "AM" else "PM" else ""
+        val am = if (!getProperty(CLOCK24)) if (time.div(1000L) <12L) "AM" else "PM" else ""
         return arrayListOf("$hour:$minute $am")
     }
 
@@ -26,7 +26,7 @@ class DaytimeWidget: LineWidget("daytime",80,true) {
         val time = (MinecraftClient.getInstance().world?.timeOfDay)?.rem(24000L)
         drawContext.matrices.push()
         drawContext.matrices.scale(getScale(),getScale(),1F)
-        drawContext.fill(x,y,x+getOriginalWidth(),y+getOriginalHeight(), ColorHelper.Argb.getArgb(((getProperty(Settings.TRANSPARENCY).times(255F)).toInt()),0,0,0))
+        drawContext.fill(x,y,x+getOriginalWidth(),y+getOriginalHeight(), ColorHelper.Argb.getArgb(((getProperty(TRANSPARENCY).times(255F)).toInt()),0,0,0))
         if (time != null) {
             if(time in 12551..23449)
                 drawContext.fill(x+2,y+2,x+getOriginalWidth()-2,y+getOriginalHeight()-2, 0x77000077)

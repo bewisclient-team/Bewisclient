@@ -1,8 +1,8 @@
 package bewis09.bewisclient.screen.widget
 
 import bewis09.bewisclient.Bewisclient
-import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.screen.ElementList
+import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.settingsLoader.Settings
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.widgets.Widget
@@ -37,8 +37,8 @@ class WidgetConfigScreen(var parent: MainOptionsScreen): Screen(Text.empty()) {
 
         val animationSpeed = MathHelper.clamp(SettingsLoader.get(
             "design",
-            Settings.Settings.OPTIONS_MENU,
-            Settings.Settings.ANIMATION_TIME
+            Settings.OPTIONS_MENU,
+            Settings.ANIMATION_TIME
         ).toInt(),1,500).toFloat()
 
         if(alphaDirection ==1 && (System.currentTimeMillis() - alphaStart)/animationSpeed>1) {
@@ -82,7 +82,7 @@ class WidgetConfigScreen(var parent: MainOptionsScreen): Screen(Text.empty()) {
                         Bewisclient.getTranslationText("widgets." + selected?.id),
                         Bewisclient.getTranslationText("screen.info.shift").formatted(Formatting.GRAY),
                         Bewisclient.getTranslationText("screen.info.right").formatted(Formatting.GRAY),
-                        Bewisclient.getTranslationText("screen.info.scroll").formatted(Formatting.GRAY).append(" (${selected!!.getProperty(Settings.Settings.SIZE)})")
+                        Bewisclient.getTranslationText("screen.info.scroll").formatted(Formatting.GRAY).append(" (${selected!!.getProperty(Settings.SIZE)})")
                 ) as List<Text>?, mouseX, mouseY)
             }
         }
@@ -128,7 +128,7 @@ class WidgetConfigScreen(var parent: MainOptionsScreen): Screen(Text.empty()) {
 
     override fun mouseScrolled(mouseX: Double, mouseY: Double, horizontalAmount: Double, verticalAmount: Double): Boolean {
         if(selected!=null) {
-            selected!!.setProperty(Settings.Settings.SIZE, MathHelper.clamp((round((selected!!.getProperty(Settings.Settings.SIZE)+verticalAmount.toFloat()/10f)*100)/100f),0.2f,2f))
+            selected!!.setProperty(Settings.SIZE, MathHelper.clamp((round((selected!!.getProperty(Settings.SIZE)+verticalAmount.toFloat()/10f)*100)/100f),0.2f,2f))
         }
         return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)
     }

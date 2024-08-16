@@ -11,7 +11,9 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.render.RenderTickCounter
 
-// TODO Document
+/**
+ * A [HudRenderCallback] that renders the Widgets
+ */
 class WidgetRenderer: HudRenderCallback {
 
     companion object {

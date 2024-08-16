@@ -19,25 +19,25 @@ public abstract class BackgroundRendererMixin {
     private static void applyFog(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, float tickDelta, CallbackInfo ci) {
         CameraSubmersionType cameraSubmersionType = camera.getSubmersionType();
         MixinStatics.FogData fogData = new MixinStatics.FogData(fogType);
-        if (cameraSubmersionType == CameraSubmersionType.LAVA && (SettingsLoader.INSTANCE.get("design", Settings.Companion.getSettings().getBETTER_VISIBILITY(),Settings.Companion.getSettings().getLAVA()))) {
+        if (cameraSubmersionType == CameraSubmersionType.LAVA && (SettingsLoader.INSTANCE.get("design", Settings.Companion.getBETTER_VISIBILITY(),Settings.Companion.getLAVA()))) {
             fogData.fogStart = -8.0f;
-            fogData.fogEnd = viewDistance * ((SettingsLoader.INSTANCE.get("design",Settings.Companion.getSettings().getBETTER_VISIBILITY(),Settings.Companion.getSettings().getLAVA_VIEW())));
+            fogData.fogEnd = viewDistance * ((SettingsLoader.INSTANCE.get("design",Settings.Companion.getBETTER_VISIBILITY(),Settings.Companion.getLAVA_VIEW())));
             RenderSystem.setShaderFogStart(fogData.fogStart);
             RenderSystem.setShaderFogEnd(fogData.fogEnd);
             RenderSystem.setShaderFogShape(fogData.fogShape);
-        } else if (cameraSubmersionType == CameraSubmersionType.POWDER_SNOW && (SettingsLoader.INSTANCE.get("design",Settings.Companion.getSettings().getBETTER_VISIBILITY(),Settings.Companion.getSettings().getPOWDER_SNOW()))) {
+        } else if (cameraSubmersionType == CameraSubmersionType.POWDER_SNOW && (SettingsLoader.INSTANCE.get("design",Settings.Companion.getBETTER_VISIBILITY(),Settings.Companion.getPOWDER_SNOW()))) {
             fogData.fogStart = -8.0f;
             fogData.fogEnd = viewDistance * 0.5f;
             RenderSystem.setShaderFogStart(fogData.fogStart);
             RenderSystem.setShaderFogEnd(fogData.fogEnd);
             RenderSystem.setShaderFogShape(fogData.fogShape);
-        } else if (cameraSubmersionType == CameraSubmersionType.WATER && (SettingsLoader.INSTANCE.get("design",Settings.Companion.getSettings().getBETTER_VISIBILITY(),Settings.Companion.getSettings().getWATER()))) {
+        } else if (cameraSubmersionType == CameraSubmersionType.WATER && (SettingsLoader.INSTANCE.get("design",Settings.Companion.getBETTER_VISIBILITY(),Settings.Companion.getWATER()))) {
             fogData.fogStart = -8.0f;
             fogData.fogEnd = viewDistance;
             RenderSystem.setShaderFogStart(fogData.fogStart);
             RenderSystem.setShaderFogEnd(fogData.fogEnd);
             RenderSystem.setShaderFogShape(fogData.fogShape);
-        } else if (thickFog && (SettingsLoader.INSTANCE.get("design",Settings.Companion.getSettings().getBETTER_VISIBILITY(),Settings.Companion.getSettings().getNETHER()))) {
+        } else if (thickFog && (SettingsLoader.INSTANCE.get("design",Settings.Companion.getBETTER_VISIBILITY(),Settings.Companion.getNETHER()))) {
             fogData.fogStart = viewDistance-1;
             fogData.fogEnd = viewDistance;
             RenderSystem.setShaderFogStart(fogData.fogStart);

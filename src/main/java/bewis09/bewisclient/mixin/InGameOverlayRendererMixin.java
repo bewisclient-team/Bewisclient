@@ -25,7 +25,7 @@ public class InGameOverlayRendererMixin {
 
     @Overwrite
     private static void renderFireOverlay(MinecraftClient client, MatrixStack matrices) {
-        float d = SettingsLoader.INSTANCE.get("design", Settings.Companion.getSettings().getFIRE_HEIGHT());
+        float d = SettingsLoader.INSTANCE.get("design", Settings.Companion.getFIRE_HEIGHT());
         RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
         RenderSystem.depthFunc(519);
         RenderSystem.depthMask(false);

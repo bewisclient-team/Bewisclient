@@ -29,7 +29,7 @@ public record Hat(Identifier texture) {
 
     static {
         try {
-            current_hat = HATS[(int) SettingsLoader.INSTANCE.get("design", Settings.Companion.getSettings().getHAT())];
+            current_hat = HATS[(int) SettingsLoader.INSTANCE.get("design", Settings.Companion.getHAT())];
         } catch (Exception e) {
             current_hat = EMPTY;
         }

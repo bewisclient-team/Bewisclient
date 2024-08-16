@@ -17,12 +17,14 @@ import net.minecraft.world.biome.BiomeKeys
 class BiomeWidget: LineWidget("biome",150, true) {
 
     override fun getText(): ArrayList<String> {
-        return arrayListOf(textGetter(getProperty(COLORCODE_BIOME)))
+        return arrayListOf(getText(getProperty(COLORCODE_BIOME)))
     }
 
-    // TODO Document
     companion object {
 
+        /**
+         * The corresponding color codes for each biome to render the correct text color
+         */
         val biomeCodes = hashMapOf(
                 Pair(BiomeKeys.THE_VOID,"§7"),
                 Pair(BiomeKeys.PLAINS,"§a"),
@@ -90,15 +92,28 @@ class BiomeWidget: LineWidget("biome",150, true) {
                 Pair(BiomeKeys.END_BARRENS, "§7")
         )
 
-        val textGetter: (Boolean) -> String = { it ->
-            (if(it) colorCode() else "") + Text.translatable(Identifier.of(MinecraftClient.getInstance().world?.getBiome(MinecraftClient.getInstance().player?.blockPos
+        /**
+         * @param colorCode Indicates if the name should be color coded
+         *
+         * @return The biome name with the color code, when it is enabled
+         */
+        fun getText(colorCode: Boolean): String  {
+            return (if(colorCode) colorCode() else "") + Text.translatable(Identifier.of(MinecraftClient.getInstance().world?.getBiome(MinecraftClient.getInstance().player?.blockPos
                     ?: BlockPos(0, 0, 0))?.let { getBiomeString(it) }).toTranslationKey("biome")).string
         }
 
+        /**
+         * @param biome The biome of which the identifier should be returned
+         *
+         * @return The identifier string of the [biome]
+         */
         private fun getBiomeString(biome: RegistryEntry<Biome>): String {
             return biome.keyOrValue.map({ biomeKey: RegistryKey<Biome> -> biomeKey.value.toString() }, { biome_: Biome -> "[unregistered $biome_]" }) as String
         }
 
+        /**
+         * @return The color code of a biome or an empty [String] if the biome is not in [biomeCodes]
+         */
         private fun colorCode():String {
             val biome = MinecraftClient.getInstance().world?.getBiome(MinecraftClient.getInstance().player?.blockPos)
                     ?: return ""

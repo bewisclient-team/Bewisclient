@@ -82,7 +82,7 @@ class TiwylaWidget: Widget("tiwyla") {
         if(getText().size==0) return
         drawContext.matrices.push()
         drawContext.matrices.scale(getScale(),getScale(),1F)
-        drawContext.fill(x,y,x+getOriginalWidth(),y+getOriginalHeight(), ColorHelper.Argb.getArgb(((getProperty(Settings.TRANSPARENCY).times(255F)).toInt()),0,0,0))
+        drawContext.fill(x,y,x+getOriginalWidth(),y+getOriginalHeight(), ColorHelper.Argb.getArgb(((getProperty(TRANSPARENCY).times(255F)).toInt()),0,0,0))
         drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, getText()[0],x+getOriginalWidth()/2,y+4,(0xFF000000L+getProperty(TOP_COLOR).getColor()).toInt())
         drawContext.matrices.scale(0.7F,0.7F,1F)
         for ((index, text) in getText().iterator().withIndex()) {
@@ -120,9 +120,9 @@ class TiwylaWidget: Widget("tiwyla") {
 
     private fun getTextFromBlock(hitResult: BlockHitResult, blockState: BlockState):ArrayList<String> {
         val firstLine = blockState.block.name.string
-        val secondLine = getBlockInformation(getProperty(Settings.FIRST_LINE).toInt(),blockState,hitResult.blockPos)
-        val thirdLine = getBlockInformation(getProperty(Settings.SECOND_LINE).toInt(),blockState,hitResult.blockPos)
-        val fourthLine = getBlockInformation(getProperty(Settings.THIRD_LINE).toInt(),blockState,hitResult.blockPos)
+        val secondLine = getBlockInformation(getProperty(FIRST_LINE).toInt(),blockState,hitResult.blockPos)
+        val thirdLine = getBlockInformation(getProperty(SECOND_LINE).toInt(),blockState,hitResult.blockPos)
+        val fourthLine = getBlockInformation(getProperty(THIRD_LINE).toInt(),blockState,hitResult.blockPos)
 
         return arrayListOf(firstLine,secondLine,thirdLine,fourthLine)
     }

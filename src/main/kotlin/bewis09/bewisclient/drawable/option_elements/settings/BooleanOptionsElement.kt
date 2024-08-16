@@ -58,7 +58,7 @@ class BooleanOptionsElement : SettingsOptionsElement<Boolean> {
     var animationStart = 0L
 
     override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {
-        if(dependentDisabler.contains(SettingsLoader.toPointNotation(path,id)) && !dependentDisabler[SettingsLoader.toPointNotation(path,id)]!!()) return -4
+        if(dependentDisabler.contains(toPointNotation(path,id)) && !dependentDisabler[toPointNotation(path,id)]!!()) return -4
 
         val client = MinecraftClient.getInstance()
 
@@ -119,7 +119,7 @@ class BooleanOptionsElement : SettingsOptionsElement<Boolean> {
     override fun getTypeParameter(): String = "boolean"
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int, screen: MainOptionsScreen) {
-        if(dependentDisabler.contains(SettingsLoader.toPointNotation(path,id)) && !dependentDisabler[SettingsLoader.toPointNotation(path,id)]!!()) return
+        if(dependentDisabler.contains(toPointNotation(path,id)) && !dependentDisabler[toPointNotation(path,id)]!!()) return
 
         if ( pos[2] - 20 < mouseX && pos[1] < mouseY && pos[2] > mouseX && pos[3] > mouseY) {
             screen.playDownSound(MinecraftClient.getInstance().soundManager)

@@ -27,7 +27,7 @@ import org.lwjgl.glfw.GLFW
 import java.util.*
 import kotlin.math.*
 
-// TODO Document
+// No Documentation, because this will get a rework in the near future
 class CosmeticsScreen(private val parent: MainOptionsScreen) : Screen(Text.empty()) {
     var isReversed: Boolean = false
     private var scrollY = 0.0
@@ -45,8 +45,8 @@ class CosmeticsScreen(private val parent: MainOptionsScreen) : Screen(Text.empty
 
         val animationSpeed = MathHelper.clamp(SettingsLoader.get(
             "design",
-            Settings.Settings.OPTIONS_MENU,
-            Settings.Settings.ANIMATION_TIME
+            Settings.OPTIONS_MENU,
+            Settings.ANIMATION_TIME
         ).toInt(),1,500).toFloat()
 
         if(alphaDirection ==1 && (System.currentTimeMillis() - alphaStart)/animationSpeed>1) {
@@ -157,7 +157,7 @@ class CosmeticsScreen(private val parent: MainOptionsScreen) : Screen(Text.empty
             val finalZ = z
             this.addDrawableChild(ButtonWidget.builder(Text.translatable("bewisclient.option.use")) {
                 Cape.setCurrentRealCape(c)
-                SettingsLoader.set("design",(finalZ-1).toFloat(),Settings.Settings.CAPE)
+                SettingsLoader.set("design",(finalZ-1).toFloat(),Settings.CAPE)
             }.dimensions(50 + z * 64 + 10, (getScrollY() + 100).toInt(), 40, 20).build())
         }
         z = 0
@@ -166,7 +166,7 @@ class CosmeticsScreen(private val parent: MainOptionsScreen) : Screen(Text.empty
             val finalZ1 = z
             this.addDrawableChild(ButtonWidget.builder(Text.translatable("bewisclient.option.use")) {
                 Wing.current_wing = c
-                SettingsLoader.set("design",(finalZ1-1).toFloat(),Settings.Settings.WING)
+                SettingsLoader.set("design",(finalZ1-1).toFloat(),Settings.WING)
             }.dimensions(50 + z * 64 + 10, (getScrollY() + 230).toInt(), 40, 20).build())
         }
         z = 0
@@ -175,7 +175,7 @@ class CosmeticsScreen(private val parent: MainOptionsScreen) : Screen(Text.empty
             val finalZ2 = z
             this.addDrawableChild(ButtonWidget.builder(Text.translatable("bewisclient.option.use")) {
                 Hat.current_hat = c
-                SettingsLoader.set("design",(finalZ2-1).toFloat(),Settings.Settings.HAT)
+                SettingsLoader.set("design",(finalZ2-1).toFloat(),Settings.HAT)
             }.dimensions(50 + z * 64 + 10, (getScrollY() + 360).toInt(), 40, 20).build())
         }
     }

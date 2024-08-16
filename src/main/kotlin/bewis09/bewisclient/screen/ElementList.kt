@@ -13,7 +13,6 @@ import com.google.gson.JsonObject
 import net.minecraft.client.MinecraftClient
 import net.minecraft.util.Identifier
 import java.util.*
-import kotlin.collections.ArrayList
 
 // TODO Document
 object ElementList: Settings() {
@@ -50,7 +49,7 @@ object ElementList: Settings() {
         arrayListOf(
                 TitleOptionsElement("gui.design"),
                 FloatOptionsElement("%options_menu.animation_time", OPTIONS_MENU,ANIMATION_TIME, "design"),
-                FloatOptionsElement("%options_menu.scale", OPTIONS_MENU, this.SCALE, "design"),
+                FloatOptionsElement("%options_menu.scale", OPTIONS_MENU, SCALE, "design"),
                 BooleanOptionsElement("%options_menu.all_click", OPTIONS_MENU,ALL_CLICK, "design"),
         )
     }

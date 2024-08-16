@@ -13,11 +13,13 @@ import net.minecraft.util.Identifier
  */
 class InventoryWidget: Widget("inventory") {
 
-    // TODO Document
+    /**
+     * The texture that renders in the background of the widget
+     */
     val identifier: Identifier = Identifier.of("bewisclient","textures/inventory_widget.png")
 
     override fun render(drawContext: DrawContext,x:Int,y:Int) {
-        RenderSystem.setShaderColor(1f,1f,1f,getProperty(Settings.TRANSPARENCY))
+        RenderSystem.setShaderColor(1f,1f,1f,getProperty(TRANSPARENCY))
         drawContext.matrices.push()
         drawContext.matrices.scale(getScale(),getScale(),1F)
         RenderSystem.enableBlend()

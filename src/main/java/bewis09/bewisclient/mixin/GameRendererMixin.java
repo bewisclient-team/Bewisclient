@@ -25,10 +25,10 @@ public class GameRendererMixin {
 
     @Inject(method = "getOverlayTexture", at = @At("HEAD"))
     public void getOverlayTexture(CallbackInfoReturnable<OverlayTexture> cir) {
-        if(SettingsLoader.INSTANCE.get("design", Settings.Companion.getSettings().getHIT_OVERLAY(),Settings.Companion.getSettings().getALPHA())!=alpha || SettingsLoader.INSTANCE.get("design", Settings.Companion.getSettings().getHIT_OVERLAY(),Settings.Companion.getSettings().getCOLOR()).getColor()!=hitColor || SettingsLoader.INSTANCE.get("design",Settings.Companion.getSettings().getHIT_OVERLAY(),Settings.Companion.getSettings().getENABLED())!=hitColorEnabled) {
-            hitColor = SettingsLoader.INSTANCE.get("design", Settings.Companion.getSettings().getHIT_OVERLAY(),Settings.Companion.getSettings().getCOLOR()).getColor();
-            hitColorEnabled = SettingsLoader.INSTANCE.get("design",Settings.Companion.getSettings().getHIT_OVERLAY(),Settings.Companion.getSettings().getENABLED());
-            alpha = SettingsLoader.INSTANCE.get("design", Settings.Companion.getSettings().getHIT_OVERLAY(),Settings.Companion.getSettings().getALPHA());
+        if(SettingsLoader.INSTANCE.get("design", Settings.Companion.getHIT_OVERLAY(),Settings.Companion.getALPHA())!=alpha || SettingsLoader.INSTANCE.get("design", Settings.Companion.getHIT_OVERLAY(),Settings.Companion.getCOLOR()).getColor()!=hitColor || SettingsLoader.INSTANCE.get("design",Settings.Companion.getHIT_OVERLAY(),Settings.Companion.getENABLED())!=hitColorEnabled) {
+            hitColor = SettingsLoader.INSTANCE.get("design", Settings.Companion.getHIT_OVERLAY(),Settings.Companion.getCOLOR()).getColor();
+            hitColorEnabled = SettingsLoader.INSTANCE.get("design",Settings.Companion.getHIT_OVERLAY(),Settings.Companion.getENABLED());
+            alpha = SettingsLoader.INSTANCE.get("design", Settings.Companion.getHIT_OVERLAY(),Settings.Companion.getALPHA());
             overlayTexture.close();
             overlayTexture = new OverlayTexture();
         }

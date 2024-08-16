@@ -20,7 +20,7 @@ public class TitleScreenMixin extends Screen {
 
     @Inject(method = "init",at=@At("HEAD"))
     private void init(CallbackInfo ci) {
-        if(SettingsLoader.INSTANCE.get("design", Settings.Companion.getSettings().getFULLBRIGHT(),Settings.Companion.getSettings().getENABLED()))
-            MinecraftClient.getInstance().options.getGamma().setValue((double) SettingsLoader.INSTANCE.get("design",Settings.Companion.getSettings().getFULLBRIGHT(),Settings.Companion.getSettings().getFULLBRIGHT_VALUE()));
+        if(SettingsLoader.INSTANCE.get("design", Settings.Companion.getFULLBRIGHT(),Settings.Companion.getENABLED()))
+            MinecraftClient.getInstance().options.getGamma().setValue((double) SettingsLoader.INSTANCE.get("design",Settings.Companion.getFULLBRIGHT(),Settings.Companion.getFULLBRIGHT_VALUE()));
     }
 }

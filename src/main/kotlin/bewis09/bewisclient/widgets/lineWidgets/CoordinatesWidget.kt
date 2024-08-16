@@ -15,7 +15,7 @@ class CoordinatesWidget: LineWidget("coordinates",100,false) {
                     "X: "+MinecraftClient.getInstance().player?.blockX,
                     "Y: "+MinecraftClient.getInstance().player?.blockY,
                     "Z: "+MinecraftClient.getInstance().player?.blockZ,
-                    BiomeWidget.textGetter(getProperty(COLORCODE_BIOME))
+                    BiomeWidget.getText(getProperty(COLORCODE_BIOME))
             )
         } else {
             arrayListOf(

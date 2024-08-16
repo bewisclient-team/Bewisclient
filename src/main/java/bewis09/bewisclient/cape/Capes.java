@@ -29,8 +29,8 @@ public class Capes {
         CAPES = capes.toArray(new AbstractCape[0]);
 
         try {
-            Cape.setCurrentCape(Capes.CAPES[(int) SettingsLoader.INSTANCE.get("design", Settings.Companion.getSettings().getCAPE())]);
-            Cape.setCurrentRealCape(Capes.CAPES[(int) SettingsLoader.INSTANCE.get("design", Settings.Companion.getSettings().getCAPE())]);
+            Cape.setCurrentCape(Capes.CAPES[(int) SettingsLoader.INSTANCE.get("design", Settings.Companion.getCAPE())]);
+            Cape.setCurrentRealCape(Capes.CAPES[(int) SettingsLoader.INSTANCE.get("design", Settings.Companion.getCAPE())]);
         } catch (Exception ignored){
             Cape.setCurrentRealCape(null);
             Cape.setCurrentCape(null);
