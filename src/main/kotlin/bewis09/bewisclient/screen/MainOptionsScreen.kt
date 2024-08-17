@@ -2,7 +2,7 @@ package bewis09.bewisclient.screen
 
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.drawable.UsableTexturedButtonWidget
-import bewis09.bewisclient.drawable.option_elements.OptionsElement
+import bewis09.bewisclient.drawable.option_elements.OptionElement
 import bewis09.bewisclient.mixin.ScreenMixin
 import bewis09.bewisclient.screen.widget.WidgetConfigScreen
 import bewis09.bewisclient.settingsLoader.Settings
@@ -79,7 +79,7 @@ open class MainOptionsScreen : Screen(Text.empty()) {
     var shouldNotNotifyChange = false
 
     /**
-     * Indicates if the focus should be reset to the [searchBar] if [init] is executed. When creating the screen it is true, after the first [init] it gets set to false
+     * Indicates if the focus should be reset to the [searchBar] if [init] is executed. When creating the screen, it is true, after the first [init] it gets set to false
      */
     var shouldNotRedoFocus = false
 
@@ -94,7 +94,7 @@ open class MainOptionsScreen : Screen(Text.empty()) {
     private val backTextures: ButtonTextures = ButtonTextures(Identifier.of("bewisclient","textures/sprites/back_button.png"),Identifier.of("bewisclient","textures/sprites/back_button_highlighted.png"))
 
     /**
-     * An [ArrayList] of type [ArrayList] which collects the collection of every [OptionsElement] on each slice
+     * An [ArrayList] of type [ArrayList] which collects the collection of every [OptionElement] on each slice
      */
     var allElements = arrayListOf(ElementList.main())
 
@@ -341,9 +341,9 @@ open class MainOptionsScreen : Screen(Text.empty()) {
     /**
      * Adds a new slice and starts an animation to it
      *
-     * @param elements Every [OptionsElement] of the new slice
+     * @param elements Every [OptionElement] of the new slice
      */
-    fun openNewSlice(elements: ArrayList<OptionsElement>) {
+    fun openNewSlice(elements: ArrayList<OptionElement>) {
         if(animationState == AnimationState.STABLE) {
             allElements.add(elements)
             scrolls.add(0F)

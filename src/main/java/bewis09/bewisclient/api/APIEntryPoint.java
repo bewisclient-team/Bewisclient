@@ -1,6 +1,6 @@
 package bewis09.bewisclient.api;
 
-import bewis09.bewisclient.drawable.option_elements.OptionsElement;
+import bewis09.bewisclient.drawable.option_elements.OptionElement;
 import bewis09.bewisclient.screen.ElementList;
 import bewis09.bewisclient.widgets.Widget;
 import bewis09.bewisclient.widgets.WidgetRenderer;
@@ -46,9 +46,9 @@ public class APIEntryPoint {
 
     /**
      * Allows you to add your own element in the Main Options Screen
-     * @param m The {@link OptionsElement} which should be added
+     * @param m The {@link OptionElement} which should be added
      */
-    public static void addMainOptionsElement(OptionsElement m) {
+    public static void addMainOptionsElement(OptionElement m) {
         ElementList.INSTANCE.getNewMainOptionsElements().add(() -> m);
     }
 

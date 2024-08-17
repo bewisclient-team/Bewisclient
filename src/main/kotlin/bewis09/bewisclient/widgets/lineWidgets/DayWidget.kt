@@ -5,7 +5,7 @@ import com.google.gson.JsonObject
 import net.minecraft.client.MinecraftClient
 
 /**
- * A [LineWidget] which displays the amount of in-game-days the world has existed for
+ * A [LineWidget] which displays the number of in-game-days the world has existed for
  */
 class DayWidget: LineWidget("days",80,true) {
     override fun getText(): ArrayList<String> {

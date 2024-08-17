@@ -27,7 +27,7 @@ import org.lwjgl.glfw.GLFW
 import java.util.*
 import kotlin.math.*
 
-// No Documentation, because this will get a rework in the near future
+// No Documentation, because this will get a rework soon
 class CosmeticsScreen(private val parent: MainOptionsScreen) : Screen(Text.empty()) {
     var isReversed: Boolean = false
     private var scrollY = 0.0
@@ -57,17 +57,17 @@ class CosmeticsScreen(private val parent: MainOptionsScreen) : Screen(Text.empty
             return
         }
 
-        var sdfji = MathHelper.clamp((System.currentTimeMillis() - alphaStart)/animationSpeed,0f,1f)
-        sdfji = abs(alphaDirection-sdfji)
-        sdfji = ((1- cos(Math.PI * sdfji))/2).toFloat()
+        var clamped_value = MathHelper.clamp((System.currentTimeMillis() - alphaStart)/animationSpeed,0f,1f)
+        clamped_value = abs(alphaDirection-clamped_value)
+        clamped_value = ((1- cos(Math.PI * clamped_value))/2).toFloat()
 
-        context.setShaderColor(1f,1f,1f,sdfji)
+        context.setShaderColor(1f,1f,1f,clamped_value)
         context.fillGradient(0, 0, this.width, this.height, -1072689136, -804253680)
         assert(client != null)
         context.fill(13, height / 2 - 70, 83, height / 2 + 70, -0x1000000)
         context.drawBorder(13, height / 2 - 70, 70, 140, -1)
         context.enableScissor(0, height / 2 - 70, width, height)
-        drawEntity(context, 48, height / 2 + 50-((1-sdfji)*100).toInt(), 50, ((if (isReversed) 1 else -1) * (mouseX - 48)).toFloat(), height / 2f - mouseY, player, isReversed)
+        drawEntity(context, 48, height / 2 + 50-((1-clamped_value)*100).toInt(), 50, ((if (isReversed) 1 else -1) * (mouseX - 48)).toFloat(), height / 2f - mouseY, player, isReversed)
         context.disableScissor()
         context.fill(100, 0, width, height, 0x55000000)
         var z = 0
@@ -94,7 +94,7 @@ class CosmeticsScreen(private val parent: MainOptionsScreen) : Screen(Text.empty
             context.fill(50 + z * 64, (getScrollY() + 10).toInt(), 50 + z * 64 + 60, (getScrollY() + 110).toInt(), -0x1000000)
             context.drawBorder(50 + z * 64, (getScrollY() + 10).toInt(), 60, 100, -1)
             context.enableScissor(0, (getScrollY() + 10).toInt(), width, height)
-            drawEntity(context, 80 + z * 64, (getScrollY() + 90).toInt()-((1-sdfji)*100).toInt(), 35, (mouseX - (30 + z * 64) - 32).toFloat(), (30 - mouseY + getScrollY()).toFloat(), player, true)
+            drawEntity(context, 80 + z * 64, (getScrollY() + 90).toInt()-((1-clamped_value)*100).toInt(), 35, (mouseX - (30 + z * 64) - 32).toFloat(), (30 - mouseY + getScrollY()).toFloat(), player, true)
             context.disableScissor()
         }
         z = 0
@@ -105,7 +105,7 @@ class CosmeticsScreen(private val parent: MainOptionsScreen) : Screen(Text.empty
             context.fill(50 + z * 64, (getScrollY() + 140).toInt(), 50 + z * 64 + 60, (getScrollY() + 240).toInt(), -0x1000000)
             context.drawBorder(50 + z * 64, (getScrollY() + 140).toInt(), 60, 100, -1)
             context.enableScissor(0, (getScrollY() + 140).toInt(), width, height)
-            drawEntity(context, 80 + z * 64, (getScrollY() + 220).toInt()-((1-sdfji)*100).toInt(), 35, (mouseX - (30 + z * 64) - 32).toFloat(), (160 - mouseY + getScrollY()).toFloat(), player, true)
+            drawEntity(context, 80 + z * 64, (getScrollY() + 220).toInt()-((1-clamped_value)*100).toInt(), 35, (mouseX - (30 + z * 64) - 32).toFloat(), (160 - mouseY + getScrollY()).toFloat(), player, true)
             context.disableScissor()
         }
         Wing.current_wing = Wing.EMPTY
@@ -116,7 +116,7 @@ class CosmeticsScreen(private val parent: MainOptionsScreen) : Screen(Text.empty
             context.fill(50 + z * 64, (getScrollY() + 270).toInt(), 50 + z * 64 + 60, (getScrollY() + 370).toInt(), -0x1000000)
             context.drawBorder(50 + z * 64, (getScrollY() + 270).toInt(), 60, 100, -1)
             context.enableScissor(0, (getScrollY() + 270).toInt(), width, height)
-            drawEntityForMoved(context, 80 + z * 64, (getScrollY() + 350).toInt()-((1-sdfji)*100).toInt(), 35, (mouseX - (30 + z * 64) - 32).toFloat(), (290 - mouseY + getScrollY()).toFloat(), player, false)
+            drawEntityForMoved(context, 80 + z * 64, (getScrollY() + 350).toInt()-((1-clamped_value)*100).toInt(), 35, (mouseX - (30 + z * 64) - 32).toFloat(), (290 - mouseY + getScrollY()).toFloat(), player, false)
             context.disableScissor()
         }
         if (bl) player.inventory.armor[2] = stack
@@ -125,7 +125,7 @@ class CosmeticsScreen(private val parent: MainOptionsScreen) : Screen(Text.empty
         drawScrollbar(context)
         Hat.current_hat = hat
         RenderSystem.setShaderColor(1f,1f,1f,1f)
-        renderButtons(context, mouseX, mouseY, delta, sdfji)
+        renderButtons(context, mouseX, mouseY, delta, clamped_value)
     }
 
     fun renderButtons(context: DrawContext?, mouseX: Int, mouseY: Int, delta: Float, alpha: Float) {

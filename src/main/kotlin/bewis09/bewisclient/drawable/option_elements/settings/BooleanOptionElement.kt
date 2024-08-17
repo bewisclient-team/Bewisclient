@@ -11,9 +11,9 @@ import net.minecraft.util.math.MathHelper
 import kotlin.math.cos
 
 /**
- * A [SettingsOptionsElement] which changes a true-false setting
+ * A [SettingsOptionElement] which changes a true-false setting
  */
-class BooleanOptionsElement : SettingsOptionsElement<Boolean> {
+class BooleanOptionElement : SettingsOptionElement<Boolean> {
 
     /**
      * Gets executed when the value gets changed
@@ -51,7 +51,7 @@ class BooleanOptionsElement : SettingsOptionsElement<Boolean> {
     }
 
     /**
-     * The time of the start of the animation in ms in unix time
+     * The time when the animation started in ms in unix time
      *
      * @see [System.currentTimeMillis]
      */

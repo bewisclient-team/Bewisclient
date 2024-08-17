@@ -12,9 +12,9 @@ import kotlin.math.pow
 import kotlin.math.round
 
 /**
- * A [SettingsOptionsElement] which sets a float and displays a fader
+ * A [SettingsOptionElement] which sets a float and displays a fader
  */
-class FloatOptionsElement : SettingsOptionsElement<Float> {
+class FloatOptionElement : SettingsOptionElement<Float> {
 
     constructor(title: String, path: Array<String>, id: SettingsLoader.TypedSettingID<Float>, settings: String) : super(
         title,
@@ -29,7 +29,18 @@ class FloatOptionsElement : SettingsOptionsElement<Float> {
         }
         this.range = DefaultSettings.sliders[toPointNotation(path,id)]
                 ?: DefaultSettings.sliders[".$id"]
-        this.widget = UsableSliderWidget(0, 0, 100, 20, Text.empty(), ((SettingsLoader.get(settings, path, id) - range?.start!!) / (range.end - range.start)).toDouble(), range.end, range.start, range.decimalPoints, valueChanged)
+        this.widget = UsableSliderWidget(
+            0,
+            0,
+            100,
+            20,
+            Text.empty(),
+            ((SettingsLoader.get(settings, path, id) - range?.start!!) / (range.end - range.start)).toDouble(),
+            range.start,
+            range.end,
+            range.decimalPoints,
+            valueChanged
+        )
     }
 
     constructor(title: String, path: Array<String>, id: SettingsLoader.TypedSettingID<Float>, settings: String, valueChanger: (Double) -> Unit) : super(
@@ -46,7 +57,18 @@ class FloatOptionsElement : SettingsOptionsElement<Float> {
         }
         this.range = DefaultSettings.sliders[toPointNotation(path,id)]
                 ?: DefaultSettings.sliders[".$id"]
-        this.widget = UsableSliderWidget(0, 0, 100, 20, Text.empty(), ((get() - range?.start!!) / (range.end - range.start)).toDouble(), range.end, range.start, range.decimalPoints, valueChanged)
+        this.widget = UsableSliderWidget(
+            0,
+            0,
+            100,
+            20,
+            Text.empty(),
+            ((get() - range?.start!!) / (range.end - range.start)).toDouble(),
+            range.start,
+            range.end,
+            range.decimalPoints,
+            valueChanged
+        )
     }
 
     /**

@@ -8,12 +8,12 @@ import net.minecraft.util.Identifier
 import kotlin.math.roundToInt
 
 /**
- * An [OptionsElement] for displaying a preview of a [Widget]
+ * An [OptionElement] for displaying a preview of a [Widget]
  *
  * @param widget The [Widget] that should be rendered
  */
-class WidgetPreviewOptionsElement(val widget: Widget?): OptionsElement("","") {
-    override fun getElementByKeywordLamba(): (String) -> OptionsElement? {
+class WidgetPreviewOptionElement(val widget: Widget?): OptionElement("","") {
+    override fun getElementByKeywordLamba(): (String) -> OptionElement? {
         return { null }
     }
 

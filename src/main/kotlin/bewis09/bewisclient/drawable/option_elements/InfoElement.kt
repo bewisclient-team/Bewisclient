@@ -1,16 +1,15 @@
 package bewis09.bewisclient.drawable.option_elements
 
 import bewis09.bewisclient.Bewisclient
-import bewis09.bewisclient.screen.MainOptionsScreen
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 
 /**
- * An [OptionsElement] which displays an information
+ * An [OptionElement] which displays information
  *
  * @param text The translation key of the text
  */
-class InfoElement(text: String): OptionsElement("",text) {
+class InfoElement(text: String): OptionElement("",text) {
     override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {
         val client = MinecraftClient.getInstance()
         val descriptionLines = client.textRenderer.wrapLines(Bewisclient.getTranslationText(description),width-12)
@@ -25,6 +24,4 @@ class InfoElement(text: String): OptionsElement("",text) {
 
         return height
     }
-
-    override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int, screen: MainOptionsScreen) {}
 }

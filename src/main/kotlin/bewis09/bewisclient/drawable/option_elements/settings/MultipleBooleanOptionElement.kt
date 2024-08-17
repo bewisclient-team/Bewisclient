@@ -1,21 +1,21 @@
 package bewis09.bewisclient.drawable.option_elements.settings
 
 import bewis09.bewisclient.Bewisclient
-import bewis09.bewisclient.drawable.option_elements.OptionsElement
+import bewis09.bewisclient.drawable.option_elements.OptionElement
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 
 /**
- * An [OptionsElement] which changes multiple true-false settings
+ * An [OptionElement] which changes multiple true-false settings
  *
  * @param title The title of the element and gets converted to the description string
  * @param settings The category of settings the setting
  * @param path The path to the setting
  * @param subElements The IDs of the sub elements
  */
-class MultipleBooleanOptionsElement(title: String, val settings: String, val path: Array<String>, vararg val subElements: String): OptionsElement(title,"") {
+class MultipleBooleanOptionElement(title: String, val settings: String, val path: Array<String>, vararg val subElements: String): OptionElement(title,"") {
 
     /**
      * The index of the setting that is currently hovered over

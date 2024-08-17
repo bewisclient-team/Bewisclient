@@ -11,30 +11,30 @@ import net.minecraft.util.Identifier
 import kotlin.math.max
 
 /**
- * An [OptionsElement] that links to a new page and is used in the first page of the [MainOptionsScreen]
+ * An [OptionElement] that links to a new page and is used in the first page of the [MainOptionsScreen]
  */
-open class MainOptionsElement: OptionsElement, Search.SearchableElement<OptionsElement> {
+open class MainOptionElement: OptionElement, Search.SearchableElement<OptionElement> {
 
     /**
-     * A lamba that returns the [Screen] that the [MainOptionsElement] should link to
+     * A lamba that returns the [Screen] that the [MainOptionElement] should link to
      */
     var screen: ((MainOptionsScreen) -> Screen)? = null
 
     /**
-     * An [ArrayList] of type [OptionsElement] which will be displayed when opening a new page
+     * An [ArrayList] of type [OptionElement] which will be displayed when opening a new page
      */
-    var elements: ArrayList<OptionsElement>? = null
+    var elements: ArrayList<OptionElement>? = null
 
     /**
-     * The image that should be displayed when rendering the [MainOptionsElement]
+     * The image that should be displayed when rendering the [MainOptionElement]
      */
     val image: Identifier
 
     /**
      * @param title The title of the element
      * @param description The description of the element
-     * @param screen A lamba that returns the [Screen] that the [MainOptionsElement] should link to
-     * @param image The image that should be displayed when rendering the [MainOptionsElement]
+     * @param screen A lamba that returns the [Screen] that the [MainOptionElement] should link to
+     * @param image The image that should be displayed when rendering the [MainOptionElement]
      */
     constructor(title: String, description: String, screen: ((MainOptionsScreen) -> Screen), image: Identifier): super(title,description) {
         this.screen = screen
@@ -44,10 +44,10 @@ open class MainOptionsElement: OptionsElement, Search.SearchableElement<OptionsE
     /**
      * @param title The title of the element
      * @param description The description of the element
-     * @param elements An [ArrayList] of type [OptionsElement] which will be displayed when opening a new page
-     * @param image The image that should be displayed when rendering the [MainOptionsElement]
+     * @param elements An [ArrayList] of type [OptionElement] which will be displayed when opening a new page
+     * @param image The image that should be displayed when rendering the [MainOptionElement]
      */
-    constructor(title: String, description: String, elements: ArrayList<OptionsElement>, image: Identifier): super(title,description) {
+    constructor(title: String, description: String, elements: ArrayList<OptionElement>, image: Identifier): super(title,description) {
         this.elements = elements
         this.image = image
     }
@@ -147,7 +147,7 @@ open class MainOptionsElement: OptionsElement, Search.SearchableElement<OptionsE
         }
     }
 
-    override fun getChildElementsForSearch(): ArrayList<OptionsElement>? {
+    override fun getChildElementsForSearch(): ArrayList<OptionElement>? {
         return elements
     }
 }

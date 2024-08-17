@@ -10,19 +10,19 @@ import net.minecraft.client.gui.DrawContext
 import net.minecraft.text.Text
 
 /**
- * A [SettingsOptionsElement] which displays a button where you can cycle through an array
+ * A [SettingsOptionElement] which displays a button where you can cycle through an array
  *
  * @param title The title of the element and gets converted to the description string
  * @param settings The category of settings the setting
  * @param path The path to the setting
  * @param id The id of the setting
  */
-class ArrayOptionsElement(
+class ArrayOptionElement(
     title: String,
     path: Array<String>,
     id: SettingsLoader.TypedSettingID<Float>,
     settings: String
-) : SettingsOptionsElement<Float>(title, settings, path, id) {
+) : SettingsOptionElement<Float>(title, settings, path, id) {
 
     /**
      * The index of the current value

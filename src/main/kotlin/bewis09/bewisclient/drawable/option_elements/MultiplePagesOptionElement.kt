@@ -1,7 +1,7 @@
 package bewis09.bewisclient.drawable.option_elements
 
 import bewis09.bewisclient.Bewisclient
-import bewis09.bewisclient.drawable.option_elements.MultiplePagesOptionsElement.MultiplePagesElement
+import bewis09.bewisclient.drawable.option_elements.MultiplePagesOptionElement.MultiplePagesElement
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.util.Search
@@ -13,13 +13,13 @@ import net.minecraft.util.Identifier
 import kotlin.math.ceil
 
 /**
- * An [OptionsElement] for displaying multiple elements in a grid
+ * An [OptionElement] for displaying multiple elements in a grid
  *
  * @param elementList An [Array] of the [MultiplePagesElement] that should be displayed
  * @param minElementWidth The minimum width of a single [MultiplePagesElement]
- * @param widgetEnableSetter Indicates if a button to change the [ENABLED] state of a widget should be displayed
+ * @param widgetEnableSetter Indicates if a button to change the [bewis09.bewisclient.settingsLoader.Settings.ENABLED] state of a widget should be displayed
  */
-class MultiplePagesOptionsElement(val elementList: Array<MultiplePagesElement>, val minElementWidth: Int, val widgetEnableSetter: Boolean): OptionsElement("","") {
+class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, val minElementWidth: Int, val widgetEnableSetter: Boolean): OptionElement("","") {
 
     /**
      * The index of the [MultiplePagesElement] that is currently hovered over
@@ -167,7 +167,7 @@ class MultiplePagesOptionsElement(val elementList: Array<MultiplePagesElement>, 
         /**
          * The elements that should be shown when clicking on the [MultiplePagesElement]
          */
-        val elements: ArrayList<OptionsElement>
+        val elements: ArrayList<OptionElement>
 
         /**
          * The image that should be rendered in the [MultiplePagesElement]
@@ -186,7 +186,7 @@ class MultiplePagesOptionsElement(val elementList: Array<MultiplePagesElement>, 
          * @param elements The elements that should be shown when clicking on the [MultiplePagesElement]
          * @param image The image that should be rendered in the [MultiplePagesElement]
          */
-        constructor(title: String, elements: ArrayList<OptionsElement>, image: Identifier) {
+        constructor(title: String, elements: ArrayList<OptionElement>, image: Identifier) {
             this.title = title
             this.elements = elements
             this.image = image
@@ -200,7 +200,7 @@ class MultiplePagesOptionsElement(val elementList: Array<MultiplePagesElement>, 
          * @param elements The elements that should be shown when clicking on the [MultiplePagesElement]
          * @param description The description of the [MultiplePagesElement]
          */
-        constructor(title: String, elements: ArrayList<OptionsElement>, description: String) {
+        constructor(title: String, elements: ArrayList<OptionElement>, description: String) {
             this.title = title
             this.elements = elements
             this.image = null
@@ -231,21 +231,21 @@ class MultiplePagesOptionsElement(val elementList: Array<MultiplePagesElement>, 
         super.mouseClicked(mouseX, mouseY, button, screen)
     }
 
-    override fun getElementByKeywordLamba(): (String) -> OptionsElement? {
+    override fun getElementByKeywordLamba(): (String) -> OptionElement? {
         val collection = Search.collect((elementList.toList()))
 
         return {
             val results = Search.search(it,collection)
 
             if(results.isNotEmpty())
-                MultiplePagesOptionsElement(results.toArray(arrayOf()),minElementWidth,widgetEnableSetter)
+                MultiplePagesOptionElement(results.toArray(arrayOf()),minElementWidth,widgetEnableSetter)
             else
                 null
         }
     }
 
-    override fun getChildElementsForSearch(): ArrayList<OptionsElement> {
-        val l = arrayListOf<OptionsElement>()
+    override fun getChildElementsForSearch(): ArrayList<OptionElement> {
+        val l = arrayListOf<OptionElement>()
 
         elementList.forEach {
             l.addAll(it.elements)

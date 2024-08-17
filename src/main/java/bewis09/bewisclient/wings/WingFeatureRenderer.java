@@ -45,17 +45,17 @@ public class WingFeatureRenderer extends FeatureRenderer<AbstractClientPlayerEnt
     @Override
     public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, AbstractClientPlayerEntity entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
         if (!entity.isInvisible() && !entity.isSpectator() && entity == MinecraftClient.getInstance().player) {
-            var sdfji = MathHelper.clamp((wing_animation_frame -30)/30f,-1f,1f);
-            sdfji = (float) (1- cos(Math.PI * sdfji))/2;
-            sdfji = (sdfji+1)*30;
+            var clamped_value = MathHelper.clamp((wing_animation_frame -30)/30f,-1f,1f);
+            clamped_value = (float) (1- cos(Math.PI * clamped_value))/2;
+            clamped_value = (clamped_value+1)*30;
 
-            part1.yaw = body.yaw + Math.abs(sdfji - 30) / 30f;
+            part1.yaw = body.yaw + Math.abs(clamped_value - 30) / 30f;
             part1.pitch = body.pitch;
             part1.roll = body.roll;
             part1.pivotX = body.pivotX;
             part1.pivotY = body.pivotY;
             part1.pivotZ = body.pivotZ + 2;
-            part2.yaw = body.yaw - Math.abs(sdfji - 30) / 30f;
+            part2.yaw = body.yaw - Math.abs(clamped_value - 30) / 30f;
             part2.pitch = body.pitch;
             part2.roll = body.roll;
             part2.pivotX = body.pivotX;

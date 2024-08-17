@@ -5,11 +5,11 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 
 /**
- * An [OptionsElement] which displays a title
+ * An [OptionElement] which displays a title
  *
  * @param titles The translation keys of the titles that are separated by ">>"
  */
-class TitleOptionsElement(vararg val titles: String): OptionsElement(titles.last(),"") {
+class TitleOptionElement(vararg val titles: String): OptionElement(titles.last(),"") {
     override fun render(
         context: DrawContext,
         x: Int,

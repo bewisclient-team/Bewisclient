@@ -4,17 +4,12 @@ import bewis09.bewisclient.exception.SettingNotFoundException
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.settingsLoader.SettingsLoader.get
 import bewis09.bewisclient.util.ColorSaver
-import com.google.gson.Gson
-import com.google.gson.JsonArray
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
-import com.google.gson.JsonPrimitive
+import com.google.gson.*
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.MinecraftClient
 import java.io.File
 import java.io.PrintWriter
 import java.util.*
-import kotlin.collections.HashMap
 
 object SettingsLoader: Settings() {
     /**
@@ -567,7 +562,7 @@ object SettingsLoader: Settings() {
      * @param settings The [JsonObject] that the setting should be in
      * @param id The ID of the Setting. Should not contain the path
      * @param path A collection of the path steps
-     * @param iteration The iteration of the setting getting process.
+     * @param iteration The iteration of the setting getting-process.
      *
      * @return The value of the setting as a [JsonElement]
      *

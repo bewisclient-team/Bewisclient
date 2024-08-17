@@ -1,23 +1,23 @@
 package bewis09.bewisclient.drawable.option_elements.settings
 
-import bewis09.bewisclient.drawable.option_elements.OptionsElement
+import bewis09.bewisclient.drawable.option_elements.OptionElement
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.util.ColorSaver
 
 /**
- * An [OptionsElement] which changes a setting
+ * An [OptionElement] which changes a setting
  *
  * @param originalTitle The title of the element and gets converted to the description string
  * @param settings The category of settings the setting
  * @param path The path to the setting
  * @param id The id of the setting
  */
-abstract class SettingsOptionsElement<K>(
+abstract class SettingsOptionElement<K>(
     originalTitle: String,
     val settings: String,
     val path: Array<String>,
     val id: SettingsLoader.TypedSettingID<K>
-): OptionsElement(if (originalTitle.toCharArray()[0] =='%') originalTitle.drop(1) else "widgets.$originalTitle", if (originalTitle.toCharArray()[0] =='%') "description."+originalTitle.drop(1) else "widgets.description.$originalTitle") {
+): OptionElement(if (originalTitle.toCharArray()[0] =='%') originalTitle.drop(1) else "widgets.$originalTitle", if (originalTitle.toCharArray()[0] =='%') "description."+originalTitle.drop(1) else "widgets.description.$originalTitle") {
 
     /**
      * Sets the value of the setting

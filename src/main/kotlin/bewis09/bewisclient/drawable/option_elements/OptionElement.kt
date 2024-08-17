@@ -9,12 +9,12 @@ import net.minecraft.client.gui.DrawContext
 import net.minecraft.util.Identifier
 
 /**
- * An options element that gets displayed in the [MainOptionsScreen]
+ * An option element that gets displayed in the [MainOptionsScreen]
  *
  * @param title The title of the element
  * @param description The description of the element
  */
-abstract class OptionsElement(val title: String, val description: String) : Settings(), Search.SearchableElement<OptionsElement> {
+abstract class OptionElement(val title: String, val description: String) : Settings(), Search.SearchableElement<OptionElement> {
 
     /**
      * The [Identifier] for the texture of the button to go to the next page
@@ -32,7 +32,7 @@ abstract class OptionsElement(val title: String, val description: String) : Sett
     var pos = arrayOf(0, 0, 0, 0)
 
     /**
-     * Indicates if the [ALL_CLICK] setting is turned on, where you can click at an entire [MainOptionsElement] to get to the corresponding screen
+     * Indicates if the [bewis09.bewisclient.settingsLoader.Settings.ALL_CLICK] setting is turned on, where you can click at an entire [MainOptionElement] to get to the corresponding screen
      */
     val allClicked: Boolean
         get() = SettingsLoader.get("design", OPTIONS_MENU, ALL_CLICK)
@@ -43,7 +43,7 @@ abstract class OptionsElement(val title: String, val description: String) : Sett
      * @param context The [DrawContext] used to
      * @param x The x coordinate where the element should start to be drawn
      * @param y The y coordinate where the element should start to be drawn
-     * @param width The width of the middle part of the options screen and the optimal width of the element
+     * @param width The width of the middle part of the option screen and the optimal width of the element
      * @param mouseX The x coordinate of the mouse
      * @param mouseY The y coordinate of the mouse
      * @param alphaModifier A number between 0x1000000 and 0xFF000000 that should be added to any RGB color to support the blend-in and blend-out animation
@@ -111,7 +111,7 @@ abstract class OptionsElement(val title: String, val description: String) : Sett
 
     }
 
-    override fun getChildElementsForSearch(): ArrayList<OptionsElement>? {
+    override fun getChildElementsForSearch(): ArrayList<OptionElement>? {
         return null
     }
 

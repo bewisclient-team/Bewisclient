@@ -11,7 +11,7 @@ import java.util.List;
 public class AnimatedCape extends AbstractCape {
 
     /**
-     * The amount of frames
+     * The number of frames
      */
     private final int frameCount;
 
@@ -26,7 +26,7 @@ public class AnimatedCape extends AbstractCape {
     private final int frameDuration;
 
     /**
-     * @param frameCount The amount of frames
+     * @param frameCount The number of frames
      * @param name The name of the cape
      * @param frameDuration The duration of the animation
      */

@@ -6,6 +6,7 @@ import bewis09.bewisclient.util.ColorSaver
 /**
  * A collection of all settings and setting paths
  */
+@Suppress("unused")
 open class Settings {
     companion object {
         // General
@@ -67,9 +68,9 @@ open class Settings {
         val NIGHT_VISION = createBoolean("night_vision")
 
         // Categories
-        val WIDGETS = "widgets"
-        val DESIGN = "design"
-        val GENERAL = "general"
+        const val WIDGETS = "widgets"
+        const val DESIGN = "design"
+        const val GENERAL = "general"
 
         // Better Visibility
         val BETTER_VISIBILITY = arrayOf("better_visibility")

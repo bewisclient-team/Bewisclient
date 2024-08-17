@@ -9,12 +9,12 @@ import net.minecraft.client.gui.screen.ConfirmLinkScreen
 import net.minecraft.util.Util
 
 /**
- * An [OptionsElement] which allows you to open a link to a website where you can interact with the developer
+ * An [OptionElement] which allows you to open a link to a website where you can interact with the developer
  *
  * @param title The title of the element and gets converted to the description string
  * @param url The URL of the website
  */
-class ContactElement(title: String, val url: String): OptionsElement("contact.$title", "description.contact.$title") {
+class ContactElement(title: String, val url: String): OptionElement("contact.$title", "description.contact.$title") {
     override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {
         val client = MinecraftClient.getInstance()
 

@@ -75,7 +75,7 @@ class KeyWidget: Widget("keys") {
     }
 
     /**
-     * Renders a key with a specialised Text that gets highlighted if the [keyBinding] is pressed. The height is specified as 15
+     * Renders a key with a specialized Text that gets highlighted if the [keyBinding] is pressed. The height is specified as 15
      *
      * @param width The width of the key
      * @param x The relative x-coordinate of the key
@@ -88,7 +88,7 @@ class KeyWidget: Widget("keys") {
     }
 
     /**
-     * Renders a key with a specialised Text that gets highlighted if the [keyBinding] is pressed
+     * Renders a key with a specialized Text that gets highlighted if the [keyBinding] is pressed
      *
      * @param width The width of the key
      * @param height The height of the key
@@ -105,7 +105,7 @@ class KeyWidget: Widget("keys") {
     }
 
     /**
-     * @return A modifier that can be added to any RGB color to make a ARGB color out of it with the [TRANSPARENCY] as alpha
+     * @return A modifier that can be added to any RGB color to make a ARGB color out of it with the [bewis09.bewisclient.settingsLoader.Settings.TRANSPARENCY] as alpha
      */
     private fun getAlphaModifier(): Long {
         return (getProperty(TRANSPARENCY).times(255f)).toLong()*0x1000000
