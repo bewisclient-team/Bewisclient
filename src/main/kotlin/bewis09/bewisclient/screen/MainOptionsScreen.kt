@@ -103,6 +103,9 @@ open class MainOptionsScreen : Screen(Text.empty()) {
     }
 
     override fun render(context: DrawContext?, mouseX: Int, mouseY: Int, delta: Float) {
+        if (client!!.world == null) {
+            this.renderPanoramaBackground(context, delta)
+        }
 
         context!!
 
@@ -141,7 +144,9 @@ open class MainOptionsScreen : Screen(Text.empty()) {
         if(animationState==AnimationState.LEFT || animationState==AnimationState.RIGHT)
             animationFrame = 1f
 
-        context.fill(0,0,width,height,  ((0xAA*animationFrame).toLong()*0x1000000).toInt())
+        if (client!!.world != null) {
+            context.fill(0, 0, width, height, ((0xAA * animationFrame).toLong() * 0x1000000).toInt())
+        }
 
         context.fill(
             ((this.width/4) +4-6+6*animationFrame).toInt(),0,
@@ -278,9 +283,13 @@ open class MainOptionsScreen : Screen(Text.empty()) {
         bottomAnimation.add(addDrawableChild(UsableTexturedButtonWidget(width/4*3-28,height-24,20,20,closeTextures) {
             startAllAnimation(null)
         }))
-        bottomAnimation.add(addDrawableChild(ButtonWidget.builder(Bewisclient.getTranslationText("gui.edit_hud")) {
+        val gui_button = (addDrawableChild(ButtonWidget.builder(Bewisclient.getTranslationText("gui.edit_hud")) {
             startAllAnimation(WidgetConfigScreen(this))
         }.dimensions(width/4+30,height-24,width/6-29,20).build()))
+        if(MinecraftClient.getInstance().world == null) {
+            gui_button.active = false
+        }
+        bottomAnimation.add(gui_button)
         bottomAnimation.add(addDrawableChild(ButtonWidget.builder(Bewisclient.getTranslationText("gui.load_from_file")) {
             SettingsLoader.loadSettings()
         }.dimensions(width/4*3-1-width/6,height-24,width/6-29,20).build()))

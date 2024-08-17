@@ -16,6 +16,11 @@ import kotlin.math.max
 open class MainOptionElement: OptionElement, Search.SearchableElement<OptionElement> {
 
     /**
+     * Sets if the button should be disabled out of a world
+     */
+    val outOfWorldDisabled: Boolean
+
+    /**
      * A lamba that returns the [Screen] that the [MainOptionElement] should link to
      */
     var screen: ((MainOptionsScreen) -> Screen)? = null
@@ -35,10 +40,12 @@ open class MainOptionElement: OptionElement, Search.SearchableElement<OptionElem
      * @param description The description of the element
      * @param screen A lamba that returns the [Screen] that the [MainOptionElement] should link to
      * @param image The image that should be displayed when rendering the [MainOptionElement]
+     * @param outOfWorldDisabled Sets if the button should be disabled out of a world
      */
-    constructor(title: String, description: String, screen: ((MainOptionsScreen) -> Screen), image: Identifier): super(title,description) {
+    constructor(title: String, description: String, screen: ((MainOptionsScreen) -> Screen), image: Identifier, outOfWorldDisabled: Boolean): super(title,description) {
         this.screen = screen
         this.image = image
+        this.outOfWorldDisabled = outOfWorldDisabled
     }
 
     /**
@@ -50,6 +57,7 @@ open class MainOptionElement: OptionElement, Search.SearchableElement<OptionElem
     constructor(title: String, description: String, elements: ArrayList<OptionElement>, image: Identifier): super(title,description) {
         this.elements = elements
         this.image = image
+        this.outOfWorldDisabled = false
     }
 
     override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {
@@ -66,12 +74,12 @@ open class MainOptionElement: OptionElement, Search.SearchableElement<OptionElem
         context.matrices.push()
 
         if(!allClicked) {
-            isSelected = x+width-20 < mouseX && y < mouseY && x+width > mouseX && y+height > mouseY
+            isSelected = (x+width-20 < mouseX && y < mouseY && x+width > mouseX && y+height > mouseY) && (!outOfWorldDisabled || MinecraftClient.getInstance().world != null)
 
             context.fill(x, y, x + width - (22), y + height, alphaModifier.toInt())
             context.drawBorder(x, y, width - (22), height, (alphaModifier + 0xFFFFFF).toInt())
         } else {
-            isSelected = x < mouseX && y < mouseY && x+width > mouseX && y+height > mouseY
+            isSelected = (x < mouseX && y < mouseY && x+width > mouseX && y+height > mouseY) && (!outOfWorldDisabled || MinecraftClient.getInstance().world != null)
 
             if(isSelected) {
                 context.matrices.translate(x.toFloat(),y.toFloat(),0f)
@@ -120,13 +128,18 @@ open class MainOptionElement: OptionElement, Search.SearchableElement<OptionElem
             RenderSystem.disableBlend()
         }
 
+        if(outOfWorldDisabled && MinecraftClient.getInstance().world == null) {
+            context.matrices.translate(0f,0f,10f)
+            context.fill(x, y, x + width, y + height, ((alphaModifier/0x2000000).toInt()*0x1000000))
+        }
+
         context.matrices.pop()
 
         return height
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int, screen: MainOptionsScreen) {
-        val isSelected = pos[2] - 20 < mouseX && pos[1] < mouseY && pos[2] > mouseX && pos[3] > mouseY
+        val isSelected = (pos[2] - 20 < mouseX && pos[1] < mouseY && pos[2] > mouseX && pos[3] > mouseY) && (!outOfWorldDisabled || MinecraftClient.getInstance().world != null)
         if (!allClicked) {
             if (isSelected) {
                 screen.playDownSound(MinecraftClient.getInstance().soundManager)
@@ -136,7 +149,7 @@ open class MainOptionElement: OptionElement, Search.SearchableElement<OptionElem
                     screen.startAllAnimation(this.screen!!(screen))
             }
         } else {
-            val isSelectedAll = pos[0] < mouseX && pos[1] < mouseY && pos[2] > mouseX && pos[3] > mouseY
+            val isSelectedAll = (pos[0] < mouseX && pos[1] < mouseY && pos[2] > mouseX && pos[3] > mouseY) && (!outOfWorldDisabled || MinecraftClient.getInstance().world != null)
             if (isSelectedAll) {
                 screen.playDownSound(MinecraftClient.getInstance().soundManager)
                 if(elements!=null)

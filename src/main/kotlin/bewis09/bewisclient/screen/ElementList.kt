@@ -200,7 +200,7 @@ object ElementList: Settings() {
             MainOptionElement("gui.widgets", "gui.widgets.description", widgets(), Identifier.of("bewisclient", "textures/main_icons/widgets.png")),
             MainOptionElement("gui.design", "gui.design.description", design(), Identifier.of("bewisclient", "textures/main_icons/design.png")),
             MainOptionElement("gui.util", "gui.util.description", util(), Identifier.of("bewisclient", "textures/main_icons/util.png")),
-            MainOptionElement("gui.cosmetics", "gui.cosmetics.description", { CosmeticsScreen(it) }, Identifier.of("bewisclient", "textures/main_icons/cosmetics.png")),
+            MainOptionElement("gui.cosmetics", "gui.cosmetics.description", { CosmeticsScreen(it) }, Identifier.of("bewisclient", "textures/main_icons/cosmetics.png"),true),
             MultiplePagesOptionElement(arrayOf(
                 MultiplePagesOptionElement.MultiplePagesElement(
                     "gui.fullbright",
@@ -286,7 +286,9 @@ object ElementList: Settings() {
             WidgetRenderer.widgets.forEach {
                 if (it.id == v.key) a = it
             }
-            m.add(WidgetPreviewOptionElement(a))
+
+            if (MinecraftClient.getInstance()!!.world != null)
+                m.add(WidgetPreviewOptionElement(a))
 
             if (!excludedProperties.contains(v.key))
                 map.add(MultiplePagesOptionElement.MultiplePagesElement("widgets."+v.key, m,"widgets.description."+v.key))
@@ -313,7 +315,8 @@ object ElementList: Settings() {
             }
         }
 
-        map.add(WidgetPreviewOptionElement(widget))
+        if (MinecraftClient.getInstance()!!.world != null)
+            map.add(WidgetPreviewOptionElement(widget))
 
         return map
     }
