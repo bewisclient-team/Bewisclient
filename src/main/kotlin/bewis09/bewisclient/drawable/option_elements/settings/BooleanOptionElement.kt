@@ -104,13 +104,13 @@ class BooleanOptionElement : SettingsOptionElement<Boolean> {
             context.fill(x+width-20,y,x+width,y+height, (enableColor))
             context.drawBorder(x+width-20,y,20,height, (alphaModifier+ 0xFFFFFF).toInt())
 
-            context.fill(middleX-7, (y + ((height-12)*(1-progress)+3*(progress))).toInt(),middleX+7,(y + ((height-3)*(1-progress)+12*(progress))).toInt(), (alphaModifier+0xFFFFFF).toInt())
+            context.fill(middleX-7, (y + ((height-12)*(progress)+3*(1-progress))).toInt(),middleX+7,(y + ((height-3)*(progress)+12*(1-progress))).toInt(), (alphaModifier+0xFFFFFF).toInt())
         } else {
             context.fill(x+width-20-1,y-1,x+width+1,y+height+1, (enableColor))
             context.drawBorder(x+width-20-1,y-1,22,height+2, (alphaModifier+ 0xAAAAFF).toInt())
 
-            context.fill(middleX-8,(y + ((height-12)*(1-progress)+2*(progress))).toInt(),middleX+8,(y + ((height-2)*(1-progress)+12*(progress))).toInt(),(alphaModifier+0xFFFFFF).toInt())
-            context.drawBorder(middleX-8,(y + ((height-13)*(1-progress)+2*(progress))).toInt(),16,11,(alphaModifier+0xAAAAFF).toInt())
+            context.fill(middleX-8,(y + ((height-12)*(progress)+2*(1-progress))).toInt(),middleX+8,(y + ((height-2)*(progress)+12*(1-progress))).toInt(),(alphaModifier+0xFFFFFF).toInt())
+            context.drawBorder(middleX-8,(y + ((height-13)*(progress)+2*(1-progress))).toInt(),16,11,(alphaModifier+0xAAAAFF).toInt())
         }
 
         return height

@@ -37,7 +37,7 @@ public abstract class BackgroundRendererMixin {
             RenderSystem.setShaderFogStart(fogData.fogStart);
             RenderSystem.setShaderFogEnd(fogData.fogEnd);
             RenderSystem.setShaderFogShape(fogData.fogShape);
-        } else if (thickFog && (SettingsLoader.INSTANCE.get("design",Settings.Companion.getBETTER_VISIBILITY(),Settings.Companion.getNETHER()))) {
+        } else if (cameraSubmersionType == CameraSubmersionType.NONE && thickFog && (SettingsLoader.INSTANCE.get("design",Settings.Companion.getBETTER_VISIBILITY(),Settings.Companion.getNETHER()))) {
             fogData.fogStart = viewDistance-1;
             fogData.fogEnd = viewDistance;
             RenderSystem.setShaderFogStart(fogData.fogStart);
