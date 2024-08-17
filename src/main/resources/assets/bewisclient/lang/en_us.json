@@ -224,5 +224,10 @@
   "bewisclient.widgets.transparency": "Transparency",
   "bewisclient.widgets.vertical_speed": "Vertical Speed",
   "bewisclient.you_died": "You Died",
-  "bewisclient.you_won": "You Won"
+  "bewisclient.you_won": "You Won",
+  "bewisclient.key.gamma": "Toggle Fullbright",
+  "bewisclient.key.gamma_up": "Increase Brightness",
+  "bewisclient.key.gamma_down": "Decrease Brightness",
+  "bewisclient.key.night_vision": "Toggle Night Vision",
+  "bewisclient.key.zoom": "Zoom"
 }

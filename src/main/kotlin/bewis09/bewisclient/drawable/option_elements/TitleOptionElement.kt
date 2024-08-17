@@ -9,7 +9,7 @@ import net.minecraft.client.gui.DrawContext
  *
  * @param titles The translation keys of the titles that are separated by ">>"
  */
-class TitleOptionElement(vararg val titles: String): OptionElement(titles.last(),"") {
+open class TitleOptionElement(vararg val titles: String): OptionElement(titles.last(),"") {
     override fun render(
         context: DrawContext,
         x: Int,

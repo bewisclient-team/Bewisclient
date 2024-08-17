@@ -22,7 +22,7 @@ object ElementList: Settings() {
     /**
      * Properties that should not generate an [OptionElement] when in a widget
      */
-    private val excludedProperties = arrayOf("posX","posY","partX","partY","effect")
+    private val excludedProperties = arrayOf("posX","posY","partX","partY","effect","enabled")
 
     /**
      * Sets that some elements should be hidden at some point
@@ -274,7 +274,7 @@ object ElementList: Settings() {
 
         def.entrySet().forEach { v ->
             val m: ArrayList<OptionElement> = arrayListOf(
-                TitleOptionElement("gui.widgets","widgets."+v.key)
+                TitleWidgetEnablerOptionElement(v.key,"gui.widgets","widgets."+v.key)
             )
 
             v.value.asJsonObject.entrySet().forEach {
@@ -304,7 +304,7 @@ object ElementList: Settings() {
      */
     fun loadWidgetsSingleFromDefault(widget: Widget,def: JsonObject, vkey: String): ArrayList<OptionElement> {
         val map: ArrayList<OptionElement> = arrayListOf(
-            TitleOptionElement("gui.widgets", "widgets.$vkey")
+            TitleWidgetEnablerOptionElement("gui.widgets", "widgets.$vkey")
         )
 
         def.entrySet().forEach {
