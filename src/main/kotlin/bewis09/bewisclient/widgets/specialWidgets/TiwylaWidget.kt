@@ -30,13 +30,22 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.ColorHelper
 import java.util.*
 import java.util.Map
+import kotlin.math.ceil
 
-// TODO Document
+/**
+ * A [Widget] to display information of the block/entity you are looking at
+ */
 class TiwylaWidget: Widget("tiwyla") {
 
+    /**
+     * The font [Identifier] for half hearts
+     */
     var identifier: Identifier = Identifier.of("extra")
 
     companion object {
+        /**
+         * A [HashMap] of the block which have a property displayed
+         */
         val extraInfo = hashMapOf<Block, Property<*>>(
                 Pair(Blocks.REDSTONE_WIRE, RedstoneWireBlock.POWER),
                 Pair(Blocks.SCULK_SENSOR, SculkSensorBlock.POWER),
@@ -48,6 +57,9 @@ class TiwylaWidget: Widget("tiwyla") {
                 Pair(Blocks.SCULK_SHRIEKER, SculkShriekerBlock.CAN_SUMMON)
         )
 
+        /**
+         * A [HashMap] of the entities which have special information displayed
+         */
         val entityExtraInfo = hashMapOf<EntityType<*>, EntityListener>(
                 Pair(EntityType.CAT, EntityListener {
                     if(it is CatEntity) Registries.CAT_VARIANT.getId(it.variant.value())?.path else ""
@@ -74,6 +86,9 @@ class TiwylaWidget: Widget("tiwyla") {
         )
     }
 
+    /**
+     * @return The multiple lines of text
+     */
     fun getText(): ArrayList<String> {
         return getTextFromType(MinecraftClient.getInstance().crosshairTarget)
     }
@@ -108,16 +123,27 @@ class TiwylaWidget: Widget("tiwyla") {
         return if(getText().size==4) 41 else if(getText().size==2) 25 else 33
     }
 
+    /**
+     * @param hitResult The [HitResult] the player currently has
+     *
+     * @return The multiple lines of text according to [hitResult]
+     */
     private fun getTextFromType(hitResult: HitResult?):ArrayList<String> {
         if(hitResult==null)
             return arrayListOf()
         if(hitResult.type==HitResult.Type.BLOCK)
             return getTextFromBlock(hitResult as BlockHitResult,MinecraftClient.getInstance().world!!.getBlockState(hitResult.blockPos))
         if(hitResult.type==HitResult.Type.ENTITY)
-            return getTextFromEntity(hitResult as EntityHitResult, hitResult.entity)
+            return getTextFromEntity((hitResult as EntityHitResult).entity)
         return arrayListOf()
     }
 
+    /**
+     * @param hitResult The [BlockHitResult] the player currently has
+     * @param blockState The [BlockState] of the [hitResult]
+     *
+     * @return The text depending on the block the player is looking at
+     */
     private fun getTextFromBlock(hitResult: BlockHitResult, blockState: BlockState):ArrayList<String> {
         val firstLine = blockState.block.name.string
         val secondLine = getBlockInformation(getProperty(FIRST_LINE).toInt(),blockState,hitResult.blockPos)
@@ -127,6 +153,13 @@ class TiwylaWidget: Widget("tiwyla") {
         return arrayListOf(firstLine,secondLine,thirdLine,fourthLine)
     }
 
+    /**
+     * @param i The type of the information
+     * @param blockState The current [BlockState]
+     * @param blockPos The [BlockPos] the player is looking at
+     *
+     * @return The information displayed in one of the small lines when looking at a block
+     */
     private fun getBlockInformation(i: Int, blockState: BlockState, blockPos: BlockPos): String {
         when (i) {
             0 -> return getTool(blockState.block)
@@ -142,6 +175,9 @@ class TiwylaWidget: Widget("tiwyla") {
         return ""
     }
 
+    /**
+     * @return The breaking progress as a formatted [String] or null if the player isn't breaking anything
+     */
     private fun getProgress(): String? {
         val s = ((MinecraftClient.getInstance().interactionManager as ClientPlayerInteractionManagerMixin?)!!.getCurrentBreakingProgress() * 100)
         if(s==0F) {
@@ -150,18 +186,35 @@ class TiwylaWidget: Widget("tiwyla") {
         return "${Bewisclient.getTranslatedString("progress")}: ${Math.round(s)}%"
     }
 
+    /**
+     * @param entity The [LivingEntity] the player is looking at
+     *
+     * @return The special information of the [LivingEntity] the player is looking at
+     */
     private fun getExtra(entity: LivingEntity): String? {
         return if(entityExtraInfo.contains(entity.type)) {
             entityExtraInfo[entity.type]?.getExtra(entity)
         } else null
     }
 
+    /**
+     * @param blockState The [BlockState] of the block the player is looking at
+     *
+     * @return The special information of the block the player is looking at
+     */
     private fun getExtra(blockState: BlockState): String? {
         return if(extraInfo.contains(blockState.block)) {
             "${firstStringUp("${extraInfo[blockState.block]?.name}")}: ${blockState.get(extraInfo[blockState.block])}"
         } else null
     }
 
+    /**
+     * Formats a [String] from snake to camel case ("hello_world" -> "HelloWorld")
+     *
+     * @param str Snake case [String]
+     *
+     * @return Camel case [String]
+     */
     private fun firstStringUp(str: String): String {
         val strings = str.split("_".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         val s = StringBuilder()
@@ -173,6 +226,12 @@ class TiwylaWidget: Widget("tiwyla") {
         return s.toString()
     }
 
+    /**
+     * @param blockPos The [BlockPos] of the block
+     * @param blockState The [BlockState] of that block
+     *
+     * @return A formatted [String] containing the time required to break a block
+     */
     private fun getBreakingTime(blockPos: BlockPos,blockState: BlockState): String {
         val player: ClientPlayerEntity = MinecraftClient.getInstance().player!!
         if(blockState.calcBlockBreakingDelta(player,MinecraftClient.getInstance().world,blockPos)>1) {
@@ -191,6 +250,11 @@ class TiwylaWidget: Widget("tiwyla") {
         return "$secs ${Bewisclient.getTranslatedString("seconds")}"
     }
 
+    /**
+     * @param block The [Block] of which the tool should be determent
+     *
+     * @return A formatted [String] containing the tool required to break a block
+     */
     private fun getTool(block: Block): String {
         if (block.defaultState.isIn(BlockTags.AXE_MINEABLE)) return "${Bewisclient.getTranslatedString("tool")}: ${Bewisclient.getTranslatedString("tool.axe")}"
         if (block.defaultState.isIn(BlockTags.PICKAXE_MINEABLE)) return "${Bewisclient.getTranslatedString("tool")}: ${Bewisclient.getTranslatedString("tool.pickaxe")}"
@@ -200,6 +264,11 @@ class TiwylaWidget: Widget("tiwyla") {
         return "${Bewisclient.getTranslatedString("tool")}: ${Bewisclient.getTranslatedString("tool.none")}"
     }
 
+    /**
+     * @param block The [Block] of which the mining level should be determent
+     *
+     * @return A formatted [String] containing the mining level required to break a block
+     */
     private fun getLevel(block: Block): String {
         val no = "${Bewisclient.getTranslatedString("mining_level")}: ${Bewisclient.getTranslatedString("mining_level.none")}"
         val def = "${Bewisclient.getTranslatedString("mining_level")}: ${Bewisclient.getTranslatedString("mining_level.wood")}"
@@ -220,7 +289,12 @@ class TiwylaWidget: Widget("tiwyla") {
         return no
     }
 
-    private fun getTextFromEntity(@Suppress("UNUSED_PARAMETER") hitResult: EntityHitResult, entity: Entity):ArrayList<String> {
+    /**
+     * @param entity The [Entity] of which the text should be returned
+     *
+     * @return The information of an [Entity]
+     */
+    private fun getTextFromEntity(entity: Entity):ArrayList<String> {
         return if(entity is LivingEntity)
             if(MinecraftClient.getInstance().isInSingleplayer && getProperty(SHOW_HEALTH_INFORMATION,*SELECT_PARTS)) {
                 arrayListOf(
@@ -240,11 +314,18 @@ class TiwylaWidget: Widget("tiwyla") {
             )
     }
 
+    /**
+     * @param health The health of an entity
+     * @param maxhealth The maximum health of an entity
+     * @param absorption The amount of absorption that the entity currently has
+     *
+     * @return A formatted [Text] containing the health as hearts
+     */
     @Suppress("NAME_SHADOWING")
-    fun convertToHearths(health: Double, maxhealth: Double, absorbtion: Double): Text {
+    fun convertToHearths(health: Double, maxhealth: Double, absorption: Double): Text {
         var health = health
         var maxhealth = maxhealth
-        var absorbtion = absorbtion
+        var absorbtion = absorption
         try {
             maxhealth = roundUpAndHalf(maxhealth)
             health = ((health * 10).toInt().toDouble()) / 10f
@@ -268,8 +349,13 @@ class TiwylaWidget: Widget("tiwyla") {
         }
     }
 
+    /**
+     * @param i The [Double]
+     *
+     * @return look at the function name (I'm tired lol)
+     */
     fun roundUpAndHalf(i: Double): Double {
-        return 500 - ((1000 - i).toInt()) / 2.0
+        return ceil(i) / 2.0
     }
 
     override fun getWidgetSettings(): JsonObject {

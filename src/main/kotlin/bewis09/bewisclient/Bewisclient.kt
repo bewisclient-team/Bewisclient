@@ -26,43 +26,53 @@ import net.minecraft.command.CommandRegistryAccess
 import net.minecraft.text.MutableText
 import net.minecraft.text.Style
 import net.minecraft.text.Text
-import net.minecraft.text.TranslatableTextContent
 import net.minecraft.util.math.Vec3d
 import org.lwjgl.glfw.GLFW
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import java.lang.Float.min
 import javax.swing.Timer
 import kotlin.math.max
 
-// TODO Document
+/**
+ * The main class for Bewisclient
+ */
 object Bewisclient : ClientModInitializer {
-    private val LOGGER: Logger = LoggerFactory.getLogger("bewisclient")
 
-	var openOptionScreenKeyBindimg: KeyBinding? = null
-	var zoomBinding: KeyBinding? = null
-
+	/**
+	 * The position when the speed was calculated the previous time
+	 */
 	var posOld = Vec3d.ZERO!!
-	var posNew = Vec3d.ZERO!!
 
+	/**
+	 * The current speed of the player for the [bewis09.bewisclient.widgets.lineWidgets.SpeedWidget]
+	 */
 	var speed = 0.0
 
+	/**
+	 * Indicates if smoothCamera was enabled before the zoom was enabled
+	 */
 	var pt: Boolean? = false
 
-	class Companion {
-		companion object {
-			var rightList: ArrayList<Long> = ArrayList()
-			val leftList: ArrayList<Long> = ArrayList()
-			var update: JsonObject? = null
-		}
-	}
+	/**
+	 * A collection of all times in milliseconds in the last second, when the right mouse button was pressed
+	 */
+	var rightList: ArrayList<Long> = ArrayList()
+
+	/**
+	 * A collection of all times in milliseconds in the last second, when the left mouse button was pressed
+	 */
+	val leftList: ArrayList<Long> = ArrayList()
+
+	/**
+	 * A new Bewisclient update or null if none is available
+	 */
+	var update: JsonObject? = null
 
 	override fun onInitializeClient() {
 		SettingsLoader.loadSettings()
 
-		Companion.update = UpdateChecker.checkForUpdates()
-		if(Companion.update!=null)
-			Updater.downloadVersion(Companion.update!!)
+		update = UpdateChecker.checkForUpdates()
+		if(update!=null)
+			Updater.downloadVersion(update!!)
 
 		//ServerConnection()
 
@@ -73,14 +83,14 @@ object Bewisclient : ClientModInitializer {
 		val keyBinding3 = KeyBindingHelper.registerKeyBinding(KeyBinding("bewisclient.key.gamma_down", GLFW.GLFW_KEY_DOWN, "bewisclient.category.bewisclient"))
 		val keyBinding4 = KeyBindingHelper.registerKeyBinding(KeyBinding("bewisclient.key.night_vision", GLFW.GLFW_KEY_H, "bewisclient.category.bewisclient"))
 
-		openOptionScreenKeyBindimg = KeyBindingHelper.registerKeyBinding(KeyBinding(
+		val openOptionScreenKeyBinding = KeyBindingHelper.registerKeyBinding(KeyBinding(
 				"bewisclient.key.open_screen",
 				InputUtil.Type.KEYSYM,
 				GLFW.GLFW_KEY_RIGHT_SHIFT,
 				"bewisclient.category.bewisclient"
 		))
 
-		zoomBinding = KeyBindingHelper.registerKeyBinding(KeyBinding(
+		val zoomBinding = KeyBindingHelper.registerKeyBinding(KeyBinding(
 				"bewisclient.key.zoom",
 				InputUtil.Type.KEYSYM,
 				GLFW.GLFW_KEY_C,
@@ -90,16 +100,17 @@ object Bewisclient : ClientModInitializer {
 		ClientTickEvents.END_CLIENT_TICK.register {
 
 			if(it.player!=null && it.isPaused.not()) {
-				posOld = posNew
-				posNew = it.player!!.pos
+				val posNew = it.player!!.pos
 
 				speed = if(SettingsLoader.get("widgets", Settings.SPEED,Settings.VERTICAL_SPEED))
 					posNew.subtract(posOld).length()
 				else
 					posNew.subtract(posOld).horizontalLength()
+
+				posOld = posNew
 			}
 
-			while (openOptionScreenKeyBindimg?.wasPressed() == true) {
+			while (openOptionScreenKeyBinding?.wasPressed() == true) {
 				it.setScreen(MainOptionsScreen())
 			}
 
@@ -222,40 +233,50 @@ object Bewisclient : ClientModInitializer {
 				.append(": ").append((gamma * 1000f).toString() + "%"), true)
 	}
 
-	@Suppress("unused")
-	fun log(string: Any?) {
-		LOGGER.info(string.toString())
-	}
-
-	fun getTranslationText(key: String, vararg args: Any): MutableText {
-		return MutableText.of(TranslatableTextContent(key, null, args))
-	}
-
+	/**
+	 * @param key The translation key without "bewisclient."
+	 *
+	 * @return A translated [Text] with prefix "bewisclient."
+	 */
 	fun getTranslationText(key: String): MutableText {
 		return Text.translatable("bewisclient.$key")
 	}
 
+	/**
+	 * @param key The translation key without "bewisclient."
+	 *
+	 * @return The [String] from the translated [Text] with prefix "bewisclient."
+	 */
 	fun getTranslatedString(key: String): String {
 		return getTranslationText(key).string
 	}
 
+	/**
+	 * Starts a timer for the wing animation
+	 */
 	fun wing() {
 		Timer(50) {
 			WingFeatureRenderer.wing_animation_frame = (WingFeatureRenderer.wing_animation_frame + 1) % 60
 		}.start()
 	}
 
+	/**
+	 * @return The CPS for the left mouse button
+	 */
 	fun lCount(): Int {
-		for (l in java.util.ArrayList(Companion.leftList)) {
-			if (System.currentTimeMillis() - l > 1000) Companion.leftList.remove(l)
+		for (l in java.util.ArrayList(leftList)) {
+			if (System.currentTimeMillis() - l > 1000) leftList.remove(l)
 		}
-		return Companion.leftList.size
+		return leftList.size
 	}
 
+	/**
+	 * @return The CPS for the right mouse button
+	 */
 	fun rCount(): Int {
-		for (l in java.util.ArrayList(Companion.rightList)) {
-			if (System.currentTimeMillis() - l > 1000) Companion.rightList.remove(l)
+		for (l in java.util.ArrayList(rightList)) {
+			if (System.currentTimeMillis() - l > 1000) rightList.remove(l)
 		}
-		return Companion.rightList.size
+		return rightList.size
 	}
 }

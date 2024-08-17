@@ -22,9 +22,9 @@ public class MouseMixin {
     public void inject(long window, int button, int action, int mods, CallbackInfo ci) {
         if (action == 1) {
             if (button == 0) {
-                Bewisclient.Companion.Companion.getLeftList().add(System.currentTimeMillis());
+                Bewisclient.INSTANCE.getLeftList().add(System.currentTimeMillis());
             } else if (button == 1) {
-                Bewisclient.Companion.Companion.getRightList().add(System.currentTimeMillis());
+                Bewisclient.INSTANCE.getRightList().add(System.currentTimeMillis());
             }
         }
     }

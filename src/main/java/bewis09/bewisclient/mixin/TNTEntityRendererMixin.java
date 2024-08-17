@@ -2,7 +2,7 @@ package bewis09.bewisclient.mixin;
 
 import bewis09.bewisclient.settingsLoader.Settings;
 import bewis09.bewisclient.settingsLoader.SettingsLoader;
-import bewis09.bewisclient.util.MathUtil;
+import bewis09.bewisclient.util.NumberFormatter;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderer;
@@ -43,7 +43,7 @@ public abstract class TNTEntityRendererMixin extends EntityRenderer<TntEntity> {
         matrices.scale(0.015f, -0.015f, 0.015f);
         Matrix4f matrix4f = matrices.peek().getPositionMatrix();
         TextRenderer textRenderer = this.getTextRenderer();
-        final var s = MathUtil.Companion.withAfterCommaZero(entity.getFuse()/20f,2)+"s";
+        final var s = NumberFormatter.INSTANCE.withAfterPointZero(entity.getFuse()/20f,2)+"s";
         float g = (float) -textRenderer.getWidth(s) / 2;
         textRenderer.draw(s, g, 0, Colors.WHITE, false, matrix4f, vertexConsumerProvider, TextRenderer.TextLayerType.POLYGON_OFFSET, 0, i);
         matrices.pop();

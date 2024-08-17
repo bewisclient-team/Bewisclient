@@ -3,7 +3,7 @@ package bewis09.bewisclient.mixin;
 import bewis09.bewisclient.settingsLoader.Settings;
 import bewis09.bewisclient.settingsLoader.SettingsLoader;
 import bewis09.bewisclient.util.ColorSaver;
-import bewis09.bewisclient.util.MathUtil;
+import bewis09.bewisclient.util.NumberFormatter;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.client.MinecraftClient;
@@ -28,7 +28,7 @@ public abstract class WorldRendererMixin {
     @Overwrite
     private void drawBlockOutline(MatrixStack matrices, VertexConsumer vertexConsumer, Entity entity, double cameraX, double cameraY, double cameraZ, BlockPos pos, BlockState state) {
         int in = (((ColorSaver.Companion.of(Integer.parseInt(SettingsLoader.INSTANCE.get("design",Settings.Companion.getBLOCKHIT(),Settings.Companion.getCOLOR()).toString().replace("0x",""),16))).getColor())+0x1000000)%0x1000000;
-        String str = MathUtil.Companion.zeroBefore(in,6,16);
+        String str = NumberFormatter.INSTANCE.zeroBefore(in,6,16);
         try {
             float r = Integer.decode("0x" + str.charAt(0) + str.charAt(1)) / 256f;
             float g = Integer.decode("0x" + str.charAt(2) + str.charAt(3)) / 256f;

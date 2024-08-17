@@ -1,6 +1,6 @@
 package bewis09.bewisclient.autoUpdate
 
-import bewis09.bewisclient.Bewisclient.Companion.Companion.update
+import bewis09.bewisclient.Bewisclient.update
 import bewis09.bewisclient.settingsLoader.Settings
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import com.google.gson.JsonObject
@@ -12,8 +12,16 @@ import java.net.URI
 import java.util.*
 import kotlin.io.path.pathString
 
-// TODO Document
+/**
+ * Used for downloading the new version and copying the java class to change the jar file
+ */
 object Updater {
+
+    /**
+     * Used for downloading the new version and copying the java class to change the jar file
+     *
+     * @param version The version returned by the modrinth api
+     */
     fun downloadVersion(version: JsonObject) {
         if (!System.getProperty("os.name").lowercase(Locale.getDefault()).contains("win")) {
             return

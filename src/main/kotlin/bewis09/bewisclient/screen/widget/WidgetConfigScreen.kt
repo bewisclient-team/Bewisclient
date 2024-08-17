@@ -17,16 +17,41 @@ import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.round
 
-// TODO Document
+/**
+ * A [Screen] for configuring the widget size and position
+ */
 class WidgetConfigScreen(var parent: MainOptionsScreen): Screen(Text.empty()) {
 
-    private var selected: Widget? = null
+    /**
+     * The [Widget] that is currently hovered over
+     */
+    private var hoveredWidget: Widget? = null
 
+    /**
+     * The time when the animation when opening/closing the screen has started
+     *
+     * @see [System.currentTimeMillis]
+     */
     var alphaStart = -1L
+
+    /**
+     * The direction in which the animation when opening/closing the screen is going
+     */
     var alphaDirection = 0
 
+    /**
+     * The [Widget] that is currently selected
+     */
     var _sel_element: Widget? = null
+
+    /**
+     * The offset of the [_sel_element] in x-direction in cause of moving it
+     */
     var _sel_xOffset: Int = 0
+
+    /**
+     * The offset of the [_sel_element] in y-direction in cause of moving it
+     */
     var _sel_yOffset: Int = 0
 
     override fun render(context: DrawContext?, mouseX: Int, mouseY: Int, delta: Float) {
@@ -49,18 +74,18 @@ class WidgetConfigScreen(var parent: MainOptionsScreen): Screen(Text.empty()) {
             return
         }
 
-        var sdfji = MathHelper.clamp((System.currentTimeMillis() - alphaStart)/animationSpeed,0f,1f)
-        sdfji = abs(alphaDirection-sdfji)
-        sdfji = (1-cos(Math.PI/2 * sdfji)).toFloat()
+        var clamped_value = MathHelper.clamp((System.currentTimeMillis() - alphaStart)/animationSpeed,0f,1f)
+        clamped_value = abs(alphaDirection-clamped_value)
+        clamped_value = (1-cos(Math.PI/2 * clamped_value)).toFloat()
 
-        val sdfjij = ((sdfji*0xAA).toLong()*0x1000000)
+        val clamped_add_value = ((clamped_value*0xAA).toLong()*0x1000000)
 
-        context?.drawHorizontalLine(0,width,height/2, (0xAAAAAAL+sdfjij).toInt())
-        context?.drawVerticalLine(width/3,0,height, (0xAAAAAAL+sdfjij).toInt())
-        context?.drawVerticalLine(width/3*2,0,height, (0xAAAAAAL+sdfjij).toInt())
-        context?.drawVerticalLine(width/2,0,height, (0xFF8888L+sdfjij).toInt())
+        context?.drawHorizontalLine(0,width,height/2, (0xAAAAAAL+clamped_add_value).toInt())
+        context?.drawVerticalLine(width/3,0,height, (0xAAAAAAL+clamped_add_value).toInt())
+        context?.drawVerticalLine(width/3*2,0,height, (0xAAAAAAL+clamped_add_value).toInt())
+        context?.drawVerticalLine(width/2,0,height, (0xFF8888L+clamped_add_value).toInt())
 
-        selected = null
+        hoveredWidget = null
 
         WidgetRenderer.widgets.forEach {
             if (context != null && it.isEnabled()) {
@@ -68,21 +93,21 @@ class WidgetConfigScreen(var parent: MainOptionsScreen): Screen(Text.empty()) {
             }
 
             if(it.getOriginalPosX()<mouseX && it.getOriginalPosY()<mouseY && it.getOriginalPosX()+it.getWidth()>mouseX && it.getOriginalPosY()+it.getHeight()>mouseY) {
-                selected = it
+                hoveredWidget = it
             }
         }
 
-        if(selected!=null) {
-            if(selected!!.id=="effect") {
+        if(hoveredWidget!=null) {
+            if(hoveredWidget!!.id=="effect") {
                 context?.drawTooltip(textRenderer, arrayListOf(
-                        Bewisclient.getTranslationText("widgets." + selected?.id),
+                        Bewisclient.getTranslationText("widgets." + hoveredWidget?.id),
                 ) as List<Text>?, mouseX, mouseY)
             } else {
                 context?.drawTooltip(textRenderer, arrayListOf(
-                        Bewisclient.getTranslationText("widgets." + selected?.id),
+                        Bewisclient.getTranslationText("widgets." + hoveredWidget?.id),
                         Bewisclient.getTranslationText("screen.info.shift").formatted(Formatting.GRAY),
                         Bewisclient.getTranslationText("screen.info.right").formatted(Formatting.GRAY),
-                        Bewisclient.getTranslationText("screen.info.scroll").formatted(Formatting.GRAY).append(" (${selected!!.getProperty(Settings.SIZE)})")
+                        Bewisclient.getTranslationText("screen.info.scroll").formatted(Formatting.GRAY).append(" (${hoveredWidget!!.getProperty(Settings.SIZE)})")
                 ) as List<Text>?, mouseX, mouseY)
             }
         }
@@ -100,18 +125,18 @@ class WidgetConfigScreen(var parent: MainOptionsScreen): Screen(Text.empty()) {
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
-        if (selected!=null) {
+        if (hoveredWidget!=null) {
             if (button == 0) {
-                _sel_element = selected!!
-                _sel_xOffset = (mouseX - selected!!.getOriginalPosX()).toInt()
-                _sel_yOffset = (mouseY - selected!!.getOriginalPosY()).toInt()
-            } else if(button == 1  && selected!!.id!="effect") {
+                _sel_element = hoveredWidget!!
+                _sel_xOffset = (mouseX - hoveredWidget!!.getOriginalPosX()).toInt()
+                _sel_yOffset = (mouseY - hoveredWidget!!.getOriginalPosY()).toInt()
+            } else if(button == 1  && hoveredWidget!!.id!="effect") {
                 alphaStart = System.currentTimeMillis()
                 alphaDirection = 1
 
                 parent = MainOptionsScreen()
                 parent.allElements.add(ElementList.widgets())
-                parent.allElements.add(ElementList.loadWidgetsSingleFromDefault(selected!!,selected!!.getWidgetSettings(),selected!!.id))
+                parent.allElements.add(ElementList.loadWidgetsSingleFromDefault(hoveredWidget!!,hoveredWidget!!.getWidgetSettings(),hoveredWidget!!.id))
                 parent.scrolls.add(0f)
                 parent.scrolls.add(0f)
                 parent.slice = 2
@@ -127,8 +152,8 @@ class WidgetConfigScreen(var parent: MainOptionsScreen): Screen(Text.empty()) {
     }
 
     override fun mouseScrolled(mouseX: Double, mouseY: Double, horizontalAmount: Double, verticalAmount: Double): Boolean {
-        if(selected!=null) {
-            selected!!.setProperty(Settings.SIZE, MathHelper.clamp((round((selected!!.getProperty(Settings.SIZE)+verticalAmount.toFloat()/10f)*100)/100f),0.2f,2f))
+        if(hoveredWidget!=null) {
+            hoveredWidget!!.setProperty(Settings.SIZE, MathHelper.clamp((round((hoveredWidget!!.getProperty(Settings.SIZE)+verticalAmount.toFloat()/10f)*100)/100f),0.2f,2f))
         }
         return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)
     }

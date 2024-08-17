@@ -3,7 +3,7 @@ package bewis09.bewisclient.kfj
 import bewis09.bewisclient.MixinStatics
 import bewis09.bewisclient.settingsLoader.Settings
 import bewis09.bewisclient.settingsLoader.SettingsLoader.get
-import bewis09.bewisclient.util.MathUtil
+import bewis09.bewisclient.util.NumberFormatter
 import bewis09.bewisclient.widgets.WidgetRenderer
 import com.google.common.collect.Lists
 import com.google.common.collect.Ordering
@@ -33,7 +33,7 @@ import java.util.function.Consumer
 import kotlin.math.max
 
 /**
- * A class used to write code that is executed in a mixin in kotlin
+ * A class used to write code executed in a mixin in kotlin
  */
 object KFJ: Settings() {
     /**
@@ -157,10 +157,10 @@ object KFJ: Settings() {
             }
             context.drawCenteredTextWithShadow(
                 MinecraftClient.getInstance().textRenderer,
-                if (statusEffectInstance.isDurationBelow(120000)) MathUtil.zeroBefore(
+                if (statusEffectInstance.isDurationBelow(120000)) NumberFormatter.zeroBefore(
                     statusEffectInstance.duration / 1200,
                     2
-                ) + ":" + MathUtil.zeroBefore(
+                ) + ":" + NumberFormatter.zeroBefore(
                     (statusEffectInstance.duration % 1200) / 20, 2
                 ) else "**:**", k - 3 + 15, l + 25, -1
             )
@@ -191,7 +191,7 @@ object KFJ: Settings() {
         context.matrices.translate(-MinecraftClient.getInstance().window.scaledWidth.toFloat()+MinecraftClient.getInstance().window.scaledWidth.toFloat()/scale,-MinecraftClient.getInstance().window.scaledWidth.toFloat()/4+MinecraftClient.getInstance().window.scaledWidth.toFloat()/scale/4,0f)
         val scoreboard: Scoreboard = objective.scoreboard
         val numberFormat: NumberFormat = objective.getNumberFormatOr(StyledNumberFormat.RED as NumberFormat)
-        val sidebarEntrys =
+        val sidebarEntries =
             scoreboard.getScoreboardEntries(objective).stream().filter { score: ScoreboardEntry -> !score.hidden() }
                 .sorted(SCOREBOARD_ENTRY_COMPARATOR).limit(15L)
                 .map { scoreboardEntry: ScoreboardEntry ->
@@ -210,7 +210,7 @@ object KFJ: Settings() {
         var i: Int
         var j: Int = MinecraftClient.getInstance().textRenderer.getWidth(text as StringVisitable).also { i = it }
         val k: Int = MinecraftClient.getInstance().textRenderer.getWidth(SCOREBOARD_JOINER)
-        for (sidebarEntry in sidebarEntrys) {
+        for (sidebarEntry in sidebarEntries) {
             j = max(
                 j.toDouble(),
                 (MinecraftClient.getInstance().textRenderer
@@ -221,7 +221,7 @@ object KFJ: Settings() {
         val l = j
         @Suppress("DEPRECATION")
         context.draw {
-            val length = sidebarEntrys.size
+            val length = sidebarEntries.size
             Objects.requireNonNull(MinecraftClient.getInstance().textRenderer)
             val lk = length * 9
             val m: Int = context.scaledWindowHeight / 2 + lk / 3
@@ -239,7 +239,7 @@ object KFJ: Settings() {
             Objects.requireNonNull(MinecraftClient.getInstance().textRenderer)
             context.drawText(textRenderer, text, n2, s - 9, Colors.WHITE, false)
             for (t in 0 until length) {
-                val sidebarEntry = sidebarEntrys[t]
+                val sidebarEntry = sidebarEntries[t]
                 Objects.requireNonNull(MinecraftClient.getInstance().textRenderer)
                 val u = m - (length - t) * 9
                 context.drawText(

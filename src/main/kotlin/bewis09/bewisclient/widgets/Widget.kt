@@ -49,22 +49,22 @@ abstract class Widget(val id: String): Settings() {
     /**
      * @return The scaling of the widget
      */
-    open fun getScale(): Float = getProperty(Settings.SIZE)
+    open fun getScale(): Float = getProperty(SIZE)
 
     /**
      * @return If the widget should be shown
      */
-    open fun isEnabled(): Boolean = getProperty(Settings.ENABLED)
+    open fun isEnabled(): Boolean = getProperty(ENABLED)
 
     /**
      * @return The x position saved in the settings (Not the real x position)
      */
-    private fun getSavedPosX(): Float = getProperty(Settings.POSX)
+    private fun getSavedPosX(): Float = getProperty(POSX)
 
     /**
      * @return The y position saved in the settings (Not the real x position)
      */
-    private fun getSavedPosY(): Float = getProperty(Settings.POSY)
+    private fun getSavedPosY(): Float = getProperty(POSY)
 
     /**
      * @return The scaled width of the screen
@@ -79,12 +79,12 @@ abstract class Widget(val id: String): Settings() {
     /**
      * @return The horizontal part of the screen where the widget should be shown (-1; 0; 1)
      */
-    private fun getSavedPartX(): Int = getProperty(Settings.PARTX).toInt()
+    private fun getSavedPartX(): Int = getProperty(PARTX).toInt()
 
     /**
      * @return The vertical part of the screen where the widget should be shown (-1; 1)
      */
-    private fun getSavedPartY(): Int = getProperty(Settings.PARTY).toInt()
+    private fun getSavedPartY(): Int = getProperty(PARTY).toInt()
 
     /**
      * Use [getPosX] instead of this, if you want scaling

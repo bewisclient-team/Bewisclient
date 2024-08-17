@@ -5,15 +5,33 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 
-// TODO Document
+/**
+ * Lists the default values for the settings
+ */
 object DefaultSettings {
 
+    /**
+     * Isn't that self-explanatory?
+     */
     val gson = Gson()
 
+    /**
+     * The information for a slider in a [bewis09.bewisclient.drawable.option_elements.settings.FloatOptionElement]
+     *
+     * @param start The minimum value
+     * @param end The maximum value
+     * @param decimalPoints The number of digits after the decimal point
+     */
     class SliderInfo(val start: Float, val end: Float, val decimalPoints: Int)
 
+    /**
+     * The array for cycling through the possible options for the Tiwyla lines
+     */
     val TiwylaArray = arrayListOf("tiwyla.tool","tiwyla.level","tiwyla.time","tiwyla.tool.progress","tiwyla.level.progress","tiwyla.time.progress","tiwyla.tool.extra","tiwyla.level.extra","tiwyla.time.extra")
 
+    /**
+     * The sliders and corresponding data
+     */
     val sliders: HashMap<String,SliderInfo> = hashMapOf(
             Pair(".transparency",SliderInfo(0f,1f,2)),
             Pair(".size",SliderInfo(0.2f,2f,2)),
@@ -29,6 +47,9 @@ object DefaultSettings {
             Pair("scoreboard.scale",SliderInfo(0.5f,1.5f,2))
     )
 
+    /**
+     * All arrays for [bewis09.bewisclient.drawable.option_elements.settings.ArrayOptionElement]
+     */
     val arrays: HashMap<String,ArrayList<String>> = hashMapOf(
             Pair(".first_line", TiwylaArray),
             Pair(".second_line", TiwylaArray),
@@ -97,6 +118,11 @@ object DefaultSettings {
         general.add("screenshot_folder_open", JsonPrimitive(false))
     }
 
+    /**
+     * @param string The settings category id
+     *
+     * @return The default values for the category id
+     */
     fun getDefault(string: String): JsonObject {
         when (string) {
             "widgets" -> return widgets

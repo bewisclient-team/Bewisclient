@@ -3,11 +3,11 @@ package bewis09.bewisclient.drawable.option_elements.settings
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.drawable.ScalableButtonWidget
 import bewis09.bewisclient.drawable.UsableSliderWidget
-import bewis09.bewisclient.drawable.UsableSliderWidget.Companion.withDecimalPlaces
 import bewis09.bewisclient.screen.ElementList.dependentDisabler
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.util.ColorSaver
+import bewis09.bewisclient.util.NumberFormatter
 import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
@@ -18,7 +18,7 @@ import java.awt.Color
 import kotlin.math.roundToInt
 
 /**
- * A [SettingsOptionsElement] which changes a color
+ * A [SettingsOptionElement] which changes a color
  *
  * @param title The title of the element and gets converted to the description string
  * @param settings The category of settings the setting
@@ -30,7 +30,7 @@ class ColorPickerElement(
     path: Array<String>,
     id: SettingsLoader.TypedSettingID<ColorSaver>,
     settings: String
-): SettingsOptionsElement<ColorSaver>(title, settings, path, id) {
+): SettingsOptionElement<ColorSaver>(title, settings, path, id) {
 
     /**
      * The x-position of the current color on the grid between 0 and 58
@@ -79,21 +79,21 @@ class ColorPickerElement(
      * The [UsableSliderWidget] for the speed when changing
      */
     val widget = UsableSliderWidget(0, 0, 100, 20, Text.empty(), if(get().getColor()<0)
-        (((get().getOriginalColor()*-1).toDouble())-1000)/19000 else 9/19.0, 20000F, 1000F, -2, {
+        (((get().getOriginalColor()*-1).toDouble())-1000)/19000 else 9/19.0, 1000F, 20000F, -2, {
         set(ColorSaver.of((-(it*(19000F)+1000F)).roundToInt()))
-    },{
-        Text.of(Bewisclient.getTranslatedString("gui.speed")+": "+withDecimalPlaces((it)*19+1,2)+" ${Bewisclient.getTranslatedString("seconds")}")
+    }, {
+        Text.of(Bewisclient.getTranslatedString("gui.speed")+": "+NumberFormatter.withAfterPointZero((it)*19+1,2)+" ${Bewisclient.getTranslatedString("seconds")}")
     })
 
     /**
      * The [UsableSliderWidget] for the brightness when static
      */
     val widget2 = UsableSliderWidget(0, 0, 100, 20, Text.empty(),
-            if(get().getColor()>0) convertRGBtoHSB(get())[2].toDouble() else 1.0, 1F, 0F, 2, {
-        set(ColorSaver.of(convertHSBtoRGB(posX/60f,posY/60f,it.toFloat())+0x1000000))
-    },{
-        Text.of(Bewisclient.getTranslatedString("gui.brightness")+": "+withDecimalPlaces(it,2))
-    })
+        if(get().getColor()>0) convertRGBtoHSB(get())[2].toDouble() else 1.0, 0F, 1F, 2, {
+    set(ColorSaver.of(convertHSBtoRGB(posX/60f,posY/60f,it.toFloat())+0x1000000))
+}, {
+    Text.of(Bewisclient.getTranslatedString("gui.brightness")+": "+NumberFormatter.withAfterPointZero(it,2))
+})
 
     init {
         val color = convertRGBtoHSB(get())

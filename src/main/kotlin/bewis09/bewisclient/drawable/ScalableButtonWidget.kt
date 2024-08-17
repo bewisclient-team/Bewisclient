@@ -7,6 +7,7 @@ import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.tooltip.Tooltip
 import net.minecraft.client.gui.widget.ButtonWidget
+import net.minecraft.client.gui.widget.ClickableWidget
 import net.minecraft.text.Text
 import net.minecraft.util.Util
 import net.minecraft.util.math.MathHelper
@@ -14,7 +15,9 @@ import kotlin.math.cos
 import kotlin.math.max
 import kotlin.math.sin
 
-// TODO Document
+/**
+ * A ButtonWidget that allows for scaling in the [MainOptionsScreen]
+ */
 open class ScalableButtonWidget(x: Int, y: Int, width: Int, height: Int, message: Text?, onPress: PressAction?) : ButtonWidget(x, y, width, height, message, onPress, null) {
 
     override fun drawScrollableText(context: DrawContext?, textRenderer: TextRenderer?, xMargin: Int, color: Int) {
@@ -23,11 +26,17 @@ open class ScalableButtonWidget(x: Int, y: Int, width: Int, height: Int, message
         drawScrollableTextT(context, textRenderer, this.message, i, this.y, j, this.y + this.getHeight(), color)
     }
 
-    protected fun drawScrollableTextT(context: DrawContext?, textRenderer: TextRenderer?, text: Text?, startX: Int, startY: Int, endX: Int, endY: Int, color: Int) {
+    /**
+     * Copied from [ClickableWidget]
+     */
+    private fun drawScrollableTextT(context: DrawContext?, textRenderer: TextRenderer?, text: Text?, startX: Int, startY: Int, endX: Int, endY: Int, color: Int) {
         this.drawScrollableTextT(context!!, textRenderer!!, text, (startX + endX) / 2, startX, startY, endX, endY, color)
     }
 
-    protected fun drawScrollableTextT(context: DrawContext, textRenderer: TextRenderer, text: Text?, centerX: Int, startX: Int, startY: Int, endX: Int, endY: Int, color: Int) {
+    /**
+     * Copied from [ClickableWidget]
+     */
+    private fun drawScrollableTextT(context: DrawContext, textRenderer: TextRenderer, text: Text?, centerX: Int, startX: Int, startY: Int, endX: Int, endY: Int, color: Int) {
         val i = textRenderer.getWidth(text)
         val j = (startY + endY - textRenderer.fontHeight) / 2 + 1
         val k = endX - startX
@@ -50,6 +59,9 @@ open class ScalableButtonWidget(x: Int, y: Int, width: Int, height: Int, message
         }
     }
 
+    /**
+     * A builder for the [ScalableButtonWidget] just like [ButtonWidget.Builder]
+     */
     @Environment(value = EnvType.CLIENT)
     class Builder(private val message: Text, private val onPress: PressAction) {
         private var tooltip: Tooltip? = null
@@ -87,6 +99,9 @@ open class ScalableButtonWidget(x: Int, y: Int, width: Int, height: Int, message
     }
 
     companion object {
+        /**
+         * @return A newly created [Builder]
+         */
         fun builder(message: Text?, onPress: PressAction?): Builder {
             return Builder(message!!, onPress!!)
         }

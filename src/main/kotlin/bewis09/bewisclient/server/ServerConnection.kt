@@ -11,7 +11,7 @@ import java.net.http.WebSocket.Builder
 import java.net.http.WebSocket.Listener
 import java.util.concurrent.CompletionStage
 
-// TODO Document
+// work in progress
 @Suppress("unused")
 class ServerConnection {
     val gson: Gson = Gson()

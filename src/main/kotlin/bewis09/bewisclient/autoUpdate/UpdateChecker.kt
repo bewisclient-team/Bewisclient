@@ -9,8 +9,14 @@ import net.minecraft.SharedConstants
 import java.net.URL
 import java.util.*
 
-// TODO Document
+/**
+ * Checks for updates
+ */
 object UpdateChecker {
+
+    /**
+     * Checks for updates
+     */
     fun checkForUpdates(): JsonObject? {
         try {
             @Suppress("DEPRECATION") val scanner = Scanner(URL("https://api.modrinth.com/v2/project/bewisclient/version").openStream())
@@ -48,6 +54,9 @@ object UpdateChecker {
         return null
     }
 
+    /**
+     * @return The version that is currently installed
+     */
     fun getCurrentVersion(): String {
         val mod = FabricLoader.getInstance().getModContainer("bewisclient")
 
@@ -61,17 +70,25 @@ object UpdateChecker {
         return ""
     }
 
+    /**
+     * @return The version number given by [getVersionNumber] for the version that is currently installed
+     */
     fun getCurrentVersionNumber(): Int {
         val v = getCurrentVersion()
         if(v.split("-").size<2) return 2
         return getVersionNumber(v.split("-")[1].split(".")[0])
     }
 
+    /**
+     * @param s The version type as [String]
+     *
+     * @return 0, 1 or 2 if [s] is alpha, beta or anything else
+     */
     fun getVersionNumber(s: String): Int {
-        when (s) {
-            "beta"->return 1
-            "alpha"->return 0
+        return when (s) {
+            "beta"-> 1
+            "alpha"-> 0
+            else-> 2
         }
-        return 2
     }
 }
