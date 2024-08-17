@@ -1,5 +1,3 @@
-@file:Suppress("UNUSED_VARIABLE")
-
 package bewis09.bewisclient.server
 
 import com.google.gson.Gson
