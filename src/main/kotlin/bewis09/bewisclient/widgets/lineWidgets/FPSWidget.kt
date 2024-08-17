@@ -12,6 +12,6 @@ class FPSWidget: LineWidget("fps",80,true) {
     }
 
     override fun getWidgetSettings(): JsonObject {
-        return getWidgetSettings(0.7f,5f,1f,35f,-1f)
+        return getWidgetSettings(0.7f,5f,1f,44f,-1f)
     }
 }

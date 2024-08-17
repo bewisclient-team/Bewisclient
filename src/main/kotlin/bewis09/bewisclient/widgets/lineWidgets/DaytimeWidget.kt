@@ -38,7 +38,7 @@ class DaytimeWidget: LineWidget("daytime",80,true) {
     }
 
     override fun getWidgetSettings(): JsonObject {
-        val list = super.getWidgetSettings(.7f,5f,1f,83f,-1f)
+        val list = super.getWidgetSettings(.7f,5f,1f,92f,-1f)
         list.add(CLOCK24.id, JsonPrimitive(!((DateFormat.getTimeInstance(DateFormat.DEFAULT, Locale.getDefault())) as SimpleDateFormat).toPattern().contains("a")))
         return list
     }

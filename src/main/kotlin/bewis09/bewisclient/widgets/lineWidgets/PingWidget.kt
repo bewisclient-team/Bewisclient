@@ -66,6 +66,6 @@ class PingWidget: LineWidget("ping",80,true) {
     }
 
     override fun getWidgetSettings(): JsonObject {
-        return getWidgetSettings(0.7f,5f,1f,95f,-1f)
+        return getWidgetSettings(0.7f,5f,1f,104f,-1f)
     }
 }

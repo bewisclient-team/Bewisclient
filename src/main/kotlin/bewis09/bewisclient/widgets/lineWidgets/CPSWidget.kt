@@ -19,7 +19,7 @@ class CPSWidget: LineWidget("cps",80,true) {
     }
 
     override fun getWidgetSettings(): JsonObject {
-        val list = super.getWidgetSettings(.7f,5f,1f,47f,-1f)
+        val list = super.getWidgetSettings(.7f,5f,1f,56f,-1f)
         list.add(CPS_ELEMENTS.id, JsonPrimitive(0) as JsonElement)
         return list
     }

@@ -13,6 +13,6 @@ class DayWidget: LineWidget("days",80,true) {
     }
 
     override fun getWidgetSettings(): JsonObject {
-        return getWidgetSettings(.7f,5f,1f,59f,-1f)
+        return getWidgetSettings(.7f,5f,1f,68f,-1f)
     }
 }
