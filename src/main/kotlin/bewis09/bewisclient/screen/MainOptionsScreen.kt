@@ -2,6 +2,8 @@ package bewis09.bewisclient.screen
 
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.drawable.UsableTexturedButtonWidget
+import bewis09.bewisclient.drawable.option_elements.ContactElement
+import bewis09.bewisclient.drawable.option_elements.HRElement
 import bewis09.bewisclient.drawable.option_elements.OptionElement
 import bewis09.bewisclient.mixin.ScreenMixin
 import bewis09.bewisclient.screen.widget.WidgetConfigScreen
@@ -307,6 +309,8 @@ open class MainOptionsScreen : Screen(Text.empty()) {
                     slice = 0
                 } else {
                     allElements = arrayListOf(Search.search(it, searchCollection))
+                    allElements[0].add(HRElement())
+                    allElements[0].add(ContactElement("find_no_option","https://github.com/Bewis09/Bewisclient-2/issues/new?labels=Type:%20Enhancement,Part:%20Option&assignee=Bewis09&title=New%20Option:%20"))
                     scrolls = arrayListOf(0f)
                     slice = 0
                 }

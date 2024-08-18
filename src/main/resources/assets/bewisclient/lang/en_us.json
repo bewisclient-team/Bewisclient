@@ -229,5 +229,7 @@
   "bewisclient.key.gamma_up": "Increase Brightness",
   "bewisclient.key.gamma_down": "Decrease Brightness",
   "bewisclient.key.night_vision": "Toggle Night Vision",
-  "bewisclient.key.zoom": "Zoom"
+  "bewisclient.key.zoom": "Zoom",
+  "bewisclient.contact.find_no_option": "Didn't find what you were searching for?",
+  "bewisclient.description.contact.find_no_option": "Request new setting on github"
 }
