@@ -40,6 +40,12 @@ object ElementList: Settings() {
             "coordinates",
             *SELECT_PARTS
         )
+    },Pair("better_visibility.lava_view") {
+        SettingsLoader.get(
+            DESIGN,
+            LAVA,
+            *BETTER_VISIBILITY
+        )
     })
 
     val widgets: ()->ArrayList<OptionElement> = {
@@ -122,12 +128,14 @@ object ElementList: Settings() {
 
     val better_visibility: ()->ArrayList<OptionElement> = {
         arrayListOf(
-                TitleOptionElement("gui.better_visibility"),
-                BooleanOptionElement("%better_visibility.lava", BETTER_VISIBILITY,LAVA, DESIGN),
-                FloatOptionElement("%better_visibility.lava_view", BETTER_VISIBILITY,LAVA_VIEW, DESIGN),
-                BooleanOptionElement("%better_visibility.nether", BETTER_VISIBILITY,NETHER, DESIGN),
-                BooleanOptionElement("%better_visibility.water", BETTER_VISIBILITY,WATER, DESIGN),
-                BooleanOptionElement("%better_visibility.powder_snow", BETTER_VISIBILITY,POWDER_SNOW, DESIGN)
+            TitleOptionElement("gui.better_visibility"),
+            MultipleBooleanOptionElement("better_visibility.multiple", DESIGN, BETTER_VISIBILITY,
+                LAVA.id,
+                NETHER.id,
+                WATER.id,
+                POWDER_SNOW.id
+            ),
+            FloatOptionElement("%better_visibility.lava_view", BETTER_VISIBILITY,LAVA_VIEW, DESIGN)
         )
     }
 

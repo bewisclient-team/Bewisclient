@@ -2,6 +2,7 @@ package bewis09.bewisclient.drawable.option_elements.settings
 
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.drawable.UsableSliderWidget
+import bewis09.bewisclient.screen.ElementList.dependentDisabler
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.settingsLoader.DefaultSettings
 import bewis09.bewisclient.settingsLoader.SettingsLoader
@@ -92,6 +93,8 @@ class FloatOptionElement : SettingsOptionElement<Float> {
     var clicked = false
 
     override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {
+        if(dependentDisabler.contains(toPointNotation(path,id)) && !dependentDisabler[toPointNotation(path,id)]!!()) return -4
+
         val client = MinecraftClient.getInstance()
 
         val descriptionLines = client.textRenderer.wrapLines(Bewisclient.getTranslationText(description),width-122)
@@ -125,6 +128,8 @@ class FloatOptionElement : SettingsOptionElement<Float> {
     override fun getTypeParameter(): String = "float"
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int, screen: MainOptionsScreen) {
+        if(dependentDisabler.contains(toPointNotation(path,id)) && !dependentDisabler[toPointNotation(path,id)]!!()) return
+
         if(widget.isHovered)
             clicked = true
         widget.mouseClicked(mouseX, mouseY, button)
