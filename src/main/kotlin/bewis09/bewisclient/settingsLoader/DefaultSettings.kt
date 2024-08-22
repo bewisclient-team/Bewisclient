@@ -86,6 +86,8 @@ object DefaultSettings: Settings() {
         OM.add(ANIMATION_TIME, JsonPrimitive(200.0))
         OM.add(SCALE, JsonPrimitive(0.75))
         OM.add(ALL_CLICK, JsonPrimitive(true))
+        OM.add(SHOW_TITLE_MENU, JsonPrimitive(true))
+        OM.add(SHOW_GAME_MENU, JsonPrimitive(true))
         val FB = JsonObject()
         FB.add(NIGHT_VISION, JsonPrimitive(false))
         FB.add(FULLBRIGHT_VALUE, JsonPrimitive(1.0))

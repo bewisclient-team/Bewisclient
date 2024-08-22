@@ -28,9 +28,10 @@ public class TitleScreenMixin extends Screen {
     private void init(CallbackInfo ci) {
         if(SettingsLoader.INSTANCE.get(DESIGN, Settings.Companion.getFULLBRIGHT(),Settings.Companion.getENABLED()))
             MinecraftClient.getInstance().options.getGamma().setValue((double) SettingsLoader.INSTANCE.get(DESIGN,Settings.Companion.getFULLBRIGHT(),Settings.Companion.getFULLBRIGHT_VALUE()));
-        addDrawableChild(new UsableTexturedButtonWidget(width/2+104,this.height / 4 + 72,20,20,new ButtonTextures(Identifier.of("bewisclient","textures/sprites/bewisclient_button.png"),Identifier.of("bewisclient","textures/sprites/bewisclient_button_highlighted.png")),(b)->{
-            assert client != null;
-            client.setScreen(new MainOptionsScreen());
-        }));
+        if(SettingsLoader.INSTANCE.get(DESIGN, Settings.Companion.getSHOW_TITLE_MENU(),Settings.Companion.getOPTIONS_MENU()))
+            addDrawableChild(new UsableTexturedButtonWidget(width/2+104,this.height / 4 + 72,20,20,new ButtonTextures(Identifier.of("bewisclient","textures/sprites/bewisclient_button.png"),Identifier.of("bewisclient","textures/sprites/bewisclient_button_highlighted.png")),(b)->{
+                assert client != null;
+                client.setScreen(new MainOptionsScreen());
+            }));
     }
 }

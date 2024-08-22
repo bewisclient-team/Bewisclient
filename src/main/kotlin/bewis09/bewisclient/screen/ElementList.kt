@@ -60,10 +60,12 @@ object ElementList: Settings() {
 
     val design: ()->ArrayList<OptionElement> = {
         arrayListOf(
-                TitleOptionElement("gui.design"),
-                FloatOptionElement("%options_menu.animation_time", OPTIONS_MENU,ANIMATION_TIME, DESIGN),
-                FloatOptionElement("%options_menu.scale", OPTIONS_MENU, SCALE, DESIGN),
-                BooleanOptionElement("%options_menu.all_click", OPTIONS_MENU,ALL_CLICK, DESIGN),
+            TitleOptionElement("gui.design"),
+            FloatOptionElement("%options_menu.animation_time", OPTIONS_MENU,ANIMATION_TIME, DESIGN),
+            FloatOptionElement("%options_menu.scale", OPTIONS_MENU, SCALE, DESIGN),
+            BooleanOptionElement("%options_menu.all_click", OPTIONS_MENU,ALL_CLICK, DESIGN),
+            BooleanOptionElement("%options_menu.show_game_menu", OPTIONS_MENU,SHOW_GAME_MENU, DESIGN),
+            BooleanOptionElement("%options_menu.show_title_menu", OPTIONS_MENU,SHOW_TITLE_MENU, DESIGN),
         )
     }
 
