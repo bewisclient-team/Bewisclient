@@ -237,6 +237,6 @@
   "bewisclient.gui.perspective": "Perspective",
   "bewisclient.options_menu.show_title_menu": "Show Bewisclient options button in the title menu",
   "bewisclient.options_menu.show_game_menu": "Show Bewisclient options button in the game menu",
-  "bewisclient.description.options_menu.show_title_menu": "Sets if a button to open the Bewisclient options menu should be shown in the tile menu",
+  "bewisclient.description.options_menu.show_title_menu": "Sets if a button to open the Bewisclient options menu should be shown in the title menu",
   "bewisclient.description.options_menu.show_game_menu": "Sets if a button to open the Bewisclient options menu should be shown in the game menu"
 }
