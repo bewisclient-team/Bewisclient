@@ -8,6 +8,7 @@ import bewis09.bewisclient.drawable.option_elements.OptionElement
 import bewis09.bewisclient.mixin.ScreenMixin
 import bewis09.bewisclient.screen.widget.WidgetConfigScreen
 import bewis09.bewisclient.settingsLoader.Settings
+import bewis09.bewisclient.settingsLoader.Settings.Companion.DESIGN
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.util.Search
 import net.minecraft.client.MinecraftClient
@@ -114,7 +115,7 @@ open class MainOptionsScreen : Screen(Text.empty()) {
         correctScroll()
         var animationFrame = 1F
         val animationSpeed = MathHelper.clamp(SettingsLoader.get(
-            "design",
+            DESIGN, 
             Settings.OPTIONS_MENU,
             Settings.ANIMATION_TIME
         ),1f,500f)
@@ -460,7 +461,7 @@ open class MainOptionsScreen : Screen(Text.empty()) {
         /**
          * The cached scale, that cannot change while clicking a mouse button for preventing scale change, while fading the scale fader
          */
-        var laS = 1f/ SettingsLoader.get("design", Settings.OPTIONS_MENU, Settings.SCALE)
+        var laS = 1f/ SettingsLoader.get(DESIGN, Settings.OPTIONS_MENU, Settings.SCALE)
 
         /**
          * Indicates if a mouse button is clicked
@@ -473,7 +474,7 @@ open class MainOptionsScreen : Screen(Text.empty()) {
         val scale: Float
             get() {
                 if(!clicked) {
-                    laS = 1f/SettingsLoader.get("design", Settings.OPTIONS_MENU, Settings.SCALE)
+                    laS = 1f/SettingsLoader.get(DESIGN, Settings.OPTIONS_MENU, Settings.SCALE)
                 }
                 return laS
             }

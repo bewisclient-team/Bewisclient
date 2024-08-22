@@ -17,9 +17,8 @@ import kotlin.math.ceil
  *
  * @param elementList An [Array] of the [MultiplePagesElement] that should be displayed
  * @param minElementWidth The minimum width of a single [MultiplePagesElement]
- * @param widgetEnableSetter Indicates if a button to change the [bewis09.bewisclient.settingsLoader.Settings.ENABLED] state of a widget should be displayed
  */
-class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, val minElementWidth: Int, val widgetEnableSetter: Boolean): OptionElement("","") {
+class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, val minElementWidth: Int): OptionElement("","") {
 
     /**
      * The index of the [MultiplePagesElement] that is currently hovered over
@@ -47,15 +46,17 @@ class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, v
         hoveredElement = -1
         widgetHoveredElement = -1
 
-        val height = if(widgetEnableSetter) 100 else 84
+        val height = 100
 
         elementList.forEachIndexed{ i: Int, multiplePagesElement: MultiplePagesElement ->
             val hasImage = multiplePagesElement.image!=null
 
+            val setter = multiplePagesElement.path!=null && multiplePagesElement.setting!=null && multiplePagesElement.settingID!=null
+
             val inline = i%elementsPerRow
             val line = i/elementsPerRow
 
-            val isHovered = mouseX>x+(elementWidthFloat*inline)&&mouseX<x+(elementWidthFloat*inline)+elementWidth&&mouseY>y+line*height&&mouseY<y+line*height+height-4-(if(widgetEnableSetter) 14 else 0)
+            val isHovered = mouseX>x+(elementWidthFloat*inline)&&mouseX<x+(elementWidthFloat*inline)+elementWidth&&mouseY>y+line*height&&mouseY<y+line*height+height-(if(setter) 18 else 4)
 
             if(isHovered) hoveredElement = i
 
@@ -80,7 +81,7 @@ class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, v
                 context.drawTexture(
                     multiplePagesElement.image,
                     x + elementWidth / 2 - 16,
-                    y + line * height + 10,
+                    y + line * height + 10 + (if(setter) 0 else 6),
                     32,
                     32,
                     0f,
@@ -95,7 +96,7 @@ class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, v
 
             val l = MinecraftClient.getInstance().textRenderer.wrapLines(Bewisclient.getTranslationText(multiplePagesElement.title),elementWidth-8)
             l.forEachIndexed{ i1: Int, orderedText: OrderedText ->
-                context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, orderedText,x+elementWidth/2,y+line*height+(if(hasImage) 50 else 6)+i1*9+9-(l.size*4.5).toInt(),-1)
+                context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, orderedText,x+elementWidth/2,y+line*height+(if(hasImage) 53 else 6)+(if(setter) 0 else 8)+i1*9+9-(l.size*4.5).toInt(),-1)
             }
 
             if(!hasImage) {
@@ -105,12 +106,13 @@ class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, v
                 }
             }
 
-            if(widgetEnableSetter) {
-                val isWidgetHovered = mouseX>x+(elementWidthFloat*inline)&&mouseX<x+(elementWidthFloat*inline)+elementWidth&&mouseY>y+line*height+height-19&&mouseY<y+line*height+height-4
+            if(setter) {
+                val isWidgetHovered =
+                    mouseX > x + (elementWidthFloat * inline) && mouseX < x + (elementWidthFloat * inline) + elementWidth && mouseY > y + line * height + height - 19 && mouseY < y + line * height + height - 4
 
-                val enabled = (SettingsLoader.get("widgets", ENABLED, multiplePagesElement.title.replace("widgets.","")))
+                val enabled = (SettingsLoader.get(multiplePagesElement.setting!!, multiplePagesElement.path!!, multiplePagesElement.settingID!!))
 
-                if(!isWidgetHovered) {
+                if (!isWidgetHovered) {
                     context.fill(
                         x,
                         y + line * height + 80 + 2,
@@ -131,17 +133,17 @@ class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, v
                 }
                 context.drawBorder(
                     x,
-                    y+line*height+80 + 2,
+                    y + line * height + 80 + 2,
                     elementWidth,
                     14,
-                    (alphaModifier + (if(isWidgetHovered) 0xAAAAFF else 0xFFFFFF)).toInt()
+                    (alphaModifier + (if (isWidgetHovered) 0xAAAAFF else 0xFFFFFF)).toInt()
                 )
 
                 context.drawCenteredTextWithShadow(
                     MinecraftClient.getInstance().textRenderer,
                     if (enabled) Bewisclient.getTranslatedString("enabled") else Bewisclient.getTranslatedString("disabled"),
-                    x + elementWidth/2,
-                    y+line*height+80 + 5,
+                    x + elementWidth / 2,
+                    y + line * height + 80 + 5,
                     (alphaModifier + 0xFFFFFF).toInt()
                 )
             }
@@ -179,6 +181,29 @@ class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, v
          */
         val description: String?
 
+        val setting: String?
+
+        val path: Array<String>?
+
+        val settingID: SettingsLoader.TypedSettingID<Boolean>?
+
+        /**
+         * You can either add an image or a description
+         *
+         * @param title The title of the [MultiplePagesElement]
+         * @param elements The elements that should be shown when clicking on the [MultiplePagesElement]
+         * @param image The image that should be rendered in the [MultiplePagesElement]
+         */
+        constructor(title: String, elements: ArrayList<OptionElement>, image: Identifier, setting: String, path: Array<String>, settingID: SettingsLoader.TypedSettingID<Boolean>) {
+            this.title = title
+            this.elements = elements
+            this.image = image
+            this.description = null
+            this.path = path
+            this.settingID = settingID
+            this.setting = setting
+        }
+
         /**
          * You can either add an image or a description
          *
@@ -191,6 +216,9 @@ class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, v
             this.elements = elements
             this.image = image
             this.description = null
+            this.path = null
+            this.settingID = null
+            this.setting = null
         }
 
         /**
@@ -200,11 +228,14 @@ class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, v
          * @param elements The elements that should be shown when clicking on the [MultiplePagesElement]
          * @param description The description of the [MultiplePagesElement]
          */
-        constructor(title: String, elements: ArrayList<OptionElement>, description: String) {
+        constructor(title: String, elements: ArrayList<OptionElement>, description: String, setting: String, path: Array<String>, settingID: SettingsLoader.TypedSettingID<Boolean>) {
             this.title = title
             this.elements = elements
             this.image = null
             this.description = description
+            this.path = path
+            this.settingID = settingID
+            this.setting = setting
         }
 
         override fun getSearchKeywords(): ArrayList<String> {
@@ -220,11 +251,11 @@ class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, v
         if(widgetHoveredElement!=-1) {
             screen.playDownSound(MinecraftClient.getInstance().soundManager)
 
-            val enabled = (SettingsLoader.get("widgets",ENABLED,
-                elementList[widgetHoveredElement].title.replace("widgets.","")
+            val enabled = (SettingsLoader.get(elementList[widgetHoveredElement].setting!!,elementList[widgetHoveredElement].settingID!!,
+                *elementList[widgetHoveredElement].path!!
             ))
-            SettingsLoader.set("widgets", !enabled,ENABLED,
-                elementList[widgetHoveredElement].title.replace("widgets.","")
+            SettingsLoader.set(elementList[widgetHoveredElement].setting!!, !enabled,elementList[widgetHoveredElement].settingID!!,
+                *elementList[widgetHoveredElement].path!!
             )
         }
 
@@ -238,7 +269,7 @@ class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, v
             val results = Search.search(it,collection)
 
             if(results.isNotEmpty())
-                MultiplePagesOptionElement(results.toArray(arrayOf()),minElementWidth,widgetEnableSetter)
+                MultiplePagesOptionElement(results.toArray(arrayOf()),minElementWidth)
             else
                 null
         }

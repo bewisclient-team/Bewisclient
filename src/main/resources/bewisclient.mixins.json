@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "BlockItemMixin",
+    "EntityMixin",
     "ItemStackMixin"
   ],
   "injectors": {
@@ -13,6 +14,7 @@
     "AbstractClientPlayerEntityMixin",
     "BackgroundRendererMixin",
     "BossBarHudMixin",
+    "CameraMixin",
     "ClientPlayerInteractionManagerMixin",
     "ClientPlayNetworkHandlerMixin",
     "DebugHudMixin",

@@ -185,7 +185,7 @@ object KFJ: Settings() {
     fun renderScoreboard(context: DrawContext, objective: ScoreboardObjective, SCOREBOARD_ENTRY_COMPARATOR: Comparator<ScoreboardEntry>, SCOREBOARD_JOINER: String) {
         context.matrices.push()
 
-        val scale = get("design", SCOREBOARD, SCALE)
+        val scale = get(DESIGN, SCOREBOARD, SCALE)
 
         context.matrices.scale(scale,scale,scale)
         context.matrices.translate(-MinecraftClient.getInstance().window.scaledWidth.toFloat()+MinecraftClient.getInstance().window.scaledWidth.toFloat()/scale,-MinecraftClient.getInstance().window.scaledWidth.toFloat()/4+MinecraftClient.getInstance().window.scaledWidth.toFloat()/scale/4,0f)
@@ -250,7 +250,7 @@ object KFJ: Settings() {
                     Colors.WHITE,
                     false
                 )
-                if(get("design", SCOREBOARD, HIDE_NUMBERS)) continue
+                if(get(DESIGN, SCOREBOARD, HIDE_NUMBERS)) continue
                 context.drawText(
                     MinecraftClient.getInstance().textRenderer,
                     sidebarEntry.score,
@@ -274,12 +274,12 @@ object KFJ: Settings() {
             for (j in 0..15) {
                 if (i < 8) {
                     nativeImage.setColor(
-                        j, i, ColorHelper.Abgr.getAbgr((1- get("design", HIT_OVERLAY, ALPHA) *255).toInt(),ColorHelper.Argb.getBlue(
-                            get("design", HIT_OVERLAY, COLOR)
+                        j, i, ColorHelper.Abgr.getAbgr((1- get(DESIGN, HIT_OVERLAY, ALPHA) *255).toInt(),ColorHelper.Argb.getBlue(
+                            get(DESIGN, HIT_OVERLAY, COLOR)
                                 .getColor()),ColorHelper.Argb.getGreen(
-                            get("design", HIT_OVERLAY, COLOR)
+                            get(DESIGN, HIT_OVERLAY, COLOR)
                                 .getColor()),ColorHelper.Argb.getRed(
-                            get("design", HIT_OVERLAY, COLOR)
+                            get(DESIGN, HIT_OVERLAY, COLOR)
                                 .getColor()))
                     )
                 } else {

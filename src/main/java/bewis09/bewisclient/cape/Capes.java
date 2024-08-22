@@ -6,6 +6,8 @@ import bewis09.bewisclient.settingsLoader.SettingsLoader;
 import java.util.ArrayList;
 import java.util.List;
 
+import static bewis09.bewisclient.settingsLoader.Settings.DESIGN;
+
 /**
  * A class for storing and registering capes
  */
@@ -29,8 +31,8 @@ public class Capes {
         CAPES = capes.toArray(new AbstractCape[0]);
 
         try {
-            Cape.setCurrentCape(Capes.CAPES[(int) SettingsLoader.INSTANCE.get("design", Settings.Companion.getCAPE())]);
-            Cape.setCurrentRealCape(Capes.CAPES[(int) SettingsLoader.INSTANCE.get("design", Settings.Companion.getCAPE())]);
+            Cape.setCurrentCape(Capes.CAPES[(int) SettingsLoader.INSTANCE.get(DESIGN, Settings.Companion.getCAPE())]);
+            Cape.setCurrentRealCape(Capes.CAPES[(int) SettingsLoader.INSTANCE.get(DESIGN, Settings.Companion.getCAPE())]);
         } catch (Exception ignored){
             Cape.setCurrentRealCape(null);
             Cape.setCurrentCape(null);

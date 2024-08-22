@@ -2,13 +2,14 @@ package bewis09.bewisclient.settingsLoader
 
 import bewis09.bewisclient.widgets.WidgetRenderer
 import com.google.gson.Gson
+import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 
 /**
  * Lists the default values for the settings
  */
-object DefaultSettings {
+object DefaultSettings: Settings() {
 
     /**
      * Isn't that self-explanatory?
@@ -67,55 +68,56 @@ object DefaultSettings {
 
     init {
         val BV = JsonObject()
-        BV.add("powder_snow", JsonPrimitive(false))
-        BV.add("lava", JsonPrimitive(false))
-        BV.add("nether", JsonPrimitive(false))
-        BV.add("lava_view", JsonPrimitive(0.5))
-        BV.add("water", JsonPrimitive(false))
+        BV.add(POWDER_SNOW, JsonPrimitive(false))
+        BV.add(LAVA, JsonPrimitive(false))
+        BV.add(NETHER, JsonPrimitive(false))
+        BV.add(LAVA_VIEW, JsonPrimitive(0.5))
+        BV.add(WATER, JsonPrimitive(false))
         val BH = JsonObject()
-        BH.add("color", JsonPrimitive(0))
-        BH.add("alpha", JsonPrimitive(0.4))
-        BH.add("enabled", JsonPrimitive(false))
+        BH.add(COLOR, JsonPrimitive(0))
+        BH.add(ALPHA, JsonPrimitive(0.4))
+        BH.add(ENABLED, JsonPrimitive(false))
         val HO = JsonObject()
-        HO.add("color", JsonPrimitive(0))
-        HO.add("alpha", JsonPrimitive(0.33))
-        HO.add("enabled", JsonPrimitive(false))
-        BH.add("hit_overlay", HO)
+        HO.add(COLOR, JsonPrimitive(0))
+        HO.add(ALPHA, JsonPrimitive(0.33))
+        HO.add(ENABLED, JsonPrimitive(false))
+        BH.add(HIT_OVERLAY.last(), HO)
         val OM = JsonObject()
-        OM.add("animation_time", JsonPrimitive(200.0))
-        OM.add("scale", JsonPrimitive(0.75))
-        OM.add("all_click", JsonPrimitive(true))
+        OM.add(ANIMATION_TIME, JsonPrimitive(200.0))
+        OM.add(SCALE, JsonPrimitive(0.75))
+        OM.add(ALL_CLICK, JsonPrimitive(true))
         val FB = JsonObject()
-        FB.add("night_vision", JsonPrimitive(false))
-        FB.add("value", JsonPrimitive(1.0))
-        FB.add("enabled", JsonPrimitive(false))
+        FB.add(NIGHT_VISION, JsonPrimitive(false))
+        FB.add(FULLBRIGHT_VALUE, JsonPrimitive(1.0))
+        FB.add(ENABLED, JsonPrimitive(false))
         val HI = JsonObject()
-        HI.add("maxinfolength", JsonPrimitive(5.0))
-        HI.add("held_item_info", JsonPrimitive(false))
+        HI.add(MAX_INFO_LENGTH, JsonPrimitive(5.0))
+        HI.add(HELD_ITEM_INFO_ENABLED, JsonPrimitive(false))
         val SC = JsonObject()
-        SC.add("scale", JsonPrimitive(1.0))
-        SC.add("hide_numbers", JsonPrimitive(false))
-        design.add("better_visibility",BV)
-        design.add("blockhit",BH)
-        design.add("options_menu",OM)
-        design.add("fullbright",FB)
-        design.add("held_item_info",HI)
-        design.add("scoreboard",SC)
-        design.add("fire_height", JsonPrimitive(1.0))
-        design.add("disable_pumpkin_overlay", JsonPrimitive(false))
-        design.add("shulker_box_tooltip", JsonPrimitive(false))
-        design.add("extend_status_effect_info", JsonPrimitive(false))
-        design.add("cleaner_debug_menu", JsonPrimitive(false))
-        design.add("show_pumpkin_icon", JsonPrimitive(true))
+        SC.add(SCALE, JsonPrimitive(1.0))
+        SC.add(HIDE_NUMBERS, JsonPrimitive(false))
+        design.add(BETTER_VISIBILITY.last(),BV)
+        design.add(BLOCKHIT.last(),BH)
+        design.add(OPTIONS_MENU.last(),OM)
+        design.add(FULLBRIGHT.last(),FB)
+        design.add(HELD_ITEM_INFO.last(),HI)
+        design.add(SCOREBOARD.last(),SC)
+        design.add(FIRE_HEIGHT, JsonPrimitive(1.0))
+        design.add(DISABLE_PUMPKIN_OVERLAY, JsonPrimitive(false))
+        design.add(SHULKER_BOX_TOOLTIP, JsonPrimitive(false))
+        design.add(EXTEND_STATUS_EFFECT_INFO, JsonPrimitive(false))
+        design.add(CLEANER_DEBUG_MENU, JsonPrimitive(false))
+        design.add(SHOW_PUMPKIN_ICON, JsonPrimitive(true))
 
         val EX = JsonObject()
-        EX.add("auto_update", JsonPrimitive(false))
-        general.add("experimental", EX)
-        general.add("instant_zoom", JsonPrimitive(false))
-        general.add("zoom_enabled", JsonPrimitive(true))
-        general.add("hard_zoom", JsonPrimitive(false))
-        general.add("tnt_timer", JsonPrimitive(false))
-        general.add("screenshot_folder_open", JsonPrimitive(false))
+        EX.add(AUTO_UPDATE, JsonPrimitive(false))
+        general.add(EXPERIMENTAL.last(), EX)
+        general.add(INSTANT_ZOOM, JsonPrimitive(false))
+        general.add(ZOOM_ENABLED, JsonPrimitive(true))
+        general.add(HARD_ZOOM, JsonPrimitive(false))
+        general.add(TNT_TIMER, JsonPrimitive(false))
+        general.add(PERSPECTIVE, JsonPrimitive(false))
+        general.add(SCREENSHOT_OPEN_FOLDER, JsonPrimitive(false))
     }
 
     /**
@@ -125,10 +127,14 @@ object DefaultSettings {
      */
     fun getDefault(string: String): JsonObject {
         when (string) {
-            "widgets" -> return widgets
-            "general" -> return general
-            "design" -> return design
+            WIDGETS -> return widgets
+            GENERAL -> return general
+            DESIGN -> return design
         }
         return JsonObject()
     }
+}
+
+private fun JsonObject.add(element: SettingsLoader.TypedSettingID<*>, jsonElement: JsonElement) {
+    this.add(element.id,jsonElement)
 }

@@ -61,7 +61,7 @@ class WidgetConfigScreen(var parent: MainOptionsScreen): Screen(Text.empty()) {
         }
 
         val animationSpeed = MathHelper.clamp(SettingsLoader.get(
-            "design",
+            Settings.DESIGN,
             Settings.OPTIONS_MENU,
             Settings.ANIMATION_TIME
         ).toInt(),1,500).toFloat()

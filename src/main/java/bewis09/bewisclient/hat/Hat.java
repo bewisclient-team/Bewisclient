@@ -4,6 +4,8 @@ import bewis09.bewisclient.settingsLoader.Settings;
 import bewis09.bewisclient.settingsLoader.SettingsLoader;
 import net.minecraft.util.Identifier;
 
+import static bewis09.bewisclient.settingsLoader.Settings.DESIGN;
+
 /**
  * A record used for saving the hat textures
  *
@@ -29,7 +31,7 @@ public record Hat(Identifier texture) {
 
     static {
         try {
-            current_hat = HATS[(int) SettingsLoader.INSTANCE.get("design", Settings.Companion.getHAT())];
+            current_hat = HATS[(int) SettingsLoader.INSTANCE.get(DESIGN, Settings.Companion.getHAT())];
         } catch (Exception e) {
             current_hat = EMPTY;
         }

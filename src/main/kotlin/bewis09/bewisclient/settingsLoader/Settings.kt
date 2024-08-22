@@ -108,6 +108,9 @@ open class Settings {
         // TNT Timer
         val TNT_TIMER = createBoolean("tnt_timer")
 
+        // Perspective
+        val PERSPECTIVE = createBoolean("perspective")
+
         // Cosmetics
         val CAPE = createFloat("cape")
         val WING = createFloat("wing")
