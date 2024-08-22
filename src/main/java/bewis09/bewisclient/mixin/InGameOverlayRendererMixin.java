@@ -15,6 +15,8 @@ import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 
+import static bewis09.bewisclient.settingsLoader.Settings.DESIGN;
+
 @Mixin(InGameOverlayRenderer.class)
 public class InGameOverlayRendererMixin {
 
@@ -25,7 +27,7 @@ public class InGameOverlayRendererMixin {
 
     @Overwrite
     private static void renderFireOverlay(MinecraftClient client, MatrixStack matrices) {
-        float d = SettingsLoader.INSTANCE.get("design", Settings.Companion.getFIRE_HEIGHT());
+        float d = SettingsLoader.INSTANCE.get(DESIGN, Settings.Companion.getFIRE_HEIGHT());
         RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
         RenderSystem.depthFunc(519);
         RenderSystem.depthMask(false);

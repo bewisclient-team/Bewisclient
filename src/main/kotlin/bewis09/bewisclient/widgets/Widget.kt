@@ -164,10 +164,10 @@ abstract class Widget(val id: String): Settings() {
     @Suppress("unchecked_cast")
     inline fun <reified K> getProperty(setting: SettingsLoader.TypedSettingID<K>): K {
         when (true) {
-            K::class.java.name.lowercase().contains("float") -> return SettingsLoader.get("widgets",setting as SettingsLoader.TypedSettingID<Float>,id) as K
-            K::class.java.name.lowercase().contains("boolean") -> return SettingsLoader.get("widgets",setting as SettingsLoader.TypedSettingID<Boolean>,id) as K
-            K::class.java.name.lowercase().contains("colorsaver") -> return SettingsLoader.get("widgets",setting as SettingsLoader.TypedSettingID<ColorSaver>,id) as K
-            K::class.java.name.lowercase().contains("string") -> return SettingsLoader.get("widgets",setting as SettingsLoader.TypedSettingID<String>,id) as K
+            K::class.java.name.lowercase().contains("float") -> return SettingsLoader.get(WIDGETS,setting as SettingsLoader.TypedSettingID<Float>,id) as K
+            K::class.java.name.lowercase().contains("boolean") -> return SettingsLoader.get(WIDGETS,setting as SettingsLoader.TypedSettingID<Boolean>,id) as K
+            K::class.java.name.lowercase().contains("colorsaver") -> return SettingsLoader.get(WIDGETS,setting as SettingsLoader.TypedSettingID<ColorSaver>,id) as K
+            K::class.java.name.lowercase().contains("string") -> return SettingsLoader.get(WIDGETS,setting as SettingsLoader.TypedSettingID<String>,id) as K
             else -> {}
         }
         throw ClassCastException()
@@ -189,10 +189,10 @@ abstract class Widget(val id: String): Settings() {
     @Suppress("unchecked_cast")
     inline fun <reified K> getProperty(setting: SettingsLoader.TypedSettingID<K>, vararg path: String): K {
         when (true) {
-            K::class.java.name.lowercase().contains("float") -> return SettingsLoader.get("widgets",setting as SettingsLoader.TypedSettingID<Float>,id,*path) as K
-            K::class.java.name.lowercase().contains("boolean") -> return SettingsLoader.get("widgets",setting as SettingsLoader.TypedSettingID<Boolean>,id,*path) as K
-            K::class.java.name.lowercase().contains("colorsaver") -> return SettingsLoader.get("widgets",setting as SettingsLoader.TypedSettingID<ColorSaver>,id,*path) as K
-            K::class.java.name.lowercase().contains("string") -> return SettingsLoader.get("widgets",setting as SettingsLoader.TypedSettingID<String>,id,*path) as K
+            K::class.java.name.lowercase().contains("float") -> return SettingsLoader.get(WIDGETS,setting as SettingsLoader.TypedSettingID<Float>,id,*path) as K
+            K::class.java.name.lowercase().contains("boolean") -> return SettingsLoader.get(WIDGETS,setting as SettingsLoader.TypedSettingID<Boolean>,id,*path) as K
+            K::class.java.name.lowercase().contains("colorsaver") -> return SettingsLoader.get(WIDGETS,setting as SettingsLoader.TypedSettingID<ColorSaver>,id,*path) as K
+            K::class.java.name.lowercase().contains("string") -> return SettingsLoader.get(WIDGETS,setting as SettingsLoader.TypedSettingID<String>,id,*path) as K
             else -> {}
         }
         throw ClassCastException()
@@ -210,10 +210,10 @@ abstract class Widget(val id: String): Settings() {
     @Suppress("unchecked_cast")
     inline fun <reified K> setProperty(setting: SettingsLoader.TypedSettingID<K>, value: K) {
         when (value) {
-            is Number -> SettingsLoader.set("widgets",value,setting as SettingsLoader.TypedSettingID<Number>,id)
-            is Boolean -> SettingsLoader.set("widgets",value,setting as SettingsLoader.TypedSettingID<Boolean>,id)
-            is ColorSaver -> SettingsLoader.set("widgets",value,setting as SettingsLoader.TypedSettingID<ColorSaver>,id)
-            is String -> SettingsLoader.set("widgets",value,setting as SettingsLoader.TypedSettingID<String>,id)
+            is Number -> SettingsLoader.set(WIDGETS,value,setting as SettingsLoader.TypedSettingID<Number>,id)
+            is Boolean -> SettingsLoader.set(WIDGETS,value,setting as SettingsLoader.TypedSettingID<Boolean>,id)
+            is ColorSaver -> SettingsLoader.set(WIDGETS,value,setting as SettingsLoader.TypedSettingID<ColorSaver>,id)
+            is String -> SettingsLoader.set(WIDGETS,value,setting as SettingsLoader.TypedSettingID<String>,id)
             else -> {}
         }
     }

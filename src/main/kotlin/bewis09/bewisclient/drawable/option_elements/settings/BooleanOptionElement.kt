@@ -83,7 +83,7 @@ class BooleanOptionElement : SettingsOptionElement<Boolean> {
         val enabled = SettingsLoader.get(settings, path, id)
 
         var progress = MathHelper.clamp((System.currentTimeMillis() - animationStart)/SettingsLoader.get(
-            "design",
+            DESIGN,
             OPTIONS_MENU,
             ANIMATION_TIME
         ),0F,1F)

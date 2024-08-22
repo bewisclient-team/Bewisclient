@@ -23,7 +23,7 @@ class EffectWidget: Widget("effect") {
     }
 
     override fun getOriginalHeight(): Int {
-        return if(SettingsLoader.get("design",EXTEND_STATUS_EFFECT_INFO)) 75 else 52
+        return if(SettingsLoader.get(DESIGN,EXTEND_STATUS_EFFECT_INFO)) 75 else 52
     }
 
     override fun getOriginalPosX(): Int {

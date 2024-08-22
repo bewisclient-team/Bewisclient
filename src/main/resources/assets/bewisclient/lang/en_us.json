@@ -231,5 +231,8 @@
   "bewisclient.key.night_vision": "Toggle Night Vision",
   "bewisclient.key.zoom": "Zoom",
   "bewisclient.contact.find_no_option": "Didn't find what you were searching for?",
-  "bewisclient.description.contact.find_no_option": "Request new setting on github"
+  "bewisclient.description.contact.find_no_option": "Request new settings on Github",
+  "bewisclient.contact.missing_option": "Some settings are missing here...",
+  "bewisclient.description.contact.missing_option": "If you have any idea, request new settings on Github",
+  "bewisclient.gui.perspective": "Perspective"
 }

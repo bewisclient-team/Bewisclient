@@ -45,7 +45,7 @@ public abstract class ScreenshotRecorderMixin {
 
     @Inject(method = "saveScreenshotInner", at = @At("HEAD"), cancellable = true)
     private static void inject(File gameDirectory, @Nullable String fileName, Framebuffer framebuffer, Consumer<Text> messageReceiver, CallbackInfo ci) {
-        if(SettingsLoader.INSTANCE.get("general", Settings.Companion.getSCREENSHOT_OPEN_FOLDER())) {
+        if(SettingsLoader.INSTANCE.get(Settings.GENERAL, Settings.Companion.getSCREENSHOT_OPEN_FOLDER())) {
             NativeImage nativeImage = takeScreenshot(framebuffer);
             File file = new File(gameDirectory, SCREENSHOTS_DIRECTORY);
             file.mkdir();
