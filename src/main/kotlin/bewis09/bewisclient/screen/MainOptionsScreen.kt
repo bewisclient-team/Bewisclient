@@ -2,10 +2,13 @@ package bewis09.bewisclient.screen
 
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.drawable.UsableTexturedButtonWidget
+import bewis09.bewisclient.drawable.option_elements.ContactElement
+import bewis09.bewisclient.drawable.option_elements.HRElement
 import bewis09.bewisclient.drawable.option_elements.OptionElement
 import bewis09.bewisclient.mixin.ScreenMixin
 import bewis09.bewisclient.screen.widget.WidgetConfigScreen
 import bewis09.bewisclient.settingsLoader.Settings
+import bewis09.bewisclient.settingsLoader.Settings.Companion.DESIGN
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.util.Search
 import net.minecraft.client.MinecraftClient
@@ -103,13 +106,16 @@ open class MainOptionsScreen : Screen(Text.empty()) {
     }
 
     override fun render(context: DrawContext?, mouseX: Int, mouseY: Int, delta: Float) {
+        if (client!!.world == null) {
+            this.renderPanoramaBackground(context, delta)
+        }
 
         context!!
 
         correctScroll()
         var animationFrame = 1F
         val animationSpeed = MathHelper.clamp(SettingsLoader.get(
-            "design",
+            DESIGN, 
             Settings.OPTIONS_MENU,
             Settings.ANIMATION_TIME
         ),1f,500f)
@@ -141,7 +147,9 @@ open class MainOptionsScreen : Screen(Text.empty()) {
         if(animationState==AnimationState.LEFT || animationState==AnimationState.RIGHT)
             animationFrame = 1f
 
-        context.fill(0,0,width,height,  ((0xAA*animationFrame).toLong()*0x1000000).toInt())
+        if (client!!.world != null) {
+            context.fill(0, 0, width, height, ((0xAA * animationFrame).toLong() * 0x1000000).toInt())
+        }
 
         context.fill(
             ((this.width/4) +4-6+6*animationFrame).toInt(),0,
@@ -278,9 +286,13 @@ open class MainOptionsScreen : Screen(Text.empty()) {
         bottomAnimation.add(addDrawableChild(UsableTexturedButtonWidget(width/4*3-28,height-24,20,20,closeTextures) {
             startAllAnimation(null)
         }))
-        bottomAnimation.add(addDrawableChild(ButtonWidget.builder(Bewisclient.getTranslationText("gui.edit_hud")) {
+        val gui_button = (addDrawableChild(ButtonWidget.builder(Bewisclient.getTranslationText("gui.edit_hud")) {
             startAllAnimation(WidgetConfigScreen(this))
         }.dimensions(width/4+30,height-24,width/6-29,20).build()))
+        if(MinecraftClient.getInstance().world == null) {
+            gui_button.active = false
+        }
+        bottomAnimation.add(gui_button)
         bottomAnimation.add(addDrawableChild(ButtonWidget.builder(Bewisclient.getTranslationText("gui.load_from_file")) {
             SettingsLoader.loadSettings()
         }.dimensions(width/4*3-1-width/6,height-24,width/6-29,20).build()))
@@ -298,6 +310,8 @@ open class MainOptionsScreen : Screen(Text.empty()) {
                     slice = 0
                 } else {
                     allElements = arrayListOf(Search.search(it, searchCollection))
+                    allElements[0].add(HRElement())
+                    allElements[0].add(ContactElement("find_no_option","https://github.com/Bewis09/Bewisclient-2/issues/new?labels=Type:%20Enhancement,Part:%20Option&assignee=Bewis09&title=New%20Option:%20"))
                     scrolls = arrayListOf(0f)
                     slice = 0
                 }
@@ -447,7 +461,7 @@ open class MainOptionsScreen : Screen(Text.empty()) {
         /**
          * The cached scale, that cannot change while clicking a mouse button for preventing scale change, while fading the scale fader
          */
-        var laS = 1f/ SettingsLoader.get("design", Settings.OPTIONS_MENU, Settings.SCALE)
+        var laS = 1f/ SettingsLoader.get(DESIGN, Settings.OPTIONS_MENU, Settings.SCALE)
 
         /**
          * Indicates if a mouse button is clicked
@@ -460,7 +474,7 @@ open class MainOptionsScreen : Screen(Text.empty()) {
         val scale: Float
             get() {
                 if(!clicked) {
-                    laS = 1f/SettingsLoader.get("design", Settings.OPTIONS_MENU, Settings.SCALE)
+                    laS = 1f/SettingsLoader.get(DESIGN, Settings.OPTIONS_MENU, Settings.SCALE)
                 }
                 return laS
             }

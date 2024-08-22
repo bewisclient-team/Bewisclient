@@ -20,6 +20,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+import static bewis09.bewisclient.settingsLoader.Settings.DESIGN;
+
 @Mixin(SimpleOption.class)
 public abstract class SimpleOptionMixin<T> {
 
@@ -49,8 +51,8 @@ public abstract class SimpleOptionMixin<T> {
 
     @Inject(method="createWidget(Lnet/minecraft/client/option/GameOptions;IIILjava/util/function/Consumer;)Lnet/minecraft/client/gui/widget/ClickableWidget;",at=@At("HEAD"),cancellable = true)
     public void createButton(GameOptions options, int x, int y, int width, Consumer<T> changeCallback, CallbackInfoReturnable<ClickableWidget> cir) {
-        if(SettingsLoader.INSTANCE.get("design", Settings.Companion.getFULLBRIGHT(),Settings.Companion.getENABLED()) &&(MinecraftClient.getInstance().options.getGamma().getValue()!=SettingsLoader.INSTANCE.get("design",Settings.Companion.getFULLBRIGHT(),Settings.Companion.getFULLBRIGHT_VALUE()))) MinecraftClient.getInstance().options.getGamma().setValue((double) SettingsLoader.INSTANCE.get("design",Settings.Companion.getFULLBRIGHT(),Settings.Companion.getFULLBRIGHT_VALUE()));
-        if(this.codec==MinecraftClient.getInstance().options.getGamma().getCodec()&&SettingsLoader.INSTANCE.get("design",Settings.Companion.getFULLBRIGHT(),Settings.Companion.getENABLED())) {
+        if(SettingsLoader.INSTANCE.get(DESIGN, Settings.Companion.getFULLBRIGHT(),Settings.Companion.getENABLED()) &&(MinecraftClient.getInstance().options.getGamma().getValue()!=SettingsLoader.INSTANCE.get(DESIGN,Settings.Companion.getFULLBRIGHT(),Settings.Companion.getFULLBRIGHT_VALUE()))) MinecraftClient.getInstance().options.getGamma().setValue((double) SettingsLoader.INSTANCE.get(DESIGN,Settings.Companion.getFULLBRIGHT(),Settings.Companion.getFULLBRIGHT_VALUE()));
+        if(this.codec==MinecraftClient.getInstance().options.getGamma().getCodec()&&SettingsLoader.INSTANCE.get(DESIGN,Settings.Companion.getFULLBRIGHT(),Settings.Companion.getENABLED())) {
             ButtonWidget b = ButtonWidget.builder(Bewisclient.INSTANCE.getTranslationText("fullbright"),null).dimensions(x, y, width, 20).build();
             b.active = false;
             cir.setReturnValue(b);

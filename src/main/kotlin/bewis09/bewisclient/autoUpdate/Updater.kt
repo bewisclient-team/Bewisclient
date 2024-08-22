@@ -27,7 +27,7 @@ object Updater {
             return
         }
 
-        if(!SettingsLoader.get("general", Settings.EXPERIMENTAL, Settings.AUTO_UPDATE)) return
+        if(!SettingsLoader.get(Settings.GENERAL, Settings.EXPERIMENTAL, Settings.AUTO_UPDATE)) return
 
         val file = File(FabricLoader.getInstance().gameDir.pathString+"\\bewisclient\\download\\"+ update!!["name"].asString.lowercase(
             Locale.getDefault()

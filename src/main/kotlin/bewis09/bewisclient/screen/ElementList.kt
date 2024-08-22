@@ -29,16 +29,22 @@ object ElementList: Settings() {
      */
     val dependentDisabler = hashMapOf(Pair("biome.text_color") {
         !SettingsLoader.get(
-            "widgets",
+            WIDGETS,
             COLORCODE_BIOME,
             "biome"
         )
     },Pair("coordinates.colorcode_biome") {
         SettingsLoader.get(
-            "widgets",
+            WIDGETS,
             SHOW_BIOME,
             "coordinates",
             *SELECT_PARTS
+        )
+    },Pair("better_visibility.lava_view") {
+        SettingsLoader.get(
+            DESIGN,
+            LAVA,
+            *BETTER_VISIBILITY
         )
     })
 
@@ -46,7 +52,7 @@ object ElementList: Settings() {
         arrayListOf(
             TitleOptionElement("gui.widgets"),
             MultiplePagesOptionElement(
-                loadWidgetsFromDefault(DefaultSettings.getDefault("widgets")).toArray(arrayOf()),100,true
+                loadWidgetsFromDefault(DefaultSettings.getDefault(WIDGETS)).toArray(arrayOf()),100
             )
         )
     }
@@ -60,18 +66,20 @@ object ElementList: Settings() {
 
     val design: ()->ArrayList<OptionElement> = {
         arrayListOf(
-                TitleOptionElement("gui.design"),
-                FloatOptionElement("%options_menu.animation_time", OPTIONS_MENU,ANIMATION_TIME, "design"),
-                FloatOptionElement("%options_menu.scale", OPTIONS_MENU, SCALE, "design"),
-                BooleanOptionElement("%options_menu.all_click", OPTIONS_MENU,ALL_CLICK, "design"),
+            TitleOptionElement("gui.design"),
+            FloatOptionElement("%options_menu.animation_time", OPTIONS_MENU,ANIMATION_TIME, DESIGN),
+            FloatOptionElement("%options_menu.scale", OPTIONS_MENU, SCALE, DESIGN),
+            BooleanOptionElement("%options_menu.all_click", OPTIONS_MENU,ALL_CLICK, DESIGN),
+            BooleanOptionElement("%options_menu.show_game_menu", OPTIONS_MENU,SHOW_GAME_MENU, DESIGN),
+            BooleanOptionElement("%options_menu.show_title_menu", OPTIONS_MENU,SHOW_TITLE_MENU, DESIGN),
         )
     }
 
     val scoreboard: ()->ArrayList<OptionElement> = {
         arrayListOf(
             TitleOptionElement("gui.scoreboard"),
-            FloatOptionElement("%scoreboard.scale", SCOREBOARD,SCALE, "design"),
-            BooleanOptionElement("%scoreboard.hide_numbers", SCOREBOARD,HIDE_NUMBERS, "design"),
+            FloatOptionElement("%scoreboard.scale", SCOREBOARD,SCALE, DESIGN),
+            BooleanOptionElement("%scoreboard.hide_numbers", SCOREBOARD,HIDE_NUMBERS, DESIGN),
         )
     }
 
@@ -80,53 +88,54 @@ object ElementList: Settings() {
             TitleOptionElement("gui.experimental")
         )
         if(System.getProperty("os.name").lowercase(Locale.getDefault()).contains("win"))
-            a.add(BooleanOptionElement("%experimental.auto_update", EXPERIMENTAL,AUTO_UPDATE, "general"))
+            a.add(BooleanOptionElement("%experimental.auto_update", EXPERIMENTAL,AUTO_UPDATE, GENERAL))
         a
     }
 
     val blockhit: ()->ArrayList<OptionElement> = {
         arrayListOf(
                 TitleOptionElement("gui.blockhit"),
-                BooleanOptionElement("%blockhit.enabled", BLOCKHIT,ENABLED, "design"),
-                ColorPickerElement("%blockhit.color",  BLOCKHIT,COLOR, "design"),
-                FloatOptionElement("%blockhit.alpha",  BLOCKHIT,ALPHA, "design"),
+                BooleanOptionElement("%blockhit.enabled", BLOCKHIT,ENABLED, DESIGN),
+                ColorPickerElement("%blockhit.color",  BLOCKHIT,COLOR, DESIGN),
+                FloatOptionElement("%blockhit.alpha",  BLOCKHIT,ALPHA, DESIGN),
                 TitleOptionElement("gui.hit_overlay"),
-                BooleanOptionElement("%blockhit.hit_overlay.enabled",  HIT_OVERLAY,ENABLED, "design"),
-                ColorPickerElement("%blockhit.hit_overlay.color",  HIT_OVERLAY,COLOR, "design"),
-                FloatOptionElement("%blockhit.hit_overlay.alpha",  HIT_OVERLAY,ALPHA, "design")
+                BooleanOptionElement("%blockhit.hit_overlay.enabled",  HIT_OVERLAY,ENABLED, DESIGN),
+                ColorPickerElement("%blockhit.hit_overlay.color",  HIT_OVERLAY,COLOR, DESIGN),
+                FloatOptionElement("%blockhit.hit_overlay.alpha",  HIT_OVERLAY,ALPHA, DESIGN)
         )
     }
 
     val fullbright: ()->ArrayList<OptionElement> = {
         arrayListOf(
-                TitleOptionElement("gui.fullbright"),
-                BooleanOptionElement("%fullbright.enabled", FULLBRIGHT,ENABLED, "design") {
-                    if (SettingsLoader.get("design", FULLBRIGHT, ENABLED))
+                TitleWidgetEnablerOptionElement(DESIGN,FULLBRIGHT,ENABLED, "gui.fullbright"){
+                    if (SettingsLoader.get(DESIGN, FULLBRIGHT, ENABLED))
                         MinecraftClient.getInstance().options.gamma.value =
-                            SettingsLoader.get("design", FULLBRIGHT, FULLBRIGHT_VALUE).toDouble()
+                            SettingsLoader.get(DESIGN, FULLBRIGHT, FULLBRIGHT_VALUE).toDouble()
                     else
                         MinecraftClient.getInstance().options.gamma.value = 1.0
                 },
-                FloatOptionElement("%fullbright.value", FULLBRIGHT,FULLBRIGHT_VALUE, "design") {
-                    if (SettingsLoader.get("design", FULLBRIGHT, ENABLED))
+                FloatOptionElement("%fullbright.value", FULLBRIGHT,FULLBRIGHT_VALUE, DESIGN) {
+                    if (SettingsLoader.get(DESIGN, FULLBRIGHT, ENABLED))
                         MinecraftClient.getInstance().options.gamma.value = SettingsLoader.get(
-                            "design",
+                            DESIGN,
                             FULLBRIGHT,
                             FULLBRIGHT_VALUE
                         ).toDouble()
                 },
-                BooleanOptionElement("%fullbright.night_vision", FULLBRIGHT,NIGHT_VISION, "design")
+                BooleanOptionElement("%fullbright.night_vision", FULLBRIGHT,NIGHT_VISION, DESIGN)
         )
     }
 
     val better_visibility: ()->ArrayList<OptionElement> = {
         arrayListOf(
-                TitleOptionElement("gui.better_visibility"),
-                BooleanOptionElement("%better_visibility.lava", BETTER_VISIBILITY,LAVA, "design"),
-                FloatOptionElement("%better_visibility.lava_view", BETTER_VISIBILITY,LAVA_VIEW, "design"),
-                BooleanOptionElement("%better_visibility.nether", BETTER_VISIBILITY,NETHER, "design"),
-                BooleanOptionElement("%better_visibility.water", BETTER_VISIBILITY,WATER, "design"),
-                BooleanOptionElement("%better_visibility.powder_snow", BETTER_VISIBILITY,POWDER_SNOW, "design")
+            TitleOptionElement("gui.better_visibility"),
+            MultipleBooleanOptionElement("better_visibility.multiple", DESIGN, BETTER_VISIBILITY,
+                LAVA.id,
+                NETHER.id,
+                WATER.id,
+                POWDER_SNOW.id
+            ),
+            FloatOptionElement("%better_visibility.lava_view", BETTER_VISIBILITY,LAVA_VIEW, DESIGN)
         )
     }
 
@@ -142,56 +151,62 @@ object ElementList: Settings() {
 
     val zoom: ()->ArrayList<OptionElement> = {
         arrayListOf(
-                TitleOptionElement("gui.zoom"),
-                BooleanOptionElement("%gui.zoom_enabled", arrayOf(), ZOOM_ENABLED, "general"),
-                BooleanOptionElement("%gui.instant_zoom", arrayOf(), INSTANT_ZOOM, "general"),
-                BooleanOptionElement("%gui.hard_zoom", arrayOf(), HARD_ZOOM, "general")
+                TitleWidgetEnablerOptionElement(GENERAL, arrayOf(), ZOOM_ENABLED, "gui.zoom"),
+                BooleanOptionElement("%gui.instant_zoom", arrayOf(), INSTANT_ZOOM, GENERAL),
+                BooleanOptionElement("%gui.hard_zoom", arrayOf(), HARD_ZOOM, GENERAL)
         )
     }
 
     val pumpkin: ()->ArrayList<OptionElement> = {
         arrayListOf(
                 TitleOptionElement("gui.pumpkin"),
-                BooleanOptionElement("%pumpkin_overlay.disable_pumpkin_overlay", arrayOf(),DISABLE_PUMPKIN_OVERLAY, "design"),
-                BooleanOptionElement("%pumpkin_overlay.show_pumpkin_icon", arrayOf(),SHOW_PUMPKIN_ICON, "design")
+                BooleanOptionElement("%pumpkin_overlay.disable_pumpkin_overlay", arrayOf(),DISABLE_PUMPKIN_OVERLAY, DESIGN),
+                BooleanOptionElement("%pumpkin_overlay.show_pumpkin_icon", arrayOf(),SHOW_PUMPKIN_ICON, DESIGN)
         )
     }
 
     val held_item_info: ()->ArrayList<OptionElement> = {
         arrayListOf(
                 TitleOptionElement("gui.held_item_info"),
-                BooleanOptionElement("%held_item_info.held_item_info", HELD_ITEM_INFO,HELD_ITEM_INFO_ENABLED, "design"),
-                FloatOptionElement("%held_item_info.maxinfolength", HELD_ITEM_INFO,MAX_INFO_LENGTH, "design"),
+                BooleanOptionElement("%held_item_info.held_item_info", HELD_ITEM_INFO,HELD_ITEM_INFO_ENABLED, DESIGN),
+                FloatOptionElement("%held_item_info.maxinfolength", HELD_ITEM_INFO,MAX_INFO_LENGTH, DESIGN),
         )
     }
 
     val util: ()->ArrayList<OptionElement> = {
         arrayListOf(
                 TitleOptionElement("gui.util"),
-                BooleanOptionElement("%extend_status_effect_info", arrayOf(),EXTEND_STATUS_EFFECT_INFO, "design"),
-                FloatOptionElement("%fire_height", arrayOf(),FIRE_HEIGHT, "design"),
-                BooleanOptionElement("%screenshot_folder_open", arrayOf(),SCREENSHOT_OPEN_FOLDER, "general")
+                BooleanOptionElement("%extend_status_effect_info", arrayOf(),EXTEND_STATUS_EFFECT_INFO, DESIGN),
+                FloatOptionElement("%fire_height", arrayOf(),FIRE_HEIGHT, DESIGN),
+                BooleanOptionElement("%screenshot_folder_open", arrayOf(),SCREENSHOT_OPEN_FOLDER, GENERAL)
         )
     }
 
     val cleaner_debug_menu: ()->ArrayList<OptionElement> = {
         arrayListOf(
-            TitleOptionElement("gui.cleaner_debug_menu"),
-            BooleanOptionElement("%cleaner_debug_menu", arrayOf(),CLEANER_DEBUG_MENU, "design")
+            TitleWidgetEnablerOptionElement(DESIGN,arrayOf(),CLEANER_DEBUG_MENU, "gui.cleaner_debug_menu"),
+            ContactElement("missing_option","https://github.com/Bewis09/Bewisclient-2/issues/new?labels=Type:%20Enhancement,Part:%20Option&assignee=Bewis09&title=New%20Option:%20")
+        )
+    }
+
+    val perspective: ()->ArrayList<OptionElement> = {
+        arrayListOf(
+            TitleWidgetEnablerOptionElement(GENERAL,arrayOf(),PERSPECTIVE, "gui.perspective"),
+            ContactElement("missing_option","https://github.com/Bewis09/Bewisclient-2/issues/new?labels=Type:%20Enhancement,Part:%20Option&assignee=Bewis09&title=New%20Option:%20")
         )
     }
 
     val shulker_box_tooltip: ()->ArrayList<OptionElement> = {
         arrayListOf(
-            TitleOptionElement("gui.shulker_box_tooltip"),
-            BooleanOptionElement("%shulker_box_tooltip", arrayOf(), SHULKER_BOX_TOOLTIP, "design"),
+            TitleWidgetEnablerOptionElement(DESIGN,arrayOf(), SHULKER_BOX_TOOLTIP, "gui.shulker_box_tooltip"),
+            ContactElement("missing_option","https://github.com/Bewis09/Bewisclient-2/issues/new?labels=Type:%20Enhancement,Part:%20Option&assignee=Bewis09&title=New%20Option:%20")
         )
     }
 
     val tnt_timer: ()->ArrayList<OptionElement> = {
         arrayListOf(
-            TitleOptionElement("gui.tnt_timer"),
-            BooleanOptionElement("%tnt_timer", arrayOf(),TNT_TIMER, "general"),
+            TitleWidgetEnablerOptionElement(GENERAL, arrayOf(),TNT_TIMER, "gui.tnt_timer"),
+            ContactElement("missing_option","https://github.com/Bewis09/Bewisclient-2/issues/new?labels=Type:%20Enhancement,Part:%20Option&assignee=Bewis09&title=New%20Option:%20")
         )
     }
 
@@ -200,12 +215,13 @@ object ElementList: Settings() {
             MainOptionElement("gui.widgets", "gui.widgets.description", widgets(), Identifier.of("bewisclient", "textures/main_icons/widgets.png")),
             MainOptionElement("gui.design", "gui.design.description", design(), Identifier.of("bewisclient", "textures/main_icons/design.png")),
             MainOptionElement("gui.util", "gui.util.description", util(), Identifier.of("bewisclient", "textures/main_icons/util.png")),
-            MainOptionElement("gui.cosmetics", "gui.cosmetics.description", { CosmeticsScreen(it) }, Identifier.of("bewisclient", "textures/main_icons/cosmetics.png")),
+            MainOptionElement("gui.cosmetics", "gui.cosmetics.description", { CosmeticsScreen(it) }, Identifier.of("bewisclient", "textures/main_icons/cosmetics.png"),true),
             MultiplePagesOptionElement(arrayOf(
                 MultiplePagesOptionElement.MultiplePagesElement(
                     "gui.fullbright",
                     fullbright(),
-                    Identifier.of("bewisclient", "textures/main_icons/fullbright.png")
+                    Identifier.of("bewisclient", "textures/main_icons/fullbright.png"),
+                    DESIGN, FULLBRIGHT, ENABLED
                 ),
                 MultiplePagesOptionElement.MultiplePagesElement(
                     "gui.contact",
@@ -220,12 +236,14 @@ object ElementList: Settings() {
                 MultiplePagesOptionElement.MultiplePagesElement(
                     "gui.blockhit_hit_overlay",
                     blockhit(),
-                    Identifier.of("bewisclient", "textures/main_icons/blockhit.png")
+                    Identifier.of("bewisclient", "textures/main_icons/blockhit.png"),
+                    DESIGN, BLOCKHIT, ENABLED
                 ),
                 MultiplePagesOptionElement.MultiplePagesElement(
                     "gui.zoom",
                     zoom(),
-                    Identifier.of("bewisclient", "textures/main_icons/zoom.png")
+                    Identifier.of("bewisclient", "textures/main_icons/zoom.png"),
+                    GENERAL, arrayOf(), ZOOM_ENABLED
                 ),
                 MultiplePagesOptionElement.MultiplePagesElement(
                     "gui.pumpkin",
@@ -235,22 +253,26 @@ object ElementList: Settings() {
                 MultiplePagesOptionElement.MultiplePagesElement(
                     "gui.held_item_info",
                     held_item_info(),
-                    Identifier.of("bewisclient", "textures/main_icons/held_item_info.png")
+                    Identifier.of("bewisclient", "textures/main_icons/held_item_info.png"),
+                    DESIGN, HELD_ITEM_INFO, HELD_ITEM_INFO_ENABLED
                 ),
                 MultiplePagesOptionElement.MultiplePagesElement(
                     "gui.cleaner_debug_menu",
                     cleaner_debug_menu(),
-                    Identifier.of("bewisclient", "textures/main_icons/cleaner_debug_menu.png")
+                    Identifier.of("bewisclient", "textures/main_icons/cleaner_debug_menu.png"),
+                    DESIGN, arrayOf(), CLEANER_DEBUG_MENU
                 ),
                 MultiplePagesOptionElement.MultiplePagesElement(
                     "gui.shulker_box_tooltip",
                     shulker_box_tooltip(),
-                    Identifier.of("bewisclient", "textures/main_icons/shulker_box_tooltip.png")
+                    Identifier.of("bewisclient", "textures/main_icons/shulker_box_tooltip.png"),
+                    DESIGN, arrayOf(), SHULKER_BOX_TOOLTIP
                 ),
                 MultiplePagesOptionElement.MultiplePagesElement(
                     "gui.tnt_timer",
                     tnt_timer(),
-                    Identifier.of("bewisclient", "textures/main_icons/tnt_timer.png")
+                    Identifier.of("bewisclient", "textures/main_icons/tnt_timer.png"),
+                    GENERAL, arrayOf(), TNT_TIMER
                 ),
                 MultiplePagesOptionElement.MultiplePagesElement(
                     "gui.scoreboard",
@@ -261,8 +283,14 @@ object ElementList: Settings() {
                     "gui.experimental",
                     experimental(),
                     Identifier.of("bewisclient", "textures/main_icons/experimental.png")
+                ),
+                MultiplePagesOptionElement.MultiplePagesElement(
+                    "gui.perspective",
+                    perspective(),
+                    Identifier.of("bewisclient", "textures/main_icons/perspective.png"),
+                    GENERAL, arrayOf(), PERSPECTIVE
                 )
-            ),70,false),
+            ),70),
         ).addNewElements()
     }
 
@@ -274,7 +302,7 @@ object ElementList: Settings() {
 
         def.entrySet().forEach { v ->
             val m: ArrayList<OptionElement> = arrayListOf(
-                TitleWidgetEnablerOptionElement(v.key,"gui.widgets","widgets."+v.key)
+                TitleWidgetEnablerOptionElement(WIDGETS, arrayOf(v.key), ENABLED,"gui.widgets","widgets."+v.key)
             )
 
             v.value.asJsonObject.entrySet().forEach {
@@ -286,10 +314,12 @@ object ElementList: Settings() {
             WidgetRenderer.widgets.forEach {
                 if (it.id == v.key) a = it
             }
-            m.add(WidgetPreviewOptionElement(a))
+
+            if (MinecraftClient.getInstance()!!.world != null)
+                m.add(WidgetPreviewOptionElement(a))
 
             if (!excludedProperties.contains(v.key))
-                map.add(MultiplePagesOptionElement.MultiplePagesElement("widgets."+v.key, m,"widgets.description."+v.key))
+                map.add(MultiplePagesOptionElement.MultiplePagesElement("widgets."+v.key, m,"widgets.description."+v.key, WIDGETS, arrayOf(v.key), ENABLED))
         }
 
         return map
@@ -304,7 +334,7 @@ object ElementList: Settings() {
      */
     fun loadWidgetsSingleFromDefault(widget: Widget,def: JsonObject, vkey: String): ArrayList<OptionElement> {
         val map: ArrayList<OptionElement> = arrayListOf(
-            TitleWidgetEnablerOptionElement("gui.widgets", "widgets.$vkey")
+            TitleWidgetEnablerOptionElement(WIDGETS, arrayOf(vkey), ENABLED,"gui.widgets", "widgets.$vkey")
         )
 
         def.entrySet().forEach {
@@ -313,7 +343,8 @@ object ElementList: Settings() {
             }
         }
 
-        map.add(WidgetPreviewOptionElement(widget))
+        if (MinecraftClient.getInstance()!!.world != null)
+            map.add(WidgetPreviewOptionElement(widget))
 
         return map
     }
@@ -329,21 +360,21 @@ object ElementList: Settings() {
      */
     private fun loadElement(str: String, key:String, value: JsonElement): OptionElement {
         return when (true) {
-            value.isJsonObject -> MultipleBooleanOptionElement(key,"widgets", arrayOf(str,key),*value.asJsonObject.asMap().keys.toTypedArray())
+            value.isJsonObject -> MultipleBooleanOptionElement(key,WIDGETS, arrayOf(str,key),*value.asJsonObject.asMap().keys.toTypedArray())
             value.asJsonPrimitive.isBoolean -> BooleanOptionElement(key, arrayOf(str),
-                SettingsLoader.TypedSettingID(key), "widgets")
-            (value.asJsonPrimitive.isString && value.asString.startsWith("0x")) -> ColorPickerElement(key,arrayOf(str),SettingsLoader.TypedSettingID(key),"widgets")
+                SettingsLoader.TypedSettingID(key), WIDGETS)
+            (value.asJsonPrimitive.isString && value.asString.startsWith("0x")) -> ColorPickerElement(key,arrayOf(str),SettingsLoader.TypedSettingID(key),WIDGETS)
             value.asJsonPrimitive.isNumber -> {
                 if((DefaultSettings.arrays[key]
                                 ?: DefaultSettings.arrays[".$key"]) == null)
-                    FloatOptionElement(key, arrayOf(str),SettingsLoader.TypedSettingID(key), "widgets")
+                    FloatOptionElement(key, arrayOf(str),SettingsLoader.TypedSettingID(key), WIDGETS)
                 else
-                    ArrayOptionElement(key,arrayOf(str),SettingsLoader.TypedSettingID(key),"widgets")
+                    ArrayOptionElement(key,arrayOf(str),SettingsLoader.TypedSettingID(key),WIDGETS)
             }
             value.asJsonPrimitive.isString -> if(str.split("_")[0]=="info")
                             InfoElement("info.$key")
                         else InfoElement("info.$key")
-                            // String Element no longer exists: StringOptionsElement(key,str,key,"widgets")
+                            // String Element no longer exists: StringOptionsElement(key,str,key,WIDGETS)
             else -> throw WidgetToElementLoadingException(key,value)
         }
     }

@@ -10,11 +10,38 @@ import net.minecraft.client.gui.DrawContext
 
 /**
  * An [OptionElement] which displays a title and allows you to enable/disable the widget
- *
- * @param id The id of the widget
- * @param titles The translation keys of the titles that are separated by ">>"
  */
-class TitleWidgetEnablerOptionElement(val id: String, vararg titles: String): TitleOptionElement(*titles) {
+class TitleWidgetEnablerOptionElement : TitleOptionElement {
+    val setting: String
+    val path: Array<String>
+    val settingID: SettingsLoader.TypedSettingID<Boolean>
+    val valueApplier: (()->Unit)?
+
+    constructor(
+        setting: String,
+        path: Array<String>,
+        settingID: SettingsLoader.TypedSettingID<Boolean>,
+        vararg titles: String
+    ) : super(*titles) {
+        this.setting = setting
+        this.path = path
+        this.settingID = settingID
+        this.valueApplier = null
+    }
+
+    constructor(
+        setting: String,
+        path: Array<String>,
+        settingID: SettingsLoader.TypedSettingID<Boolean>,
+        vararg titles: String,
+        valueApplier: ()->Unit
+    ) : super(*titles) {
+        this.setting = setting
+        this.path = path
+        this.settingID = settingID
+        this.valueApplier = valueApplier
+    }
+
     /**
      * Indicates if the widget enabler is hovered
      */
@@ -33,7 +60,7 @@ class TitleWidgetEnablerOptionElement(val id: String, vararg titles: String): Ti
 
         isWidgetHovered = mouseX>x+width-80&&mouseX<x+width&&mouseY>y+3&&mouseY<y+17
 
-        val enabled = (SettingsLoader.get("widgets", ENABLED, id))
+        val enabled = (SettingsLoader.get(setting, settingID, *path))
 
         if(!isWidgetHovered) {
             context.fill(
@@ -75,8 +102,9 @@ class TitleWidgetEnablerOptionElement(val id: String, vararg titles: String): Ti
         screen.playDownSound(MinecraftClient.getInstance().soundManager)
 
         if(isWidgetHovered) {
-            val enabled = (SettingsLoader.get("widgets", ENABLED, id))
-            SettingsLoader.set("widgets", !enabled, ENABLED, id)
+            val enabled = (SettingsLoader.get(setting, settingID, *path))
+            SettingsLoader.set(setting, !enabled, settingID, *path)
+            valueApplier?.invoke()
         }
     }
 }

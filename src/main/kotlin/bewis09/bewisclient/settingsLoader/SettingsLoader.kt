@@ -43,9 +43,9 @@ object SettingsLoader: Settings() {
      * Loads the settings in all three categories. Reloads the options screen if it is the screen that is currently shown
      */
     fun loadSettings() {
-        WidgetSettings = loadSetting("widgets")
-        GeneralSettings = loadSetting("general")
-        DesignSettings = loadSetting("design")
+        WidgetSettings = loadSetting(WIDGETS)
+        GeneralSettings = loadSetting(GENERAL)
+        DesignSettings = loadSetting(DESIGN)
 
         if(MinecraftClient.getInstance().currentScreen is MainOptionsScreen)
             (MinecraftClient.getInstance().currentScreen as MainOptionsScreen).startAllAnimation(MainOptionsScreen())
@@ -105,9 +105,9 @@ object SettingsLoader: Settings() {
      * Saves all three categories of settings to the corresponding file
      */
     fun saveAllSettings() {
-        saveSettings("widgets", WidgetSettings)
-        saveSettings("general", GeneralSettings)
-        saveSettings("design", DesignSettings)
+        saveSettings(WIDGETS, WidgetSettings)
+        saveSettings(GENERAL, GeneralSettings)
+        saveSettings(DESIGN, DesignSettings)
     }
 
     /**
@@ -608,9 +608,9 @@ object SettingsLoader: Settings() {
      */
     fun getSettings(string: String): JsonObject {
         when (string) {
-            "widgets" -> return WidgetSettings
-            "general" -> return GeneralSettings
-            "design" -> return DesignSettings
+            WIDGETS -> return WidgetSettings
+            GENERAL -> return GeneralSettings
+            DESIGN -> return DesignSettings
         }
         return DefaultSettings.gson.fromJson("{}",JsonObject::class.java)
     }

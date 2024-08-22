@@ -48,6 +48,11 @@ object Bewisclient : ClientModInitializer {
 	var speed = 0.0
 
 	/**
+	 * The [KeyBinding] for free look
+	 */
+	var freeLookKeyBinding: KeyBinding? = null
+
+	/**
 	 * Indicates if smoothCamera was enabled before the zoom was enabled
 	 */
 	var pt: Boolean? = false
@@ -82,6 +87,7 @@ object Bewisclient : ClientModInitializer {
 		val keyBinding2 = KeyBindingHelper.registerKeyBinding(KeyBinding("bewisclient.key.gamma_up", GLFW.GLFW_KEY_UP, "bewisclient.category.bewisclient"))
 		val keyBinding3 = KeyBindingHelper.registerKeyBinding(KeyBinding("bewisclient.key.gamma_down", GLFW.GLFW_KEY_DOWN, "bewisclient.category.bewisclient"))
 		val keyBinding4 = KeyBindingHelper.registerKeyBinding(KeyBinding("bewisclient.key.night_vision", GLFW.GLFW_KEY_H, "bewisclient.category.bewisclient"))
+		freeLookKeyBinding = KeyBindingHelper.registerKeyBinding(KeyBinding("bewisclient.key.free_look", GLFW.GLFW_KEY_LEFT_ALT, "bewisclient.category.bewisclient"))
 
 		val openOptionScreenKeyBinding = KeyBindingHelper.registerKeyBinding(KeyBinding(
 				"bewisclient.key.open_screen",
@@ -102,12 +108,17 @@ object Bewisclient : ClientModInitializer {
 			if(it.player!=null && it.isPaused.not()) {
 				val posNew = it.player!!.pos
 
-				speed = if(SettingsLoader.get("widgets", Settings.SPEED,Settings.VERTICAL_SPEED))
+				speed = if(SettingsLoader.get(Settings.WIDGETS, Settings.SPEED,Settings.VERTICAL_SPEED))
 					posNew.subtract(posOld).length()
 				else
 					posNew.subtract(posOld).horizontalLength()
 
 				posOld = posNew
+			}
+
+			if (MinecraftClient.getInstance().options.togglePerspectiveKey.isPressed) {
+				MixinStatics.cameraAddYaw = 0f
+				MixinStatics.cameraAddPitch = 0f
 			}
 
 			while (openOptionScreenKeyBinding?.wasPressed() == true) {
@@ -116,96 +127,96 @@ object Bewisclient : ClientModInitializer {
 
 			while (keyBinding1.wasPressed()) {
 				SettingsLoader.set(
-					"design", true, Settings.FULLBRIGHT,
+					Settings.DESIGN, true, Settings.FULLBRIGHT,
 					Settings.ENABLED
 				)
 				SettingsLoader.set(
-					"design", if(SettingsLoader.get(
-							"design", Settings.FULLBRIGHT,
+					Settings.DESIGN, if(SettingsLoader.get(
+							Settings.DESIGN, Settings.FULLBRIGHT,
 							Settings.FULLBRIGHT_VALUE
 						)<=1) 10f else 1f, Settings.FULLBRIGHT,
 					Settings.FULLBRIGHT_VALUE
 				)
 				MinecraftClient.getInstance().options.gamma.value = SettingsLoader.get(
-					"design", Settings.FULLBRIGHT,
+					Settings.DESIGN, Settings.FULLBRIGHT,
 					Settings.FULLBRIGHT_VALUE
 				).toDouble()
 				printGammaMessage(SettingsLoader.get(
-					"design", Settings.FULLBRIGHT,
+					Settings.DESIGN, Settings.FULLBRIGHT,
 					Settings.FULLBRIGHT_VALUE
 				)/10)
 			}
 			while (keyBinding2.wasPressed()) {
 				SettingsLoader.set(
-					"design", true, Settings.FULLBRIGHT,
+					Settings.DESIGN, true, Settings.FULLBRIGHT,
 					Settings.ENABLED
 				)
 				SettingsLoader.set(
-					"design", min(10f,SettingsLoader.get(
-						"design", Settings.FULLBRIGHT,
+					Settings.DESIGN, min(10f,SettingsLoader.get(
+						Settings.DESIGN, Settings.FULLBRIGHT,
 						Settings.FULLBRIGHT_VALUE
 					)+0.25f), Settings.FULLBRIGHT,
 					Settings.FULLBRIGHT_VALUE
 				)
 				MinecraftClient.getInstance().options.gamma.value = SettingsLoader.get(
-					"design", Settings.FULLBRIGHT,
+					Settings.DESIGN, Settings.FULLBRIGHT,
 					Settings.FULLBRIGHT_VALUE
 				).toDouble()
 				printGammaMessage(SettingsLoader.get(
-					"design", Settings.FULLBRIGHT,
+					Settings.DESIGN, Settings.FULLBRIGHT,
 					Settings.FULLBRIGHT_VALUE
 				)/10)
 			}
 			while (keyBinding3.wasPressed()) {
 				SettingsLoader.set(
-					"design", true, Settings.FULLBRIGHT,
+					Settings.DESIGN, true, Settings.FULLBRIGHT,
 					Settings.ENABLED
 				)
 				SettingsLoader.set(
-					"design", max(0f,SettingsLoader.get(
-						"design", Settings.FULLBRIGHT,
+					Settings.DESIGN, max(0f,SettingsLoader.get(
+						Settings.DESIGN, Settings.FULLBRIGHT,
 						Settings.FULLBRIGHT_VALUE
 					)-0.25f), Settings.FULLBRIGHT,
 					Settings.FULLBRIGHT_VALUE
 				)
 				MinecraftClient.getInstance().options.gamma.value = SettingsLoader.get(
-					"design", Settings.FULLBRIGHT,
+					Settings.DESIGN, Settings.FULLBRIGHT,
 					Settings.FULLBRIGHT_VALUE
 				).toDouble()
 				printGammaMessage(SettingsLoader.get(
-					"design", Settings.FULLBRIGHT,
+					Settings.DESIGN, Settings.FULLBRIGHT,
 					Settings.FULLBRIGHT_VALUE
 				)/10)
 			}
 			while (keyBinding4.wasPressed()) {
 				SettingsLoader.set(
-					"design", !SettingsLoader.get(
-						"design", Settings.FULLBRIGHT,
+					Settings.DESIGN, !SettingsLoader.get(
+						Settings.DESIGN, Settings.FULLBRIGHT,
 						Settings.NIGHT_VISION
 					), Settings.FULLBRIGHT,
 					Settings.NIGHT_VISION
 				)
 				assert(MinecraftClient.getInstance().player != null)
 				MinecraftClient.getInstance().player!!.sendMessage(Text.translatable("bewisclient.night_vision." + (if (SettingsLoader.get(
-						"design", Settings.FULLBRIGHT,
+						Settings.DESIGN, Settings.FULLBRIGHT,
 						Settings.NIGHT_VISION
 					)) "enabled" else "disabled")).setStyle(
 						Style.EMPTY.withColor(if (SettingsLoader.get(
-								"design", Settings.FULLBRIGHT,
+								Settings.DESIGN, Settings.FULLBRIGHT,
 								Settings.NIGHT_VISION
 							)) 0xFFFF00 else 0xFF0000)
 				), true)
 			}
-			if(SettingsLoader.get("general",Settings.ZOOM_ENABLED)) {
+			if(SettingsLoader.get(Settings.GENERAL,Settings.ZOOM_ENABLED)) {
 				if (zoomBinding?.isPressed == true) {
 					MixinStatics.isZoomed = true
 					if (pt == null)
 						pt = MinecraftClient.getInstance().options.smoothCameraEnabled
-					if(!SettingsLoader.get("general", Settings.HARD_ZOOM))
+					if(!SettingsLoader.get(Settings.GENERAL, Settings.HARD_ZOOM))
 						MinecraftClient.getInstance().options.smoothCameraEnabled = true
 				} else {
 					MixinStatics.isZoomed = false
-					if (pt != null && !SettingsLoader.get("general",Settings.HARD_ZOOM))
+					if (pt != null && !SettingsLoader.get(Settings.GENERAL,Settings.HARD_ZOOM))
 						MinecraftClient.getInstance().options.smoothCameraEnabled = pt!!
 					pt = null
 				}

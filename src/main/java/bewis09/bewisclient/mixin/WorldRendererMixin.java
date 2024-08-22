@@ -27,14 +27,14 @@ public abstract class WorldRendererMixin {
 
     @Overwrite
     private void drawBlockOutline(MatrixStack matrices, VertexConsumer vertexConsumer, Entity entity, double cameraX, double cameraY, double cameraZ, BlockPos pos, BlockState state) {
-        int in = (((ColorSaver.Companion.of(Integer.parseInt(SettingsLoader.INSTANCE.get("design",Settings.Companion.getBLOCKHIT(),Settings.Companion.getCOLOR()).toString().replace("0x",""),16))).getColor())+0x1000000)%0x1000000;
+        int in = (((ColorSaver.Companion.of(Integer.parseInt(SettingsLoader.INSTANCE.get(Settings.DESIGN,Settings.Companion.getBLOCKHIT(),Settings.Companion.getCOLOR()).toString().replace("0x",""),16))).getColor())+0x1000000)%0x1000000;
         String str = NumberFormatter.INSTANCE.zeroBefore(in,6,16);
         try {
             float r = Integer.decode("0x" + str.charAt(0) + str.charAt(1)) / 256f;
             float g = Integer.decode("0x" + str.charAt(2) + str.charAt(3)) / 256f;
             float b = Integer.decode("0x" + str.charAt(4) + str.charAt(5)) / 256f;
-            float a = SettingsLoader.INSTANCE.get("design", Settings.Companion.getBLOCKHIT(),Settings.Companion.getALPHA());
-            if (!SettingsLoader.INSTANCE.get("design",Settings.Companion.getBLOCKHIT(),Settings.Companion.getENABLED())) {
+            float a = SettingsLoader.INSTANCE.get(Settings.DESIGN, Settings.Companion.getBLOCKHIT(),Settings.Companion.getALPHA());
+            if (!SettingsLoader.INSTANCE.get(Settings.DESIGN,Settings.Companion.getBLOCKHIT(),Settings.Companion.getENABLED())) {
                 r = b = g = 0;
                 a = 0.4f;
             }

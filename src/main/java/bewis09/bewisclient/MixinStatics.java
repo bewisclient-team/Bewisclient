@@ -14,6 +14,16 @@ import java.util.ArrayList;
 public class MixinStatics {
 
     /**
+     * The additonal yaw for free look
+     */
+    public static float cameraAddYaw = 0f;
+
+    /**
+     * The additonal pitch for free look
+     */
+    public static float cameraAddPitch = 0f;
+
+    /**
      * Indicates if the game is currently zoomed in
      */
     public static Boolean isZoomed = true;

@@ -27,7 +27,7 @@ public abstract class TNTEntityRendererMixin extends EntityRenderer<TntEntity> {
 
     @Inject(method = "render(Lnet/minecraft/entity/TntEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at=@At("RETURN"))
     public void inject(TntEntity entity, float yaw, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo ci) {
-        if(!SettingsLoader.INSTANCE.get("general", Settings.Companion.getTNT_TIMER())) return;
+        if(!SettingsLoader.INSTANCE.get(Settings.GENERAL, Settings.Companion.getTNT_TIMER())) return;
 
         double d = this.dispatcher.getSquaredDistanceToCamera(entity);
         if (d > 64.0) {

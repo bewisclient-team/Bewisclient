@@ -35,7 +35,7 @@ abstract class OptionElement(val title: String, val description: String) : Setti
      * Indicates if the [bewis09.bewisclient.settingsLoader.Settings.ALL_CLICK] setting is turned on, where you can click at an entire [MainOptionElement] to get to the corresponding screen
      */
     val allClicked: Boolean
-        get() = SettingsLoader.get("design", OPTIONS_MENU, ALL_CLICK)
+        get() = SettingsLoader.get(DESIGN, OPTIONS_MENU, ALL_CLICK)
 
     /**
      * Renders the element on the screen
