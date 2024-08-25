@@ -210,6 +210,13 @@ object ElementList: Settings() {
         )
     }
 
+    val screenshot: ()->ArrayList<OptionElement> = {
+        arrayListOf(
+            TitleOptionElement("gui.screenshot"),
+            ScreenshotElement()
+        )
+    }
+
     val main = {
         arrayListOf(
             MainOptionElement("gui.widgets", "gui.widgets.description", widgets(), Identifier.of("bewisclient", "textures/main_icons/widgets.png")),
@@ -289,6 +296,11 @@ object ElementList: Settings() {
                     perspective(),
                     Identifier.of("bewisclient", "textures/main_icons/perspective.png"),
                     GENERAL, arrayOf(), PERSPECTIVE
+                ),
+                MultiplePagesOptionElement.MultiplePagesElement(
+                    "gui.screenshot",
+                    screenshot(),
+                    Identifier.of("bewisclient", "textures/main_icons/screenshot.png")
                 )
             ),70),
         ).addNewElements()
