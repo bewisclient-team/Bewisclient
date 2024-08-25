@@ -32,7 +32,7 @@ public class MinecraftClientMixin {
                     "cmd.exe", "/c",
                     "cd " + FabricLoader.getInstance().getGameDir() + "\\bewisclient\\java\\ "
                             + "&& " +
-                    f + " JavaUpdater " + FabricLoader.getInstance().getGameDir() + " " + Bewisclient.INSTANCE.getUpdate().get("name").getAsString().toLowerCase().replace(" ","-")
+                    f + " JavaUpdater " + "\"" + FabricLoader.getInstance().getGameDir() + "\" " + Bewisclient.INSTANCE.getUpdate().get("name").getAsString().toLowerCase().replace(" ","-")
             );
             builder.redirectErrorStream(true);
             builder.start();
