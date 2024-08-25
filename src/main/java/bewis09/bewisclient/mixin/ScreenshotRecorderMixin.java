@@ -1,10 +1,12 @@
 package bewis09.bewisclient.mixin;
 
-import bewis09.bewisclient.Bewisclient;
+import bewis09.bewisclient.drawable.option_elements.ScreenshotElement;
 import bewis09.bewisclient.settingsLoader.Settings;
 import bewis09.bewisclient.settingsLoader.SettingsLoader;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.texture.NativeImage;
+import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.client.util.ScreenshotRecorder;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.MutableText;
@@ -50,23 +52,51 @@ public abstract class ScreenshotRecorderMixin {
             File file = new File(gameDirectory, SCREENSHOTS_DIRECTORY);
             file.mkdir();
             File file2 = fileName == null ? getScreenshotFilename(file) : new File(file, fileName);
+            ScreenshotElement.Companion.setId(ScreenshotElement.Companion.getId()+1);
+            assert file2 != null;
+            assert nativeImage != null;
+            if(ScreenshotElement.Companion.getAddNew())
+                ScreenshotElement.Companion.getScreenshots().add(new ScreenshotElement.SizedIdentifier(MinecraftClient.getInstance().getTextureManager().registerDynamicTexture(
+                                "screenshot_" + (ScreenshotElement.Companion.getId()),
+                                new NativeImageBackedTexture(nativeImage)
+                        ),nativeImage.getWidth(),nativeImage.getHeight(),file2.getName()));
             Util.getIoWorkerExecutor().execute(() -> {
                 try {
-                    assert nativeImage != null;
-                    assert file2 != null;
                     nativeImage.writeTo(file2);
-                    MutableText text = Text.literal(file2.getName()).formatted(Formatting.UNDERLINE).styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file2.getAbsolutePath())));
-                    MutableText folder = Bewisclient.INSTANCE.getTranslationText("screenshot.folder").styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file2.getParentFile().getAbsolutePath()))).formatted(Formatting.YELLOW).formatted(Formatting.UNDERLINE);
-                    messageReceiver.accept(Text.translatable("screenshot.success", text).append(" ").append(folder));
+                    MutableText text = Text.literal(file2.getName()).formatted(Formatting.UNDERLINE).styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/bewisclient screenshot \""+file2.getName()+"\"")));
+                    messageReceiver.accept(Text.translatable("screenshot.success", text));
                 } catch (Exception exception) {
                     LOGGER.warn("Couldn't save screenshot", exception);
                     messageReceiver.accept(Text.translatable("screenshot.failure", exception.getMessage()));
                 } finally {
-                    assert nativeImage != null;
                     nativeImage.close();
                 }
             });
-            ci.cancel();
+        } else {
+            NativeImage nativeImage = takeScreenshot(framebuffer);
+            File file = new File(gameDirectory, SCREENSHOTS_DIRECTORY);
+            file.mkdir();
+            File file2 = fileName == null ? getScreenshotFilename(file) : new File(file, fileName);
+            assert file2 != null;
+            assert nativeImage != null;
+            ScreenshotElement.Companion.getScreenshots().add(new ScreenshotElement.SizedIdentifier(MinecraftClient.getInstance().getTextureManager().registerDynamicTexture(
+                    "screenshot_" + (ScreenshotElement.Companion.getId()),
+                    new NativeImageBackedTexture(nativeImage)
+            ),nativeImage.getWidth(),nativeImage.getHeight(),file2.getName()));
+            Util.getIoWorkerExecutor().execute(() -> {
+                try {
+                    nativeImage.writeTo(file2);
+                    MutableText text = Text.literal(file2.getName()).formatted(Formatting.UNDERLINE).styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file2.getAbsolutePath())));
+                    messageReceiver.accept(Text.translatable("screenshot.success", text));
+                } catch (Exception exception) {
+                    LOGGER.warn("Couldn't save screenshot", exception);
+                    messageReceiver.accept(Text.translatable("screenshot.failure", exception.getMessage()));
+                } finally {
+                    nativeImage.close();
+                }
+            });
         }
+
+        ci.cancel();
     }
 }

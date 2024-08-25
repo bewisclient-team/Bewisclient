@@ -185,7 +185,7 @@ object ElementList: Settings() {
     val cleaner_debug_menu: ()->ArrayList<OptionElement> = {
         arrayListOf(
             TitleWidgetEnablerOptionElement(DESIGN,arrayOf(),CLEANER_DEBUG_MENU, "gui.cleaner_debug_menu"),
-            ContactElement("missing_option","https://github.com/Bewis09/Bewisclient-2/issues/new?labels=Type:%20Enhancement,Part:%20Option&assignee=Bewis09&title=New%20Option:%20")
+            ContactElement("missing_option","c")
         )
     }
 
@@ -207,6 +207,13 @@ object ElementList: Settings() {
         arrayListOf(
             TitleWidgetEnablerOptionElement(GENERAL, arrayOf(),TNT_TIMER, "gui.tnt_timer"),
             ContactElement("missing_option","https://github.com/Bewis09/Bewisclient-2/issues/new?labels=Type:%20Enhancement,Part:%20Option&assignee=Bewis09&title=New%20Option:%20")
+        )
+    }
+
+    val screenshot: ()->ArrayList<OptionElement> = {
+        arrayListOf(
+            TitleOptionElement("gui.screenshot"),
+            ScreenshotElement()
         )
     }
 
@@ -289,6 +296,11 @@ object ElementList: Settings() {
                     perspective(),
                     Identifier.of("bewisclient", "textures/main_icons/perspective.png"),
                     GENERAL, arrayOf(), PERSPECTIVE
+                ),
+                MultiplePagesOptionElement.MultiplePagesElement(
+                    "gui.screenshot",
+                    screenshot(),
+                    Identifier.of("bewisclient", "textures/main_icons/screenshot.png")
                 )
             ),70),
         ).addNewElements()
