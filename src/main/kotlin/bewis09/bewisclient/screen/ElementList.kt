@@ -185,7 +185,7 @@ object ElementList: Settings() {
     val cleaner_debug_menu: ()->ArrayList<OptionElement> = {
         arrayListOf(
             TitleWidgetEnablerOptionElement(DESIGN,arrayOf(),CLEANER_DEBUG_MENU, "gui.cleaner_debug_menu"),
-            ContactElement("missing_option","https://github.com/Bewis09/Bewisclient-2/issues/new?labels=Type:%20Enhancement,Part:%20Option&assignee=Bewis09&title=New%20Option:%20")
+            ContactElement("missing_option","c")
         )
     }
 

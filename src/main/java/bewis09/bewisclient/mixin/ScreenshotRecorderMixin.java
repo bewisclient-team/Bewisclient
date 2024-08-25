@@ -1,6 +1,5 @@
 package bewis09.bewisclient.mixin;
 
-import bewis09.bewisclient.Bewisclient;
 import bewis09.bewisclient.drawable.option_elements.ScreenshotElement;
 import bewis09.bewisclient.settingsLoader.Settings;
 import bewis09.bewisclient.settingsLoader.SettingsLoader;
@@ -56,16 +55,16 @@ public abstract class ScreenshotRecorderMixin {
             ScreenshotElement.Companion.setId(ScreenshotElement.Companion.getId()+1);
             assert file2 != null;
             assert nativeImage != null;
-            ScreenshotElement.Companion.getScreenshots().add(new ScreenshotElement.SizedIdentifier(MinecraftClient.getInstance().getTextureManager().registerDynamicTexture(
-                            "screenshot_" + (ScreenshotElement.Companion.getId()),
-                            new NativeImageBackedTexture(nativeImage)
-                    ),nativeImage.getWidth(),nativeImage.getHeight(),file2.getName()));
+            if(ScreenshotElement.Companion.getAddNew())
+                ScreenshotElement.Companion.getScreenshots().add(new ScreenshotElement.SizedIdentifier(MinecraftClient.getInstance().getTextureManager().registerDynamicTexture(
+                                "screenshot_" + (ScreenshotElement.Companion.getId()),
+                                new NativeImageBackedTexture(nativeImage)
+                        ),nativeImage.getWidth(),nativeImage.getHeight(),file2.getName()));
             Util.getIoWorkerExecutor().execute(() -> {
                 try {
                     nativeImage.writeTo(file2);
-                    MutableText text = Text.literal(file2.getName()).formatted(Formatting.UNDERLINE).styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file2.getAbsolutePath())));
-                    MutableText folder = Bewisclient.INSTANCE.getTranslationText("screenshot.folder").styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file2.getParentFile().getAbsolutePath()))).formatted(Formatting.YELLOW).formatted(Formatting.UNDERLINE);
-                    messageReceiver.accept(Text.translatable("screenshot.success", text).append(" ").append(folder));
+                    MutableText text = Text.literal(file2.getName()).formatted(Formatting.UNDERLINE).styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/bewisclient screenshot \""+file2.getName()+"\"")));
+                    messageReceiver.accept(Text.translatable("screenshot.success", text));
                 } catch (Exception exception) {
                     LOGGER.warn("Couldn't save screenshot", exception);
                     messageReceiver.accept(Text.translatable("screenshot.failure", exception.getMessage()));

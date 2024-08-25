@@ -2,14 +2,20 @@ package bewis09.bewisclient.drawable.option_elements
 
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.autoUpdate.UpdateClass
+import bewis09.bewisclient.dialog.ClickDialog
+import bewis09.bewisclient.dialog.Dialog
+import bewis09.bewisclient.dialog.TextDialog
 import bewis09.bewisclient.drawable.ScalableButtonWidget
 import bewis09.bewisclient.screen.MainOptionsScreen
 import net.fabricmc.loader.api.FabricLoader
+import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
+import net.minecraft.client.gui.screen.ConfirmLinkScreen
 import net.minecraft.util.Util
 import org.apache.commons.io.FileUtils
 import java.io.ByteArrayInputStream
 import java.io.File
+import java.util.*
 import kotlin.io.path.pathString
 import kotlin.math.roundToInt
 
@@ -24,6 +30,26 @@ class SingleScreenshotElement(val image: ScreenshotElement.SizedIdentifier): Opt
     }.build()
 
     val copy = ScalableButtonWidget.builder(Bewisclient.getTranslationText("copy_screenshot")) {
+        if (!System.getProperty("os.name").lowercase(Locale.getDefault()).contains("win")) {
+            Dialog.addDialog(ClickDialog(Bewisclient.getTranslationText("info.screenshot.copy_not_win"),Bewisclient.getTranslationText("info.screenshot.github")){
+                val screen = MinecraftClient.getInstance().currentScreen
+
+                MinecraftClient.getInstance().setScreen(ConfirmLinkScreen({ confirmed: Boolean ->
+                    Dialog.proceed()
+
+                    if (confirmed) {
+                        Util.getOperatingSystem().open("https://github.com/Bewis09/Bewisclient-2/issues/new?labels=Type:%20Enhancement,Part:%20Other&assignee=Bewis09&title=Copying%20image%20with%20glfw")
+                    }
+
+                    MinecraftClient.getInstance().setScreen(screen)
+                }, "https://github.com/Bewis09/Bewisclient-2/issues/new?labels=Type:%20Enhancement,Part:%20Other&assignee=Bewis09&title=Copying%20image%20with%20glfw", true))
+            })
+
+            return@builder
+        }
+
+        Dialog.addDialog(TextDialog(Bewisclient.getTranslationText("info.screenshot.copied")))
+
         val imagePath = FabricLoader.getInstance().gameDir.toString()+"\\screenshots\\"+image.name
 
         val f2 = File(FabricLoader.getInstance().gameDir.pathString+"\\bewisclient\\java\\ImageCopy\$TransferableImage.class")
@@ -57,7 +83,13 @@ class SingleScreenshotElement(val image: ScreenshotElement.SizedIdentifier): Opt
     }.build()
 
     val delete = ScalableButtonWidget.builder(Bewisclient.getTranslationText("delete_screenshot")){
-
+        Dialog.addDialog(ClickDialog(Bewisclient.getTranslationText("info.screenshot.really_delete"),Bewisclient.getTranslationText("info.screenshot.delete")){
+            (MinecraftClient.getInstance().currentScreen as MainOptionsScreen).goBack()
+            ScreenshotElement.screenshots.remove(image)
+            File(FabricLoader.getInstance().gameDir.toString()+"\\screenshots\\"+image.name).delete()
+            it()
+            Dialog.addDialog(TextDialog(Bewisclient.getTranslationText("info.screenshot.deleted")))
+        })
     }.build()
 
     override fun render(

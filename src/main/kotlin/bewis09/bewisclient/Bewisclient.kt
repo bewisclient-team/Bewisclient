@@ -3,6 +3,10 @@ package bewis09.bewisclient
 import bewis09.bewisclient.autoUpdate.UpdateChecker
 import bewis09.bewisclient.autoUpdate.Updater
 import bewis09.bewisclient.cape.Capes
+import bewis09.bewisclient.drawable.option_elements.JustTextOptionElement
+import bewis09.bewisclient.drawable.option_elements.ScreenshotElement
+import bewis09.bewisclient.drawable.option_elements.SingleScreenshotElement
+import bewis09.bewisclient.screen.ElementList
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.screen.SnakeScreen
 import bewis09.bewisclient.settingsLoader.Settings
@@ -11,6 +15,7 @@ import bewis09.bewisclient.widgets.WidgetRenderer
 import bewis09.bewisclient.wings.WingFeatureRenderer
 import com.google.gson.JsonObject
 import com.mojang.brigadier.CommandDispatcher
+import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager
@@ -236,6 +241,37 @@ object Bewisclient : ClientModInitializer {
 						}
 						1
 					})
+		})
+
+		ClientCommandRegistrationCallback.EVENT.register(ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource?>, _: CommandRegistryAccess? ->
+			dispatcher.register(ClientCommandManager.literal("bewisclient").then(
+				ClientCommandManager.literal("snake").executes{ context: CommandContext<FabricClientCommandSource> ->
+					context.source.client.send {
+						context.source.client.setScreen(SnakeScreen())
+					}
+					1
+				}
+			).then(ClientCommandManager.literal("screenshot").then(ClientCommandManager.argument("file",StringArgumentType.string()).executes { context: CommandContext<FabricClientCommandSource> ->
+					context.source.client.send {
+						val s = MainOptionsScreen()
+
+						s.allElements.add(ElementList.screenshot())
+						s.allElements.add(arrayListOf(
+							JustTextOptionElement(StringArgumentType.getString(context,"file")),
+							SingleScreenshotElement(ScreenshotElement.screenshots.first {
+								it.name == StringArgumentType.getString(context,"file")
+							})
+						))
+
+						s.scrolls.add(0f)
+						s.scrolls.add(0f)
+
+						s.slice = 2
+
+						context.source.client.setScreen(s)
+					}
+					1
+				})))
 		})
 
 		wing()

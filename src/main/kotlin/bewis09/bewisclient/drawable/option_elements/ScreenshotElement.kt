@@ -8,6 +8,7 @@ import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.texture.NativeImage
 import net.minecraft.client.texture.NativeImageBackedTexture
 import net.minecraft.util.Identifier
+import net.minecraft.util.Util
 import java.io.File
 import java.io.FileInputStream
 import kotlin.math.ceil
@@ -21,8 +22,37 @@ class ScreenshotElement: OptionElement("","") {
 
     companion object {
         val screenshots: ArrayList<SizedIdentifier> = arrayListOf()
+            get() {
+                if(!loaded) {
+                    loaded = true
+
+                    Util.getIoWorkerExecutor().execute {
+                        val s = arrayListOf<SizedIdentifier>()
+
+                        for (f in File(FabricLoader.getInstance().gameDir.toString() + "\\screenshots").listFiles() ?: arrayOf()) {
+                            addNew = true
+                            val n = NativeImage.read(FileInputStream(f))
+
+                            val a = SizedIdentifier(
+                                MinecraftClient.getInstance().textureManager.registerDynamicTexture(
+                                    "screenshot_" + (id++.toString()),
+                                    NativeImageBackedTexture(n)
+                                ), n.width, n.height, f.name
+                            )
+
+                            s.add(a)
+                        }
+
+                        screenshots.addAll(s)
+                    }
+                }
+
+                return field
+            }
 
         var loaded = false
+
+        var addNew = false
 
         var id = 0
     }
@@ -39,22 +69,6 @@ class ScreenshotElement: OptionElement("","") {
         hoveredShot = -1
 
         RenderSystem.setShaderColor(1f,1f,1f, ((alphaModifier/0x1000000)/255f))
-
-        if(!loaded)
-            for (f in File(FabricLoader.getInstance().gameDir.toString()+"\\screenshots").listFiles()?: arrayOf()) {
-                val n = NativeImage.read(FileInputStream(f))
-
-                val a = SizedIdentifier(
-                        MinecraftClient.getInstance().textureManager.registerDynamicTexture(
-                            "screenshot_" + (id++.toString()),
-                            NativeImageBackedTexture(n)
-                        ), n.width, n.height, f.name
-                    )
-
-                screenshots.add(a)
-            }
-
-        loaded = true
 
         val columns = floor(width/120f)
         val img_width = (width - 6 * columns + 6)/columns
