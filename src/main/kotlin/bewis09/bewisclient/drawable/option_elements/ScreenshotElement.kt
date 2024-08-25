@@ -30,17 +30,19 @@ class ScreenshotElement: OptionElement("","") {
                         val s = arrayListOf<SizedIdentifier>()
 
                         for (f in File(FabricLoader.getInstance().gameDir.toString() + "\\screenshots").listFiles() ?: arrayOf()) {
-                            addNew = true
-                            val n = NativeImage.read(FileInputStream(f))
+                            try {
+                                addNew = true
+                                val n = NativeImage.read(FileInputStream(f))
 
-                            val a = SizedIdentifier(
-                                MinecraftClient.getInstance().textureManager.registerDynamicTexture(
-                                    "screenshot_" + (id++.toString()),
-                                    NativeImageBackedTexture(n)
-                                ), n.width, n.height, f.name
-                            )
+                                val a = SizedIdentifier(
+                                    MinecraftClient.getInstance().textureManager.registerDynamicTexture(
+                                        "screenshot_" + (id++.toString()),
+                                        NativeImageBackedTexture(n)
+                                    ), n.width, n.height, f.name
+                                )
 
-                            s.add(a)
+                                s.add(a)
+                            } catch (_: Exception) {}
                         }
 
                         screenshots.addAll(s)
