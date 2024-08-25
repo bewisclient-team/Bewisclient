@@ -72,6 +72,11 @@ object Bewisclient : ClientModInitializer {
 	 */
 	var update: JsonObject? = null
 
+	/**
+	 * Indicates if the user has been informed about the new update
+	 */
+	var updateInformed = false
+
 	override fun onInitializeClient() {
 		SettingsLoader.loadSettings()
 
