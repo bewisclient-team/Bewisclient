@@ -1,6 +1,7 @@
 package bewis09.bewisclient.mixin;
 
 import bewis09.bewisclient.drawable.UsableTexturedButtonWidget;
+import bewis09.bewisclient.drawable.option_elements.ScreenshotElement;
 import bewis09.bewisclient.screen.MainOptionsScreen;
 import bewis09.bewisclient.settingsLoader.Settings;
 import bewis09.bewisclient.settingsLoader.SettingsLoader;
@@ -33,5 +34,6 @@ public class TitleScreenMixin extends Screen {
                 assert client != null;
                 client.setScreen(new MainOptionsScreen());
             }));
+        ScreenshotElement.Companion.getScreenshots();
     }
 }

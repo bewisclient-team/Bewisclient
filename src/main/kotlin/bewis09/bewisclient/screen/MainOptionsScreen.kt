@@ -1,6 +1,9 @@
 package bewis09.bewisclient.screen
 
 import bewis09.bewisclient.Bewisclient
+import bewis09.bewisclient.dialog.ClickDialog
+import bewis09.bewisclient.dialog.Dialog
+import bewis09.bewisclient.dialog.TextDialog
 import bewis09.bewisclient.drawable.UsableTexturedButtonWidget
 import bewis09.bewisclient.drawable.option_elements.ContactElement
 import bewis09.bewisclient.drawable.option_elements.HRElement
@@ -8,12 +11,16 @@ import bewis09.bewisclient.drawable.option_elements.OptionElement
 import bewis09.bewisclient.mixin.ScreenMixin
 import bewis09.bewisclient.screen.widget.WidgetConfigScreen
 import bewis09.bewisclient.settingsLoader.Settings
+import bewis09.bewisclient.settingsLoader.Settings.Companion.AUTO_UPDATE
 import bewis09.bewisclient.settingsLoader.Settings.Companion.DESIGN
+import bewis09.bewisclient.settingsLoader.Settings.Companion.EXPERIMENTAL
+import bewis09.bewisclient.settingsLoader.Settings.Companion.GENERAL
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.util.Search
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.ButtonTextures
+import net.minecraft.client.gui.screen.ConfirmLinkScreen
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.widget.ButtonWidget
 import net.minecraft.client.gui.widget.ClickableWidget
@@ -25,8 +32,10 @@ import net.minecraft.client.sound.SoundManager
 import net.minecraft.sound.SoundEvents
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
+import net.minecraft.util.Util
 import net.minecraft.util.math.MathHelper
 import org.joml.Matrix4f
+import java.util.*
 import kotlin.math.*
 
 /**
@@ -103,6 +112,32 @@ open class MainOptionsScreen : Screen(Text.empty()) {
 
     init {
         animationState = AnimationState.TO_MAIN_SCREEN_UNSTARTED
+
+        if(Bewisclient.update!=null && !Bewisclient.updateInformed) {
+            Dialog.addDialog(ClickDialog(Bewisclient.getTranslationText("info.new_update"), Bewisclient.getTranslationText("info.download")) {
+                Dialog.pause()
+
+                client?.setScreen(ConfirmLinkScreen({ confirmed: Boolean ->
+                    Dialog.proceed()
+
+                    if (confirmed) {
+                        Util.getOperatingSystem().open("https://modrinth.com/mod/bewisclient")
+                    }
+
+                    MinecraftClient.getInstance().setScreen(this)
+                }, "https://modrinth.com/mod/bewisclient", true))
+            })
+
+            if (System.getProperty("os.name").lowercase(Locale.getDefault()).contains("win")) {
+                Dialog.addDialog(ClickDialog(Bewisclient.getTranslationText("info.enable_auto_update"), Bewisclient.getTranslationText("info.enable")) {
+                    SettingsLoader.set(GENERAL,true, AUTO_UPDATE, *EXPERIMENTAL)
+
+                    Dialog.addDialog(TextDialog(Bewisclient.getTranslationText("info.auto_update_enable")))
+
+                    it()
+                })
+            }
+        }
     }
 
     override fun render(context: DrawContext?, mouseX: Int, mouseY: Int, delta: Float) {
@@ -238,6 +273,12 @@ open class MainOptionsScreen : Screen(Text.empty()) {
         )
         fillGradient(context, (this.width-(this.width/4)-6*animationFrame).toInt()+2,0,this.width- (this.width/4) +2,this.height,
             ((0xFF*animationFrame).toLong()*0x1000000).toInt(), 0)
+
+        context.matrices.push()
+        context.matrices.translate(0f,0f,100f)
+        context.matrices.scale(1f/ scale,1f/ scale,1f/ scale)
+        Dialog.render(context,width,mouseX,mouseY)
+        context.matrices.pop()
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
@@ -245,6 +286,7 @@ open class MainOptionsScreen : Screen(Text.empty()) {
         if(animationState==AnimationState.STABLE && mouseX>width/4 && mouseX<width/4*3 && mouseY<height-28) {
             allElements[slice].forEach {it.mouseClicked(mouseX* scale, mouseY* scale, button, this)}
         }
+        Dialog.mouseClicked(mouseX, mouseY, button)
         return super.mouseClicked(mouseX, mouseY, button)
     }
 
