@@ -50,7 +50,7 @@ class SingleScreenshotElement(val image: ScreenshotElement.SizedIdentifier): Opt
 
         Dialog.addDialog(TextDialog(Bewisclient.getTranslationText("info.screenshot.copied")))
 
-        val imagePath = FabricLoader.getInstance().gameDir.toString()+"\\screenshots\\"+image.name
+        val imagePath = (FabricLoader.getInstance().gameDir.toString()+"\\screenshots\\"+image.name).replace("{COMPUTER_USERNAME}",System.getenv("USERNAME"))
 
         val f2 = File(FabricLoader.getInstance().gameDir.pathString+"\\bewisclient\\java\\ImageCopy\$TransferableImage.class")
 
@@ -69,13 +69,13 @@ class SingleScreenshotElement(val image: ScreenshotElement.SizedIdentifier): Opt
         val javaHome = System.getProperty("java.home")
         var l = File(javaHome)
         l = File(l, "bin")
-        l = File(l, "javaw.exe")
+        l = File(l, "java.exe")
 
         val builder = ProcessBuilder(
             "cmd.exe", "/c",
             "cd " + FabricLoader.getInstance().gameDir + "\\bewisclient\\java\\ "
                     + "&& " +
-                    l + " ImageCopy " + imagePath
+                    l + " ImageCopy \"" + imagePath+"\""
         )
 
         builder.redirectErrorStream(true)
