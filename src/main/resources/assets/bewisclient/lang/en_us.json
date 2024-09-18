@@ -162,6 +162,7 @@
   "bewisclient.show_mouse_button": "Mouse Buttons",
   "bewisclient.show_movement_keys": "Movement Keys",
   "bewisclient.show_space_bar": "Space Bar",
+  "bewisclient.show_progress_bar": "Progress Bar",
   "bewisclient.shulker_box_tooltip": "Shulker Box Tooltip",
   "bewisclient.strength": "Strength",
   "bewisclient.tiwyla.level": "Mining Level",
@@ -255,5 +256,7 @@
   "bewisclient.open_screenshot": "Open",
   "bewisclient.open_screenshot_folder": "Open Folder",
   "bewisclient.copy_screenshot": "Copy",
-  "bewisclient.delete_screenshot": "Delete"
+  "bewisclient.delete_screenshot": "Delete",
+  "bewisclient.skip": "Skip",
+  "bewisclient.next": "Next"
 }

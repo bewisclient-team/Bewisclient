@@ -15,6 +15,7 @@ import bewis09.bewisclient.settingsLoader.Settings.Companion.AUTO_UPDATE
 import bewis09.bewisclient.settingsLoader.Settings.Companion.DESIGN
 import bewis09.bewisclient.settingsLoader.Settings.Companion.EXPERIMENTAL
 import bewis09.bewisclient.settingsLoader.Settings.Companion.GENERAL
+import bewis09.bewisclient.settingsLoader.Settings.Companion.OPTIONS_MENU
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.util.Search
 import net.minecraft.client.MinecraftClient
@@ -151,7 +152,7 @@ open class MainOptionsScreen : Screen(Text.empty()) {
         var animationFrame = 1F
         val animationSpeed = MathHelper.clamp(SettingsLoader.get(
             DESIGN, 
-            Settings.OPTIONS_MENU,
+            OPTIONS_MENU,
             Settings.ANIMATION_TIME
         ),1f,500f)
         if(System.currentTimeMillis() - animationStart >= animationSpeed) {
@@ -503,7 +504,7 @@ open class MainOptionsScreen : Screen(Text.empty()) {
         /**
          * The cached scale, that cannot change while clicking a mouse button for preventing scale change, while fading the scale fader
          */
-        var laS = 1f/ SettingsLoader.get(DESIGN, Settings.OPTIONS_MENU, Settings.SCALE)
+        var laS = 1f/ SettingsLoader.get(DESIGN, OPTIONS_MENU, Settings.SCALE)
 
         /**
          * Indicates if a mouse button is clicked
@@ -516,7 +517,7 @@ open class MainOptionsScreen : Screen(Text.empty()) {
         val scale: Float
             get() {
                 if(!clicked) {
-                    laS = 1f/SettingsLoader.get(DESIGN, Settings.OPTIONS_MENU, Settings.SCALE)
+                    laS = 1f/SettingsLoader.get(DESIGN, OPTIONS_MENU, Settings.SCALE)
                 }
                 return laS
             }

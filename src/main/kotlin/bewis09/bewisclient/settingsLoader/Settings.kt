@@ -51,6 +51,7 @@ open class Settings {
         val ALL_CLICK = createBoolean("all_click")
         val SHOW_TITLE_MENU = createBoolean("show_title_menu")
         val SHOW_GAME_MENU = createBoolean("show_game_menu")
+        val SHOWN_START_MENU = createBoolean("shown_start_menu")
 
         // Scoreboard
         val SCOREBOARD = arrayOf("scoreboard")

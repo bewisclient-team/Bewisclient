@@ -9,7 +9,11 @@ import bewis09.bewisclient.drawable.option_elements.SingleScreenshotElement
 import bewis09.bewisclient.screen.ElementList
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.screen.SnakeScreen
+import bewis09.bewisclient.screen.WelcomingScreen
 import bewis09.bewisclient.settingsLoader.Settings
+import bewis09.bewisclient.settingsLoader.Settings.Companion.DESIGN
+import bewis09.bewisclient.settingsLoader.Settings.Companion.OPTIONS_MENU
+import bewis09.bewisclient.settingsLoader.Settings.Companion.SHOWN_START_MENU
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.widgets.WidgetRenderer
 import bewis09.bewisclient.wings.WingFeatureRenderer
@@ -132,87 +136,91 @@ object Bewisclient : ClientModInitializer {
 			}
 
 			while (openOptionScreenKeyBinding?.wasPressed() == true) {
-				it.setScreen(MainOptionsScreen())
+				if(!SettingsLoader.get(DESIGN, OPTIONS_MENU, SHOWN_START_MENU)) {
+					MinecraftClient.getInstance().setScreen(WelcomingScreen())
+				} else {
+					MinecraftClient.getInstance().setScreen(MainOptionsScreen())
+				}
 			}
 
 			while (keyBinding1.wasPressed()) {
 				SettingsLoader.set(
-					Settings.DESIGN, true, Settings.FULLBRIGHT,
+					DESIGN, true, Settings.FULLBRIGHT,
 					Settings.ENABLED
 				)
 				SettingsLoader.set(
-					Settings.DESIGN, if(SettingsLoader.get(
-							Settings.DESIGN, Settings.FULLBRIGHT,
+					DESIGN, if(SettingsLoader.get(
+							DESIGN, Settings.FULLBRIGHT,
 							Settings.FULLBRIGHT_VALUE
 						)<=1) 10f else 1f, Settings.FULLBRIGHT,
 					Settings.FULLBRIGHT_VALUE
 				)
 				MinecraftClient.getInstance().options.gamma.value = SettingsLoader.get(
-					Settings.DESIGN, Settings.FULLBRIGHT,
+					DESIGN, Settings.FULLBRIGHT,
 					Settings.FULLBRIGHT_VALUE
 				).toDouble()
 				printGammaMessage(SettingsLoader.get(
-					Settings.DESIGN, Settings.FULLBRIGHT,
+					DESIGN, Settings.FULLBRIGHT,
 					Settings.FULLBRIGHT_VALUE
 				)/10)
 			}
 			while (keyBinding2.wasPressed()) {
 				SettingsLoader.set(
-					Settings.DESIGN, true, Settings.FULLBRIGHT,
+					DESIGN, true, Settings.FULLBRIGHT,
 					Settings.ENABLED
 				)
 				SettingsLoader.set(
-					Settings.DESIGN, min(10f,SettingsLoader.get(
-						Settings.DESIGN, Settings.FULLBRIGHT,
+					DESIGN, min(10f,SettingsLoader.get(
+						DESIGN, Settings.FULLBRIGHT,
 						Settings.FULLBRIGHT_VALUE
 					)+0.25f), Settings.FULLBRIGHT,
 					Settings.FULLBRIGHT_VALUE
 				)
 				MinecraftClient.getInstance().options.gamma.value = SettingsLoader.get(
-					Settings.DESIGN, Settings.FULLBRIGHT,
+					DESIGN, Settings.FULLBRIGHT,
 					Settings.FULLBRIGHT_VALUE
 				).toDouble()
 				printGammaMessage(SettingsLoader.get(
-					Settings.DESIGN, Settings.FULLBRIGHT,
+					DESIGN, Settings.FULLBRIGHT,
 					Settings.FULLBRIGHT_VALUE
 				)/10)
 			}
 			while (keyBinding3.wasPressed()) {
 				SettingsLoader.set(
-					Settings.DESIGN, true, Settings.FULLBRIGHT,
+					DESIGN, true, Settings.FULLBRIGHT,
 					Settings.ENABLED
 				)
 				SettingsLoader.set(
-					Settings.DESIGN, max(0f,SettingsLoader.get(
-						Settings.DESIGN, Settings.FULLBRIGHT,
+					DESIGN, max(0f,SettingsLoader.get(
+						DESIGN, Settings.FULLBRIGHT,
 						Settings.FULLBRIGHT_VALUE
 					)-0.25f), Settings.FULLBRIGHT,
 					Settings.FULLBRIGHT_VALUE
 				)
 				MinecraftClient.getInstance().options.gamma.value = SettingsLoader.get(
-					Settings.DESIGN, Settings.FULLBRIGHT,
+					DESIGN, Settings.FULLBRIGHT,
 					Settings.FULLBRIGHT_VALUE
 				).toDouble()
 				printGammaMessage(SettingsLoader.get(
-					Settings.DESIGN, Settings.FULLBRIGHT,
+					DESIGN, Settings.FULLBRIGHT,
 					Settings.FULLBRIGHT_VALUE
 				)/10)
 			}
 			while (keyBinding4.wasPressed()) {
 				SettingsLoader.set(
-					Settings.DESIGN, !SettingsLoader.get(
-						Settings.DESIGN, Settings.FULLBRIGHT,
+					DESIGN, !SettingsLoader.get(
+						DESIGN, Settings.FULLBRIGHT,
 						Settings.NIGHT_VISION
 					), Settings.FULLBRIGHT,
 					Settings.NIGHT_VISION
 				)
 				assert(MinecraftClient.getInstance().player != null)
 				MinecraftClient.getInstance().player!!.sendMessage(Text.translatable("bewisclient.night_vision." + (if (SettingsLoader.get(
-						Settings.DESIGN, Settings.FULLBRIGHT,
+						DESIGN, Settings.FULLBRIGHT,
 						Settings.NIGHT_VISION
 					)) "enabled" else "disabled")).setStyle(
 						Style.EMPTY.withColor(if (SettingsLoader.get(
-								Settings.DESIGN, Settings.FULLBRIGHT,
+								DESIGN, Settings.FULLBRIGHT,
 								Settings.NIGHT_VISION
 							)) 0xFFFF00 else 0xFF0000)
 				), true)

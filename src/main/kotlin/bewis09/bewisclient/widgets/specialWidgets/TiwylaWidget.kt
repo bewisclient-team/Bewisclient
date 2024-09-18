@@ -31,6 +31,7 @@ import net.minecraft.util.math.ColorHelper
 import java.util.*
 import java.util.Map
 import kotlin.math.ceil
+import kotlin.math.floor
 
 /**
  * A [Widget] to display information of the block/entity you are looking at
@@ -109,6 +110,13 @@ class TiwylaWidget: Widget("tiwyla") {
         if (hitResult is BlockHitResult) {
             if (getProperty(SHOW_BLOCK_ICON,*SELECT_PARTS)) {
                 drawContext.drawItem(ItemStack(MinecraftClient.getInstance().world!!.getBlockState(hitResult.blockPos).block),x+10,y+12)
+            }
+
+            if((MinecraftClient.getInstance().interactionManager as ClientPlayerInteractionManagerMixin?)!!.getCurrentBreakingProgress()!=0f && getProperty(SHOW_PROGRESS_BAR,*SELECT_PARTS)) {
+                drawContext.drawHorizontalLine(x,
+                    floor(x+getOriginalWidth()*((MinecraftClient.getInstance().interactionManager as ClientPlayerInteractionManagerMixin?)!!.getCurrentBreakingProgress())).toInt(),y+getOriginalHeight()-1,
+                    0xAAFFFFFF.toInt()
+                )
             }
         }
 
@@ -378,6 +386,7 @@ class TiwylaWidget: Widget("tiwyla") {
 
         elements.add(SHOW_BLOCK_ICON.id,JsonPrimitive(true))
         elements.add(SHOW_HEALTH_INFORMATION.id,JsonPrimitive(true))
+        elements.add(SHOW_PROGRESS_BAR.id,JsonPrimitive(true))
 
         jsonObject.add(SELECT_PARTS[0],elements)
         jsonObject.add("info_tiwyla_health_removed",JsonPrimitive(""))
