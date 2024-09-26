@@ -5,6 +5,7 @@ import bewis09.bewisclient.screen.ElementList
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.settingsLoader.Settings
 import bewis09.bewisclient.settingsLoader.SettingsLoader
+import bewis09.bewisclient.util.ScreenValuedTypedAnimation
 import bewis09.bewisclient.widgets.Widget
 import bewis09.bewisclient.widgets.WidgetRenderer
 import net.minecraft.client.MinecraftClient
@@ -68,9 +69,8 @@ class WidgetConfigScreen(var parent: MainOptionsScreen): Screen(Text.empty()) {
 
         if(alphaDirection ==1 && (System.currentTimeMillis() - alphaStart)/animationSpeed>1) {
             MinecraftClient.getInstance().setScreen(parent)
-            parent.animationStart = System.currentTimeMillis()
+            parent.animation = ScreenValuedTypedAnimation(0f,1f,MainOptionsScreen.AnimationState.MAIN)
             parent.animatedScreen = null
-            parent.animationState = MainOptionsScreen.AnimationState.TO_MAIN_SCREEN
             return
         }
 

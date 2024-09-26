@@ -19,4 +19,8 @@ class SpeedWidget: LineWidget("speed",80,true) {
         list.add(VERTICAL_SPEED.id, JsonPrimitive(false))
         return list
     }
+
+    override fun getDescriptionSettings(): ArrayList<String> {
+        return arrayListOf(VERTICAL_SPEED.id)
+    }
 }

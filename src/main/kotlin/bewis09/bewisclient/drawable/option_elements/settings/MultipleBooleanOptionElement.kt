@@ -35,9 +35,6 @@ class MultipleBooleanOptionElement(title: String, val settings: String, val path
 
         selected = -1
 
-        context.fill(x,y,x+width,y+height, alphaModifier.toInt())
-        context.drawBorder(x,y,width,height, (alphaModifier+0xFFFFFF).toInt())
-
         context.drawHorizontalLine(x+4,x+width-5,y+16,0xFFAAAAAA.toInt())
 
         context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer,Bewisclient.getTranslationText(title),x+width/2,y+5,-1)

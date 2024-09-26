@@ -116,10 +116,6 @@ class ScreenshotElement: OptionElement("","") {
                 )
             }
 
-            context.fill(startX - 1, startY - 1, startX + 1 + img_width.toInt(), startY + 1 + img_height.toInt(),0xFF000000.toInt())
-
-            context.drawBorder(startX - 1, startY - 1, img_width.toInt() + 2, img_height.toInt() + 2, (if(hovered) 0xFFAAAAFF else -1L).toInt())
-
             RenderSystem.enableBlend()
 
             context.drawTexture(it.identifier, startX + ((img_width - i_width) / 2).toInt(), startY + ((img_height - i_height) / 2).toInt(), 0f, 0f, i_width.toInt(),

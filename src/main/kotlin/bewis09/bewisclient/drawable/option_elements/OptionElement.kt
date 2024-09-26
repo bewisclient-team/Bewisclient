@@ -3,7 +3,6 @@ package bewis09.bewisclient.drawable.option_elements
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.settingsLoader.Settings
-import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.util.Search
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.util.Identifier
@@ -32,10 +31,11 @@ abstract class OptionElement(val title: String, val description: String) : Setti
     var pos = arrayOf(0, 0, 0, 0)
 
     /**
-     * Indicates if the [bewis09.bewisclient.settingsLoader.Settings.ALL_CLICK] setting is turned on, where you can click at an entire [MainOptionElement] to get to the corresponding screen
+     * Exists for compatibility reasons
      */
+    @Deprecated("is always true", ReplaceWith("true"))
     val allClicked: Boolean
-        get() = SettingsLoader.get(DESIGN, OPTIONS_MENU, ALL_CLICK)
+        get() = true
 
     /**
      * Renders the element on the screen

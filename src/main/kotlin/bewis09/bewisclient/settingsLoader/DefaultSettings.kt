@@ -85,7 +85,6 @@ object DefaultSettings: Settings() {
         val OM = JsonObject()
         OM.add(ANIMATION_TIME, JsonPrimitive(200.0))
         OM.add(SCALE, JsonPrimitive(0.75))
-        OM.add(ALL_CLICK, JsonPrimitive(true))
         OM.add(SHOW_TITLE_MENU, JsonPrimitive(true))
         OM.add(SHOW_GAME_MENU, JsonPrimitive(true))
         OM.add(SHOWN_START_MENU, JsonPrimitive(true))

@@ -104,7 +104,7 @@ class ColorPickerElement(
     override fun getTypeParameter(): String = "colorsaver"
 
     override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {
-        if(dependentDisabler.contains(toPointNotation(path, id)) && !dependentDisabler[toPointNotation(path, id)]!!()) return -4
+        if(dependentDisabler.contains(toPointNotation(path, id)) && !dependentDisabler[toPointNotation(path, id)]!!()) return -8
 
         if(changing) {
             val color = convertRGBtoHSB(get())
@@ -117,9 +117,6 @@ class ColorPickerElement(
         val descriptionLines = client.textRenderer.wrapLines(Bewisclient.getTranslationText(description),width-76)
 
         pos = arrayOf(x,y,x+width,y+60)
-
-        context.fill(x,y,x+width-64,y+60, alphaModifier.toInt())
-        context.drawBorder(x,y,width-64,60, (alphaModifier+0xFFFFFF).toInt())
 
         context.fill(x+width-60,y,x+width,y+60, alphaModifier.toInt())
 

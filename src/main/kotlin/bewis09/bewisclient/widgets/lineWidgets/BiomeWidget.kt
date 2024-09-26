@@ -123,8 +123,18 @@ class BiomeWidget: LineWidget("biome",150, true) {
     }
 
     override fun getWidgetSettings(): JsonObject {
-        val list = super.getWidgetSettings(.7f,5f,-1f,5f,1f)
+        val list = JsonObject()
+
+        list.add(ENABLED.id, JsonPrimitive(true))
+        list.add(TRANSPARENCY.id, JsonPrimitive(0.43f))
+        list.add(SIZE.id, JsonPrimitive(.7f))
+        list.add(POSX.id, JsonPrimitive(5f))
+        list.add(PARTX.id, JsonPrimitive(-1f))
+        list.add(POSY.id, JsonPrimitive(5f))
+        list.add(PARTY.id, JsonPrimitive(1f))
         list.add(COLORCODE_BIOME.id,JsonPrimitive(true))
+        list.add(TEXT_COLOR.id, JsonPrimitive("0xFFFFFF"))
+
         return list
     }
 }

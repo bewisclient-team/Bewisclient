@@ -99,9 +99,8 @@ class TitleWidgetEnablerOptionElement : TitleOptionElement {
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int, screen: MainOptionsScreen) {
-        screen.playDownSound(MinecraftClient.getInstance().soundManager)
-
         if(isWidgetHovered) {
+            screen.playDownSound(MinecraftClient.getInstance().soundManager)
             val enabled = (SettingsLoader.get(setting, settingID, *path))
             SettingsLoader.set(setting, !enabled, settingID, *path)
             valueApplier?.invoke()

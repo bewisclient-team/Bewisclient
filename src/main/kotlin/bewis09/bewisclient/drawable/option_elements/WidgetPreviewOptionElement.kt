@@ -28,7 +28,8 @@ class WidgetPreviewOptionElement(val widget: Widget?): OptionElement("","") {
     ): Int {
         if(widget==null) return 0
 
-        context.matrices.pop()
+        context.matrices.push()
+        context.matrices.scale(scale, scale, scale)
 
         RenderSystem.enableBlend()
         context.setShaderColor(1F,1F,1F, (alphaModifier.toFloat()/0xFFFFFFFF))
@@ -47,7 +48,6 @@ class WidgetPreviewOptionElement(val widget: Widget?): OptionElement("","") {
             (widget.getOriginalWidth()+6f).roundToInt(),
             (widget.getOriginalHeight()+6),0xFFFFFFFF.toInt())
 
-        context.matrices.push()
         context.matrices.scale(1/widget.getScale(), 1/widget.getScale(), 1/widget.getScale())
 
         widget.render(context,(((x+width/2)/scale-widget.getOriginalWidth()/2)).roundToInt(), ((y/scale+3f)).roundToInt())
@@ -58,7 +58,6 @@ class WidgetPreviewOptionElement(val widget: Widget?): OptionElement("","") {
         context.matrices.pop()
 
         context.matrices.translate(0f,0f,1000f)
-        context.matrices.push()
         context.matrices.scale(1/scale, 1/scale, 1/scale)
         return (widget.getOriginalHeight()*scale+4).roundToInt()
     }

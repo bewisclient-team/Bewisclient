@@ -4,13 +4,16 @@ import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.drawable.option_elements.MultiplePagesOptionElement.MultiplePagesElement
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.settingsLoader.SettingsLoader
+import bewis09.bewisclient.util.EaseMode
 import bewis09.bewisclient.util.Search
+import bewis09.bewisclient.util.ValuedAnimation
 import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.text.OrderedText
 import net.minecraft.util.Identifier
 import kotlin.math.ceil
+import kotlin.math.roundToLong
 
 /**
  * An [OptionElement] for displaying multiple elements in a grid
@@ -24,6 +27,13 @@ class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, v
      * The index of the [MultiplePagesElement] that is currently hovered over
      */
     var hoveredElement = -1
+
+    /**
+     * The Array of [ValuedAnimation] for the scaling when hovered
+     */
+    var animation: Array<ValuedAnimation> = Array(elementList.size) {
+        ValuedAnimation(System.currentTimeMillis(), SettingsLoader.get(DESIGN, OPTIONS_MENU, ANIMATION_TIME).roundToLong()/2, EaseMode.CONST, 0f, 0f)
+    }
 
     /**
      * The index of the [MultiplePagesElement] on which the button to enable/disable the widget is hovered
@@ -46,42 +56,50 @@ class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, v
         hoveredElement = -1
         widgetHoveredElement = -1
 
-        val height = 100
+        val height = 80
 
-        elementList.forEachIndexed{ i: Int, multiplePagesElement: MultiplePagesElement ->
-            val hasImage = multiplePagesElement.image!=null
+        elementList.forEachIndexed { i: Int, multiplePagesElement: MultiplePagesElement ->
+            val hasImage = multiplePagesElement.image != null
 
-            val setter = multiplePagesElement.path!=null && multiplePagesElement.setting!=null && multiplePagesElement.settingID!=null
+            val inline = i % elementsPerRow
+            val line = i / elementsPerRow
 
-            val inline = i%elementsPerRow
-            val line = i/elementsPerRow
+            val isHovered =
+                mouseX > x + (elementWidthFloat * inline) && mouseX < x + (elementWidthFloat * inline) + elementWidth && mouseY > y + line * height + 2f && mouseY < y + line * height + height - 2f
 
-            val isHovered = mouseX>x+(elementWidthFloat*inline)&&mouseX<x+(elementWidthFloat*inline)+elementWidth&&mouseY>y+line*height&&mouseY<y+line*height+height-(if(setter) 18 else 4)
+            if (isHovered) {
+                hoveredElement = i
+            }
 
-            if(isHovered) hoveredElement = i
+            if(isHovered != (animation[i].endValue==3f)) {
+                animation[i] = ValuedAnimation(
+                    System.currentTimeMillis(),
+                    SettingsLoader.get(DESIGN, OPTIONS_MENU, ANIMATION_TIME).roundToLong() / 3,
+                    EaseMode.EASE_IN_OUT,
+                    animation[i].getValue(),
+                    if (isHovered) 3f else 0f
+                )
+            }
 
             context.matrices.push()
 
-            context.matrices.translate((elementWidthFloat*inline),0f,0f)
+            context.matrices.translate((elementWidthFloat * inline), 0f, 0f)
 
-            context.setShaderColor(1f,1f,1f, ((alphaModifier.toFloat()/0xFFFFFFFF)))
+            context.setShaderColor(1f, 1f, 1-animation[i].getValue()/6f, ((alphaModifier.toFloat() / 0xFFFFFFFF)))
 
-            if(isHovered) {
-                context.matrices.translate(x.toFloat(),y.toFloat()+line*height,0f)
-                context.matrices.scale((1+2f/elementWidth),
-                    (1+2f/elementWidth),0f)
-                context.matrices.translate(-x.toFloat()-1,-y.toFloat()-line*height-1,0f)
-            }
+            context.matrices.translate(x.toFloat(), y.toFloat() + line * height, 0f)
+            context.matrices.scale(
+                (1 + animation[i].getValue() / elementWidth * 2),
+                (1 + animation[i].getValue() / elementWidth * 2), 0f
+            )
+            context.matrices.translate(-x.toFloat() - animation[i].getValue(), -y.toFloat() - line * height - animation[i].getValue(), 0f)
 
-            context.fill(x,y+line*height,x+elementWidth,y+line*height+height-4, 0xFF000000.toInt())
-            context.drawBorder(x,y+line*height,elementWidth,height-4, if(isHovered) (alphaModifier + 0xAAAAFF).toInt() else 0xFFFFFFFF.toInt())
-
-            if(hasImage) {
+            if (hasImage) {
                 RenderSystem.enableBlend()
                 context.drawTexture(
                     multiplePagesElement.image,
                     x + elementWidth / 2 - 16,
-                    y + line * height + 10 + (if(setter) 0 else 6),
+                    y + line * height + 10,
                     32,
                     32,
                     0f,
@@ -94,61 +112,36 @@ class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, v
                 RenderSystem.disableBlend()
             }
 
-            val l = MinecraftClient.getInstance().textRenderer.wrapLines(Bewisclient.getTranslationText(multiplePagesElement.title),elementWidth-8)
-            l.forEachIndexed{ i1: Int, orderedText: OrderedText ->
-                context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, orderedText,x+elementWidth/2,y+line*height+(if(hasImage) 53 else 6)+(if(setter) 0 else 8)+i1*9+9-(l.size*4.5).toInt(),-1)
-            }
-
-            if(!hasImage) {
-                val d = MinecraftClient.getInstance().textRenderer.wrapLines(Bewisclient.getTranslationText(multiplePagesElement.description!!),elementWidth-8)
-                d.forEachIndexed{ i1: Int, orderedText: OrderedText ->
-                    context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, orderedText,x+elementWidth/2,y+line*height+(40)+i1*9+9-(d.size*4.5).toInt(),0xFFAAAAAA.toInt())
-                }
-            }
-
-            if(setter) {
-                val isWidgetHovered =
-                    mouseX > x + (elementWidthFloat * inline) && mouseX < x + (elementWidthFloat * inline) + elementWidth && mouseY > y + line * height + height - 19 && mouseY < y + line * height + height - 4
-
-                val enabled = (SettingsLoader.get(multiplePagesElement.setting!!, multiplePagesElement.path!!, multiplePagesElement.settingID!!))
-
-                if (!isWidgetHovered) {
-                    context.fill(
-                        x,
-                        y + line * height + 80 + 2,
-                        x + elementWidth,
-                        y + line * height + 80 + 16,
-                        (alphaModifier + (if (enabled) 0x44BB44 else 0xFF0000)).toInt()
-                    )
-                } else {
-                    widgetHoveredElement = i
-
-                    context.fill(
-                        x,
-                        y + line * height + 80 + 2,
-                        x + elementWidth,
-                        y + line * height + 80 + 16,
-                        (alphaModifier + (if (enabled) 0x226022 else 0x800000)).toInt()
-                    )
-                }
-                context.drawBorder(
-                    x,
-                    y + line * height + 80 + 2,
-                    elementWidth,
-                    14,
-                    (alphaModifier + (if (isWidgetHovered) 0xAAAAFF else 0xFFFFFF)).toInt()
-                )
-
+            val l = MinecraftClient.getInstance().textRenderer.wrapLines(
+                Bewisclient.getTranslationText(multiplePagesElement.title),
+                elementWidth - 8
+            )
+            l.forEachIndexed { i1: Int, orderedText: OrderedText ->
                 context.drawCenteredTextWithShadow(
                     MinecraftClient.getInstance().textRenderer,
-                    if (enabled) Bewisclient.getTranslatedString("enabled") else Bewisclient.getTranslatedString("disabled"),
+                    orderedText,
                     x + elementWidth / 2,
-                    y + line * height + 80 + 5,
-                    (alphaModifier + 0xFFFFFF).toInt()
+                    y + line * height + (if (hasImage) 53 else 6) + i1 * 9 + 9 - (l.size * 4.5).toInt(),
+                    -1
                 )
             }
 
-            context.setShaderColor(1f,1f,1f,1f)
+            if (!hasImage) {
+                val d = MinecraftClient.getInstance().textRenderer.wrapLines(
+                    Bewisclient.getTranslationText(multiplePagesElement.description!!), elementWidth - 8
+                )
+                d.forEachIndexed { i1: Int, orderedText: OrderedText ->
+                    context.drawCenteredTextWithShadow(
+                        MinecraftClient.getInstance().textRenderer,
+                        orderedText,
+                        x + elementWidth / 2,
+                        y + line * height + (40) + i1 * 9 + 9 - (d.size * 4.5).toInt(),
+                        0xFFAAAAAA.toInt()
+                    )
+                }
+            }
+
+            context.setShaderColor(1f, 1f, 1f, 1f)
 
             context.matrices.pop()
         }

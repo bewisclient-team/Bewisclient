@@ -314,4 +314,9 @@ abstract class Widget(val id: String): Settings() {
 
         return jsonObject
     }
+
+    /**
+     * @return The settings for which the description should be shown
+     */
+    open fun getDescriptionSettings(): ArrayList<String>? { return null }
 }

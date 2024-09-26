@@ -4,11 +4,12 @@ import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.screen.ElementList.dependentDisabler
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.settingsLoader.SettingsLoader
+import bewis09.bewisclient.util.Animation
+import bewis09.bewisclient.util.EaseMode
+import bewis09.bewisclient.util.ScreenAnimation
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.util.math.ColorHelper
-import net.minecraft.util.math.MathHelper
-import kotlin.math.cos
 
 /**
  * A [SettingsOptionElement] which changes a true-false setting
@@ -20,19 +21,22 @@ class BooleanOptionElement : SettingsOptionElement<Boolean> {
      */
     val valueChanger: (Boolean)->Unit
 
+    var descriptionEnabled: Boolean
+
     /**
      * @param title The title of the element and gets converted to the description string
      * @param settings The category of settings the setting
      * @param path The path to the setting
      * @param id The id of the setting
      */
-    constructor(title: String, path: Array<String>, id: SettingsLoader.TypedSettingID<Boolean>, settings: String) : super(
+    constructor(title: String, path: Array<String>, id: SettingsLoader.TypedSettingID<Boolean>, settings: String, vararg description: Boolean) : super(
         title,
         settings,
         path,
         id
     ) {
         this.valueChanger = {}
+        this.descriptionEnabled = description.getOrElse(0) { false }
     }
 
     /**
@@ -41,13 +45,14 @@ class BooleanOptionElement : SettingsOptionElement<Boolean> {
      * @param path The path to the setting
      * @param id The id of the setting
      */
-    constructor(title: String, path: Array<String>, id: SettingsLoader.TypedSettingID<Boolean>, settings: String, valueChanger: (Boolean) -> Unit) : super(
+    constructor(title: String, path: Array<String>, id: SettingsLoader.TypedSettingID<Boolean>, settings: String, valueChanger: (Boolean) -> Unit, vararg description: Boolean) : super(
         title,
         settings,
         path,
         id
     ) {
         this.valueChanger = valueChanger
+        this.descriptionEnabled = description.getOrElse(0) { false }
     }
 
     /**
@@ -55,44 +60,35 @@ class BooleanOptionElement : SettingsOptionElement<Boolean> {
      *
      * @see [System.currentTimeMillis]
      */
-    var animationStart = 0L
+    var animation = Animation(0,0, EaseMode.CONST)
 
     override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {
-        if(dependentDisabler.contains(toPointNotation(path,id)) && !dependentDisabler[toPointNotation(path,id)]!!()) return -4
+        if(dependentDisabler.contains(toPointNotation(path,id)) && !dependentDisabler[toPointNotation(path,id)]!!()) return -8
 
         val client = MinecraftClient.getInstance()
 
         val descriptionLines = client.textRenderer.wrapLines(Bewisclient.getTranslationText(description),width-34)
 
-        val height = 24+10*descriptionLines.size
+        val height = 13 + if(descriptionEnabled) descriptionLines.size*10 + 4 else 0
 
-        val isSelected = x+width-20 < mouseX && y < mouseY && x+width > mouseX && y+height > mouseY
+        val isSelected = x+width-30 < mouseX && y < mouseY && x+width > mouseX && y+height > mouseY
 
         pos = arrayOf(x,y,x+width,y+height)
 
-        context.fill(x,y,x+width-22,y+height, alphaModifier.toInt())
-        context.drawBorder(x,y,width-22,height, (alphaModifier+0xFFFFFF).toInt())
+        context.drawTextWithShadow(client.textRenderer, Bewisclient.getTranslationText(title),x+6,y+3,(alphaModifier+0xFFFFFF).toInt())
 
-        context.drawTextWithShadow(client.textRenderer, Bewisclient.getTranslationText(title),x+6,y+6,(alphaModifier+0xFFFFFF).toInt())
-        descriptionLines.iterator().withIndex().forEach { (index, line) ->
-            context.drawTextWithShadow(client.textRenderer, line, x + 6, y + 20 + 10 * index, (alphaModifier + 0x808080).toInt())
-        }
-
-        val middleX = x+width-10
+        if(descriptionEnabled)
+            descriptionLines.iterator().withIndex().forEach { (index, line) ->
+                context.drawTextWithShadow(client.textRenderer, line, x + 6, y + 16 + 10 * index, (alphaModifier + 0x808080).toInt())
+            }
 
         val enabled = SettingsLoader.get(settings, path, id)
 
-        var progress = MathHelper.clamp((System.currentTimeMillis() - animationStart)/SettingsLoader.get(
-            DESIGN,
-            OPTIONS_MENU,
-            ANIMATION_TIME
-        ),0F,1F)
+        var progress = animation.getProgress()
 
         if(enabled) {
             progress = 1-progress
         }
-
-        progress = ((1- cos(Math.PI*progress))/2).toFloat()
 
         val enableColor: Int = ColorHelper.Argb.getArgb((alphaModifier/0x1000000).toInt(),
                 (0xAA * progress + 0x55 * (1-progress)).toInt(),
@@ -100,17 +96,13 @@ class BooleanOptionElement : SettingsOptionElement<Boolean> {
                 0x55
         )
 
-        if(!isSelected) {
-            context.fill(x+width-20,y,x+width,y+height, (enableColor))
-            context.drawBorder(x+width-20,y,20,height, (alphaModifier+ 0xFFFFFF).toInt())
+        context.fill(x+width-30,y,x+width,y+13, (enableColor))
+        context.drawBorder(x+width-30,y,30,13, (alphaModifier+ 0xFFFFFF).toInt())
 
-            context.fill(middleX-7, (y + ((height-12)*(progress)+3*(1-progress))).toInt(),middleX+7,(y + ((height-3)*(progress)+12*(1-progress))).toInt(), (alphaModifier+0xFFFFFF).toInt())
-        } else {
-            context.fill(x+width-20-1,y-1,x+width+1,y+height+1, (enableColor))
-            context.drawBorder(x+width-20-1,y-1,22,height+2, (alphaModifier+ 0xAAAAFF).toInt())
+        context.fill((x+width-10-progress*(17)).toInt(),y+3, (x+width-3-progress*(17)).toInt(),y+10, (alphaModifier+0xFFFFFF).toInt())
 
-            context.fill(middleX-8,(y + ((height-12)*(progress)+2*(1-progress))).toInt(),middleX+8,(y + ((height-2)*(progress)+12*(1-progress))).toInt(),(alphaModifier+0xFFFFFF).toInt())
-            context.drawBorder(middleX-8,(y + ((height-13)*(progress)+2*(1-progress))).toInt(),16,11,(alphaModifier+0xAAAAFF).toInt())
+        if(isSelected) {
+            context.drawBorder((x+width-11-progress*(17)).toInt(),y+2, 9,9, (alphaModifier+0xAAAAFF).toInt())
         }
 
         return height
@@ -121,10 +113,10 @@ class BooleanOptionElement : SettingsOptionElement<Boolean> {
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int, screen: MainOptionsScreen) {
         if(dependentDisabler.contains(toPointNotation(path,id)) && !dependentDisabler[toPointNotation(path,id)]!!()) return
 
-        if ( pos[2] - 20 < mouseX && pos[1] < mouseY && pos[2] > mouseX && pos[3] > mouseY) {
+        if ( pos[2] - 30 < mouseX && pos[1] < mouseY && pos[2] > mouseX && pos[3] > mouseY) {
             screen.playDownSound(MinecraftClient.getInstance().soundManager)
 
-            animationStart = System.currentTimeMillis()
+            animation = ScreenAnimation()
             val b = !get()
             set(b)
 

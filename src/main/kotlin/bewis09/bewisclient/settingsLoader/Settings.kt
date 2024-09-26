@@ -48,7 +48,6 @@ open class Settings {
         // Options Menu
         val OPTIONS_MENU = arrayOf("options_menu")
         val ANIMATION_TIME = createFloat("animation_time")
-        val ALL_CLICK = createBoolean("all_click")
         val SHOW_TITLE_MENU = createBoolean("show_title_menu")
         val SHOW_GAME_MENU = createBoolean("show_game_menu")
         val SHOWN_START_MENU = createBoolean("shown_start_menu")

@@ -24,6 +24,8 @@ object ElementList: Settings() {
      */
     private val excludedProperties = arrayOf("posX","posY","partX","partY","effect","enabled")
 
+    private val widgetDescription = WidgetRenderer.getDescriptions()
+
     /**
      * Sets that some elements should be hidden at some point
      */
@@ -69,7 +71,6 @@ object ElementList: Settings() {
             TitleOptionElement("gui.design"),
             FloatOptionElement("%options_menu.animation_time", OPTIONS_MENU,ANIMATION_TIME, DESIGN),
             FloatOptionElement("%options_menu.scale", OPTIONS_MENU, SCALE, DESIGN),
-            BooleanOptionElement("%options_menu.all_click", OPTIONS_MENU,ALL_CLICK, DESIGN),
             BooleanOptionElement("%options_menu.show_game_menu", OPTIONS_MENU,SHOW_GAME_MENU, DESIGN),
             BooleanOptionElement("%options_menu.show_title_menu", OPTIONS_MENU,SHOW_TITLE_MENU, DESIGN),
         )
@@ -88,7 +89,7 @@ object ElementList: Settings() {
             TitleOptionElement("gui.experimental")
         )
         if(System.getProperty("os.name").lowercase(Locale.getDefault()).contains("win"))
-            a.add(BooleanOptionElement("%experimental.auto_update", EXPERIMENTAL,AUTO_UPDATE, GENERAL))
+            a.add(BooleanOptionElement("%experimental.auto_update", EXPERIMENTAL,AUTO_UPDATE, GENERAL,true))
         a
     }
 
@@ -114,14 +115,14 @@ object ElementList: Settings() {
                     else
                         MinecraftClient.getInstance().options.gamma.value = 1.0
                 },
-                FloatOptionElement("%fullbright.value", FULLBRIGHT,FULLBRIGHT_VALUE, DESIGN) {
+                FloatOptionElement("%fullbright.value", FULLBRIGHT,FULLBRIGHT_VALUE, DESIGN, {
                     if (SettingsLoader.get(DESIGN, FULLBRIGHT, ENABLED))
                         MinecraftClient.getInstance().options.gamma.value = SettingsLoader.get(
                             DESIGN,
                             FULLBRIGHT,
                             FULLBRIGHT_VALUE
                         ).toDouble()
-                },
+                },true),
                 BooleanOptionElement("%fullbright.night_vision", FULLBRIGHT,NIGHT_VISION, DESIGN)
         )
     }
@@ -167,8 +168,7 @@ object ElementList: Settings() {
 
     val held_item_info: ()->ArrayList<OptionElement> = {
         arrayListOf(
-                TitleOptionElement("gui.held_item_info"),
-                BooleanOptionElement("%held_item_info.held_item_info", HELD_ITEM_INFO,HELD_ITEM_INFO_ENABLED, DESIGN),
+                TitleWidgetEnablerOptionElement(DESIGN, HELD_ITEM_INFO, HELD_ITEM_INFO_ENABLED, "gui.held_item_info"),
                 FloatOptionElement("%held_item_info.maxinfolength", HELD_ITEM_INFO,MAX_INFO_LENGTH, DESIGN),
         )
     }
@@ -176,9 +176,9 @@ object ElementList: Settings() {
     val util: ()->ArrayList<OptionElement> = {
         arrayListOf(
                 TitleOptionElement("gui.util"),
-                BooleanOptionElement("%extend_status_effect_info", arrayOf(),EXTEND_STATUS_EFFECT_INFO, DESIGN),
+                BooleanOptionElement("%extend_status_effect_info", arrayOf(),EXTEND_STATUS_EFFECT_INFO, DESIGN, true),
                 FloatOptionElement("%fire_height", arrayOf(),FIRE_HEIGHT, DESIGN),
-                BooleanOptionElement("%screenshot_folder_open", arrayOf(),SCREENSHOT_OPEN_FOLDER, GENERAL)
+                BooleanOptionElement("%screenshot_folder_open", arrayOf(),SCREENSHOT_OPEN_FOLDER, GENERAL, true)
         )
     }
 
@@ -374,14 +374,14 @@ object ElementList: Settings() {
         return when (true) {
             value.isJsonObject -> MultipleBooleanOptionElement(key,WIDGETS, arrayOf(str,key),*value.asJsonObject.asMap().keys.toTypedArray())
             value.asJsonPrimitive.isBoolean -> BooleanOptionElement(key, arrayOf(str),
-                SettingsLoader.TypedSettingID(key), WIDGETS)
+                SettingsLoader.TypedSettingID(key), WIDGETS, widgetDescription.contains("$str.$key"))
             (value.asJsonPrimitive.isString && value.asString.startsWith("0x")) -> ColorPickerElement(key,arrayOf(str),SettingsLoader.TypedSettingID(key),WIDGETS)
             value.asJsonPrimitive.isNumber -> {
                 if((DefaultSettings.arrays[key]
                                 ?: DefaultSettings.arrays[".$key"]) == null)
                     FloatOptionElement(key, arrayOf(str),SettingsLoader.TypedSettingID(key), WIDGETS)
                 else
-                    ArrayOptionElement(key,arrayOf(str),SettingsLoader.TypedSettingID(key),WIDGETS)
+                    ArrayOptionElement(key,arrayOf(str),SettingsLoader.TypedSettingID(key),WIDGETS, widgetDescription.contains("$str.$key"))
             }
             value.asJsonPrimitive.isString -> if(str.split("_")[0]=="info")
                             InfoElement("info.$key")

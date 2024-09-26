@@ -43,6 +43,16 @@ class WidgetRenderer: HudRenderCallback {
 
             return array
         }
+
+        fun getDescriptions(): ArrayList<String> {
+            val array = ArrayList<String>()
+
+            widgets.forEach { widget ->
+                array.addAll(widget.getDescriptionSettings()?.map { "${widget.id}.${it}" } ?: arrayListOf())
+            }
+
+            return array
+        }
     }
 
     override fun onHudRender(drawContext: DrawContext?, tickCounter: RenderTickCounter) {

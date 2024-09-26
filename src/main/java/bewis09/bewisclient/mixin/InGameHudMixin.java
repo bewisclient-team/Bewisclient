@@ -46,10 +46,6 @@ public abstract class InGameHudMixin {
     @Final
     private static Identifier PUMPKIN_BLUR;
 
-    private int scaledHeight;
-
-    private int scaledWidth;
-
     @Shadow
     @Final
     private MinecraftClient client;
@@ -87,9 +83,9 @@ public abstract class InGameHudMixin {
     @Inject(method = "renderOverlay", at = @At("HEAD"), cancellable = true)
     public void inject(DrawContext context, Identifier texture, float opacity, CallbackInfo ci) {
         if (((boolean) SettingsLoader.INSTANCE.get(DESIGN, Settings.Companion.getDISABLE_PUMPKIN_OVERLAY())) && texture == PUMPKIN_BLUR) {
-            if (SettingsLoader.INSTANCE.get(DESIGN,Settings.Companion.getSHOW_PUMPKIN_ICON()))
-                context.drawItem(Items.CARVED_PUMPKIN.getDefaultStack(), scaledWidth / 2 + 94, scaledHeight - 20);
-            RenderSystem.enableBlend();
+            if (SettingsLoader.INSTANCE.get(DESIGN,Settings.Companion.getSHOW_PUMPKIN_ICON())) {
+                context.drawItem(Items.CARVED_PUMPKIN.getDefaultStack(), context.getScaledWindowWidth() / 2 + 94, context.getScaledWindowHeight() - 20);
+            }
             ci.cancel();
         }
     }
