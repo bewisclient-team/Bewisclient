@@ -28,7 +28,6 @@ class WidgetPreviewOptionElement(val widget: Widget?): OptionElement("","") {
     ): Int {
         if(widget==null) return 0
 
-        context.matrices.push()
         context.matrices.scale(scale, scale, scale)
 
         RenderSystem.enableBlend()
@@ -55,10 +54,8 @@ class WidgetPreviewOptionElement(val widget: Widget?): OptionElement("","") {
         context.setShaderColor(1F,1F,1F, 1F)
         RenderSystem.disableBlend()
 
-        context.matrices.pop()
-
-        context.matrices.translate(0f,0f,1000f)
         context.matrices.scale(1/scale, 1/scale, 1/scale)
+
         return (widget.getOriginalHeight()*scale+4).roundToInt()
     }
 }

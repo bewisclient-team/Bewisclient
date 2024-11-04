@@ -27,6 +27,8 @@ open class ValuedAnimation(start: Long, length: Long, easeMode: EaseMode, val st
     }
 }
 
+open class ScreenValuedAnimation(startValue: Float, endValue: Float): ValuedAnimation(System.currentTimeMillis(), SettingsLoader.get(DESIGN, OPTIONS_MENU, ANIMATION_TIME).roundToLong(), EaseMode.EASE_IN_OUT, startValue, endValue) {}
+
 open class ScreenValuedTypedAnimation(startValue: Float, endValue: Float, private val type: String): ValuedAnimation(System.currentTimeMillis(), SettingsLoader.get(DESIGN, OPTIONS_MENU, ANIMATION_TIME).roundToLong(), EaseMode.EASE_IN_OUT, startValue, endValue) {
     fun getType(): String {
         return type

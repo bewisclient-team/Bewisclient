@@ -80,7 +80,7 @@ class FloatOptionElement : SettingsOptionElement<Float> {
 
         val height = 13 + if(descriptionEnabled) descriptionLines.size*10 + 4 else 0
 
-        isSelected = x+width-80 < mouseX && y < mouseY && x+width > mouseX && y+height > mouseY
+        isSelected = x+width-80 < mouseX && y < mouseY && x+width > mouseX && y+13 > mouseY
 
         pos = arrayOf(x,y,x+width,y+height)
 

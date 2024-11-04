@@ -258,5 +258,6 @@
   "bewisclient.copy_screenshot": "Copy",
   "bewisclient.delete_screenshot": "Delete",
   "bewisclient.skip": "Skip",
-  "bewisclient.next": "Next"
+  "bewisclient.next": "Next",
+  "bewisclient.change_color": "Change color"
 }

@@ -9,6 +9,7 @@ import bewis09.bewisclient.drawable.option_elements.ContactElement
 import bewis09.bewisclient.drawable.option_elements.HRElement
 import bewis09.bewisclient.drawable.option_elements.OptionElement
 import bewis09.bewisclient.mixin.ScreenMixin
+import bewis09.bewisclient.pop_up.PopUp
 import bewis09.bewisclient.screen.widget.WidgetConfigScreen
 import bewis09.bewisclient.settingsLoader.Settings
 import bewis09.bewisclient.settingsLoader.Settings.Companion.AUTO_UPDATE
@@ -17,10 +18,7 @@ import bewis09.bewisclient.settingsLoader.Settings.Companion.EXPERIMENTAL
 import bewis09.bewisclient.settingsLoader.Settings.Companion.GENERAL
 import bewis09.bewisclient.settingsLoader.Settings.Companion.OPTIONS_MENU
 import bewis09.bewisclient.settingsLoader.SettingsLoader
-import bewis09.bewisclient.util.Animation
-import bewis09.bewisclient.util.JustTypedScreenAnimation
-import bewis09.bewisclient.util.ScreenValuedTypedAnimation
-import bewis09.bewisclient.util.Search
+import bewis09.bewisclient.util.*
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.ButtonTextures
@@ -94,6 +92,10 @@ open class MainOptionsScreen : Screen(Text.empty()) {
      */
     var shouldNotRedoFocus = false
 
+    private var popUp: PopUp? = null
+
+    private var popUpAnimation: ScreenValuedAnimation = ScreenValuedAnimation(1f,1f)
+
     /**
      * The textures of the close button
      */
@@ -137,9 +139,17 @@ open class MainOptionsScreen : Screen(Text.empty()) {
         }
     }
 
-    override fun render(context: DrawContext?, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun render(context: DrawContext?, mX: Int, mY: Int, delta: Float) {
+        var mouseX = mX
+        var mouseY = mY
+
         if (client!!.world == null) {
             this.renderPanoramaBackground(context, delta)
+        }
+
+        if(popUp!=null) {
+            mouseX=Int.MIN_VALUE
+            mouseY=Int.MIN_VALUE
         }
 
         context!!
@@ -229,7 +239,7 @@ open class MainOptionsScreen : Screen(Text.empty()) {
         context.matrices.pop()
 
         context.matrices.push()
-        context.matrices.translate(0f,0f,3f)
+        context.matrices.translate(0f,0f,1000f)
 
         context.enableScissor(((this.width/4) +4-6+6*animationFrame).toInt(),(this.height-28*animationFrame).toInt(),
             ((this.width-this.width/4-2)-2+6-6*animationFrame).toInt(),this.height)
@@ -251,13 +261,42 @@ open class MainOptionsScreen : Screen(Text.empty()) {
             ((0xFF*animationFrame).toLong()*0x1000000).toInt(), 0)
 
         context.matrices.push()
+
         context.matrices.translate(0f,0f,100f)
         context.matrices.scale(1f/ scale,1f/ scale,1f/ scale)
         Dialog.render(context,width,mouseX,mouseY)
+        context.matrices.translate(0f,0f,-100f)
+
+        if(popUpAnimation.getProgress()==1f && popUpAnimation.getValue()==0f) {
+            popUp = null
+        }
+
+
+        context.matrices.translate(0f,0f,10000f)
+        popUp?.render(context, mouseX, mouseY, delta, (width/2-popUp!!.getWidth()/2), (height/3-popUp!!.getHeight()/2),popUpAnimation.getValue())
+        context.matrices.translate(0f,0f,-10000f)
+
         context.matrices.pop()
     }
 
+    fun setPopUp(popUp: PopUp?, animate: Boolean) {
+        if(!animate) {
+            this.popUp = popUp
+            popUpAnimation = ScreenValuedAnimation(1f,1f)
+        } else if(popUp!=null) {
+            this.popUp = popUp
+            popUpAnimation = ScreenValuedAnimation(0f,1f)
+        } else {
+            popUpAnimation = ScreenValuedAnimation(1f,0f)
+        }
+    }
+
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
+        if(popUp!=null) {
+            popUp?.mouseClicked((mouseX.toInt()* scale).toInt(),
+                (mouseY.toInt()* scale).toInt(), ((width* scale/2-popUp!!.getWidth()/2).roundToInt()), ((height* scale/3-popUp!!.getHeight()/2).roundToInt()))
+            return true
+        }
         clicked = true
         if(animation.getType()==AnimationState.STABLE && mouseX>width/4 && mouseX<width/4*3 && mouseY<height-28) {
             allElements[slice].forEach {it.mouseClicked(mouseX* scale, mouseY* scale, button, this)}
@@ -267,22 +306,33 @@ open class MainOptionsScreen : Screen(Text.empty()) {
     }
 
     override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int): Boolean {
+        popUp?.mouseReleased((mouseX.toInt()* scale).toInt(),
+            (mouseY.toInt()* scale).toInt(), (((width/2-popUp!!.getWidth())* scale/2).roundToInt()), (((height/3-popUp!!.getHeight())* scale/2).roundToInt()))
         clicked = false
         allElements[slice].forEach {it.mouseReleased(mouseX* scale, mouseY* scale, button)}
         return super.mouseReleased(mouseX, mouseY, button)
     }
 
     override fun charTyped(chr: Char, modifiers: Int): Boolean {
+        if(popUp!=null) {
+            return false
+        }
         ArrayList(allElements[slice]).forEach {it.charTyped(chr, modifiers)}
         return super.charTyped(chr, modifiers)
     }
 
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
-        ArrayList(allElements[slice]).forEach {it.keyPressed(keyCode, scanCode, modifiers)}
+        if(popUp==null) {
+            ArrayList(allElements[slice]).forEach {it.keyPressed(keyCode, scanCode, modifiers)}
+        }
         return super.keyPressed(keyCode, scanCode, modifiers)
     }
 
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, deltaX: Double, deltaY: Double): Boolean {
+        if(popUp!=null) {
+            popUp?.mouseDragged(mouseX.toInt(),mouseY.toInt(),deltaX,deltaY, (((width/2-popUp!!.getWidth())* scale/2).roundToInt()), (((height/3-popUp!!.getHeight())* scale/2).roundToInt()))
+            return false
+        }
         if(animation.getType()==AnimationState.STABLE && mouseX>width/4 && mouseX<width/4*3 && mouseY<height-28) {
             allElements[slice].forEach {it.onDrag(mouseX* scale, mouseY* scale, deltaX* scale, deltaY* scale, button)}
         }
@@ -380,6 +430,7 @@ open class MainOptionsScreen : Screen(Text.empty()) {
     }
 
     override fun close() {
+        if(popUp!=null) return setPopUp(null,true)
         goBack()
     }
 

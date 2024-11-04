@@ -97,11 +97,11 @@ object ElementList: Settings() {
         arrayListOf(
                 TitleOptionElement("gui.blockhit"),
                 BooleanOptionElement("%blockhit.enabled", BLOCKHIT,ENABLED, DESIGN),
-                ColorPickerElement("%blockhit.color",  BLOCKHIT,COLOR, DESIGN),
+                ColorPickerElement("%blockhit.color",  BLOCKHIT,COLOR, DESIGN,false),
                 FloatOptionElement("%blockhit.alpha",  BLOCKHIT,ALPHA, DESIGN),
                 TitleOptionElement("gui.hit_overlay"),
                 BooleanOptionElement("%blockhit.hit_overlay.enabled",  HIT_OVERLAY,ENABLED, DESIGN),
-                ColorPickerElement("%blockhit.hit_overlay.color",  HIT_OVERLAY,COLOR, DESIGN),
+            ColorPickerElement("%blockhit.hit_overlay.color",  HIT_OVERLAY,COLOR, DESIGN,false),
                 FloatOptionElement("%blockhit.hit_overlay.alpha",  HIT_OVERLAY,ALPHA, DESIGN)
         )
     }
@@ -375,7 +375,7 @@ object ElementList: Settings() {
             value.isJsonObject -> MultipleBooleanOptionElement(key,WIDGETS, arrayOf(str,key),*value.asJsonObject.asMap().keys.toTypedArray())
             value.asJsonPrimitive.isBoolean -> BooleanOptionElement(key, arrayOf(str),
                 SettingsLoader.TypedSettingID(key), WIDGETS, widgetDescription.contains("$str.$key"))
-            (value.asJsonPrimitive.isString && value.asString.startsWith("0x")) -> ColorPickerElement(key,arrayOf(str),SettingsLoader.TypedSettingID(key),WIDGETS)
+            (value.asJsonPrimitive.isString && value.asString.startsWith("0x")) -> ColorPickerElement(key,arrayOf(str),SettingsLoader.TypedSettingID(key),WIDGETS,widgetDescription.contains("$str.$key"))
             value.asJsonPrimitive.isNumber -> {
                 if((DefaultSettings.arrays[key]
                                 ?: DefaultSettings.arrays[".$key"]) == null)
