@@ -31,9 +31,7 @@ class InventoryWidget: Widget("inventory") {
         for (i in 0 .. 8) {
             for (j in 0 .. 2) {
                 drawContext.drawItem(MinecraftClient.getInstance().player?.inventory?.getStack(j*9+i+9),x+i*20+2,y+j*20+2)
-
-                // TODO Check if it works
-                //drawContext.drawItemInSlot(MinecraftClient.getInstance().textRenderer,MinecraftClient.getInstance().player?.inventory?.getStack(j*9+i+9),x+i*20+2,y+j*20+2)
+                drawContext.drawStackOverlay(MinecraftClient.getInstance().textRenderer,MinecraftClient.getInstance().player?.inventory?.getStack(j*9+i+9),x+i*20+2,y+j*20+2)
             }
         }
 

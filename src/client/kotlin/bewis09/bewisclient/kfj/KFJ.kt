@@ -3,12 +3,18 @@ package bewis09.bewisclient.kfj
 import bewis09.bewisclient.MixinStatics
 import bewis09.bewisclient.settingsLoader.Settings
 import bewis09.bewisclient.settingsLoader.SettingsLoader.get
+import bewis09.bewisclient.util.NumberFormatter.withAfterPointZero
 import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
+import net.minecraft.client.render.LightmapTextureManager
+import net.minecraft.client.render.VertexConsumerProvider
+import net.minecraft.client.render.entity.EntityRenderDispatcher
+import net.minecraft.client.render.entity.state.TntEntityRenderState
 import net.minecraft.client.texture.NativeImage
 import net.minecraft.client.texture.NativeImageBackedTexture
+import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.scoreboard.*
 import net.minecraft.scoreboard.number.NumberFormat
 import net.minecraft.scoreboard.number.StyledNumberFormat
@@ -252,6 +258,34 @@ object KFJ: Settings() {
             }
         }
         context.matrices.pop()
+    }
+
+    fun renderTNTTimer(
+        tntEntityRenderState: TntEntityRenderState,
+        matrices: MatrixStack,
+        vertexConsumerProvider: VertexConsumerProvider,
+        light: Int,
+        textRenderer: TextRenderer,
+        dispatcher: EntityRenderDispatcher
+    ) {
+        if (!get(GENERAL, TNT_TIMER)) return
+
+        val d = tntEntityRenderState.squaredDistanceToCamera
+        if (d > 64.0) {
+            return
+        }
+
+        val s = withAfterPointZero((tntEntityRenderState.fuse / 20f).toDouble(), 2) + "s"
+
+        matrices.translate(0.0f, 1.2f, 0.0f)
+        matrices.multiply(dispatcher.rotation);
+        val matrix4f = matrices.peek().positionMatrix
+        matrix4f.rotate(Math.PI.toFloat(), 0.0f, 1.0f, 0.0f)
+        matrix4f.scale(-0.015f, -0.015f, -0.015f)
+        val m = textRenderer.getWidth(s)
+        matrix4f.translate(1.0f - m.toFloat() / 2.0f, 4f, 0.0f)
+
+        textRenderer.draw(s, 0f, 0f, -1, false, matrix4f, vertexConsumerProvider, TextRenderer.TextLayerType.POLYGON_OFFSET, 0, LightmapTextureManager.applyEmission(light, 2))
     }
 
     /**

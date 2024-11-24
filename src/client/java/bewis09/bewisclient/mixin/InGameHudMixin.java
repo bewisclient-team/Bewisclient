@@ -80,14 +80,12 @@ public abstract class InGameHudMixin {
 
     @Inject(method = "renderOverlay", at = @At("HEAD"), cancellable = true)
     public void inject(DrawContext context, Identifier texture, float opacity, CallbackInfo ci) {
-        // TODO fix
-
-        //if (((boolean) SettingsLoader.INSTANCE.get(DESIGN, Settings.Companion.getDISABLE_PUMPKIN_OVERLAY())) && texture == PUMPKIN_BLUR) {
-        //    if (SettingsLoader.INSTANCE.get(DESIGN,Settings.Companion.getSHOW_PUMPKIN_ICON())) {
-        //        context.drawItem(Items.CARVED_PUMPKIN.getDefaultStack(), context.getScaledWindowWidth() / 2 + 94, context.getScaledWindowHeight() - 20);
-        //    }
-        //    ci.cancel();
-        //}
+        if (((boolean) SettingsLoader.INSTANCE.get(DESIGN, Settings.Companion.getDISABLE_PUMPKIN_OVERLAY())) && texture.toString().equals("minecraft:textures/misc/pumpkinblur.png")) {
+            if (SettingsLoader.INSTANCE.get(DESIGN,Settings.Companion.getSHOW_PUMPKIN_ICON()) && !MinecraftClient.getInstance().player.isSpectator()) {
+                context.drawItem(Items.CARVED_PUMPKIN.getDefaultStack(), context.getScaledWindowWidth() / 2 + 94, context.getScaledWindowHeight() - 20);
+            }
+            ci.cancel();
+        }
     }
 
     // TODO Redo with better mixins
