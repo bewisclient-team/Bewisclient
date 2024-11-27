@@ -1,0 +1,43 @@
+{
+  "required": true,
+  "package": "bewis09.bewisclient.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "BlockItemMixin",
+    "EntityMixin",
+    "ItemStackMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "AbstractClientPlayerEntityMixin",
+    "BackgroundRendererMixin",
+    "BossBarHudMixin",
+    "CameraMixin",
+    "ClientPlayerInteractionManagerMixin",
+    "ClientPlayNetworkHandlerMixin",
+    "DebugHudMixin",
+    "DrawContextMixin",
+    "GameRendererMixin",
+    "InGameHudMixin",
+    "InGameOverlayRendererMixin",
+    "InGameScreenMixin",
+    "LivingEntityMixin",
+    "MinecraftClientMixin",
+    "MouseMixin",
+    "OverlayTextureMixin",
+    "PlayerEntityRendererMixin",
+    "ScreenMixin",
+    "ScreenshotRecorderMixin",
+    "SimpleOptionMixin",
+    "SkinTexturesMixin",
+    "TextFieldWidgetMixin",
+    "TitleScreenMixin",
+    "TNTEntityRendererMixin",
+    "TooltipComponentMixin",
+    "WolfCollarFeatureRendererMixin",
+    "WorldRendererMixin",
+    "ZoomMixin"
+  ]
+}
