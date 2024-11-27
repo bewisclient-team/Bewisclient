@@ -30,9 +30,9 @@ class WidgetPreviewOptionElement(val widget: Widget?): OptionElement("","") {
         if(widget==null) return 0
 
         context.matrices.scale(scale, scale, scale)
+        RenderSystem.setShaderColor(1F,1F,1F, (alphaModifier.toFloat()/0xFFFFFFFF))
 
         RenderSystem.enableBlend()
-        RenderSystem.setShaderColor(1F,1F,1F, (alphaModifier.toFloat()/0xFFFFFFFF))
 
         context.drawTexture({ texture: Identifier? ->
             RenderLayer.getGuiTexturedOverlay( texture )
@@ -54,10 +54,12 @@ class WidgetPreviewOptionElement(val widget: Widget?): OptionElement("","") {
 
         widget.render(context,(((x+width/2)/scale-widget.getOriginalWidth()/2)).roundToInt(), ((y/scale+3f)).roundToInt())
 
-        RenderSystem.setShaderColor(1F,1F,1F, 1F)
+        RenderSystem.setShaderColor(1F,1F,1F, (alphaModifier.toFloat()/0xFFFFFFFF))
         RenderSystem.disableBlend()
 
         context.matrices.scale(1/scale, 1/scale, 1/scale)
+        context.fill(0,0,0,0,0)
+        RenderSystem.setShaderColor(1F,1F,1F, 1F)
 
         return (widget.getOriginalHeight()*scale+4).roundToInt()
     }

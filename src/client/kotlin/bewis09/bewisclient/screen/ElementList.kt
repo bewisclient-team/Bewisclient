@@ -134,7 +134,8 @@ object ElementList: Settings() {
                 LAVA.id,
                 NETHER.id,
                 WATER.id,
-                POWDER_SNOW.id
+                POWDER_SNOW.id,
+                TERRAIN_FOG.id
             ),
             FloatOptionElement("%better_visibility.lava_view", BETTER_VISIBILITY,LAVA_VIEW, DESIGN)
         )

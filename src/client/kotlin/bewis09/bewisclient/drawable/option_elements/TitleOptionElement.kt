@@ -20,7 +20,7 @@ open class TitleOptionElement(vararg val titles: String): OptionElement(if(title
         alphaModifier: Long
     ): Int {
         context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer,
-            titles.joinToString(" >> ") { Bewisclient.getTranslatedString(it) },x+width/2,y+5,-1)
+            titles.joinToString(" >> ") { Bewisclient.getTranslatedString(it) },x+width/2,y+5,(alphaModifier+0xFFFFFF).toInt())
 
         return 20
     }

@@ -71,6 +71,7 @@ object DefaultSettings: Settings() {
         BV.add(POWDER_SNOW, JsonPrimitive(false))
         BV.add(LAVA, JsonPrimitive(false))
         BV.add(NETHER, JsonPrimitive(false))
+        BV.add(TERRAIN_FOG, JsonPrimitive(false))
         BV.add(LAVA_VIEW, JsonPrimitive(0.5))
         BV.add(WATER, JsonPrimitive(false))
         val BH = JsonObject()

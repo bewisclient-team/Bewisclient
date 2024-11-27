@@ -272,9 +272,11 @@ open class MainOptionsScreen : Screen(Text.empty()) {
             popUp = null
         }
 
-
         context.matrices.translate(0f,0f,10000f)
-        popUp?.render(context, mouseX, mouseY, delta, (width/2-popUp!!.getWidth()/2), (height/3-popUp!!.getHeight()/2),popUpAnimation.getValue())
+        popUp?.render(context, (mX* scale).toInt(),
+            (mY* scale).toInt(), delta, (width/2-popUp!!.getWidth()/2), (height/3-popUp!!.getHeight()/2),
+            popUpAnimation.getValue().coerceAtLeast(4 / 255f)
+        )
         context.matrices.translate(0f,0f,-10000f)
 
         context.matrices.pop()
@@ -295,7 +297,7 @@ open class MainOptionsScreen : Screen(Text.empty()) {
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
         if(popUp!=null) {
             popUp?.mouseClicked((mouseX.toInt()* scale).toInt(),
-                (mouseY.toInt()* scale).toInt(), ((width* scale/2-popUp!!.getWidth()/2).roundToInt()), ((height* scale/3-popUp!!.getHeight()/2).roundToInt()))
+                (mouseY.toInt()* scale).toInt(), ((width* scale/2-popUp!!.getWidth()/2).toInt()), ((height* scale/3-popUp!!.getHeight()/2).toInt()))
             return true
         }
         clicked = true
@@ -308,7 +310,7 @@ open class MainOptionsScreen : Screen(Text.empty()) {
 
     override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int): Boolean {
         popUp?.mouseReleased((mouseX.toInt()* scale).toInt(),
-            (mouseY.toInt()* scale).toInt(), (((width/2-popUp!!.getWidth())* scale/2).roundToInt()), (((height/3-popUp!!.getHeight())* scale/2).roundToInt()))
+            (mouseY.toInt()* scale).toInt(), ((width* scale/2-popUp!!.getWidth()/2).toInt()), ((height* scale/3-popUp!!.getHeight()/2).toInt()))
         clicked = false
         allElements[slice].forEach {it.mouseReleased(mouseX* scale, mouseY* scale, button)}
         return super.mouseReleased(mouseX, mouseY, button)
@@ -331,7 +333,7 @@ open class MainOptionsScreen : Screen(Text.empty()) {
 
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, deltaX: Double, deltaY: Double): Boolean {
         if(popUp!=null) {
-            popUp?.mouseDragged(mouseX.toInt(),mouseY.toInt(),deltaX,deltaY, (((width/2-popUp!!.getWidth())* scale/2).roundToInt()), (((height/3-popUp!!.getHeight())* scale/2).roundToInt()))
+            popUp?.mouseDragged(mouseX.toInt(),mouseY.toInt(),deltaX,deltaY, (((width/2-popUp!!.getWidth())* scale/2).toInt()), (((height/3-popUp!!.getHeight())* scale/2).toInt()))
             return false
         }
         if(animation.getType()==AnimationState.STABLE && mouseX>width/4 && mouseX<width/4*3 && mouseY<height-28) {

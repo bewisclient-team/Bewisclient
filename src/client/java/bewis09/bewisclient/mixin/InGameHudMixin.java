@@ -4,7 +4,6 @@ import bewis09.bewisclient.kfj.KFJ;
 import bewis09.bewisclient.settingsLoader.Settings;
 import bewis09.bewisclient.settingsLoader.SettingsLoader;
 import bewis09.bewisclient.widgets.WidgetRenderer;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.ShulkerBoxBlock;
@@ -194,13 +193,21 @@ public abstract class InGameHudMixin {
 
     @Inject(method = "renderStatusEffectOverlay", at = @At("HEAD"), cancellable = true)
     protected void renderStatusEffectOverlay(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
-        //if (SettingsLoader.INSTANCE.get(DESIGN, Settings.Companion.getEXTEND_STATUS_EFFECT_INFO())) {
-        //    KFJ.INSTANCE.renderEffectHUDExtended(context, InGameHudMixin.EFFECT_BACKGROUND_AMBIENT_TEXTURE, InGameHudMixin.EFFECT_BACKGROUND_TEXTURE);
-        //    ci.cancel();
-        //} else if (WidgetRenderer.Companion.getEffectWidget().getOriginalPosY() != 0) {
-        //    KFJ.INSTANCE.renderEffectHUD(context, InGameHudMixin.EFFECT_BACKGROUND_AMBIENT_TEXTURE, InGameHudMixin.EFFECT_BACKGROUND_TEXTURE);
-        //    ci.cancel();
-        //}
+        context.getMatrices().push();
+        if (WidgetRenderer.Companion.getEffectWidget().getOriginalPosY() != 0) {
+            context.getMatrices().translate(0,WidgetRenderer.Companion.getEffectWidget().getOriginalPosY(),0);
+        }
+
+        if (SettingsLoader.INSTANCE.get(DESIGN, Settings.Companion.getEXTEND_STATUS_EFFECT_INFO())) {
+            KFJ.INSTANCE.renderEffectHUDExtended(context, InGameHudMixin.EFFECT_BACKGROUND_AMBIENT_TEXTURE, InGameHudMixin.EFFECT_BACKGROUND_TEXTURE);
+            context.getMatrices().pop();
+            ci.cancel();
+        }
+    }
+
+    @Inject(method = "renderStatusEffectOverlay", at = @At("RETURN"), cancellable = true)
+    protected void renderStatusEffectOverlayReturn(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
+        context.getMatrices().pop();
     }
 
     @Inject(method = "renderScoreboardSidebar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/scoreboard/ScoreboardObjective;)V",at=@At("HEAD"),cancellable = true)

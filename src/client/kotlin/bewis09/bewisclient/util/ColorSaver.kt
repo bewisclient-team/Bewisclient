@@ -16,11 +16,12 @@ class ColorSaver private constructor(private val color: Int) {
         private val ColorSavers = hashMapOf<Int,ColorSaver>()
 
         /**
-         * @param color The color as an RGB value or (if negative) the length of one cycle through the animation
+         * @param _color The color as an RGB value or (if negative) the length of one cycle through the animation
          *
          * @return A new [ColorSaver]
          */
-        fun of(color: Int): ColorSaver {
+        fun of(_color: Int): ColorSaver {
+            val color = ((_color)%0x1000000)
             if(ColorSavers.containsKey(color)) return ColorSavers[color]!!
             val c = ColorSaver(color)
             ColorSavers[color] = c
@@ -44,7 +45,7 @@ class ColorSaver private constructor(private val color: Int) {
         if(color>=0)
             return color
         val length = color*-1
-        return Color.HSBtoRGB((System.currentTimeMillis()%(length))/(length.toFloat()),1f,1f)
+        return ((Color.HSBtoRGB((System.currentTimeMillis()%(length))/(length.toFloat()),1f,1f)+0x100000000)%0x1000000).toInt()
     }
 
     /**

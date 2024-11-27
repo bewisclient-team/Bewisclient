@@ -63,7 +63,7 @@ class FloatOptionElement : SettingsOptionElement<Float> {
     private val range: DefaultSettings.SliderInfo?
 
     /**
-     * Indicates if the [widget] is being clicked
+     * Indicates if the widget is being clicked
      */
     var clicked = false
 
@@ -105,9 +105,9 @@ class FloatOptionElement : SettingsOptionElement<Float> {
 
         val str = NumberFormatter.withAfterPointZero((value*(range.end-range.start)+range.start).toDouble(),range.decimalPoints)
 
-        context.drawTextWithShadow(client.textRenderer, str,width+x-84-client.textRenderer.getWidth(str),y+3,-1)
+        context.drawTextWithShadow(client.textRenderer, str,width+x-84-client.textRenderer.getWidth(str),y+3,(alphaModifier+0xFFFFFF).toInt())
 
-        context.fill(x+width-80,y,x+width,y+13, 0xFF000000.toInt())
+        context.fill(x+width-80,y,x+width,y+13, (alphaModifier).toInt())
         context.drawBorder(x+width-80,y,80,13, (alphaModifier+ 0xFFFFFF).toInt())
 
         context.fill((x+width-77+value*67).toInt(),y+3, (x+width-70+value*67).toInt(),y+10, (alphaModifier+0xFFFFFF).toInt())

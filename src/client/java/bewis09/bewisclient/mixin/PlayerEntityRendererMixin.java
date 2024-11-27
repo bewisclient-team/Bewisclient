@@ -1,5 +1,7 @@
 package bewis09.bewisclient.mixin;
 
+import bewis09.bewisclient.hat.HatFeatureRenderer;
+import bewis09.bewisclient.wings.WingFeatureRenderer;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
@@ -19,7 +21,7 @@ public abstract class PlayerEntityRendererMixin extends LivingEntityRenderer<Abs
 
     @Inject(method = "<init>",at=@At("RETURN"))
     public void inject(EntityRendererFactory.Context ctx, boolean slim, CallbackInfo ci) {
-        //this.addFeature(new WingFeatureRenderer(this));
-        //this.addFeature(new HatFeatureRenderer(this));
+        this.addFeature(new WingFeatureRenderer(this));
+        this.addFeature(new HatFeatureRenderer(this));
     }
 }

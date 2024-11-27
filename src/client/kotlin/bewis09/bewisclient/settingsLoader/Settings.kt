@@ -81,6 +81,7 @@ open class Settings {
         val NETHER = createBoolean("nether")
         val WATER = createBoolean("water")
         val POWDER_SNOW = createBoolean("powder_snow")
+        val TERRAIN_FOG = createBoolean("terrain_fog")
 
         // Zoom
         val ZOOM_ENABLED = createBoolean("zoom_enabled")

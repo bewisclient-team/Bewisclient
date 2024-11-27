@@ -59,7 +59,7 @@ class ArrayOptionElement(
         context.fill(x+width-150,y,x+width,y+13, alphaModifier.toInt())
         context.drawBorder(x+width-150,y,150,13, (alphaModifier+ (if(isSelected) 0xAAAAFF else 0xFFFFFF)).toInt())
 
-        context.drawCenteredTextWithShadow(client.textRenderer,Bewisclient.getTranslationText(array[v]),x+width-75,y+3,-1)
+        context.drawCenteredTextWithShadow(client.textRenderer,Bewisclient.getTranslationText(array[v]),x+width-75,y+3,(alphaModifier+0xFFFFFF).toInt())
 
         return height
     }

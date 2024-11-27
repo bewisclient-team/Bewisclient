@@ -16,6 +16,7 @@ import bewis09.bewisclient.settingsLoader.Settings.Companion.OPTIONS_MENU
 import bewis09.bewisclient.settingsLoader.Settings.Companion.SHOWN_START_MENU
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.widgets.WidgetRenderer
+import bewis09.bewisclient.wings.WingFeatureRenderer
 import com.google.gson.JsonObject
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
@@ -315,7 +316,7 @@ object Bewisclient : ClientModInitializer {
 	 */
 	fun wing() {
 		Timer(50) {
-			//WingFeatureRenderer.wing_animation_frame = (WingFeatureRenderer.wing_animation_frame + 1) % 60
+			WingFeatureRenderer.wing_animation_frame = (WingFeatureRenderer.wing_animation_frame + 1) % 60
 		}.start()
 	}
 

@@ -3,18 +3,26 @@ package bewis09.bewisclient.kfj
 import bewis09.bewisclient.MixinStatics
 import bewis09.bewisclient.settingsLoader.Settings
 import bewis09.bewisclient.settingsLoader.SettingsLoader.get
+import bewis09.bewisclient.util.NumberFormatter
 import bewis09.bewisclient.util.NumberFormatter.withAfterPointZero
+import bewis09.bewisclient.util.drawTexture
+import com.google.common.collect.Lists
+import com.google.common.collect.Ordering
 import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.render.LightmapTextureManager
+import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.render.VertexConsumerProvider
 import net.minecraft.client.render.entity.EntityRenderDispatcher
 import net.minecraft.client.render.entity.state.TntEntityRenderState
 import net.minecraft.client.texture.NativeImage
 import net.minecraft.client.texture.NativeImageBackedTexture
+import net.minecraft.client.texture.StatusEffectSpriteManager
 import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.entity.effect.StatusEffect
+import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.scoreboard.*
 import net.minecraft.scoreboard.number.NumberFormat
 import net.minecraft.scoreboard.number.StyledNumberFormat
@@ -23,7 +31,9 @@ import net.minecraft.text.Text
 import net.minecraft.util.Colors
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.ColorHelper
+import net.minecraft.util.math.MathHelper
 import java.util.*
+import java.util.function.Consumer
 import kotlin.math.max
 
 /**
@@ -40,140 +50,96 @@ object KFJ: Settings() {
      */
     val EFFECT_WIDGET_AMBIENT_TEXTURE = Identifier.of("bewisclient", "gui/effect_widget_ambient.png")!!
 
-    // TODO delete when no longer needed for reference
+    /**
+     * @see [bewis09.bewisclient.mixin.InGameHudMixin.renderStatusEffectOverlay]
+     */
+    fun renderEffectHUDExtended(
+        context: DrawContext,
+        EFFECT_BACKGROUND_AMBIENT_TEXTURE: Identifier,
+        EFFECT_BACKGROUND_TEXTURE: Identifier
+    ) {
+        val collection: Collection<StatusEffectInstance> = MinecraftClient.getInstance().player!!.statusEffects
+        if (!collection.isEmpty() && (MinecraftClient.getInstance().currentScreen == null || !MinecraftClient.getInstance().currentScreen!!.shouldHideStatusEffectHud())) {
+            var i = 0
+            var j = 0
+            val statusEffectSpriteManager: StatusEffectSpriteManager = MinecraftClient.getInstance().statusEffectSpriteManager
+            val list: MutableList<Runnable> = Lists.newArrayListWithExpectedSize(collection.size)
 
-    ///**
-    // * @see [bewis09.bewisclient.mixin.InGameHudMixin.renderStatusEffectOverlay]
-    // */
-    //fun renderEffectHUD(
-    //    context: DrawContext,
-    //    EFFECT_BACKGROUND_AMBIENT_TEXTURE: Identifier,
-    //    EFFECT_BACKGROUND_TEXTURE: Identifier
-    //) {
-    //    val collection: Collection<StatusEffectInstance> =
-    //        MinecraftClient.getInstance().player?.statusEffects ?: arrayListOf()
-    //    if (collection.isEmpty() || MinecraftClient.getInstance().currentScreen is InventoryScreen && (MinecraftClient.getInstance().currentScreen as InventoryScreen).hideStatusEffectHud()) {
-    //        return
-    //    }
-    //    RenderSystem.enableBlend()
-    //    var i = 0
-    //    var j = 0
-    //    val statusEffectSpriteManager: StatusEffectSpriteManager =
-    //        MinecraftClient.getInstance().statusEffectSpriteManager
-    //    val list = Lists.newArrayListWithExpectedSize<Runnable>(collection.size)
-    //    for (sInstance in Ordering.natural<Comparable<*>>().reverse<Comparable<*>>()
-    //        .sortedCopy<Comparable<*>>(collection)) {
-    //        val statusEffectInstance = sInstance as StatusEffectInstance
-    //        var n: Int
-    //        val registryEntry: RegistryEntry<StatusEffect> = statusEffectInstance.effectType
-    //        if (!statusEffectInstance.shouldShowIcon()) continue
-    //        var k = context.scaledWindowWidth
-    //        var l = WidgetRenderer.effectWidget.getPosY() + 1
-    //        if ((registryEntry.value() as StatusEffect).isBeneficial) {
-    //            k -= 25 * ++i
-    //        } else {
-    //            k -= 25 * ++j
-    //            l += 26
-    //        }
-    //        var f = 1.0f
-    //        if (statusEffectInstance.isAmbient) {
-    //            context.drawGuiTexture(EFFECT_BACKGROUND_AMBIENT_TEXTURE, k, l, 24, 24)
-    //        } else {
-    //            context.drawGuiTexture(EFFECT_BACKGROUND_TEXTURE, k, l, 24, 24)
-    //            if (statusEffectInstance.isDurationBelow(200)) {
-    //                val m = statusEffectInstance.duration
-    //                n = 10 - m / 20
-    //                f = MathHelper.clamp((m.toFloat() / 10.0f / 5.0f * 0.5f), 0.0f, 0.5f) + MathHelper.cos(
-    //                    (m.toFloat() * Math.PI.toFloat() / 5.0f)
-    //                ) * MathHelper.clamp((n.toFloat() / 10.0f * 0.25f), 0.0f, 0.25f)
-    //            }
-    //        }
-    //        val sprite: Sprite = statusEffectSpriteManager.getSprite(registryEntry)
-    //        n = k
-    //        val o = l
-    //        val g = f
-    //        val finalN = n
-    //        list.add(Runnable {
-    //            context.setShaderColor(1.0f, 1.0f, 1.0f, g)
-    //            context.drawSprite(finalN + 3, o + 3, 0, 18, 18, sprite)
-    //            context.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
-    //        })
-    //    }
-    //    list.forEach(Consumer { obj: Runnable -> obj.run() })
-    //    RenderSystem.disableBlend()
-    //}
+            for (statusEffectInstance in Ordering.natural<Comparable<*>>().reverse<Comparable<*>>()
+                .sortedCopy(collection)) {
+                val registryEntry = statusEffectInstance.effectType
+                if (statusEffectInstance.shouldShowIcon()) {
+                    var k = context.scaledWindowWidth + 4
+                    var l = 1
+                    if (MinecraftClient.getInstance().isDemo) {
+                        l += 15
+                    }
 
-//    /**
-//     * @see [bewis09.bewisclient.mixin.InGameHudMixin.renderStatusEffectOverlay]
-//     */
-//    fun renderEffectHUDExtended(
-//        context: DrawContext,
-//        EFFECT_BACKGROUND_AMBIENT_TEXTURE: Identifier,
-//        EFFECT_BACKGROUND_TEXTURE: Identifier
-//    ) {
-//        val collection: Collection<StatusEffectInstance> =
-//            MinecraftClient.getInstance().player?.statusEffects ?: arrayListOf()
-//        if (collection.isEmpty() || MinecraftClient.getInstance().currentScreen is AbstractInventoryScreen<*> && (MinecraftClient.getInstance().currentScreen as AbstractInventoryScreen<*>).hideStatusEffectHud()) {
-//            return
-//        }
-//        RenderSystem.enableBlend()
-//        var i = 0
-//        var j = 0
-//        val statusEffectSpriteManager: StatusEffectSpriteManager =
-//            MinecraftClient.getInstance().statusEffectSpriteManager
-//        val list = Lists.newArrayListWithExpectedSize<Runnable>(collection.size)
-//        for (sInstance in Ordering.natural<Comparable<*>>().reverse<Comparable<*>>()
-//            .sortedCopy<Comparable<*>>(collection)) {
-//            val statusEffectInstance = sInstance as StatusEffectInstance
-//            var n: Int
-//            val registryEntry: RegistryEntry<StatusEffect> = statusEffectInstance.effectType
-//            if (!statusEffectInstance.shouldShowIcon()) continue
-//            var k = context.scaledWindowWidth + 4
-//            var l = WidgetRenderer.effectWidget.getPosY() + 1
-//            if ((registryEntry.value() as StatusEffect).isBeneficial) {
-//                k -= 33 * ++i
-//            } else {
-//                k -= 33 * ++j
-//                l += 37
-//            }
-//            var f = 1.0f
-//            if (statusEffectInstance.isAmbient) {
-//                context.drawGuiTexture(EFFECT_BACKGROUND_AMBIENT_TEXTURE, k, l, 24, 24)
-//                context.drawTexture(EFFECT_WIDGET_AMBIENT_TEXTURE, k - 4, l + 21, 32, 15, 0f, 0f, 32, 15, 32, 15)
-//            } else {
-//                context.drawGuiTexture(EFFECT_BACKGROUND_TEXTURE, k, l, 24, 24)
-//                if (statusEffectInstance.isDurationBelow(200)) {
-//                    val m = statusEffectInstance.duration
-//                    n = 10 - m / 20
-//                    f = MathHelper.clamp((m.toFloat() / 10.0f / 5.0f * 0.5f), 0.0f, 0.5f) + MathHelper.cos(
-//                        (m.toFloat() * Math.PI.toFloat() / 5.0f)
-//                    ) * MathHelper.clamp((n.toFloat() / 10.0f * 0.25f), 0.0f, 0.25f)
-//                }
-//                context.drawTexture(EFFECT_WIDGET_TEXTURE, k - 4, l + 21, 32, 15, 0f, 0f, 32, 15, 32, 15)
-//            }
-//            context.drawCenteredTextWithShadow(
-//                MinecraftClient.getInstance().textRenderer,
-//                if (statusEffectInstance.isDurationBelow(120000)) NumberFormatter.zeroBefore(
-//                    statusEffectInstance.duration / 1200,
-//                    2
-//                ) + ":" + NumberFormatter.zeroBefore(
-//                    (statusEffectInstance.duration % 1200) / 20, 2
-//                ) else "**:**", k - 3 + 15, l + 25, -1
-//            )
-//            val sprite: Sprite = statusEffectSpriteManager.getSprite(registryEntry)
-//            n = k
-//            val o = l
-//            val g = f
-//            val finalN = n
-//            list.add(Runnable {
-//                context.setShaderColor(1.0f, 1.0f, 1.0f, g)
-//                context.drawSprite(finalN + 3, o + 3, 0, 18, 18, sprite)
-//                context.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
-//            })
-//        }
-//        list.forEach(Consumer { obj: Runnable -> obj.run() })
-//        RenderSystem.disableBlend()
-//    }
+                    if ((registryEntry.value() as StatusEffect).isBeneficial) {
+                        i++
+                        k -= 33 * i
+                    } else {
+                        j++
+                        k -= 33 * j
+                        l += 37
+                    }
+
+                    var f = 1.0f
+                    if (statusEffectInstance.isAmbient) {
+                        context.drawGuiTexture({ texture: Identifier? ->
+                            RenderLayer.getGuiTextured(
+                                texture
+                            )
+                        }, EFFECT_BACKGROUND_AMBIENT_TEXTURE, k, l, 24, 24)
+                        context.drawTexture(EFFECT_WIDGET_AMBIENT_TEXTURE, k - 4, l + 21, 32, 15)
+                    } else {
+                        context.drawGuiTexture({ texture: Identifier? ->
+                            RenderLayer.getGuiTextured(
+                                texture
+                            )
+                        }, EFFECT_BACKGROUND_TEXTURE, k, l, 24, 24)
+                        context.drawTexture(EFFECT_WIDGET_TEXTURE, k - 4, l + 21, 32, 15)
+                        if (statusEffectInstance.isDurationBelow(200)) {
+                            val m = statusEffectInstance.duration
+                            val n = 10 - m / 20
+                            f = (MathHelper.clamp(m.toFloat() / 10.0f / 5.0f * 0.5f, 0.0f, 0.5f)
+                                    + MathHelper.cos(m.toFloat() * Math.PI.toFloat() / 5.0f) * MathHelper.clamp(
+                                n.toFloat() / 10.0f * 0.25f,
+                                0.0f,
+                                0.25f
+                            ))
+                            f = MathHelper.clamp(f, 0.0f, 1.0f)
+                        }
+                    }
+
+                    context.drawCenteredTextWithShadow(
+                        MinecraftClient.getInstance().textRenderer,
+                        if (statusEffectInstance.isDurationBelow(120000)) NumberFormatter.zeroBefore(
+                            statusEffectInstance.duration / 1200,
+                            2
+                        ) + ":" + NumberFormatter.zeroBefore(
+                            (statusEffectInstance.duration % 1200) / 20, 2
+                        ) else "**:**", k - 3 + 15, l + 25, -1
+                    )
+
+                    val sprite = statusEffectSpriteManager.getSprite(registryEntry)
+                    val n = k
+                    val o = l
+                    val g = f
+                    list.add(Runnable {
+                        val kx = ColorHelper.getWhite(g)
+                        context.drawSpriteStretched({ texture: Identifier? ->
+                            RenderLayer.getGuiTextured(
+                                texture
+                            )
+                        }, sprite, n + 3, o + 3, 18, 18, kx)
+                    })
+                }
+            }
+
+            list.forEach(Consumer { obj: Runnable -> obj.run() })
+        }
+    }
 
     /**
      * @see [bewis09.bewisclient.mixin.InGameHudMixin.renderScoreboardSidebar]
@@ -215,7 +181,6 @@ object KFJ: Settings() {
                 .toInt()
         }
         val l = j
-        @Suppress("DEPRECATION")
         context.draw {
             val length = sidebarEntries.size
             Objects.requireNonNull(MinecraftClient.getInstance().textRenderer)
@@ -278,7 +243,7 @@ object KFJ: Settings() {
         val s = withAfterPointZero((tntEntityRenderState.fuse / 20f).toDouble(), 2) + "s"
 
         matrices.translate(0.0f, 1.2f, 0.0f)
-        matrices.multiply(dispatcher.rotation);
+        matrices.multiply(dispatcher.rotation)
         val matrix4f = matrices.peek().positionMatrix
         matrix4f.rotate(Math.PI.toFloat(), 0.0f, 1.0f, 0.0f)
         matrix4f.scale(-0.015f, -0.015f, -0.015f)
@@ -298,11 +263,11 @@ object KFJ: Settings() {
             for (j in 0..15) {
                 if (i < 8) {
                     nativeImage.setColorArgb(
-                        j, i, ColorHelper.getArgb((1- get(DESIGN, HIT_OVERLAY, ALPHA) *255).toInt(),ColorHelper.getBlue(
+                        j, i, ColorHelper.getArgb((1- get(DESIGN, HIT_OVERLAY, ALPHA) *255).toInt(),ColorHelper.getRed(
                             get(DESIGN, HIT_OVERLAY, COLOR)
                                 .getColor()),ColorHelper.getGreen(
                             get(DESIGN, HIT_OVERLAY, COLOR)
-                                .getColor()),ColorHelper.getRed(
+                                .getColor()),ColorHelper.getBlue(
                             get(DESIGN, HIT_OVERLAY, COLOR)
                                 .getColor()))
                     )
