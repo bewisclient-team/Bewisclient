@@ -518,7 +518,7 @@ open class MainOptionsScreen : Screen(Text.empty()) {
         /**
          * The cached scale, that cannot change while clicking a mouse button for preventing scale change, while fading the scale fader
          */
-        var laS = 1f/ SettingsLoader.get(DESIGN, OPTIONS_MENU, Settings.SCALE)
+        var laS = 1.001f/ SettingsLoader.get(DESIGN, OPTIONS_MENU, Settings.SCALE)
 
         /**
          * Indicates if a mouse button is clicked
@@ -531,7 +531,7 @@ open class MainOptionsScreen : Screen(Text.empty()) {
         val scale: Float
             get() {
                 if(!clicked) {
-                    laS = 1f/SettingsLoader.get(DESIGN, OPTIONS_MENU, Settings.SCALE)
+                    laS = 1.001f/SettingsLoader.get(DESIGN, OPTIONS_MENU, Settings.SCALE)
                 }
                 return laS
             }
