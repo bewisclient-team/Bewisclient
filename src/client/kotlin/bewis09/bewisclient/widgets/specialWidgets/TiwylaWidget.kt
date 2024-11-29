@@ -103,7 +103,11 @@ class TiwylaWidget: Widget("tiwyla") {
         drawContext.matrices.scale(0.7F,0.7F,1F)
         for ((index, text) in getText().iterator().withIndex()) {
             if(index!=0)
-                drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer,if (text.split("%")[0]=="cTH") convertToHearths(text.split("%")[1].toDouble(),text.split("%")[2].toDouble(),text.split("%")[3].toDouble()) else Text.of(text),((x+getOriginalWidth()/2)/0.7F).toInt(),((y+8*index+8)/0.7F).toInt(),(0xFF000000L+getProperty(BOTTOM_COLOR).getColor()).toInt())
+                drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer,if (text.split("%")[0]=="cTH") convertToHearths(
+                    text.split("%")[1].toDouble(),
+                    text.split("%")[2].toDouble(),
+                    text.split("%")[3].toDouble()
+                ) else Text.of(text),((x+getOriginalWidth()/2)/0.7F).toInt(),((y+8*index+8)/0.7F).toInt(),(0xFF000000L+getProperty(BOTTOM_COLOR).getColor()).toInt())
         }
         drawContext.matrices.scale(1/0.7F,1/0.7F,1F)
         val hitResult = MinecraftClient.getInstance().crosshairTarget
@@ -128,7 +132,7 @@ class TiwylaWidget: Widget("tiwyla") {
     }
 
     override fun getOriginalHeight(): Int {
-        return if(getText().size==4) 41 else if(getText().size==2) 25 else 33
+        return 25 + (getText().size - 2) * 8
     }
 
     /**
@@ -305,11 +309,20 @@ class TiwylaWidget: Widget("tiwyla") {
     private fun getTextFromEntity(entity: Entity):ArrayList<String> {
         return if(entity is LivingEntity)
             if(MinecraftClient.getInstance().isInSingleplayer && getProperty(SHOW_HEALTH_INFORMATION,*SELECT_PARTS)) {
-                arrayListOf(
+                if(entity.maxHealth>20 && entity.maxHealth <= 40) {
+                    arrayListOf(
+                        entity.name.string,
+                        "cTH%${20f.coerceAtMost(entity.health)}%${20f.coerceAtMost(entity.maxHealth)}%${0}",
+                        "cTH%${0f.coerceAtLeast(entity.health - 20f)}%${0f.coerceAtLeast(entity.maxHealth - 20f)}%${entity.absorptionAmount}",
+                        getExtra(entity) ?: Registries.ENTITY_TYPE.getId(entity.type).toString()
+                    )
+                } else {
+                    arrayListOf(
                         entity.name.string,
                         "cTH%${entity.health}%${entity.maxHealth}%${entity.absorptionAmount}",
                         getExtra(entity) ?: Registries.ENTITY_TYPE.getId(entity.type).toString()
-                )
+                    )
+                }
             } else {
                 arrayListOf(
                         entity.name.string,
