@@ -128,7 +128,7 @@ class TiwylaWidget: Widget("tiwyla") {
     }
 
     override fun getOriginalWidth(): Int {
-        return 150
+        return 150.coerceAtLeast(MinecraftClient.getInstance().textRenderer.getWidth(if(getText().size > 0) getText()[0] else "") + 50)
     }
 
     override fun getOriginalHeight(): Int {
