@@ -56,7 +56,7 @@ object Updater {
             f.parentFile.mkdirs()
             f.createNewFile()
 
-            FileUtils.copyInputStreamToFile(ByteArrayInputStream(UpdateClass.CLASS_ARRAY), f)
+            FileUtils.copyInputStreamToFile(ByteArrayInputStream(Base64.getDecoder().decode(UpdateClass.CLASS_ARRAY)), f)
         }
     }
 }

@@ -7,7 +7,6 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
-import net.minecraft.client.render.entity.model.EntityModelPartNames;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
@@ -37,10 +36,10 @@ public class WingFeatureRenderer extends FeatureRenderer<PlayerEntityRenderState
         body = context.getModel().body;
         ModelData modelData = new ModelData();
         ModelPartData modelPartData = modelData.getRoot();
-        part1 = modelPartData.addChild(EntityModelPartNames.BODY, ModelPartBuilder.create().uv(0, 0)
+        part1 = modelPartData.addChild("wing", ModelPartBuilder.create().uv(0, 0)
                         .cuboid(1, -2, 2, 0, 16, 16, new Dilation(0f)),
                 ModelTransform.pivot(0.0f, 0, 2)).createPart(32,16);
-        part2 = modelPartData.addChild(EntityModelPartNames.BODY, ModelPartBuilder.create().uv(0, 0)
+        part2 = modelPartData.addChild("wing", ModelPartBuilder.create().uv(0, 0)
                         .cuboid(-1, -2, 2, 0, 16, 16, new Dilation(0f)),
                 ModelTransform.pivot(0.0f, 0, 2)).createPart(32,16);
     }
@@ -65,8 +64,8 @@ public class WingFeatureRenderer extends FeatureRenderer<PlayerEntityRenderState
                 part2.pivotX = body.pivotX;
                 part2.pivotY = body.pivotY;
                 part2.pivotZ = body.pivotZ + 2;
-                part1.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(getTexture())), light, OverlayTexture.DEFAULT_UV);
-                part2.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(getTexture())), light, OverlayTexture.DEFAULT_UV);
+                part1.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(getTexture(),false)), light, OverlayTexture.DEFAULT_UV);
+                part2.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(getTexture(),false)), light, OverlayTexture.DEFAULT_UV);
             }
         }
     }

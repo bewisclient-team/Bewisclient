@@ -46,7 +46,7 @@ import kotlin.math.roundToInt
 /**
  * The main options screen for Bewisclient options
  */
-open class MainOptionsScreen : Screen(Text.empty()) {
+open class MainOptionsScreen(val parent: Screen? = null) : Screen(Text.empty()) {
 
     /**
      * The [Animation]
@@ -114,6 +114,8 @@ open class MainOptionsScreen : Screen(Text.empty()) {
 
     init {
         if(Bewisclient.update!=null && !Bewisclient.updateInformed) {
+            Bewisclient.updateInformed = true
+
             Dialog.addDialog(ClickDialog(Bewisclient.getTranslationText("info.new_update"), Bewisclient.getTranslationText("info.download")) {
                 Dialog.pause()
 
@@ -415,7 +417,7 @@ open class MainOptionsScreen : Screen(Text.empty()) {
                 slice--
                 shouldNotNotifyChange = false
             } else {
-                startAllAnimation(null)
+                startAllAnimation(parent)
             }
     }
 

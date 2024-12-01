@@ -58,14 +58,14 @@ class SingleScreenshotElement(val image: ScreenshotElement.SizedIdentifier): Opt
         f2.parentFile.mkdirs()
         f2.createNewFile()
 
-        FileUtils.copyInputStreamToFile(ByteArrayInputStream(UpdateClass.COPY_SUB_CLASS), f2)
+        FileUtils.copyInputStreamToFile(ByteArrayInputStream(Base64.getDecoder().decode(UpdateClass.COPY_SUB_CLASS)), f2)
 
         val f = File(FabricLoader.getInstance().gameDir.pathString+"\\bewisclient\\java\\ImageCopy.class")
 
         f.parentFile.mkdirs()
         f.createNewFile()
 
-        FileUtils.copyInputStreamToFile(ByteArrayInputStream(UpdateClass.COPY_CLASS), f)
+        FileUtils.copyInputStreamToFile(ByteArrayInputStream(Base64.getDecoder().decode(UpdateClass.COPY_CLASS)), f)
 
         val javaHome = System.getProperty("java.home")
         var l = File(javaHome)
