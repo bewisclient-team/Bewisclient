@@ -12,6 +12,7 @@ import net.minecraft.text.ClickEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -55,11 +56,14 @@ public abstract class ScreenshotRecorderMixin {
             ScreenshotElement.Companion.setId(ScreenshotElement.Companion.getId()+1);
             assert file2 != null;
             assert nativeImage != null;
-            if(ScreenshotElement.Companion.getAddNew())
-                ScreenshotElement.Companion.getScreenshots().add(new ScreenshotElement.SizedIdentifier(MinecraftClient.getInstance().getTextureManager().registerDynamicTexture(
-                                "screenshot_" + (ScreenshotElement.Companion.getId()),
-                                new NativeImageBackedTexture(nativeImage)
-                        ),nativeImage.getWidth(),nativeImage.getHeight(),file2.getName()));
+            if(ScreenshotElement.Companion.getAddNew()) {
+                MinecraftClient.getInstance().getTextureManager().registerTexture(
+                        Identifier.of("bewisclient","screenshot_" + (ScreenshotElement.Companion.getId())),
+                        new NativeImageBackedTexture(nativeImage)
+                );
+
+                ScreenshotElement.Companion.getScreenshots().add(new ScreenshotElement.SizedIdentifier(Identifier.of("bewisclient","screenshot_" + (ScreenshotElement.Companion.getId())),nativeImage.getWidth(),nativeImage.getHeight(),file2.getName()));
+            }
             Util.getIoWorkerExecutor().execute(() -> {
                 try {
                     nativeImage.writeTo(file2);
@@ -79,10 +83,12 @@ public abstract class ScreenshotRecorderMixin {
             File file2 = fileName == null ? getScreenshotFilename(file) : new File(file, fileName);
             assert file2 != null;
             assert nativeImage != null;
-            ScreenshotElement.Companion.getScreenshots().add(new ScreenshotElement.SizedIdentifier(MinecraftClient.getInstance().getTextureManager().registerDynamicTexture(
-                    "screenshot_" + (ScreenshotElement.Companion.getId()),
+            ScreenshotElement.Companion.setId(ScreenshotElement.Companion.getId()+1);
+            MinecraftClient.getInstance().getTextureManager().registerTexture(
+                    Identifier.of("bewisclient","screenshot_" + (ScreenshotElement.Companion.getId())),
                     new NativeImageBackedTexture(nativeImage)
-            ),nativeImage.getWidth(),nativeImage.getHeight(),file2.getName()));
+            );
+            ScreenshotElement.Companion.getScreenshots().add(new ScreenshotElement.SizedIdentifier(Identifier.of("bewisclient","screenshot_" + (ScreenshotElement.Companion.getId())),nativeImage.getWidth(),nativeImage.getHeight(),file2.getName()));
             Util.getIoWorkerExecutor().execute(() -> {
                 try {
                     nativeImage.writeTo(file2);

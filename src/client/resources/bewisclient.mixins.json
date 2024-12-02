@@ -15,6 +15,7 @@
     "BackgroundRendererMixin",
     "BossBarHudMixin",
     "CameraMixin",
+    "ClickableWidgetMixin",
     "ClientPlayerInteractionManagerMixin",
     "ClientPlayNetworkHandlerMixin",
     "DebugHudMixin",

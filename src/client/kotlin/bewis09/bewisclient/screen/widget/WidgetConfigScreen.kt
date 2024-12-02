@@ -92,7 +92,7 @@ class WidgetConfigScreen(var parent: MainOptionsScreen): Screen(Text.empty()) {
                 it.render(context)
             }
 
-            if(it.getOriginalPosX()<mouseX && it.getOriginalPosY()<mouseY && it.getOriginalPosX()+it.getWidth()>mouseX && it.getOriginalPosY()+it.getHeight()>mouseY) {
+            if(it.isEnabled() && it.getOriginalPosX()<mouseX && it.getOriginalPosY()<mouseY && it.getOriginalPosX()+it.getWidth()>mouseX && it.getOriginalPosY()+it.getHeight()>mouseY) {
                 hoveredWidget = it
             }
         }

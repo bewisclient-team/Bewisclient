@@ -1,8 +1,10 @@
 package bewis09.bewisclient.screen
 
+import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.cape.Cape
 import bewis09.bewisclient.cape.CapePlayer
 import bewis09.bewisclient.cape.Capes
+import bewis09.bewisclient.drawable.UsableTexturedButtonWidget
 import bewis09.bewisclient.hat.Hat
 import bewis09.bewisclient.mixin.ScreenMixin
 import bewis09.bewisclient.settingsLoader.Settings
@@ -12,6 +14,8 @@ import bewis09.bewisclient.wings.Wing
 import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
+import net.minecraft.client.gui.screen.ButtonTextures
+import net.minecraft.client.gui.screen.ConfirmLinkScreen
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.screen.ingame.InventoryScreen
 import net.minecraft.client.gui.widget.ButtonWidget
@@ -21,6 +25,8 @@ import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.text.Text
+import net.minecraft.util.Identifier
+import net.minecraft.util.Util
 import net.minecraft.util.math.MathHelper
 import org.joml.Quaternionf
 import org.joml.Vector3f
@@ -28,7 +34,7 @@ import org.lwjgl.glfw.GLFW
 import java.util.*
 import kotlin.math.*
 
-// No Documentation, because this will get a rework soon
+// No Documentation, because this will get a rework soon (He said and didn't rework anything in the next 3 Months)
 class CosmeticsScreen(private val parent: MainOptionsScreen) : Screen(Text.empty()) {
     var isReversed: Boolean = false
     private var scrollY = 0.0
@@ -122,8 +128,9 @@ class CosmeticsScreen(private val parent: MainOptionsScreen) : Screen(Text.empty
         if (bl) player.inventory.armor[2] = stack
         Cape.setCurrentCape(Cape.getCurrentRealCape())
         Wing.current_wing = d
-        drawScrollbar(context)
+        drawScrollbar(context,clamped_value)
         Hat.current_hat = hat
+        context.fill(0,0,0,0,0)
         RenderSystem.setShaderColor(1f,1f,1f,1f)
         renderButtons(context, mouseX, mouseY, delta, clamped_value)
     }
@@ -151,6 +158,17 @@ class CosmeticsScreen(private val parent: MainOptionsScreen) : Screen(Text.empty
     override fun init() {
         scrollY = max(0.0, min(-maxScrollY.toDouble(), scrollY))
         this.addDrawableChild(ButtonWidget.builder(Text.translatable("bewisclient.option.rotate")) { isReversed = !isReversed }.dimensions(13, height / 2 + 74, 70, 20).build())
+
+        this.addDrawableChild(UsableTexturedButtonWidget(4,height-24,20,20, ButtonTextures(Identifier.of("bewisclient","textures/sprites/plus.png"),Identifier.of("bewisclient","textures/sprites/plus_highlighted.png"))) {
+           client?.setScreen(ConfirmLinkScreen({ confirmed: Boolean ->
+                if (confirmed) {
+                    Util.getOperatingSystem().open("https://discord.com/invite/kuUyGUeEZS")
+                } else {
+                    client?.setScreen(this)
+                }
+            }, Bewisclient.getTranslationText("gui.submit_cosmetics"),"https://discord.com/invite/kuUyGUeEZS", true))
+        })
+
         var z = 0
         for (c in Capes.CAPES) {
             z++
@@ -228,15 +246,15 @@ class CosmeticsScreen(private val parent: MainOptionsScreen) : Screen(Text.empty
         entity.headYaw = l
     }
 
-    private fun drawScrollbar(context: DrawContext) {
+    private fun drawScrollbar(context: DrawContext,clamped_value:Float) {
         val i = this.scrollbarThumbHeight
         val j = 91 + 4
         val k = 91 + 4 + 8
         var l = 0
         if (maxScrollY != 0) l = max(0.0, (-this.scrollY) * (this.height - i) / this.maxScrollY).toInt()
         val m = l + i
-        context.fill(j, l, k, m, -8355712)
-        context.fill(j, l, k - 1, m - 1, -4144960)
+        context.fill(j, l, k, m, 0x808080+((clamped_value*255).toInt() shl 24))
+        context.fill(j, l, k - 1, m - 1, 0xC0C0C0+((clamped_value*255).toInt() shl 24))
     }
 
     private val maxScrollY: Int
