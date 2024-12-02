@@ -35,11 +35,13 @@ class ScreenshotElement: OptionElement("","") {
                                 addNew = true
                                 val n = NativeImage.read(FileInputStream(f))
 
+                                MinecraftClient.getInstance().textureManager.registerTexture(
+                                    Identifier.of("bewisclient","screenshot_" + ((++id).toString())),
+                                    NativeImageBackedTexture(n)
+                                )
+
                                 val a = SizedIdentifier(
-                                    MinecraftClient.getInstance().textureManager.registerDynamicTexture(
-                                        "screenshot_" + (id++.toString()),
-                                        NativeImageBackedTexture(n)
-                                    ), n.width, n.height, f.name
+                                    Identifier.of("bewisclient", "screenshot_$id"), n.width, n.height, f.name
                                 )
 
                                 s.add(a)

@@ -280,7 +280,7 @@ object KFJ: Settings() {
 
         RenderSystem.activeTexture(33985)
         texture.bindTexture()
-        nativeImage.upload(0, 0, 0, 0, 0, nativeImage.width, nativeImage.height, false, true, false, false)
+        nativeImage.upload(0, 0, 0, 0, 0, nativeImage.width, nativeImage.height, false)
         RenderSystem.activeTexture(33984)
     }
 }

@@ -260,5 +260,6 @@
   "bewisclient.delete_screenshot": "Delete",
   "bewisclient.skip": "Skip",
   "bewisclient.next": "Next",
-  "bewisclient.change_color": "Change color"
+  "bewisclient.change_color": "Change color",
+  "bewisclient.gui.submit_cosmetics": "Submit new cosmetics on the Bewisclient Discord Server"
 }

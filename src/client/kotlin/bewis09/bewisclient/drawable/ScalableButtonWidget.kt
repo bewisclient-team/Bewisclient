@@ -26,6 +26,10 @@ open class ScalableButtonWidget(x: Int, y: Int, width: Int, height: Int, message
         drawScrollableTextT(context, textRenderer, this.message, i, this.y, j, this.y + this.getHeight(), color)
     }
 
+    override fun toString(): String {
+        return "§disable_scissors"
+    }
+
     /**
      * Copied from [ClickableWidget]
      */

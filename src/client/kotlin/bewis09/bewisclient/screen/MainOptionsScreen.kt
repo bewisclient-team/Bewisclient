@@ -210,7 +210,7 @@ open class MainOptionsScreen(val parent: Screen? = null) : Screen(Text.empty()) 
 
         context.matrices.translate(normalOffset.toFloat(),0f,0f)
 
-        context.enableScissor((this.width/4+4*animationFrame).toInt(),0, (this.width-(this.width/4+4*animationFrame)).toInt(),(this.height))
+        context.enableScissor((width/4+4*animationFrame).toInt()-normalOffset,0, (width-(width/4+4*animationFrame)).toInt()-normalOffset,(height))
 
         allElements[slice].forEach {element ->
             h+=8+element.render(context,
