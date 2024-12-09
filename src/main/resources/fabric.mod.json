@@ -6,8 +6,21 @@
 	"authors": [
 		"Bewis09"
 	],
+	"description": "A mod for fabric that adds most of the features of the popular clients (Badlion, Lunar etc.) and even more",
 	"license": "CC0-1.0",
 	"icon": "assets/bewisclient/icon.png",
+	"contact": {
+		"homepage": "https://modrinth.com/mod/bewisclient",
+		"issues": "https://github.com/bewisclient-team/Bewisclient/issues",
+		"sources": "https://github.com/Bewis09/bewisclient-2/"
+	},
+	"custom": {
+		"modmenu": {
+			"links": {
+				"modmenu.discord": "https://discord.com/invite/kuUyGUeEZS"
+			}
+		}
+	},
 	"environment": "*",
 	"entrypoints": {
 		"client": [
@@ -15,6 +28,9 @@
 				"value": "bewis09.bewisclient.Bewisclient",
 				"adapter": "kotlin"
 			}
+		],
+		"modmenu": [
+			"bewis09.bewisclient.modmenu.BewisclientModMenuApiImpl"
 		]
 	},
 	"mixins": [
@@ -22,7 +38,7 @@
 	],
 	"depends": {
 		"fabricloader": ">=0.15.6",
-		"minecraft": "~1.21",
+		"minecraft": "~1.21.4",
 		"java": ">=17",
 		"fabric-api": "*",
 		"fabric-language-kotlin": ">=1.9.22"
