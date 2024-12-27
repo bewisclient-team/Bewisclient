@@ -34,7 +34,10 @@
 		]
 	},
 	"mixins": [
-		"bewisclient.mixins.json"
+		{
+			"config": "bewisclient.mixins.json",
+			"environment": "client"
+		}
 	],
 	"depends": {
 		"fabricloader": ">=0.15.6",
