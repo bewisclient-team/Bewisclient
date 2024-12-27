@@ -261,5 +261,14 @@
   "bewisclient.skip": "Skip",
   "bewisclient.next": "Next",
   "bewisclient.change_color": "Change color",
-  "bewisclient.gui.submit_cosmetics": "Submit new cosmetics on the Bewisclient Discord Server"
+  "bewisclient.gui.submit_cosmetics": "Submit new cosmetics on the Bewisclient Discord Server",
+  "bewisclient.gui.donation": "Donation",
+  "bewisclient.gui.donate.api_level": "The version of Bewisclient you have installed does not have the correct API level to process the data sent from the server correctly. Your API Level is %s, but at least %s is required. This can be fixed by installing a newer version if there is one available for Minecraft %s",
+  "bewisclient.gui.donate.error": "There was an error processing the data from the server:",
+  "bewisclient.gui.donate.loading": "Loading...",
+  "bewisclient.gui.donate.current_goal": "Amount Raised: %s/%s %s",
+  "bewisclient.gui.donate.view": "View campaign",
+  "bewisclient.gui.donate.donate": "Donate",
+  "bewisclient.gui.donate.about": "About the cause (%s)",
+  "bewisclient.gui.donate.website": "View website"
 }
