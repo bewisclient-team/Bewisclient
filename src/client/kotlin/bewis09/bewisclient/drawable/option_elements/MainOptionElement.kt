@@ -10,7 +10,6 @@ import bewis09.bewisclient.util.drawTexture
 import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
-import net.minecraft.client.gui.screen.Screen
 import net.minecraft.util.Identifier
 import kotlin.math.max
 import kotlin.math.roundToLong
@@ -18,57 +17,28 @@ import kotlin.math.roundToLong
 /**
  * An [OptionElement] that links to a new page and is used in the first page of the [MainOptionsScreen]
  */
-open class MainOptionElement: OptionElement, Search.SearchableElement<OptionElement> {
-
+open class MainOptionElement
+/**
+ * @param title The title of the element
+ * @param description The description of the element
+ * @param elements An [ArrayList] of type [OptionElement] which will be displayed when opening a new page
+ * @param image The image that should be displayed when rendering the [MainOptionElement]
+ */(
+    title: String, description: String,
     /**
-     * Sets if the button should be disabled out of a world
+     * An [ArrayList] of type [OptionElement] which will be displayed when opening a new page
      */
-    val outOfWorldDisabled: Boolean
-
+    var elements: ArrayList<OptionElement>,
     /**
-     * A lamba that returns the [Screen] that the [MainOptionElement] should link to
+     * The image that should be displayed when rendering the [MainOptionElement]
      */
-    var screen: ((MainOptionsScreen) -> Screen)? = null
+    val image: Identifier
+) : OptionElement(title, description), Search.SearchableElement<OptionElement> {
 
     /**
      * The [ValuedAnimation] for the scaling when hovered
      */
     var animation: ValuedAnimation = ValuedAnimation(System.currentTimeMillis(), SettingsLoader.get(DESIGN, OPTIONS_MENU, ANIMATION_TIME).roundToLong()/2, EaseMode.CONST, 0f, 0f)
-
-    /**
-     * An [ArrayList] of type [OptionElement] which will be displayed when opening a new page
-     */
-    var elements: ArrayList<OptionElement>? = null
-
-    /**
-     * The image that should be displayed when rendering the [MainOptionElement]
-     */
-    val image: Identifier
-
-    /**
-     * @param title The title of the element
-     * @param description The description of the element
-     * @param screen A lamba that returns the [Screen] that the [MainOptionElement] should link to
-     * @param image The image that should be displayed when rendering the [MainOptionElement]
-     * @param outOfWorldDisabled Sets if the button should be disabled out of a world
-     */
-    constructor(title: String, description: String, screen: ((MainOptionsScreen) -> Screen), image: Identifier, outOfWorldDisabled: Boolean): super(title,description) {
-        this.screen = screen
-        this.image = image
-        this.outOfWorldDisabled = outOfWorldDisabled
-    }
-
-    /**
-     * @param title The title of the element
-     * @param description The description of the element
-     * @param elements An [ArrayList] of type [OptionElement] which will be displayed when opening a new page
-     * @param image The image that should be displayed when rendering the [MainOptionElement]
-     */
-    constructor(title: String, description: String, elements: ArrayList<OptionElement>, image: Identifier): super(title,description) {
-        this.elements = elements
-        this.image = image
-        this.outOfWorldDisabled = false
-    }
 
     override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {
         val client = MinecraftClient.getInstance()
@@ -81,7 +51,7 @@ open class MainOptionElement: OptionElement, Search.SearchableElement<OptionElem
 
         context.matrices.push()
 
-        val isSelected: Boolean = (x < mouseX && y < mouseY && x+width > mouseX && y+height > mouseY) && (!outOfWorldDisabled || MinecraftClient.getInstance().world != null)
+        val isSelected: Boolean = (x < mouseX && y < mouseY && x+width > mouseX && y+height > mouseY)
 
         if(isSelected != (animation.endValue==3f)) {
             animation = ValuedAnimation(System.currentTimeMillis(), SettingsLoader.get(DESIGN, OPTIONS_MENU, ANIMATION_TIME).roundToLong()/3, EaseMode.EASE_IN_OUT, animation.getValue(), if(isSelected) 3f else 0f)
@@ -94,7 +64,7 @@ open class MainOptionElement: OptionElement, Search.SearchableElement<OptionElem
         RenderSystem.enableBlend()
 
         context.drawTexture(image,x+6,y+6,32,32)
-        RenderSystem.setShaderColor(1F,1F,1-animation.getValue()/6f, ((alphaModifier shr 24)*(if(outOfWorldDisabled && MinecraftClient.getInstance().world == null) 0.5f else 1f))/0xFF)
+        RenderSystem.setShaderColor(1F,1F,1-animation.getValue()/6f, ((alphaModifier shr 24))/0xFF*1f)
 
         RenderSystem.disableBlend()
 
@@ -103,7 +73,7 @@ open class MainOptionElement: OptionElement, Search.SearchableElement<OptionElem
             context.drawTextWithShadow(client.textRenderer, line, x + 44, y + 20 + 10 * index, (alphaModifier + 0x808080).toInt())
         }
 
-        RenderSystem.setShaderColor(1F,1F,1-animation.getValue()/6f, if(outOfWorldDisabled && MinecraftClient.getInstance().world == null) 0.5f else 1f)
+        RenderSystem.setShaderColor(1F,1F,1-animation.getValue()/6f, 1f)
 
         context.matrices.pop()
 
@@ -111,13 +81,10 @@ open class MainOptionElement: OptionElement, Search.SearchableElement<OptionElem
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int, screen: MainOptionsScreen) {
-        val isSelectedAll = (pos[0] < mouseX && pos[1] < mouseY && pos[2] > mouseX && pos[3] > mouseY) && (!outOfWorldDisabled || MinecraftClient.getInstance().world != null)
+        val isSelectedAll = (pos[0] < mouseX && pos[1] < mouseY && pos[2] > mouseX && pos[3] > mouseY)
         if (isSelectedAll) {
             screen.playDownSound(MinecraftClient.getInstance().soundManager)
-            if(elements!=null)
-                screen.openNewSlice(elements!!)
-            else if(this.screen!=null)
-                screen.startAllAnimation(this.screen!!(screen))
+            screen.openNewSlice(elements)
         }
     }
 

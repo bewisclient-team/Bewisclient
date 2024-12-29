@@ -1,7 +1,7 @@
 package bewis09.bewisclient.mixin;
 
-import bewis09.bewisclient.hat.HatFeatureRenderer;
-import bewis09.bewisclient.wings.WingFeatureRenderer;
+import bewis09.bewisclient.cosmetics.feature_renderer.HatFeatureRenderer;
+import bewis09.bewisclient.cosmetics.feature_renderer.WingFeatureRenderer;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.LivingEntityRenderer;

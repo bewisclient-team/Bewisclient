@@ -2,7 +2,8 @@ package bewis09.bewisclient
 
 import bewis09.bewisclient.autoUpdate.UpdateChecker
 import bewis09.bewisclient.autoUpdate.Updater
-import bewis09.bewisclient.cape.Capes
+import bewis09.bewisclient.cosmetics.Cosmetics
+import bewis09.bewisclient.cosmetics.feature_renderer.WingFeatureRenderer
 import bewis09.bewisclient.drawable.option_elements.JustTextOptionElement
 import bewis09.bewisclient.drawable.option_elements.ScreenshotElement
 import bewis09.bewisclient.drawable.option_elements.SingleScreenshotElement
@@ -87,6 +88,7 @@ object Bewisclient : ClientModInitializer {
 
 	override fun onInitializeClient() {
 		SettingsLoader.loadSettings()
+		Cosmetics.register()
 
 		update = UpdateChecker.checkForUpdates()
 		if(update!=null)
@@ -282,7 +284,6 @@ object Bewisclient : ClientModInitializer {
 		})
 
 		wing()
-		Capes.register()
 	}
 
 	fun printGammaMessage(gamma: Float) {
@@ -315,7 +316,7 @@ object Bewisclient : ClientModInitializer {
 	 */
 	fun wing() {
 		Timer(50) {
-			//WingFeatureRenderer.wing_animation_frame = (WingFeatureRenderer.wing_animation_frame + 1) % 60
+			WingFeatureRenderer.wing_animation_frame = (WingFeatureRenderer.wing_animation_frame + 1) % 60
 		}.start()
 	}
 

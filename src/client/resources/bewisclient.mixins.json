@@ -20,6 +20,7 @@
     "ClientPlayNetworkHandlerMixin",
     "DebugHudMixin",
     "DrawContextMixin",
+    "EntityRenderDispatcherMixin",
     "GameRendererMixin",
     "InGameHudMixin",
     "InGameOverlayRendererMixin",

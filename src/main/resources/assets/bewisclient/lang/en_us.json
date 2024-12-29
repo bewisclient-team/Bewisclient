@@ -261,5 +261,10 @@
   "bewisclient.skip": "Skip",
   "bewisclient.next": "Next",
   "bewisclient.change_color": "Change color",
-  "bewisclient.gui.submit_cosmetics": "Submit new cosmetics on the Bewisclient Discord Server"
+  "bewisclient.gui.submit_cosmetics": "Submit new cosmetics on the Bewisclient Discord Server",
+  "bewisclient.cosmetics.cape": "Cape",
+  "bewisclient.cosmetics.wing": "Wings",
+  "bewisclient.cosmetics.hat": "Hats",
+  "bewisclient.gui.select": "Select",
+  "bewisclient.gui.disable": "Disable"
 }

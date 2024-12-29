@@ -84,6 +84,15 @@ object ElementList: Settings() {
         )
     }
 
+    val cosmetics: ()->ArrayList<OptionElement> = {
+        arrayListOf(
+            TitleOptionElement("gui.cosmetics"),
+            CosmeticsElement("cape", CosmeticsElement.RenderType.REVERSED),
+            CosmeticsElement("wing", CosmeticsElement.RenderType.REVERSED),
+            CosmeticsElement("hat", CosmeticsElement.RenderType.FAST_CHANGING)
+        )
+    }
+
     val experimental: ()->ArrayList<OptionElement> = {
         val a: ArrayList<OptionElement> = arrayListOf(
             TitleOptionElement("gui.experimental")
@@ -223,7 +232,7 @@ object ElementList: Settings() {
             MainOptionElement("gui.widgets", "gui.widgets.description", widgets(), Identifier.of("bewisclient", "textures/main_icons/widgets.png")),
             MainOptionElement("gui.design", "gui.design.description", design(), Identifier.of("bewisclient", "textures/main_icons/design.png")),
             MainOptionElement("gui.util", "gui.util.description", util(), Identifier.of("bewisclient", "textures/main_icons/util.png")),
-            MainOptionElement("gui.cosmetics", "gui.cosmetics.description", { CosmeticsScreen(it) }, Identifier.of("bewisclient", "textures/main_icons/cosmetics.png"),true),
+            MainOptionElement("gui.cosmetics", "gui.cosmetics.description", cosmetics(), Identifier.of("bewisclient", "textures/main_icons/cosmetics.png")),
             MultiplePagesOptionElement(arrayOf(
                 MultiplePagesOptionElement.MultiplePagesElement(
                     "gui.fullbright",
