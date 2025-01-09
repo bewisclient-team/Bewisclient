@@ -1,4 +1,4 @@
-package bewis09.bewisclient.drawable.option_elements
+package bewis09.bewisclient.drawable.option_elements.screenshot
 
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.autoUpdate.UpdateClass
@@ -6,6 +6,7 @@ import bewis09.bewisclient.dialog.ClickDialog
 import bewis09.bewisclient.dialog.Dialog
 import bewis09.bewisclient.dialog.TextDialog
 import bewis09.bewisclient.drawable.ScalableButtonWidget
+import bewis09.bewisclient.drawable.option_elements.OptionElement
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.util.drawTexture
 import net.fabricmc.loader.api.FabricLoader

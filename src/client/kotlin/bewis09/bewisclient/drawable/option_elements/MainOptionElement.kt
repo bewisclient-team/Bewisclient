@@ -64,16 +64,16 @@ open class MainOptionElement
         RenderSystem.enableBlend()
 
         context.drawTexture(image,x+6,y+6,32,32)
-        RenderSystem.setShaderColor(1F,1F,1-animation.getValue()/6f, ((alphaModifier shr 24))/0xFF*1f)
 
         RenderSystem.disableBlend()
+        RenderSystem.setShaderColor(1F,1F,1-animation.getValue()/6f, (((alphaModifier shr 24))*1f)/0xFF)
 
-        context.drawTextWithShadow(client.textRenderer,Bewisclient.getTranslationText(title),x+44,y+6,(alphaModifier+0xFFFFFF).toInt())
+        context.drawTextWithShadow(client.textRenderer,Bewisclient.getTranslationText(title),x+44,y+6,0xFFFFFF)
         descriptionLines.iterator().withIndex().forEach { (index, line) ->
-            context.drawTextWithShadow(client.textRenderer, line, x + 44, y + 20 + 10 * index, (alphaModifier + 0x808080).toInt())
+            context.drawTextWithShadow(client.textRenderer, line, x + 44, y + 20 + 10 * index, 0x808080)
         }
 
-        RenderSystem.setShaderColor(1F,1F,1-animation.getValue()/6f, 1f)
+        RenderSystem.setShaderColor(1F,1F,1-animation.getValue()/6f, (((alphaModifier shr 24))*1f)/0xFF)
 
         context.matrices.pop()
 

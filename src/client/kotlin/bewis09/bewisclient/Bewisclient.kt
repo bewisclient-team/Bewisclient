@@ -4,9 +4,9 @@ import bewis09.bewisclient.autoUpdate.UpdateChecker
 import bewis09.bewisclient.autoUpdate.Updater
 import bewis09.bewisclient.cosmetics.Cosmetics
 import bewis09.bewisclient.cosmetics.feature_renderer.WingFeatureRenderer
-import bewis09.bewisclient.drawable.option_elements.JustTextOptionElement
-import bewis09.bewisclient.drawable.option_elements.ScreenshotElement
-import bewis09.bewisclient.drawable.option_elements.SingleScreenshotElement
+import bewis09.bewisclient.drawable.option_elements.util.JustTextOptionElement
+import bewis09.bewisclient.drawable.option_elements.screenshot.ScreenshotElement
+import bewis09.bewisclient.drawable.option_elements.screenshot.SingleScreenshotElement
 import bewis09.bewisclient.screen.ElementList
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.screen.SnakeScreen

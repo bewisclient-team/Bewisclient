@@ -1,7 +1,7 @@
 package bewis09.bewisclient.mixin;
 
 import bewis09.bewisclient.drawable.UsableTexturedButtonWidget;
-import bewis09.bewisclient.drawable.option_elements.ScreenshotElement;
+import bewis09.bewisclient.drawable.option_elements.screenshot.ScreenshotElement;
 import bewis09.bewisclient.screen.MainOptionsScreen;
 import bewis09.bewisclient.screen.WelcomingScreen;
 import bewis09.bewisclient.settingsLoader.Settings;

@@ -1,5 +1,6 @@
-package bewis09.bewisclient.drawable.option_elements
+package bewis09.bewisclient.drawable.option_elements.util
 
+import bewis09.bewisclient.drawable.option_elements.OptionElement
 import net.minecraft.client.gui.DrawContext
 
 class HRElement: OptionElement("","") {

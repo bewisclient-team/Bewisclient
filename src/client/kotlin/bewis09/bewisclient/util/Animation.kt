@@ -23,6 +23,8 @@ class ScreenAnimation: Animation(System.currentTimeMillis(), SettingsLoader.get(
 
 open class ValuedAnimation(start: Long, length: Long, easeMode: EaseMode, val startValue: Float, val endValue: Float): Animation(start,length, easeMode) {
     fun getValue(): Float {
+        if(startValue == endValue) return startValue
+
         return endValue*getProgress()+startValue*(1-getProgress())
     }
 }

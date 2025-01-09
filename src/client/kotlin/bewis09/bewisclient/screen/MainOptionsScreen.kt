@@ -6,8 +6,8 @@ import bewis09.bewisclient.dialog.Dialog
 import bewis09.bewisclient.dialog.TextDialog
 import bewis09.bewisclient.drawable.UsableTexturedButtonWidget
 import bewis09.bewisclient.drawable.option_elements.ContactElement
-import bewis09.bewisclient.drawable.option_elements.HRElement
 import bewis09.bewisclient.drawable.option_elements.OptionElement
+import bewis09.bewisclient.drawable.option_elements.util.HRElement
 import bewis09.bewisclient.mixin.DrawContextMixin
 import bewis09.bewisclient.mixin.ScreenMixin
 import bewis09.bewisclient.pop_up.PopUp
@@ -92,6 +92,8 @@ open class MainOptionsScreen(val parent: Screen? = null) : Screen(Text.empty()) 
      * Indicates if the focus should be reset to the [searchBar] if [init] is executed. When creating the screen, it is true, after the first [init] it gets set to false
      */
     var shouldNotRedoFocus = false
+
+    class Rectangle2D(val x: Int, val y: Int, val x2: Int, val y2: Int)
 
     private var popUp: PopUp? = null
 
@@ -210,7 +212,8 @@ open class MainOptionsScreen(val parent: Screen? = null) : Screen(Text.empty()) 
 
         context.matrices.translate(normalOffset.toFloat(),0f,0f)
 
-        context.enableScissor((width/4+4*animationFrame).toInt()-normalOffset,0, (width-(width/4+4*animationFrame)).toInt()-normalOffset,(height))
+        currentScissors = Rectangle2D((width/4+4*animationFrame).toInt()-normalOffset,0, (width-(width/4+4*animationFrame)).toInt()-normalOffset,(height))
+        context.enableScissor(currentScissors.x,currentScissors.y,currentScissors.x2,currentScissors.y2)
 
         allElements[slice].forEach {element ->
             h+=8+element.render(context,
@@ -537,5 +540,7 @@ open class MainOptionsScreen(val parent: Screen? = null) : Screen(Text.empty()) 
                 }
                 return laS
             }
+
+        var currentScissors: Rectangle2D = Rectangle2D(0,0,0,0)
     }
 }

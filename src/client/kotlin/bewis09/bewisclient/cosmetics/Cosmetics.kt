@@ -5,7 +5,7 @@ object Cosmetics {
     val wings = CosmeticsType("wing")
     val hats = CosmeticsType("hat")
 
-    private val types = arrayListOf(capes, wings, hats)
+    val types = arrayListOf(capes, wings, hats)
 
     fun getCosmeticsType(typeId: String): CosmeticsType {
         return types.first {
@@ -15,6 +15,9 @@ object Cosmetics {
 
     fun register() {
         registerCosmetic(Cosmetic(capes, "world"))
+        registerCosmetic(Cosmetic(capes, "portal"))
+        registerCosmetic(Cosmetic(capes, "creaking"))
+        registerCosmetic(Cosmetic(capes, "breeze"))
         registerCosmetic(Cosmetic(capes, "minecon2011"))
         capes.registerCosmetic("golden_creeper", AnimatedCape(capes, "golden_creeper", 32, 80))
 
@@ -24,8 +27,6 @@ object Cosmetics {
         registerCosmetic(Cosmetic(hats, "technoblade"))
         registerCosmetic(Cosmetic(hats, "christmas"))
         registerCosmetic(Cosmetic(hats, "headphone"))
-
-        capes.currentlySelected = "world"
     }
 
     fun registerCosmetic(cosmetic: Cosmetic) {

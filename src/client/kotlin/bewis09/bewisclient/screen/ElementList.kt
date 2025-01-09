@@ -1,7 +1,12 @@
 package bewis09.bewisclient.screen
 
 import bewis09.bewisclient.drawable.option_elements.*
+import bewis09.bewisclient.drawable.option_elements.cosmetics.CosmeticsDrawBigElement
+import bewis09.bewisclient.drawable.option_elements.cosmetics.CosmeticsElement
+import bewis09.bewisclient.drawable.option_elements.screenshot.ScreenshotElement
 import bewis09.bewisclient.drawable.option_elements.settings.*
+import bewis09.bewisclient.drawable.option_elements.util.InfoElement
+import bewis09.bewisclient.drawable.option_elements.util.TitleOptionElement
 import bewis09.bewisclient.exception.WidgetToElementLoadingException
 import bewis09.bewisclient.settingsLoader.DefaultSettings
 import bewis09.bewisclient.settingsLoader.Settings
@@ -87,6 +92,8 @@ object ElementList: Settings() {
     val cosmetics: ()->ArrayList<OptionElement> = {
         arrayListOf(
             TitleOptionElement("gui.cosmetics"),
+            CosmeticsDrawBigElement(),
+            CosmeticsDrawBigElement(true),
             CosmeticsElement("cape", CosmeticsElement.RenderType.REVERSED),
             CosmeticsElement("wing", CosmeticsElement.RenderType.REVERSED),
             CosmeticsElement("hat", CosmeticsElement.RenderType.FAST_CHANGING)

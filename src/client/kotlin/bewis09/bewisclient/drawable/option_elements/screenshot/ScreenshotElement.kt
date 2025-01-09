@@ -1,5 +1,7 @@
-package bewis09.bewisclient.drawable.option_elements
+package bewis09.bewisclient.drawable.option_elements.screenshot
 
+import bewis09.bewisclient.drawable.option_elements.OptionElement
+import bewis09.bewisclient.drawable.option_elements.util.JustTextOptionElement
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.util.drawTexture
 import com.mojang.blaze3d.systems.RenderSystem
