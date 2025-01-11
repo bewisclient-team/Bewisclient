@@ -1,8 +1,7 @@
 package bewis09.bewisclient.mixin;
 
 import bewis09.bewisclient.MixinStatics;
-import bewis09.bewisclient.cape.AbstractCape;
-import bewis09.bewisclient.cape.Cape;
+import bewis09.bewisclient.cosmetics.Cosmetics;
 import net.minecraft.client.util.SkinTextures;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,9 +17,8 @@ public abstract class SkinTexturesMixin {
 
     @Inject(method = "capeTexture",at=@At("HEAD"), cancellable = true)
     void getCapeTexture(CallbackInfoReturnable<Identifier> cir) {
-        AbstractCape cape = Cape.getCurrentCape();
-        if(cape!=null && MixinStatics.OwnPlayerSkinTextures.contains(this.hashCode())) {
-            cir.setReturnValue(cape.getIdentifier(cape.getFrame()));
+        if(Cosmetics.INSTANCE.getCapes().getTexture() != null && MixinStatics.OwnPlayerSkinTextures.contains(this.hashCode())) {
+            cir.setReturnValue(Cosmetics.INSTANCE.getCapes().getTexture());
         }
     }
 }

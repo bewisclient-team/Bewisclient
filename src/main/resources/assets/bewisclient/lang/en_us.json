@@ -271,4 +271,9 @@
   "bewisclient.gui.donate.donate": "Donate",
   "bewisclient.gui.donate.about": "About the cause (%s)",
   "bewisclient.gui.donate.website": "View website"
+  "bewisclient.cosmetics.cape": "Cape",
+  "bewisclient.cosmetics.wing": "Wings",
+  "bewisclient.cosmetics.hat": "Hats",
+  "bewisclient.gui.select": "Select",
+  "bewisclient.gui.disable": "Disable"
 }

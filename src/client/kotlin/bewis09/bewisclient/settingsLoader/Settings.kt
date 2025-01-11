@@ -115,9 +115,9 @@ open class Settings {
         val PERSPECTIVE = createBoolean("perspective")
 
         // Cosmetics
-        val CAPE = createFloat("cape")
-        val WING = createFloat("wing")
-        val HAT = createFloat("hat")
+        val CAPE = createString("cape")
+        val WING = createString("wing")
+        val HAT = createString("hat")
 
         /**
          * Converts a path and an id to the original point notation ("path1.path2.[[...]].id")
@@ -135,6 +135,13 @@ open class Settings {
          * @return A [TypedSettingID] of type [Boolean] with id [s]
          */
         fun createBoolean(s: String) = TypedSettingID<Boolean>(s)
+
+        /**
+         * @param s The id of the setting
+         *
+         * @return A [TypedSettingID] of type [String] with id [s]
+         */
+        fun createString(s: String) = TypedSettingID<String>(s)
 
         /**
          * @param s The id of the setting

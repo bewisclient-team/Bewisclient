@@ -2,7 +2,7 @@ package bewis09.bewisclient.drawable.option_elements.settings
 
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.drawable.option_elements.OptionElement
-import bewis09.bewisclient.drawable.option_elements.TitleOptionElement
+import bewis09.bewisclient.drawable.option_elements.util.TitleOptionElement
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import net.minecraft.client.MinecraftClient

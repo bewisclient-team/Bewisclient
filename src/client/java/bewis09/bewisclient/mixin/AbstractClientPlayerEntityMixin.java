@@ -1,8 +1,6 @@
 package bewis09.bewisclient.mixin;
 
 import bewis09.bewisclient.MixinStatics;
-import bewis09.bewisclient.cape.AbstractCape;
-import bewis09.bewisclient.cape.Cape;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -32,8 +30,7 @@ public abstract class AbstractClientPlayerEntityMixin extends PlayerEntity {
 
     @Inject(method = "getSkinTextures",at = @At("HEAD"), cancellable = true)
     public void getSkinTextures(CallbackInfoReturnable<SkinTextures> cir) {
-        AbstractCape cape = Cape.getCurrentCape();
-        if(Objects.equals(getGameProfile().getName(), MinecraftClient.getInstance().getGameProfile().getName()) && cape!=null) {
+        if(Objects.equals(getGameProfile().getName(), MinecraftClient.getInstance().getGameProfile().getName())) {
             PlayerListEntry playerListEntry = this.getPlayerListEntry();
             cir.setReturnValue(playerListEntry == null ?
                     withCape(DefaultSkinHelper.getSkinTextures(this.getUuid())) :

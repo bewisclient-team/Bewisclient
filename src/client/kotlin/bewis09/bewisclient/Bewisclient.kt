@@ -2,14 +2,16 @@ package bewis09.bewisclient
 
 import bewis09.bewisclient.autoUpdate.UpdateChecker
 import bewis09.bewisclient.autoUpdate.Updater
-import bewis09.bewisclient.cape.Capes
-import bewis09.bewisclient.drawable.option_elements.JustTextOptionElement
-import bewis09.bewisclient.drawable.option_elements.ScreenshotElement
-import bewis09.bewisclient.drawable.option_elements.SingleScreenshotElement
+import bewis09.bewisclient.cosmetics.Cosmetics
+import bewis09.bewisclient.cosmetics.feature_renderer.WingFeatureRenderer
+import bewis09.bewisclient.drawable.option_elements.util.JustTextOptionElement
+import bewis09.bewisclient.drawable.option_elements.screenshot.ScreenshotElement
+import bewis09.bewisclient.drawable.option_elements.screenshot.SingleScreenshotElement
 import bewis09.bewisclient.screen.ElementList
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.screen.SnakeScreen
 import bewis09.bewisclient.screen.WelcomingScreen
+import bewis09.bewisclient.server.ServerConnection
 import bewis09.bewisclient.settingsLoader.Settings
 import bewis09.bewisclient.settingsLoader.Settings.Companion.DESIGN
 import bewis09.bewisclient.settingsLoader.Settings.Companion.OPTIONS_MENU
@@ -89,12 +91,13 @@ object Bewisclient : ClientModInitializer {
 
 	override fun onInitializeClient() {
 		SettingsLoader.loadSettings()
+		Cosmetics.register()
 
 		update = UpdateChecker.checkForUpdates()
 		if(update!=null)
 			Updater.downloadVersion(update!!)
 
-		//ServerConnection()
+		ServerConnection()
 
 		HudRenderCallback.EVENT.register(WidgetRenderer())
 
@@ -284,7 +287,6 @@ object Bewisclient : ClientModInitializer {
 		})
 
 		wing()
-		Capes.register()
 	}
 
 	fun printGammaMessage(gamma: Float) {
@@ -317,7 +319,7 @@ object Bewisclient : ClientModInitializer {
 	 */
 	fun wing() {
 		Timer(50) {
-			//WingFeatureRenderer.wing_animation_frame = (WingFeatureRenderer.wing_animation_frame + 1) % 60
+			WingFeatureRenderer.wing_animation_frame = (WingFeatureRenderer.wing_animation_frame + 1) % 60
 		}.start()
 	}
 
