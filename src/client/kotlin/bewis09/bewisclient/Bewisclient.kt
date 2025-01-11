@@ -49,6 +49,8 @@ import kotlin.math.max
 object Bewisclient : ClientModInitializer {
 	val logger: Logger = LoggerFactory.getLogger("Bewisclient")
 
+	const val API_LEVEL = 1
+
 	/**
 	 * The position when the speed was calculated the previous time
 	 */
