@@ -6,3 +6,5 @@ All changes in API Levels are listed in here
 
 - Level 1 (since 2.1.1)
   - First use of the Bewisclient Donation API
+- Level 2 (since 2.1.1)
+  - First use of the online cosmetic system
