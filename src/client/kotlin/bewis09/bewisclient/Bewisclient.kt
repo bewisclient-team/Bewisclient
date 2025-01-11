@@ -11,6 +11,7 @@ import bewis09.bewisclient.screen.ElementList
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.screen.SnakeScreen
 import bewis09.bewisclient.screen.WelcomingScreen
+import bewis09.bewisclient.server.ServerConnection
 import bewis09.bewisclient.settingsLoader.Settings
 import bewis09.bewisclient.settingsLoader.Settings.Companion.DESIGN
 import bewis09.bewisclient.settingsLoader.Settings.Companion.OPTIONS_MENU
@@ -94,7 +95,7 @@ object Bewisclient : ClientModInitializer {
 		if(update!=null)
 			Updater.downloadVersion(update!!)
 
-		//ServerConnection()
+		ServerConnection()
 
 		HudRenderCallback.EVENT.register(WidgetRenderer())
 

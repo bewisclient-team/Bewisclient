@@ -2,52 +2,70 @@ package bewis09.bewisclient.server
 
 import com.google.gson.Gson
 import net.minecraft.client.MinecraftClient
+import java.net.HttpURLConnection
 import java.net.URI
-import java.net.http.HttpClient
-import java.net.http.WebSocket
-import java.net.http.WebSocket.Builder
-import java.net.http.WebSocket.Listener
-import java.util.concurrent.CompletionStage
+import java.net.URL
+import java.net.URLConnection
+import java.nio.charset.StandardCharsets
 
 // work in progress
 @Suppress("unused")
 class ServerConnection {
     val gson: Gson = Gson()
 
+    var specials: Array<Cosmetic> = arrayOf()
+    var cosmetic_data: Array<Cosmetic> = arrayOf()
+    var user_data: Array<UserData> = arrayOf()
+
     init {
-        val uri = "wss://bewisclient.deno.dev/socket"
+        val url: URL = URI("https://bewisclient.deno.dev/api/on_launch").toURL()
+        val con: URLConnection = url.openConnection()
+        val http: HttpURLConnection = con as HttpURLConnection
+        http.setRequestMethod("POST")
+        http.setDoOutput(true)
 
-        val client: HttpClient = HttpClient.newHttpClient()
-        val webSocketBuilder: Builder = client.newWebSocketBuilder()
+        val out: ByteArray = "{\"uuid\":\"${
+            MinecraftClient.getInstance().gameProfile.id
+        }\"}".toByteArray(StandardCharsets.UTF_8)
+        val length = out.size
 
-        val webSocket: WebSocket = webSocketBuilder.buildAsync(URI.create(uri), WebSocketListener()).join()
+        http.setFixedLengthStreamingMode(length)
+        http.setRequestProperty("Content-Type", "application/json; charset=UTF-8")
+        http.connect()
+        http.outputStream.use { os ->
+            os.write(out)
+        }
 
-        println(webSocket)
+        val result = String(http.inputStream.readAllBytes())
 
-        webSocket.sendText(gson.toJson(SendMessage("server::get",ServerData("https://hypixel.net",MinecraftClient.getInstance().gameProfile.id.toString(),null))), true)
+
     }
 
-    class WebSocketListener : Listener {
-        val gson: Gson = Gson()
+    data class ReturnData(val specials: Array<Cosmetic>, val user_data: UserData, val cosmetics: Array<Cosmetic>, val api_level: Int) {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
 
-        override fun onText(webSocket: WebSocket, data: CharSequence, last: Boolean): CompletionStage<*> {
-            val out = gson.fromJson("$data", SendMessage::class.java)
-            when (out.type){
-                "server::players" -> {
-                    val serverGetData = gson.fromJson(gson.toJson(out.data),ServerGetData::class.java)
-                }
-            }
-            return super.onText(webSocket, data, last)
+            other as ReturnData
+
+            if (api_level != other.api_level) return false
+            if (!specials.contentEquals(other.specials)) return false
+            if (user_data != other.user_data) return false
+            if (!cosmetics.contentEquals(other.cosmetics)) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = api_level
+            result = 31 * result + specials.contentHashCode()
+            result = 31 * result + user_data.hashCode()
+            result = 31 * result + cosmetics.contentHashCode()
+            return result
         }
     }
 
-    data class SendMessage (val type: String, val data: Any)
+    data class Cosmetic(val type: String, val name: String)
 
-    data class ServerData (val url: String, val uuid: String, val cosmeticsData: Cosmetics?)
-
-    data class ServerGetData (val url: String, val players: ServerPlayer)
-
-    data class Cosmetics (val icon: String, val cape: String, val hat: String, val wing: String)
-
-    data class ServerPlayer (val uuid: String, val cosmeticsData: Cosmetics)
+    data class UserData(val id: String, val wing: String, val hat: String, val cape: String)
 }
