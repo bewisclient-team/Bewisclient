@@ -206,6 +206,12 @@ object ElementList: Settings() {
         )
     }
 
+    val donation: ()->ArrayList<OptionElement> = {
+        arrayListOf(
+            DonateElement()
+        )
+    }
+
     val perspective: ()->ArrayList<OptionElement> = {
         arrayListOf(
             TitleWidgetEnablerOptionElement(GENERAL,arrayOf(),PERSPECTIVE, "gui.perspective"),
@@ -318,6 +324,11 @@ object ElementList: Settings() {
                     "gui.screenshot",
                     screenshot(),
                     Identifier.of("bewisclient", "textures/main_icons/screenshot.png")
+                ),
+                MultiplePagesOptionElement.MultiplePagesElement(
+                    "gui.donation",
+                    donation(),
+                    Identifier.of("bewisclient", "textures/main_icons/donation.png")
                 )
             ),70),
         ).addNewElements()
