@@ -4,6 +4,6 @@ import net.minecraft.util.Identifier
 
 open class Cosmetic(val type: CosmeticsType, val id: String) {
     open fun getTexture(): Identifier? {
-        return Identifier.of("bewisclient","cosmetics/"+type.typeId+"/"+id+".png")
+        return Identifier.of("bewisclient","cosmetic_"+type.typeId+"_"+id)
     }
 }

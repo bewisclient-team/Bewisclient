@@ -7,6 +7,7 @@ import net.minecraft.util.Identifier
 
 open class CosmeticsType(val typeId: String) {
     val cosmetics = sortedMapOf<String, Cosmetic>()
+    val defaultCosmetics = sortedMapOf<String, Cosmetic>()
 
     var currentlySelected: String? = try { SettingsLoader.get(Settings.DESIGN, SettingsLoader.TypedSettingID<String>(typeId)) } catch (e: Exception) { null }
         set(value) {
@@ -16,21 +17,26 @@ open class CosmeticsType(val typeId: String) {
 
     var currentOverwrite: Pair<Boolean, Cosmetic?> = Pair(false, null)
 
-    fun registerCosmetic(id: String, cosmetic: Cosmetic) {
+    fun registerCosmetic(id: String, cosmetic: Cosmetic, default: Boolean) {
         cosmetics[id] = cosmetic
+
+        if(default)
+            defaultCosmetics[id] = cosmetic
     }
 
     fun getTexture(): Identifier? {
         if(currentOverwrite.first)
             return currentOverwrite.second?.getTexture()
-        return cosmetics[currentlySelected]?.getTexture()
+        if(!defaultCosmetics.contains(currentlySelected))
+            return null
+        return defaultCosmetics[currentlySelected]?.getTexture()
     }
 
     fun getTexture(name: String): Identifier? {
         if(currentOverwrite.first)
             return currentOverwrite.second?.getTexture()
-        if(MinecraftClient.getInstance().gameProfile.name == name)
-            return cosmetics[currentlySelected]?.getTexture()
+        if(MinecraftClient.getInstance().gameProfile.name == name && currentlySelected != null)
+            return defaultCosmetics[currentlySelected]?.getTexture()
         return null
     }
 }

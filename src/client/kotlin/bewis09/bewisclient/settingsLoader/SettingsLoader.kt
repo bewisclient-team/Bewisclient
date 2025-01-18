@@ -15,7 +15,7 @@ object SettingsLoader: Settings() {
     /**
      * Gson for the Settings Loader
      */
-    val gson = Gson()
+    val gson: Gson = GsonBuilder().setPrettyPrinting().create()
 
     /**
      * The options in the category widgets stored as a [JsonObject]

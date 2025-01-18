@@ -208,7 +208,7 @@ open class MainOptionsScreen(val parent: Screen? = null) : Screen(Text.empty()) 
 
         var h = 4 + scrolls[slice].toInt()
 
-        val normalOffset: Int = (width/2*(middleAnimationFrame-1)).roundToInt()
+        normalOffset = (width/2*(middleAnimationFrame-1)).roundToInt()
 
         context.matrices.translate(normalOffset.toFloat(),0f,0f)
 
@@ -542,5 +542,7 @@ open class MainOptionsScreen(val parent: Screen? = null) : Screen(Text.empty()) 
             }
 
         var currentScissors: Rectangle2D = Rectangle2D(0,0,0,0)
+
+        var normalOffset = 0
     }
 }
