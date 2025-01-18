@@ -4,8 +4,10 @@ import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.MixinStatics
 import bewis09.bewisclient.cosmetics.Cosmetics
 import bewis09.bewisclient.drawable.option_elements.OptionElement
+import bewis09.bewisclient.drawable.option_elements.cosmetics.CosmeticsElement.Companion.RendererContext
 import bewis09.bewisclient.drawable.option_elements.cosmetics.CosmeticsElement.Companion.entityRenderer
 import bewis09.bewisclient.drawable.option_elements.cosmetics.CosmeticsElement.Companion.playerEntityRenderState
+import bewis09.bewisclient.drawable.option_elements.cosmetics.CosmeticsElement.Companion.slim
 import bewis09.bewisclient.mixin.EntityRenderDispatcherMixin
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.util.ScreenValuedAnimation
@@ -43,7 +45,9 @@ class CosmeticsElement(val type: String, val renderType: RenderType = RenderType
             MinecraftClient.getInstance().textRenderer
         )
 
-        val entityRenderer = PlayerEntityRenderer(RendererContext, MinecraftClient.getInstance().skinProvider.getSkinTextures(MinecraftClient.getInstance().gameProfile).model == SkinTextures.Model.SLIM)
+        var entityRenderer: PlayerEntityRenderer? = null
+
+        var slim: Boolean? = null
 
         val playerEntityRenderState = PlayerEntityRenderState()
     }
@@ -184,7 +188,12 @@ class CosmeticsElement(val type: String, val renderType: RenderType = RenderType
 fun renderEntity(vertexConsumerProvider: VertexConsumerProvider, alphaModifier: Long, context: DrawContext) {
     RenderSystem.setShaderColor(1f, 1f, 1f, (alphaModifier / 0xFF).toFloat() / 0x1000000)
 
-    entityRenderer.render(
+    if((MinecraftClient.getInstance().skinProvider.getSkinTextures(MinecraftClient.getInstance().gameProfile).model == SkinTextures.Model.SLIM) != slim) {
+        entityRenderer = PlayerEntityRenderer(RendererContext, MinecraftClient.getInstance().skinProvider.getSkinTextures(MinecraftClient.getInstance().gameProfile).model == SkinTextures.Model.SLIM)
+        slim = MinecraftClient.getInstance().skinProvider.getSkinTextures(MinecraftClient.getInstance().gameProfile).model == SkinTextures.Model.SLIM
+    }
+
+    entityRenderer?.render(
         playerEntityRenderState,
         context.matrices,
         vertexConsumerProvider,

@@ -5,6 +5,8 @@ import bewis09.bewisclient.cosmetics.AnimatedCape
 import bewis09.bewisclient.cosmetics.Cosmetic
 import bewis09.bewisclient.cosmetics.Cosmetics
 import bewis09.bewisclient.exception.TooLowAPILevelException
+import bewis09.bewisclient.settingsLoader.Settings
+import bewis09.bewisclient.settingsLoader.SettingsLoader
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
@@ -140,7 +142,7 @@ object ServerConnection {
 
     data class ReturnData(val specials: Array<Cosmetic>, val user_data: Array<String>, val cosmetics: Array<DefaultCosmetic>, val min_api_level: Int, val current: Selection, val base_url: String)
 
-    class DefaultCosmetic(type: String, id: String, val frames: Int, val hash: String?, val default: Boolean): Cosmetic(type, id)
+    class DefaultCosmetic(type: String, id: String, val frames: Int, val hash: String?, val default: Boolean, val old_id: Int?): Cosmetic(type, id)
 
     open class Cosmetic(val type: String, val id: String) {
         override fun equals(other: Any?): Boolean {
@@ -201,6 +203,14 @@ object ServerConnection {
             } catch (e: Exception) {
                 Bewisclient.warn("Error loading cosmetic ${cosmetic.type+"/"+cosmetic.id}: "+e.localizedMessage)
             }
+        }
+
+        cosmetic_data.forEach {
+            try {
+                if ((it.default || specials.contains(it)) && it.old_id != null && it.old_id == SettingsLoader.get(Settings.DESIGN, SettingsLoader.TypedSettingID<Float>(it.type)).toInt()) {
+                    Cosmetics.getCosmeticsType(it.type).currentlySelected = it.id
+                }
+            } catch (_: Exception) {}
         }
     }
 }
