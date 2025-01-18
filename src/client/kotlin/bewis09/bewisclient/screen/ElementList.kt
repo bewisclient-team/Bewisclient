@@ -1,11 +1,17 @@
 package bewis09.bewisclient.screen
 
 import bewis09.bewisclient.drawable.option_elements.*
+import bewis09.bewisclient.drawable.option_elements.cosmetics.CosmeticsDrawBigElement
+import bewis09.bewisclient.drawable.option_elements.cosmetics.CosmeticsElement
+import bewis09.bewisclient.drawable.option_elements.screenshot.ScreenshotElement
 import bewis09.bewisclient.drawable.option_elements.settings.*
+import bewis09.bewisclient.drawable.option_elements.util.InfoElement
+import bewis09.bewisclient.drawable.option_elements.util.TitleOptionElement
 import bewis09.bewisclient.exception.WidgetToElementLoadingException
 import bewis09.bewisclient.settingsLoader.DefaultSettings
 import bewis09.bewisclient.settingsLoader.Settings
 import bewis09.bewisclient.settingsLoader.SettingsLoader
+import bewis09.bewisclient.util.Util
 import bewis09.bewisclient.widgets.Widget
 import bewis09.bewisclient.widgets.WidgetRenderer
 import com.google.gson.JsonElement
@@ -13,6 +19,7 @@ import com.google.gson.JsonObject
 import net.minecraft.client.MinecraftClient
 import net.minecraft.util.Identifier
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Collections of the elements for the [MainOptionsScreen]
@@ -82,6 +89,26 @@ object ElementList: Settings() {
             FloatOptionElement("%scoreboard.scale", SCOREBOARD,SCALE, DESIGN),
             BooleanOptionElement("%scoreboard.hide_numbers", SCOREBOARD,HIDE_NUMBERS, DESIGN),
         )
+    }
+
+    val cosmetics: ()->ArrayList<OptionElement> = {
+        Util.modFoundDependent("notenoughanimations","1.9.0",{ it <= 0 },{
+            arrayListOf(
+                TitleOptionElement("nea_incompatible"),
+                InfoElement("cosmetics.nae_incompatible"),
+                ContactElement("nea_link","https://modrinth.com/mod/not-enough-animations")
+            )
+        },{
+            arrayListOf(
+                TitleOptionElement("gui.cosmetics"),
+                CosmeticsDrawBigElement(),
+                CosmeticsDrawBigElement(true),
+                CosmeticsElement("cape", CosmeticsElement.RenderType.REVERSED),
+                CosmeticsElement("wing", CosmeticsElement.RenderType.REVERSED),
+                CosmeticsElement("hat", CosmeticsElement.RenderType.FAST_CHANGING)
+            )
+        })
+
     }
 
     val experimental: ()->ArrayList<OptionElement> = {
@@ -190,6 +217,12 @@ object ElementList: Settings() {
         )
     }
 
+    val donation: ()->ArrayList<OptionElement> = {
+        arrayListOf(
+            DonateElement()
+        )
+    }
+
     val perspective: ()->ArrayList<OptionElement> = {
         arrayListOf(
             TitleWidgetEnablerOptionElement(GENERAL,arrayOf(),PERSPECTIVE, "gui.perspective"),
@@ -223,7 +256,7 @@ object ElementList: Settings() {
             MainOptionElement("gui.widgets", "gui.widgets.description", widgets(), Identifier.of("bewisclient", "textures/main_icons/widgets.png")),
             MainOptionElement("gui.design", "gui.design.description", design(), Identifier.of("bewisclient", "textures/main_icons/design.png")),
             MainOptionElement("gui.util", "gui.util.description", util(), Identifier.of("bewisclient", "textures/main_icons/util.png")),
-            MainOptionElement("gui.cosmetics", "gui.cosmetics.description", { CosmeticsScreen(it) }, Identifier.of("bewisclient", "textures/main_icons/cosmetics.png"),true),
+            MainOptionElement("gui.cosmetics", "gui.cosmetics.description", cosmetics(), Identifier.of("bewisclient", "textures/main_icons/cosmetics.png")),
             MultiplePagesOptionElement(arrayOf(
                 MultiplePagesOptionElement.MultiplePagesElement(
                     "gui.fullbright",
@@ -302,6 +335,11 @@ object ElementList: Settings() {
                     "gui.screenshot",
                     screenshot(),
                     Identifier.of("bewisclient", "textures/main_icons/screenshot.png")
+                ),
+                MultiplePagesOptionElement.MultiplePagesElement(
+                    "gui.donation",
+                    donation(),
+                    Identifier.of("bewisclient", "textures/main_icons/donation.png")
                 )
             ),70),
         ).addNewElements()

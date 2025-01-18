@@ -1,9 +1,10 @@
 package bewis09.bewisclient.mixin;
 
 import bewis09.bewisclient.drawable.UsableTexturedButtonWidget;
-import bewis09.bewisclient.drawable.option_elements.ScreenshotElement;
+import bewis09.bewisclient.drawable.option_elements.screenshot.ScreenshotElement;
 import bewis09.bewisclient.screen.MainOptionsScreen;
 import bewis09.bewisclient.screen.WelcomingScreen;
+import bewis09.bewisclient.server.ServerConnection;
 import bewis09.bewisclient.settingsLoader.Settings;
 import bewis09.bewisclient.settingsLoader.SettingsLoader;
 import net.minecraft.client.MinecraftClient;
@@ -12,6 +13,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -39,6 +41,9 @@ public class TitleScreenMixin extends Screen {
                     client.setScreen(new MainOptionsScreen());
                 }
             }));
-        ScreenshotElement.Companion.getScreenshots();
+
+        Util.getIoWorkerExecutor().execute(ScreenshotElement.Companion::getScreenshots);
+
+        Util.getIoWorkerExecutor().execute(ServerConnection.INSTANCE::registerCosmetics);
     }
 }
