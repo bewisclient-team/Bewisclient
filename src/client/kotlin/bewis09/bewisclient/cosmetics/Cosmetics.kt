@@ -13,7 +13,7 @@ object Cosmetics {
         }
     }
 
-    fun registerCosmetic(cosmetic: Cosmetic) {
-        cosmetic.type.registerCosmetic(cosmetic.id,cosmetic)
+    fun registerCosmetic(cosmetic: Cosmetic, default: Boolean) {
+        cosmetic.type.registerCosmetic(cosmetic.id,cosmetic,default)
     }
 }

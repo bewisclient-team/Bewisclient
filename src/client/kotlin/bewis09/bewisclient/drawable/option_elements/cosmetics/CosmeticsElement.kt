@@ -87,9 +87,9 @@ class CosmeticsElement(val type: String, val renderType: RenderType = RenderType
 
         hoveredIndex = -1
 
-        maxX = - (width - 45f - 65f * cosmeticsType.cosmetics.size)
+        maxX = - (width - 45f - 65f * cosmeticsType.defaultCosmetics.size)
 
-        cosmeticsType.cosmetics.toList().forEachIndexed { index, pair ->
+        cosmeticsType.defaultCosmetics.toList().forEachIndexed { index, pair ->
             val xOffset = x + index * 65 + shiftXOffset
 
             val allHovered = mouseX in x + 20..x + width - 20 && mouseY in y + 25..y + 140
@@ -164,7 +164,7 @@ class CosmeticsElement(val type: String, val renderType: RenderType = RenderType
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int, screen: MainOptionsScreen) {
         if(hoveredIndex!=-1) {
-            val pair = cosmeticsType.cosmetics.toList()[hoveredIndex]
+            val pair = cosmeticsType.defaultCosmetics.toList()[hoveredIndex]
             if(cosmeticsType.currentlySelected == pair.second.id)
                 cosmeticsType.currentlySelected = null
             else
@@ -182,7 +182,7 @@ class CosmeticsElement(val type: String, val renderType: RenderType = RenderType
 }
 
 fun renderEntity(vertexConsumerProvider: VertexConsumerProvider, alphaModifier: Long, context: DrawContext) {
-    RenderSystem.setShaderColor(1f,1f,1f, (alphaModifier / 0xFF).toFloat() / 0x1000000)
+    RenderSystem.setShaderColor(1f, 1f, 1f, (alphaModifier / 0xFF).toFloat() / 0x1000000)
 
     entityRenderer.render(
         playerEntityRenderState,

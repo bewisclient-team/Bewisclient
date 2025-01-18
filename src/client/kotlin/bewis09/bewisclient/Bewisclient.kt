@@ -344,7 +344,7 @@ object Bewisclient : ClientModInitializer {
 		return rightList.size
 	}
 
-	fun info(vararg message: Any) {
+	fun info(vararg message: Any?) {
 		logger.info(message.reduce { acc, p -> "$acc, $p" }.toString())
 	}
 

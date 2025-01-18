@@ -4,6 +4,7 @@ import bewis09.bewisclient.cosmetics.Cosmetics
 import bewis09.bewisclient.drawable.option_elements.OptionElement
 import bewis09.bewisclient.drawable.option_elements.cosmetics.CosmeticsElement.Companion.playerEntityRenderState
 import bewis09.bewisclient.screen.MainOptionsScreen
+import bewis09.bewisclient.screen.MainOptionsScreen.Companion.normalOffset
 import bewis09.bewisclient.screen.MainOptionsScreen.Companion.scale
 import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.MinecraftClient
@@ -23,10 +24,8 @@ class CosmeticsDrawBigElement(val right: Boolean = false): OptionElement("", "")
         alphaModifier: Long
     ): Int {
         Cosmetics.types.forEach {
-            it.currentOverwrite = Pair(true,if(it.currentlySelected == null) null else it.cosmetics[it.currentlySelected])
+            it.currentOverwrite = Pair(true,if(it.currentlySelected == null) null else it.defaultCosmetics[it.currentlySelected])
         }
-
-        val m = context.matrices.peek()
 
         context.matrices.pop()
         context.matrices.push()
@@ -70,7 +69,9 @@ class CosmeticsDrawBigElement(val right: Boolean = false): OptionElement("", "")
 
         context.matrices.pop()
         context.matrices.push()
-        context.matrices.multiplyPositionMatrix(m.positionMatrix)
+
+        context.matrices.scale(1/scale, 1/scale, 1/scale)
+        context.matrices.translate(normalOffset.toFloat(), 0f, 0f)
 
         context.enableScissor(MainOptionsScreen.currentScissors.x, MainOptionsScreen.currentScissors.y, MainOptionsScreen.currentScissors.x2, MainOptionsScreen.currentScissors.y2)
 

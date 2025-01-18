@@ -8,29 +8,38 @@ import bewis09.bewisclient.exception.TooLowAPILevelException
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
+import com.google.gson.JsonPrimitive
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.MinecraftClient
+import net.minecraft.client.texture.NativeImage
+import net.minecraft.client.texture.NativeImageBackedTexture
 import net.minecraft.util.Identifier
 import net.minecraft.util.Util
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.net.HttpURLConnection
 import java.net.URI
 import java.net.URL
 import java.net.URLConnection
 import java.nio.charset.StandardCharsets
+import java.security.MessageDigest
+import javax.imageio.ImageIO
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
+
 
 object ServerConnection {
     val gson: Gson = GsonBuilder().setPrettyPrinting().create()
 
     var specials: Array<Cosmetic> = arrayOf()
-    var cosmetic_data: Array<Cosmetic> = arrayOf()
+    var cosmetic_data: Array<DefaultCosmetic> = arrayOf()
     var user_data: Array<String> = arrayOf()
     var current: Selection? = null
+    var base_url: String = ""
 
     var loadStatus = Status.NONE
 
-    var cosmeticIdentifiers = hashMapOf<Cosmetic, Identifier>()
-
+    @OptIn(ExperimentalEncodingApi::class)
     fun load() {
         Util.getIoWorkerExecutor().execute {
             Bewisclient.info("Loading Bewisclient data from server")
@@ -62,6 +71,7 @@ object ServerConnection {
                 cosmetic_data = data.cosmetics
                 user_data = data.user_data
                 current = data.current
+                base_url = data.base_url
 
                 if (data.min_api_level > Bewisclient.API_LEVEL) throw TooLowAPILevelException(data.min_api_level)
 
@@ -73,13 +83,14 @@ object ServerConnection {
                 file.writeText(gson.toJson(JsonObject().apply {
                     add("specials", gson.toJsonTree(specials))
                     add("cosmetics", gson.toJsonTree(cosmetic_data))
+                    add("base_url", JsonPrimitive(base_url))
                 }))
 
                 loadStatus = Status.ONLINE
 
                 Bewisclient.info("Successfully loaded Bewisclient data from server")
             } catch (e: Exception) {
-                Bewisclient.warn("Failed to load Bewisclient data from server, using data from previous runs: ${e.message}")
+                Bewisclient.warn("Failed to load Bewisclient data from server, using data from previous runs")
 
                 val file = File("${FabricLoader.getInstance().gameDir}/bewisclient/server/data.json")
 
@@ -87,25 +98,35 @@ object ServerConnection {
                     val data = gson.fromJson(file.readText(), JsonObject::class.java)
 
                     specials = gson.fromJson(data.getAsJsonArray("specials"), Array<Cosmetic>::class.java)
-                    cosmetic_data = gson.fromJson(data.getAsJsonArray("cosmetics"), Array<Cosmetic>::class.java)
+                    cosmetic_data = gson.fromJson(data.getAsJsonArray("cosmetics"), Array<DefaultCosmetic>::class.java)
+                    base_url = gson.fromJson(data.getAsJsonPrimitive("base_url"), String::class.java)
 
                     loadStatus = Status.OFFLINE
                 }
             }
 
             for (cosmetic in cosmetic_data) {
-                if (cosmetic.frames > 1) {
-                    Cosmetics.registerCosmetic(AnimatedCape(Cosmetics.getCosmeticsType(cosmetic.type), cosmetic.id, cosmetic.frames, 80))
-                } else {
-                    val texture = File("${FabricLoader.getInstance().gameDir}/bewisclient/server/${cosmetic.type}/${cosmetic.id}.png")
+                val texture = File("${FabricLoader.getInstance().gameDir}/bewisclient/server/${cosmetic.type}/${cosmetic.id}"+(if(cosmetic.frames > 1) ".gif" else ".png"))
 
-                    try {
-                        if(texture.exists()) continue
+                try {
+                    if (base_url != "") {
+                        val address = base_url.replace("%s", cosmetic.type + "/" + cosmetic.id + (if(cosmetic.frames > 1) ".gif" else ".png"))
 
+                        if (!texture.exists()) {
+                            bewis09.bewisclient.util.Util.downloadToFile(address, texture)
+                        } else {
+                            val digest = MessageDigest.getInstance("SHA-256")
+                            val hash = Base64.encode(digest.digest(texture.readBytes()))
 
+                            if (hash != cosmetic.hash) {
+                                Bewisclient.warn("The texture of " + cosmetic.type + "/" + cosmetic.id + " was either changed on the local machine or updated on the server. Downloading the correct one...")
 
-                        Cosmetics.registerCosmetic(Cosmetic(Cosmetics.getCosmeticsType(cosmetic.type), cosmetic.id))
-                    } catch (_: Exception ) {}
+                                bewis09.bewisclient.util.Util.downloadToFile(address, texture)
+                            }
+                        }
+                    }
+                } catch (e: Exception) {
+                    Bewisclient.warn("Error downloading cape texture: " + e.localizedMessage)
                 }
             }
         }
@@ -117,46 +138,69 @@ object ServerConnection {
         OFFLINE
     }
 
-    data class ReturnData(val specials: Array<Cosmetic>, val user_data: Array<String>, val cosmetics: Array<Cosmetic>, val min_api_level: Int, val current: Selection) {
+    data class ReturnData(val specials: Array<Cosmetic>, val user_data: Array<String>, val cosmetics: Array<DefaultCosmetic>, val min_api_level: Int, val current: Selection, val base_url: String)
+
+    class DefaultCosmetic(type: String, id: String, val frames: Int, val hash: String?, val default: Boolean): Cosmetic(type, id)
+
+    open class Cosmetic(val type: String, val id: String) {
         override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (javaClass != other?.javaClass) return false
-
-            other as ReturnData
-
-            if (min_api_level != other.min_api_level) return false
-            if (!specials.contentEquals(other.specials)) return false
-            if (!user_data.contentEquals(other.user_data)) return false
-            if (!cosmetics.contentEquals(other.cosmetics)) return false
-
-            return true
+            return other is Cosmetic && other.id == id && other.type == type
         }
 
         override fun hashCode(): Int {
-            var result = min_api_level
-            result = 31 * result + specials.contentHashCode()
-            result = 31 * result + user_data.hashCode()
-            result = 31 * result + cosmetics.contentHashCode()
-            return result
-        }
-    }
-
-    data class Cosmetic(val type: String, val id: String, val frames: Int) {
-        override fun equals(other: Any?): Boolean {
-            if(other == type) return true
-
-            if(other !is Cosmetic) return true
-
-            return type == other.type && id == other.id && frames == other.frames
+            return 31 * type.hashCode() + id.hashCode()
         }
 
-        override fun hashCode(): Int {
-            var result = type.hashCode()
-            result = 31 * result + id.hashCode()
-            result = 31 * result + frames
-            return result
+        override fun toString(): String {
+            return javaClass.simpleName+"/"+type+"/"+id
         }
     }
 
     data class Selection(val wing: String, val hat: String, val cape: String)
+
+    var loadedCosmetics = false
+
+    fun registerCosmetics() {
+        if(loadedCosmetics) return
+
+        loadedCosmetics = true
+
+        for (cosmetic in cosmetic_data) {
+            val texture = File("${FabricLoader.getInstance().gameDir}/bewisclient/server/${cosmetic.type}/${cosmetic.id}" + (if (cosmetic.frames > 1) ".gif" else ".png"))
+
+            try {
+                if (texture.exists()) {
+                    if (cosmetic.frames > 1) {
+                        val gif = bewis09.bewisclient.util.Util.getFrames(texture)
+
+                        gif.forEachIndexed { i, image ->
+                            val baos = ByteArrayOutputStream()
+
+                            ImageIO.write(image, "png", baos)
+
+                            val bytes = baos.toByteArray()
+
+                            MinecraftClient.getInstance().textureManager.registerTexture(
+                                Identifier.of("bewisclient", "cosmetic_" + cosmetic.type + "_" + cosmetic.id + "_" + i),
+                                NativeImageBackedTexture(NativeImage.read(bytes))
+                            )
+                        }
+
+                        Cosmetics.registerCosmetic(AnimatedCape(Cosmetics.getCosmeticsType(cosmetic.type), cosmetic.id, gif.size, 80), cosmetic.default || cosmetic in specials)
+
+                        continue
+                    }
+
+                    MinecraftClient.getInstance().textureManager.registerTexture(
+                        Identifier.of("bewisclient", "cosmetic_" + cosmetic.type + "_" + cosmetic.id),
+                        NativeImageBackedTexture(NativeImage.read(texture.readBytes()))
+                    )
+
+                    Cosmetics.registerCosmetic(Cosmetic(Cosmetics.getCosmeticsType(cosmetic.type), cosmetic.id), cosmetic.default || cosmetic in specials)
+                }
+            } catch (e: Exception) {
+                Bewisclient.warn("Error loading cosmetic ${cosmetic.type+"/"+cosmetic.id}: "+e.localizedMessage)
+            }
+        }
+    }
 }
