@@ -274,6 +274,10 @@
   "bewisclient.cosmetics.cape": "Cape",
   "bewisclient.cosmetics.wing": "Wings",
   "bewisclient.cosmetics.hat": "Hats",
+  "bewisclient.cosmetics.nae_incompatible": "The currently installed version of \"Not Enough Animations\" is not compatible with this screen. Please download a version of \"Not Enough Animations\" which is at least 1.9.1",
   "bewisclient.gui.select": "Select",
-  "bewisclient.gui.disable": "Disable"
+  "bewisclient.gui.disable": "Disable",
+  "bewisclient.nea_incompatible": "Not Enough Animations Incompatibility",
+  "bewisclient.contact.nea_link": "Download Link",
+  "bewisclient.description.contact.nea_link": "Not Enough Animations on Modrinth"
 }

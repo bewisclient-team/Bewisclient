@@ -1,5 +1,6 @@
 package bewis09.bewisclient.util
 
+import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.util.Identifier
@@ -7,6 +8,7 @@ import java.awt.image.BufferedImage
 import java.io.File
 import java.io.IOException
 import java.net.URI
+import java.util.function.Predicate
 import javax.imageio.ImageIO
 
 
@@ -40,6 +42,33 @@ object Util {
         }
 
         return frames
+    }
+
+    /**
+     * @param versionConsumer A function which has an [Int] as an argument, which is positive if the current version is bigger than the specified one, negative if it is smaller and 0 if those are equal
+     */
+    fun <T> modFoundDependent(id: String, versionConsumer: Predicate<Int>, onTrue: ()->T, onFalse: ()->T): T {
+        return if (FabricLoader.getInstance().allMods.any {
+                return@any it.metadata.id == id && versionConsumer.test(compareVersion(it.metadata.version.friendlyString, "1.9.0"))
+            }) onTrue() else onFalse()
+    }
+
+    fun compareVersion(version1: String, version2: String): Int {
+        val v1 = version1.split(".")
+        val v2 = version2.split(".")
+
+        val maxLength = maxOf(v1.size, v2.size)
+
+        for (i in 0 until maxLength) {
+            val num1 = if (i < v1.size) v1[i].toInt() else 0
+            val num2 = if (i < v2.size) v2[i].toInt() else 0
+
+            if (num1 != num2) {
+                return num1.compareTo(num2)
+            }
+        }
+
+        return 0
     }
 }
 

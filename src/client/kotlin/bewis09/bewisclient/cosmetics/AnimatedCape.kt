@@ -7,7 +7,7 @@ class AnimatedCape(type: CosmeticsType, id: String, val frames: Int, val length:
 
     init {
         for (a in 0 until frames) {
-            identifiers.add(Identifier.of("bewisclient", "cosmetics/${type.typeId}/${id}_$a.png"))
+            identifiers.add(Identifier.of("bewisclient", "cosmetic_${type.typeId}_${id}_$a"))
         }
     }
 

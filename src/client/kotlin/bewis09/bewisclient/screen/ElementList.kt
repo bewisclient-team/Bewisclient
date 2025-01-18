@@ -11,6 +11,7 @@ import bewis09.bewisclient.exception.WidgetToElementLoadingException
 import bewis09.bewisclient.settingsLoader.DefaultSettings
 import bewis09.bewisclient.settingsLoader.Settings
 import bewis09.bewisclient.settingsLoader.SettingsLoader
+import bewis09.bewisclient.util.Util
 import bewis09.bewisclient.widgets.Widget
 import bewis09.bewisclient.widgets.WidgetRenderer
 import com.google.gson.JsonElement
@@ -18,6 +19,7 @@ import com.google.gson.JsonObject
 import net.minecraft.client.MinecraftClient
 import net.minecraft.util.Identifier
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Collections of the elements for the [MainOptionsScreen]
@@ -90,14 +92,23 @@ object ElementList: Settings() {
     }
 
     val cosmetics: ()->ArrayList<OptionElement> = {
-        arrayListOf(
-            TitleOptionElement("gui.cosmetics"),
-            CosmeticsDrawBigElement(),
-            CosmeticsDrawBigElement(true),
-            CosmeticsElement("cape", CosmeticsElement.RenderType.REVERSED),
-            CosmeticsElement("wing", CosmeticsElement.RenderType.REVERSED),
-            CosmeticsElement("hat", CosmeticsElement.RenderType.FAST_CHANGING)
-        )
+        Util.modFoundDependent("notenoughanimations",{ it > 0 },{
+            arrayListOf(
+                TitleOptionElement("gui.cosmetics"),
+                CosmeticsDrawBigElement(),
+                CosmeticsDrawBigElement(true),
+                CosmeticsElement("cape", CosmeticsElement.RenderType.REVERSED),
+                CosmeticsElement("wing", CosmeticsElement.RenderType.REVERSED),
+                CosmeticsElement("hat", CosmeticsElement.RenderType.FAST_CHANGING)
+            )
+        },{
+            arrayListOf(
+                TitleOptionElement("nea_incompatible"),
+                InfoElement("cosmetics.nae_incompatible"),
+                ContactElement("nea_link","https://modrinth.com/mod/not-enough-animations")
+            )
+        })
+
     }
 
     val experimental: ()->ArrayList<OptionElement> = {

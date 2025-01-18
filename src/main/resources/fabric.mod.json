@@ -39,6 +39,9 @@
 			"environment": "client"
 		}
 	],
+	"conflicts": {
+		"notenoughanimations": "<=1.9.0"
+	},
 	"depends": {
 		"fabricloader": ">=0.15.6",
 		"minecraft": "~1.21.4",
