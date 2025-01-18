@@ -92,7 +92,13 @@ object ElementList: Settings() {
     }
 
     val cosmetics: ()->ArrayList<OptionElement> = {
-        Util.modFoundDependent("notenoughanimations",{ it > 0 },{
+        Util.modFoundDependent("notenoughanimations","1.9.0",{ it <= 0 },{
+            arrayListOf(
+                TitleOptionElement("nea_incompatible"),
+                InfoElement("cosmetics.nae_incompatible"),
+                ContactElement("nea_link","https://modrinth.com/mod/not-enough-animations")
+            )
+        },{
             arrayListOf(
                 TitleOptionElement("gui.cosmetics"),
                 CosmeticsDrawBigElement(),
@@ -100,12 +106,6 @@ object ElementList: Settings() {
                 CosmeticsElement("cape", CosmeticsElement.RenderType.REVERSED),
                 CosmeticsElement("wing", CosmeticsElement.RenderType.REVERSED),
                 CosmeticsElement("hat", CosmeticsElement.RenderType.FAST_CHANGING)
-            )
-        },{
-            arrayListOf(
-                TitleOptionElement("nea_incompatible"),
-                InfoElement("cosmetics.nae_incompatible"),
-                ContactElement("nea_link","https://modrinth.com/mod/not-enough-animations")
             )
         })
 

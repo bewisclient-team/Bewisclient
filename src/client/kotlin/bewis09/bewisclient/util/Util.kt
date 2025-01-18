@@ -47,9 +47,9 @@ object Util {
     /**
      * @param versionConsumer A function which has an [Int] as an argument, which is positive if the current version is bigger than the specified one, negative if it is smaller and 0 if those are equal
      */
-    fun <T> modFoundDependent(id: String, versionConsumer: Predicate<Int>, onTrue: ()->T, onFalse: ()->T): T {
+    fun <T> modFoundDependent(id: String, version: String, versionConsumer: Predicate<Int>, onTrue: ()->T, onFalse: ()->T): T {
         return if (FabricLoader.getInstance().allMods.any {
-                return@any it.metadata.id == id && versionConsumer.test(compareVersion(it.metadata.version.friendlyString, "1.9.0"))
+                return@any it.metadata.id == id && versionConsumer.test(compareVersion(it.metadata.version.friendlyString, version))
             }) onTrue() else onFalse()
     }
 
