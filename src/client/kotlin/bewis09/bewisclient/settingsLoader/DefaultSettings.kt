@@ -111,6 +111,9 @@ object DefaultSettings: Settings() {
         design.add(EXTEND_STATUS_EFFECT_INFO, JsonPrimitive(false))
         design.add(CLEANER_DEBUG_MENU, JsonPrimitive(false))
         design.add(SHOW_PUMPKIN_ICON, JsonPrimitive(true))
+        design.add(CAPE, JsonPrimitive(""))
+        design.add(HAT, JsonPrimitive(""))
+        design.add(WING, JsonPrimitive(""))
 
         val EX = JsonObject()
         EX.add(AUTO_UPDATE, JsonPrimitive(false))
