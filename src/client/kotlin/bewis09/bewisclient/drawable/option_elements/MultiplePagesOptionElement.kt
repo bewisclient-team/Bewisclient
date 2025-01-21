@@ -3,7 +3,10 @@ package bewis09.bewisclient.drawable.option_elements
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.drawable.option_elements.MultiplePagesOptionElement.MultiplePagesElement
 import bewis09.bewisclient.screen.MainOptionsScreen
+import bewis09.bewisclient.settingsLoader.Settings.Companion.options_menu
 import bewis09.bewisclient.settingsLoader.SettingsLoader
+import bewis09.bewisclient.settingsLoader.settings.BooleanSetting
+import bewis09.bewisclient.settingsLoader.settings.element_options.ElementOptions
 import bewis09.bewisclient.util.EaseMode
 import bewis09.bewisclient.util.Search
 import bewis09.bewisclient.util.ValuedAnimation
@@ -33,7 +36,7 @@ class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, v
      * The Array of [ValuedAnimation] for the scaling when hovered
      */
     var animation: Array<ValuedAnimation> = Array(elementList.size) {
-        ValuedAnimation(System.currentTimeMillis(), SettingsLoader.get(DESIGN, OPTIONS_MENU, ANIMATION_TIME).roundToLong()/2, EaseMode.CONST, 0f, 0f)
+        ValuedAnimation(System.currentTimeMillis(), options_menu.animation_time.get().roundToLong()/2, EaseMode.CONST, 0f, 0f)
     }
 
     /**
@@ -75,7 +78,7 @@ class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, v
             if(isHovered != (animation[i].endValue==3f)) {
                 animation[i] = ValuedAnimation(
                     System.currentTimeMillis(),
-                    SettingsLoader.get(DESIGN, OPTIONS_MENU, ANIMATION_TIME).roundToLong() / 3,
+                    options_menu.animation_time.get().roundToLong() / 3,
                     EaseMode.EASE_IN_OUT,
                     animation[i].getValue(),
                     if (isHovered) 3f else 0f
@@ -172,11 +175,7 @@ class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, v
          */
         val description: String?
 
-        val setting: String?
-
-        val path: Array<String>?
-
-        val settingID: SettingsLoader.TypedSettingID<Boolean>?
+        val setting: BooleanSetting?
 
         /**
          * You can either add an image or a description
@@ -185,13 +184,11 @@ class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, v
          * @param elements The elements that should be shown when clicking on the [MultiplePagesElement]
          * @param image The image that should be rendered in the [MultiplePagesElement]
          */
-        constructor(title: String, elements: ArrayList<OptionElement>, image: Identifier, setting: String, path: Array<String>, settingID: SettingsLoader.TypedSettingID<Boolean>) {
+        constructor(title: String, elements: ArrayList<OptionElement>, image: Identifier, setting: BooleanSetting) {
             this.title = title
             this.elements = elements
             this.image = image
             this.description = null
-            this.path = path
-            this.settingID = settingID
             this.setting = setting
         }
 
@@ -207,8 +204,6 @@ class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, v
             this.elements = elements
             this.image = image
             this.description = null
-            this.path = null
-            this.settingID = null
             this.setting = null
         }
 
@@ -219,13 +214,11 @@ class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, v
          * @param elements The elements that should be shown when clicking on the [MultiplePagesElement]
          * @param description The description of the [MultiplePagesElement]
          */
-        constructor(title: String, elements: ArrayList<OptionElement>, description: String, setting: String, path: Array<String>, settingID: SettingsLoader.TypedSettingID<Boolean>) {
+        constructor(title: String, elements: ArrayList<OptionElement>, description: String, setting: BooleanSetting) {
             this.title = title
             this.elements = elements
             this.image = null
             this.description = description
-            this.path = path
-            this.settingID = settingID
             this.setting = setting
         }
 
@@ -242,12 +235,8 @@ class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, v
         if(widgetHoveredElement!=-1) {
             screen.playDownSound(MinecraftClient.getInstance().soundManager)
 
-            val enabled = (SettingsLoader.get(elementList[widgetHoveredElement].setting!!,elementList[widgetHoveredElement].settingID!!,
-                *elementList[widgetHoveredElement].path!!
-            ))
-            SettingsLoader.set(elementList[widgetHoveredElement].setting!!, !enabled,elementList[widgetHoveredElement].settingID!!,
-                *elementList[widgetHoveredElement].path!!
-            )
+            val enabled = elementList[widgetHoveredElement].setting?.get()
+            elementList[widgetHoveredElement].setting?.set(!enabled!!)
         }
 
         super.mouseClicked(mouseX, mouseY, button, screen)

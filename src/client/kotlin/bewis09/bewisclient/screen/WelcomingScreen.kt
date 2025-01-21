@@ -1,10 +1,7 @@
 package bewis09.bewisclient.screen
 
 import bewis09.bewisclient.Bewisclient
-import bewis09.bewisclient.settingsLoader.Settings.Companion.DESIGN
-import bewis09.bewisclient.settingsLoader.Settings.Companion.OPTIONS_MENU
-import bewis09.bewisclient.settingsLoader.Settings.Companion.SHOWN_START_MENU
-import bewis09.bewisclient.settingsLoader.SettingsLoader
+import bewis09.bewisclient.settingsLoader.Settings.Companion.options_menu
 import bewis09.bewisclient.util.Util
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
@@ -48,7 +45,7 @@ class WelcomingScreen: Screen(Text.empty()) {
 
         if(Util.isIn(mouseX,mouseY,endX-82,endY-19,endX-4,endY-4)) {
             MinecraftClient.getInstance().setScreen(MainOptionsScreen())
-            SettingsLoader.set(DESIGN, true, OPTIONS_MENU, SHOWN_START_MENU)
+            options_menu.shown_start_menu.set(true)
         }
 
         return super.mouseClicked(mouseX, mouseY, button)

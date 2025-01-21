@@ -1,10 +1,9 @@
 package bewis09.bewisclient.drawable.option_elements.settings
 
 import bewis09.bewisclient.Bewisclient
-import bewis09.bewisclient.screen.ElementList.dependentDisabler
 import bewis09.bewisclient.screen.MainOptionsScreen
-import bewis09.bewisclient.settingsLoader.DefaultSettings
 import bewis09.bewisclient.settingsLoader.SettingsLoader
+import bewis09.bewisclient.settingsLoader.settings.FloatSetting
 import bewis09.bewisclient.util.NumberFormatter
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
@@ -15,42 +14,18 @@ import kotlin.math.round
 /**
  * A [SettingsOptionElement] which sets a float and displays a fader
  */
-class FloatOptionElement : SettingsOptionElement<Float> {
+class FloatOptionElement(setting: FloatSetting) : SettingsOptionElement<Float, FloatSetting>(setting) {
+
+    /**
+     * The information for a slider in a [bewis09.bewisclient.drawable.option_elements.settings.FloatOptionElement]
+     *
+     * @param start The minimum value
+     * @param end The maximum value
+     * @param decimalPoints The number of digits after the decimal point
+     */
+    class SliderInfo(val start: Float, val end: Float, val decimalPoints: Int)
 
     var descriptionEnabled: Boolean
-
-    constructor(title: String, path: Array<String>, id: SettingsLoader.TypedSettingID<Float>, settings: String, vararg description: Boolean) : super(
-        title,
-        settings,
-        path,
-        id
-    ) {
-        this.valueChanged = { a ->
-            run {
-                set((round((a*(range!!.end-range.start)+range.start)* 10.0.pow(range.decimalPoints.toDouble()))/ 10.0.pow(range.decimalPoints.toDouble())).toFloat())
-            }
-        }
-        this.range = DefaultSettings.sliders[toPointNotation(path,id)]
-                ?: DefaultSettings.sliders[".$id"]
-        this.descriptionEnabled = description.getOrElse(0) { false }
-    }
-
-    constructor(title: String, path: Array<String>, id: SettingsLoader.TypedSettingID<Float>, settings: String, valueChanger: (Double) -> Unit, description: Boolean) : super(
-        title,
-        settings,
-        path,
-        id
-    ) {
-        this.valueChanged = { a ->
-            run {
-                set((round((a*(range!!.end-range.start)+range.start)* 10.0.pow(range.decimalPoints.toDouble()))/ 10.0.pow(range.decimalPoints.toDouble())).toFloat())
-                valueChanger(a)
-            }
-        }
-        this.range = DefaultSettings.sliders[toPointNotation(path,id)]
-                ?: DefaultSettings.sliders[".$id"]
-        this.descriptionEnabled = description
-    }
 
     /**
      * Gets executed when the value gets changed
@@ -60,7 +35,7 @@ class FloatOptionElement : SettingsOptionElement<Float> {
     /**
      * The information about the range and the step size of the fader
      */
-    private val range: DefaultSettings.SliderInfo?
+    private val range: SliderInfo
 
     /**
      * Indicates if the widget is being clicked
@@ -72,7 +47,7 @@ class FloatOptionElement : SettingsOptionElement<Float> {
     var value = 1f
 
     override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {
-        if(dependentDisabler.contains(toPointNotation(path,id)) && !dependentDisabler[toPointNotation(path,id)]!!()) return -8
+        if(setting.elementOptions.enableFunction?.invoke() == false) return -8
 
         val client = MinecraftClient.getInstance()
 
@@ -86,7 +61,7 @@ class FloatOptionElement : SettingsOptionElement<Float> {
 
         context.drawTextWithShadow(client.textRenderer, Bewisclient.getTranslationText(title),x+6,y+3,(alphaModifier+0xFFFFFF).toInt())
 
-        value = (SettingsLoader.get(settings, id, *path)-range!!.start)/(range.end-range.start)
+        value = (setting.get()-range.start)/(range.end-range.start)
 
         if(descriptionEnabled)
             descriptionLines.iterator().withIndex().forEach { (index, line) ->
@@ -97,7 +72,7 @@ class FloatOptionElement : SettingsOptionElement<Float> {
             value = MathHelper.clamp((mouseX - x - width + 75) / 70f, 0f, 1f)
 
             SettingsLoader.disableAutoSave()
-            SettingsLoader.set(settings, value*(range.end-range.start)+range.start, id, *path)
+            setting.set(value*(range.end-range.start)+range.start)
         }
 
         value = (((Math.round((value*(range.end-range.start)+range.start)* 10.0.pow(range.decimalPoints.toDouble())))
@@ -119,19 +94,28 @@ class FloatOptionElement : SettingsOptionElement<Float> {
         return height
     }
 
-    override fun getTypeParameter(): String = "float"
-
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int, screen: MainOptionsScreen) {
-        if(dependentDisabler.contains(toPointNotation(path,id)) && !dependentDisabler[toPointNotation(path,id)]!!()) return
+        if(setting.elementOptions.enableFunction?.invoke() == false) return
 
         clicked = isSelected
     }
 
     override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int) {
         if(clicked) {
-            set(value*(range!!.end-range.start)+range.start)
+            setting.set(value*(range.end-range.start)+range.start)
         }
 
         clicked = false
+    }
+
+    init {
+        this.valueChanged = { a ->
+            run {
+                setting.set((round((a*(range.end-range.start)+range.start)* 10.0.pow(range.decimalPoints.toDouble()))/ 10.0.pow(range.decimalPoints.toDouble())).toFloat())
+                setting.elementOptions.onChange?.invoke()
+            }
+        }
+        this.range = setting.elementOptions.sliderInfo!!
+        this.descriptionEnabled = setting.elementOptions.description
     }
 }

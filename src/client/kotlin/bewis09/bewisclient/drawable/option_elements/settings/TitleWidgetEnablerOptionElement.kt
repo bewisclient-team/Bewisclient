@@ -4,43 +4,14 @@ import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.drawable.option_elements.OptionElement
 import bewis09.bewisclient.drawable.option_elements.util.TitleOptionElement
 import bewis09.bewisclient.screen.MainOptionsScreen
-import bewis09.bewisclient.settingsLoader.SettingsLoader
+import bewis09.bewisclient.settingsLoader.settings.BooleanSetting
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 
 /**
  * An [OptionElement] which displays a title and allows you to enable/disable the widget
  */
-class TitleWidgetEnablerOptionElement : TitleOptionElement {
-    val setting: String
-    val path: Array<String>
-    val settingID: SettingsLoader.TypedSettingID<Boolean>
-    val valueApplier: (()->Unit)?
-
-    constructor(
-        setting: String,
-        path: Array<String>,
-        settingID: SettingsLoader.TypedSettingID<Boolean>,
-        vararg titles: String
-    ) : super(*titles) {
-        this.setting = setting
-        this.path = path
-        this.settingID = settingID
-        this.valueApplier = null
-    }
-
-    constructor(
-        setting: String,
-        path: Array<String>,
-        settingID: SettingsLoader.TypedSettingID<Boolean>,
-        vararg titles: String,
-        valueApplier: ()->Unit
-    ) : super(*titles) {
-        this.setting = setting
-        this.path = path
-        this.settingID = settingID
-        this.valueApplier = valueApplier
-    }
+class TitleWidgetEnablerOptionElement(val setting: BooleanSetting, vararg titles: String) : TitleOptionElement(*titles) {
 
     /**
      * Indicates if the widget enabler is hovered
@@ -60,7 +31,7 @@ class TitleWidgetEnablerOptionElement : TitleOptionElement {
 
         isWidgetHovered = mouseX>x+width-80&&mouseX<x+width&&mouseY>y+3&&mouseY<y+17
 
-        val enabled = (SettingsLoader.get(setting, settingID, *path))
+        val enabled = setting.get()
 
         if(!isWidgetHovered) {
             context.fill(
@@ -101,9 +72,9 @@ class TitleWidgetEnablerOptionElement : TitleOptionElement {
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int, screen: MainOptionsScreen) {
         if(isWidgetHovered) {
             screen.playDownSound(MinecraftClient.getInstance().soundManager)
-            val enabled = (SettingsLoader.get(setting, settingID, *path))
-            SettingsLoader.set(setting, !enabled, settingID, *path)
-            valueApplier?.invoke()
+            val enabled = setting.get()
+            setting.set(!enabled)
+            setting.elementOptions.onChange?.invoke()
         }
     }
 }

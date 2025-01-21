@@ -31,37 +31,11 @@ object ElementList: Settings() {
      */
     private val excludedProperties = arrayOf("posX","posY","partX","partY","effect","enabled")
 
-    private val widgetDescription = WidgetRenderer.getDescriptions()
-
-    /**
-     * Sets that some elements should be hidden at some point
-     */
-    val dependentDisabler = hashMapOf(Pair("biome.text_color") {
-        !SettingsLoader.get(
-            WIDGETS,
-            COLORCODE_BIOME,
-            "biome"
-        )
-    },Pair("coordinates.colorcode_biome") {
-        SettingsLoader.get(
-            WIDGETS,
-            SHOW_BIOME,
-            "coordinates",
-            *SELECT_PARTS
-        )
-    },Pair("better_visibility.lava_view") {
-        SettingsLoader.get(
-            DESIGN,
-            LAVA,
-            *BETTER_VISIBILITY
-        )
-    })
-
     val widgets: ()->ArrayList<OptionElement> = {
         arrayListOf(
             TitleOptionElement("gui.widgets"),
             MultiplePagesOptionElement(
-                loadWidgetsFromDefault(DefaultSettings.getDefault(WIDGETS)).toArray(arrayOf()),100
+                loadWidgetsFromDefault().toArray(arrayOf()),100
             )
         )
     }
@@ -76,18 +50,18 @@ object ElementList: Settings() {
     val design: ()->ArrayList<OptionElement> = {
         arrayListOf(
             TitleOptionElement("gui.design"),
-            FloatOptionElement("%options_menu.animation_time", OPTIONS_MENU,ANIMATION_TIME, DESIGN),
-            FloatOptionElement("%options_menu.scale", OPTIONS_MENU, SCALE, DESIGN),
-            BooleanOptionElement("%options_menu.show_game_menu", OPTIONS_MENU,SHOW_GAME_MENU, DESIGN),
-            BooleanOptionElement("%options_menu.show_title_menu", OPTIONS_MENU,SHOW_TITLE_MENU, DESIGN),
+            FloatOptionElement(options_menu.animation_time),
+            FloatOptionElement(options_menu.scale),
+            BooleanOptionElement(options_menu.show_game_menu),
+            BooleanOptionElement(options_menu.show_title_menu),
         )
     }
 
     val scoreboard: ()->ArrayList<OptionElement> = {
         arrayListOf(
             TitleOptionElement("gui.scoreboard"),
-            FloatOptionElement("%scoreboard.scale", SCOREBOARD,SCALE, DESIGN),
-            BooleanOptionElement("%scoreboard.hide_numbers", SCOREBOARD,HIDE_NUMBERS, DESIGN),
+            FloatOptionElement(Settings.scoreboard.scale),
+            BooleanOptionElement(Settings.scoreboard.hide_numbers),
         )
     }
 
@@ -122,14 +96,14 @@ object ElementList: Settings() {
 
     val blockhit: ()->ArrayList<OptionElement> = {
         arrayListOf(
-                TitleOptionElement("gui.blockhit"),
-                BooleanOptionElement("%blockhit.enabled", BLOCKHIT,ENABLED, DESIGN),
-                ColorPickerElement("%blockhit.color",  BLOCKHIT,COLOR, DESIGN,false),
-                FloatOptionElement("%blockhit.alpha",  BLOCKHIT,ALPHA, DESIGN),
-                TitleOptionElement("gui.hit_overlay"),
-                BooleanOptionElement("%blockhit.hit_overlay.enabled",  HIT_OVERLAY,ENABLED, DESIGN),
-            ColorPickerElement("%blockhit.hit_overlay.color",  HIT_OVERLAY,COLOR, DESIGN,false),
-                FloatOptionElement("%blockhit.hit_overlay.alpha",  HIT_OVERLAY,ALPHA, DESIGN)
+            TitleOptionElement("gui.blockhit"),
+            BooleanOptionElement(Settings.blockhit),
+            ColorPickerElement(Settings.blockhit.color),
+            FloatOptionElement(Settings.blockhit.alpha),
+            TitleOptionElement("gui.hit_overlay"),
+            BooleanOptionElement(hit_overlay),
+            ColorPickerElement(hit_overlay.color),
+            FloatOptionElement(hit_overlay.alpha)
         )
     }
 
@@ -157,14 +131,8 @@ object ElementList: Settings() {
     val better_visibility: ()->ArrayList<OptionElement> = {
         arrayListOf(
             TitleOptionElement("gui.better_visibility"),
-            MultipleBooleanOptionElement("better_visibility.multiple", DESIGN, BETTER_VISIBILITY,
-                LAVA.id,
-                NETHER.id,
-                WATER.id,
-                POWDER_SNOW.id,
-                TERRAIN_FOG.id
-            ),
-            FloatOptionElement("%better_visibility.lava_view", BETTER_VISIBILITY,LAVA_VIEW, DESIGN)
+            MultipleBooleanOptionElement(Settings.better_visibility.multiple),
+            FloatOptionElement(Settings.better_visibility.lava_view)
         )
     }
 
@@ -180,9 +148,9 @@ object ElementList: Settings() {
 
     val zoom: ()->ArrayList<OptionElement> = {
         arrayListOf(
-                TitleWidgetEnablerOptionElement(GENERAL, arrayOf(), ZOOM_ENABLED, "gui.zoom"),
-                BooleanOptionElement("%gui.instant_zoom", arrayOf(), INSTANT_ZOOM, GENERAL),
-                BooleanOptionElement("%gui.hard_zoom", arrayOf(), HARD_ZOOM, GENERAL)
+                TitleWidgetEnablerOptionElement(Settings.zoom.zoom_enabled, "gui.zoom"),
+                BooleanOptionElement(Settings.zoom.instant_zoom),
+                BooleanOptionElement(Settings.zoom.hard_zoom)
         )
     }
 
@@ -348,29 +316,14 @@ object ElementList: Settings() {
     /**
      * Loads the elements for the widget config from the default settings of it
      */
-    fun loadWidgetsFromDefault(def: JsonObject): ArrayList<MultiplePagesOptionElement.MultiplePagesElement> {
+    fun loadWidgetsFromDefault(): ArrayList<MultiplePagesOptionElement.MultiplePagesElement> {
         val map: ArrayList<MultiplePagesOptionElement.MultiplePagesElement> = arrayListOf()
 
-        def.entrySet().forEach { v ->
-            val m: ArrayList<OptionElement> = arrayListOf(
-                TitleWidgetEnablerOptionElement(WIDGETS, arrayOf(v.key), ENABLED,"gui.widgets","widgets."+v.key)
-            )
+        WidgetRenderer.widgets.forEach { v: Widget<*> ->
+            val m: ArrayList<OptionElement> = loadWidgetsSingleFromDefault(v)
 
-            v.value.asJsonObject.entrySet().forEach {
-                if (!excludedProperties.contains(it.key))
-                    m.add(loadElement(v.key, it.key, it.value))
-            }
-
-            var a: Widget? = null
-            WidgetRenderer.widgets.forEach {
-                if (it.id == v.key) a = it
-            }
-
-            if (MinecraftClient.getInstance()!!.world != null)
-                m.add(WidgetPreviewOptionElement(a))
-
-            if (!excludedProperties.contains(v.key))
-                map.add(MultiplePagesOptionElement.MultiplePagesElement("widgets."+v.key, m,"widgets.description."+v.key, WIDGETS, arrayOf(v.key), ENABLED))
+            if (!excludedProperties.contains(v.id))
+                map.add(MultiplePagesOptionElement.MultiplePagesElement("settings.widgets."+v.id, m,"description.settings.widgets."+v.id, v.settings.enabled))
         }
 
         return map
@@ -380,17 +333,15 @@ object ElementList: Settings() {
      * Loads the options from one widget. Used in the [bewis09.bewisclient.screen.widget.WidgetConfigScreen]
      *
      * @param widget The [Widget] for which the elements should be loaded
-     * @param def The [JsonObject] of the default settings
-     * @param vkey The id of the [widget]
      */
-    fun loadWidgetsSingleFromDefault(widget: Widget,def: JsonObject, vkey: String): ArrayList<OptionElement> {
+    fun loadWidgetsSingleFromDefault(widget: Widget<*>): ArrayList<OptionElement> {
         val map: ArrayList<OptionElement> = arrayListOf(
-            TitleWidgetEnablerOptionElement(WIDGETS, arrayOf(vkey), ENABLED,"gui.widgets", "widgets.$vkey")
+            TitleWidgetEnablerOptionElement(widget.settings.enabled,"gui.widgets","settings.widgets."+widget.id)
         )
 
-        def.entrySet().forEach {
-            if (!excludedProperties.contains(vkey) && !excludedProperties.contains(it.key)) {
-                map.add(loadElement(vkey, it.key, it.value))
+        widget.getWidgetSettings().getSettingList().forEach {
+            if (!excludedProperties.contains(widget.id) && !excludedProperties.contains(it.id.id)) {
+                it.createOptionElement()?.let { it1 -> map.add(it1) }
             }
         }
 
@@ -398,36 +349,6 @@ object ElementList: Settings() {
             map.add(WidgetPreviewOptionElement(widget))
 
         return map
-    }
-
-    /**
-     * Load a single element from the default options
-     *
-     * @param str The id of the widget
-     * @param key The id of the setting
-     * @param value The default value of the setting
-     *
-     * @return The generated [OptionElement]
-     */
-    private fun loadElement(str: String, key:String, value: JsonElement): OptionElement {
-        return when (true) {
-            value.isJsonObject -> MultipleBooleanOptionElement(key,WIDGETS, arrayOf(str,key),*value.asJsonObject.asMap().keys.toTypedArray())
-            value.asJsonPrimitive.isBoolean -> BooleanOptionElement(key, arrayOf(str),
-                SettingsLoader.TypedSettingID(key), WIDGETS, widgetDescription.contains("$str.$key"))
-            (value.asJsonPrimitive.isString && value.asString.startsWith("0x")) -> ColorPickerElement(key,arrayOf(str),SettingsLoader.TypedSettingID(key),WIDGETS,widgetDescription.contains("$str.$key"))
-            value.asJsonPrimitive.isNumber -> {
-                if((DefaultSettings.arrays[key]
-                                ?: DefaultSettings.arrays[".$key"]) == null)
-                    FloatOptionElement(key, arrayOf(str),SettingsLoader.TypedSettingID(key), WIDGETS)
-                else
-                    ArrayOptionElement(key,arrayOf(str),SettingsLoader.TypedSettingID(key),WIDGETS, widgetDescription.contains("$str.$key"))
-            }
-            value.asJsonPrimitive.isString -> if(str.split("_")[0]=="info")
-                            InfoElement("info.$key")
-                        else InfoElement("info.$key")
-                            // String Element no longer exists: StringOptionsElement(key,str,key,WIDGETS)
-            else -> throw WidgetToElementLoadingException(key,value)
-        }
     }
 }
 

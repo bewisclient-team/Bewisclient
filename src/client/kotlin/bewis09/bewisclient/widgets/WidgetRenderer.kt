@@ -18,9 +18,10 @@ class WidgetRenderer: HudRenderCallback {
 
     companion object {
         val effectWidget = EffectWidget()
+        val biomeWidget = BiomeWidget()
 
         val widgets = arrayListOf(
-                BiomeWidget(),
+                biomeWidget,
                 SpeedWidget(),
                 CPSWidget(),
                 FPSWidget(),
@@ -39,16 +40,6 @@ class WidgetRenderer: HudRenderCallback {
 
             widgets.forEach {
                 array.add(it.id,it.getWidgetSettings())
-            }
-
-            return array
-        }
-
-        fun getDescriptions(): ArrayList<String> {
-            val array = ArrayList<String>()
-
-            widgets.forEach { widget ->
-                array.addAll(widget.getDescriptionSettings()?.map { "${widget.id}.${it}" } ?: arrayListOf())
             }
 
             return array

@@ -13,7 +13,7 @@ import kotlin.math.roundToInt
  *
  * @param widget The [Widget] that should be rendered
  */
-class WidgetPreviewOptionElement(val widget: Widget?): OptionElement("","") {
+class WidgetPreviewOptionElement(val widget: Widget<*>?): OptionElement("","") {
     override fun getElementByKeywordLamba(): (String) -> OptionElement? {
         return { null }
     }
@@ -50,7 +50,7 @@ class WidgetPreviewOptionElement(val widget: Widget?): OptionElement("","") {
             (widget.getOriginalWidth()+6f).roundToInt(),
             (widget.getOriginalHeight()+6),0xFFFFFFFF.toInt())
 
-        context.matrices.scale(1/widget.getScale(), 1/widget.getScale(), 1/widget.getScale())
+        context.matrices.scale(1/widget.settings.size.get(), 1/widget.settings.size.get(), 1/widget.settings.size.get())
 
         widget.render(context,(((x+width/2)/scale-widget.getOriginalWidth()/2)).roundToInt(), ((y/scale+3f)).roundToInt())
 

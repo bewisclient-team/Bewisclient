@@ -2,9 +2,8 @@ package bewis09.bewisclient.drawable.option_elements.settings
 
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.pop_up.ColorPickerPopup
-import bewis09.bewisclient.screen.ElementList.dependentDisabler
 import bewis09.bewisclient.screen.MainOptionsScreen
-import bewis09.bewisclient.settingsLoader.SettingsLoader
+import bewis09.bewisclient.settingsLoader.settings.ColorSaverSetting
 import bewis09.bewisclient.util.ColorSaver
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
@@ -18,26 +17,20 @@ import java.awt.Color
  * @param path The path to the setting
  * @param id The id of the setting
  */
-class ColorPickerElement(
-    title: String,
-    path: Array<String>,
-    id: SettingsLoader.TypedSettingID<ColorSaver>,
-    settings: String,
-    val descriptionEnabled: Boolean
-) : SettingsOptionElement<ColorSaver>(title, settings, path, id) {
+class ColorPickerElement(setting: ColorSaverSetting): SettingsOptionElement<ColorSaver, ColorSaverSetting>(setting) {
 
     var isSelected: Boolean = false
 
     override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {
-        if(dependentDisabler.contains(toPointNotation(path,id)) && !dependentDisabler[toPointNotation(path,id)]!!()) return -8
+        if(setting.elementOptions.enableFunction?.invoke() == false) return -8
 
-        val color = get()
+        val color = setting.get()
 
         val client = MinecraftClient.getInstance()
 
         val descriptionLines = client.textRenderer.wrapLines(Bewisclient.getTranslationText(description),width-34)
 
-        val height = 13 + if(descriptionEnabled) descriptionLines.size*10 + 4 else 0
+        val height = 13 + if(setting.elementOptions.description) descriptionLines.size*10 + 4 else 0
 
         isSelected = x+width-100 < mouseX && y < mouseY && x+width > mouseX && y+13 > mouseY
 
@@ -45,7 +38,7 @@ class ColorPickerElement(
 
         context.drawTextWithShadow(client.textRenderer, Bewisclient.getTranslationText(title),x+6,y+3,(alphaModifier+0xFFFFFF).toInt())
 
-        if(descriptionEnabled)
+        if(setting.elementOptions.description)
             descriptionLines.iterator().withIndex().forEach { (index, line) ->
                 context.drawTextWithShadow(client.textRenderer, line, x + 6, y + 16 + 10 * index, (alphaModifier + 0x808080).toInt())
             }
@@ -63,11 +56,9 @@ class ColorPickerElement(
         return height
     }
 
-    override fun getTypeParameter(): String = "colorsaver"
-
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int, screen: MainOptionsScreen) {
         if(isSelected) {
-            screen.setPopUp(ColorPickerPopup(screen, path, id, settings),true)
+            screen.setPopUp(ColorPickerPopup(screen, setting),true)
         }
     }
 }

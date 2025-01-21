@@ -36,7 +36,7 @@ import kotlin.math.floor
 /**
  * A [Widget] to display information of the block/entity you are looking at
  */
-class TiwylaWidget: Widget("tiwyla") {
+class TiwylaWidget: Widget<>("tiwyla") {
 
     /**
      * The font [Identifier] for half hearts
