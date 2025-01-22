@@ -1,7 +1,6 @@
 package bewis09.bewisclient.widgets.lineWidgets
 
 import bewis09.bewisclient.screen.widget.WidgetConfigScreen
-import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.settingsLoader.SettingTypes
 import bewis09.bewisclient.widgets.Widget
 import net.minecraft.client.MinecraftClient
@@ -22,7 +21,7 @@ class EffectWidget: Widget<SettingTypes.DefaultWidgetSettingsObject>("effect") {
     }
 
     override fun getOriginalHeight(): Int {
-        return if(SettingsLoader.get(DESIGN,EXTEND_STATUS_EFFECT_INFO)) 75 else 52
+        return if(utilities.extend_status_effect_info.get()) 75 else 52
     }
 
     override fun getOriginalPosX(): Int {

@@ -12,9 +12,6 @@ import bewis09.bewisclient.screen.SnakeScreen
 import bewis09.bewisclient.screen.WelcomingScreen
 import bewis09.bewisclient.server.ServerConnection
 import bewis09.bewisclient.settingsLoader.Settings
-import bewis09.bewisclient.settingsLoader.Settings.Companion.DESIGN
-import bewis09.bewisclient.settingsLoader.Settings.Companion.OPTIONS_MENU
-import bewis09.bewisclient.settingsLoader.Settings.Companion.SHOWN_START_MENU
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.widgets.WidgetRenderer
 import com.google.gson.JsonObject
@@ -46,7 +43,7 @@ import kotlin.math.max
 /**
  * The main class for Bewisclient
  */
-object Bewisclient : ClientModInitializer {
+object Bewisclient : Settings(), ClientModInitializer {
 	val logger: Logger = LoggerFactory.getLogger("Bewisclient")
 
 	const val API_LEVEL = 2
@@ -127,7 +124,7 @@ object Bewisclient : ClientModInitializer {
 			if(it.player!=null && it.isPaused.not()) {
 				val posNew = it.player!!.pos
 
-				speed = if(SettingsLoader.get(Settings.WIDGETS, Settings.SPEED,Settings.VERTICAL_SPEED))
+				speed = if(WidgetRenderer.speedWidget.settings.vertical_speed.get())
 					posNew.subtract(posOld).length()
 				else
 					posNew.subtract(posOld).horizontalLength()
@@ -141,7 +138,7 @@ object Bewisclient : ClientModInitializer {
 			}
 
 			while (openOptionScreenKeyBinding?.wasPressed() == true) {
-				if(!SettingsLoader.get(DESIGN, OPTIONS_MENU, SHOWN_START_MENU)) {
+				if(!options_menu.shown_start_menu.get()) {
 					MinecraftClient.getInstance().setScreen(WelcomingScreen())
 				} else {
 					MinecraftClient.getInstance().setScreen(MainOptionsScreen())
@@ -149,97 +146,48 @@ object Bewisclient : ClientModInitializer {
 			}
 
 			while (keyBinding1.wasPressed()) {
-				SettingsLoader.set(
-					DESIGN, true, Settings.FULLBRIGHT,
-					Settings.ENABLED
-				)
-				SettingsLoader.set(
-					DESIGN, if(SettingsLoader.get(
-							DESIGN, Settings.FULLBRIGHT,
-							Settings.FULLBRIGHT_VALUE
-						)<=1) 10f else 1f, Settings.FULLBRIGHT,
-					Settings.FULLBRIGHT_VALUE
-				)
-				MinecraftClient.getInstance().options.gamma.value = SettingsLoader.get(
-					DESIGN, Settings.FULLBRIGHT,
-					Settings.FULLBRIGHT_VALUE
-				).toDouble()
-				printGammaMessage(SettingsLoader.get(
-					DESIGN, Settings.FULLBRIGHT,
-					Settings.FULLBRIGHT_VALUE
-				)/10)
+				fullbright.set(true)
+				fullbright.fullbright_value.set(if(fullbright.fullbright_value.get() <= 1f) 10f else 1f)
+				MinecraftClient.getInstance().options.gamma.value = if(fullbright.fullbright_value.get() <= 1f) 10.0 else 1.0
+				printGammaMessage(if(fullbright.fullbright_value.get() <= 1f) 1f else 0.1f)
 			}
+
+			// TODO test 1500% message color
 			while (keyBinding2.wasPressed()) {
-				SettingsLoader.set(
-					DESIGN, true, Settings.FULLBRIGHT,
-					Settings.ENABLED
-				)
-				SettingsLoader.set(
-					DESIGN, min(10f,SettingsLoader.get(
-						DESIGN, Settings.FULLBRIGHT,
-						Settings.FULLBRIGHT_VALUE
-					)+0.25f), Settings.FULLBRIGHT,
-					Settings.FULLBRIGHT_VALUE
-				)
-				MinecraftClient.getInstance().options.gamma.value = SettingsLoader.get(
-					DESIGN, Settings.FULLBRIGHT,
-					Settings.FULLBRIGHT_VALUE
-				).toDouble()
-				printGammaMessage(SettingsLoader.get(
-					DESIGN, Settings.FULLBRIGHT,
-					Settings.FULLBRIGHT_VALUE
-				)/10)
+				val value = min(15f, fullbright.fullbright_value.get() + 0.25f)
+				fullbright.set(true)
+				fullbright.fullbright_value.set(value)
+				MinecraftClient.getInstance().options.gamma.value = value.toDouble()
+				printGammaMessage(value/10f)
 			}
+
+			// TODO test -100% message color
 			while (keyBinding3.wasPressed()) {
-				SettingsLoader.set(
-					DESIGN, true, Settings.FULLBRIGHT,
-					Settings.ENABLED
-				)
-				SettingsLoader.set(
-					DESIGN, max(0f,SettingsLoader.get(
-						DESIGN, Settings.FULLBRIGHT,
-						Settings.FULLBRIGHT_VALUE
-					)-0.25f), Settings.FULLBRIGHT,
-					Settings.FULLBRIGHT_VALUE
-				)
-				MinecraftClient.getInstance().options.gamma.value = SettingsLoader.get(
-					DESIGN, Settings.FULLBRIGHT,
-					Settings.FULLBRIGHT_VALUE
-				).toDouble()
-				printGammaMessage(SettingsLoader.get(
-					DESIGN, Settings.FULLBRIGHT,
-					Settings.FULLBRIGHT_VALUE
-				)/10)
+				val value = max(-1f, fullbright.fullbright_value.get() + 0.25f)
+				fullbright.set(true)
+				fullbright.fullbright_value.set(value)
+				MinecraftClient.getInstance().options.gamma.value = value.toDouble()
+				printGammaMessage(value/10f)
 			}
+
 			while (keyBinding4.wasPressed()) {
-				SettingsLoader.set(
-					DESIGN, !SettingsLoader.get(
-						DESIGN, Settings.FULLBRIGHT,
-						Settings.NIGHT_VISION
-					), Settings.FULLBRIGHT,
-					Settings.NIGHT_VISION
-				)
+				fullbright.night_vision.set(!fullbright.night_vision.get())
 				assert(MinecraftClient.getInstance().player != null)
-				MinecraftClient.getInstance().player!!.sendMessage(Text.translatable("bewisclient.night_vision." + (if (SettingsLoader.get(
-						DESIGN, Settings.FULLBRIGHT,
-						Settings.NIGHT_VISION
-					)) "enabled" else "disabled")).setStyle(
-						Style.EMPTY.withColor(if (SettingsLoader.get(
-								DESIGN, Settings.FULLBRIGHT,
-								Settings.NIGHT_VISION
-							)) 0xFFFF00 else 0xFF0000)
+				MinecraftClient.getInstance().player!!.sendMessage(Text.translatable("bewisclient.night_vision." + (if (fullbright.night_vision.get()) "enabled" else "disabled")).setStyle(
+						Style.EMPTY.withColor(if (fullbright.night_vision.get()) 0xFFFF00 else 0xFF0000)
 				), true)
 			}
-			if(SettingsLoader.get(Settings.GENERAL,Settings.ZOOM_ENABLED)) {
+
+			if(zoom.get()) {
 				if (zoomBinding?.isPressed == true) {
 					MixinStatics.isZoomed = true
 					if (pt == null)
 						pt = MinecraftClient.getInstance().options.smoothCameraEnabled
-					if(!SettingsLoader.get(Settings.GENERAL, Settings.HARD_ZOOM))
+					if(!zoom.hard_zoom.get())
 						MinecraftClient.getInstance().options.smoothCameraEnabled = true
 				} else {
 					MixinStatics.isZoomed = false
-					if (pt != null && !SettingsLoader.get(Settings.GENERAL,Settings.HARD_ZOOM))
+					if (pt != null && !zoom.hard_zoom.get())
 						MinecraftClient.getInstance().options.smoothCameraEnabled = pt!!
 					pt = null
 				}
@@ -269,12 +217,13 @@ object Bewisclient : ClientModInitializer {
 						val s = MainOptionsScreen()
 
 						s.allElements.add(ElementList.screenshot())
-						s.allElements.add(arrayListOf(
+						s.allElements.add(arrayOf(
 							JustTextOptionElement(StringArgumentType.getString(context,"file")),
 							SingleScreenshotElement(ScreenshotElement.screenshots.first {
 								it.name == StringArgumentType.getString(context,"file")
 							})
-						))
+						)
+						)
 
 						s.scrolls.add(0f)
 						s.scrolls.add(0f)

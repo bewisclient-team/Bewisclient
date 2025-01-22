@@ -3,17 +3,14 @@ package bewis09.bewisclient.drawable.option_elements.settings
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.drawable.option_elements.OptionElement
 import bewis09.bewisclient.screen.MainOptionsScreen
-import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.settingsLoader.settings.MultipleBooleanSetting
-import bewis09.bewisclient.settingsLoader.settings.element_options.ElementOptions
-import com.google.gson.JsonObject
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 
 /**
  * An [OptionElement] which changes multiple true-false settings
  */
-class MultipleBooleanOptionElement(setting: MultipleBooleanSetting): SettingsOptionElement<JsonObject, MultipleBooleanSetting, ElementOptions>(setting) {
+class MultipleBooleanOptionElement(val setting: MultipleBooleanSetting): OptionElement("setting."+(setting.path.reduceOrNull { acc, s -> "$acc.$s" }?.let { "$it." }?:"")+setting.settings+"."+setting.id,"") {
 
     /**
      * The index of the setting that is currently hovered over

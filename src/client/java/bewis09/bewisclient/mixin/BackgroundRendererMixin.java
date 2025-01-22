@@ -1,7 +1,6 @@
 package bewis09.bewisclient.mixin;
 
 import bewis09.bewisclient.settingsLoader.Settings;
-import bewis09.bewisclient.settingsLoader.SettingsLoader;
 import net.minecraft.block.enums.CameraSubmersionType;
 import net.minecraft.client.render.BackgroundRenderer;
 import net.minecraft.client.render.Camera;
@@ -13,7 +12,6 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector4f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -26,11 +24,6 @@ public abstract class BackgroundRendererMixin {
         return null;
     }
 
-    @Unique
-    private static boolean isDisabled(SettingsLoader.TypedSettingID<Boolean> settingID) {
-        return (SettingsLoader.INSTANCE.get(Settings.DESIGN, Settings.Companion.getBETTER_VISIBILITY(),settingID));
-    }
-
     @Inject(method = "applyFog",at=@At("RETURN"), cancellable = true)
     private static void applyFog(Camera camera, BackgroundRenderer.FogType fogType, Vector4f color, float viewDistance, boolean thickenFog, float tickDelta, CallbackInfoReturnable<Fog> cir) {
         CameraSubmersionType cameraSubmersionType = camera.getSubmersionType();
@@ -38,25 +31,25 @@ public abstract class BackgroundRendererMixin {
         BackgroundRenderer.FogData fogData = new BackgroundRenderer.FogData(fogType);
         BackgroundRenderer.StatusEffectFogModifier statusEffectFogModifier = getFogModifier(entity, tickDelta);
         if(statusEffectFogModifier != null) return;
-        if (cameraSubmersionType == CameraSubmersionType.LAVA && isDisabled(Settings.Companion.getLAVA())) {
+        if (cameraSubmersionType == CameraSubmersionType.LAVA && Settings.Companion.getBetter_visibility().getLava().get()) {
            fogData.fogStart = -8.0F;
-           fogData.fogEnd = viewDistance * ((SettingsLoader.INSTANCE.get(Settings.DESIGN,Settings.Companion.getBETTER_VISIBILITY(),Settings.Companion.getLAVA_VIEW())));
+           fogData.fogEnd = viewDistance * Settings.Companion.getBetter_visibility().getLava_view().get();
            cir.setReturnValue(new Fog(fogData.fogStart, fogData.fogEnd, fogData.fogShape, color.x, color.y, color.z, color.w));
-        } else if (cameraSubmersionType == CameraSubmersionType.POWDER_SNOW && isDisabled(Settings.Companion.getPOWDER_SNOW())) {
+        } else if (cameraSubmersionType == CameraSubmersionType.POWDER_SNOW && Settings.Companion.getBetter_visibility().getPowder_snow().get()) {
             fogData.fogStart = -8.0F;
             fogData.fogEnd = viewDistance * 0.5F;
             cir.setReturnValue(new Fog(fogData.fogStart, fogData.fogEnd, fogData.fogShape, color.x, color.y, color.z, color.w));
-        } else if (cameraSubmersionType == CameraSubmersionType.WATER && isDisabled(Settings.Companion.getWATER())) {
+        } else if (cameraSubmersionType == CameraSubmersionType.WATER && Settings.Companion.getBetter_visibility().getWater().get()) {
             fogData.fogStart = -8.0F;
             fogData.fogEnd = viewDistance;
             fogData.fogShape = FogShape.CYLINDER;
             cir.setReturnValue(new Fog(fogData.fogStart, fogData.fogEnd, fogData.fogShape, color.x, color.y, color.z, color.w));
-        } else if (cameraSubmersionType == CameraSubmersionType.NONE && thickenFog && isDisabled(Settings.Companion.getNETHER())) {
+        } else if (cameraSubmersionType == CameraSubmersionType.NONE && thickenFog && Settings.Companion.getBetter_visibility().getNether().get()) {
             fogData.fogStart = 0.0F;
             fogData.fogEnd = viewDistance;
             fogData.fogShape = FogShape.CYLINDER;
             cir.setReturnValue(new Fog(fogData.fogStart, fogData.fogEnd, fogData.fogShape, color.x, color.y, color.z, color.w));
-        } else if (cameraSubmersionType == CameraSubmersionType.NONE && !thickenFog && fogType == BackgroundRenderer.FogType.FOG_TERRAIN && isDisabled(Settings.Companion.getTERRAIN_FOG())) {
+        } else if (cameraSubmersionType == CameraSubmersionType.NONE && !thickenFog && fogType == BackgroundRenderer.FogType.FOG_TERRAIN && Settings.Companion.getBetter_visibility().getTerrain_fog().get()) {
             float f = MathHelper.clamp(viewDistance / 10.0F, 4.0F, 64.0F);
             fogData.fogStart = viewDistance*2 - f;
             fogData.fogEnd = viewDistance*2;

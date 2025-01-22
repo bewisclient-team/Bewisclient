@@ -3,14 +3,8 @@ package bewis09.bewisclient.drawable.option_elements
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.drawable.option_elements.MultiplePagesOptionElement.MultiplePagesElement
 import bewis09.bewisclient.screen.MainOptionsScreen
-import bewis09.bewisclient.settingsLoader.Settings.Companion.options_menu
-import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.settingsLoader.settings.BooleanSetting
-import bewis09.bewisclient.settingsLoader.settings.element_options.ElementOptions
-import bewis09.bewisclient.util.EaseMode
-import bewis09.bewisclient.util.Search
-import bewis09.bewisclient.util.ValuedAnimation
-import bewis09.bewisclient.util.drawTexture
+import bewis09.bewisclient.util.*
 import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
@@ -163,7 +157,7 @@ class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, v
         /**
          * The elements that should be shown when clicking on the [MultiplePagesElement]
          */
-        val elements: ArrayList<OptionElement>
+        val elements: Array<OptionElement>
 
         /**
          * The image that should be rendered in the [MultiplePagesElement]
@@ -184,7 +178,7 @@ class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, v
          * @param elements The elements that should be shown when clicking on the [MultiplePagesElement]
          * @param image The image that should be rendered in the [MultiplePagesElement]
          */
-        constructor(title: String, elements: ArrayList<OptionElement>, image: Identifier, setting: BooleanSetting) {
+        constructor(title: String, elements: Array<OptionElement>, image: Identifier, setting: BooleanSetting) {
             this.title = title
             this.elements = elements
             this.image = image
@@ -199,7 +193,7 @@ class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, v
          * @param elements The elements that should be shown when clicking on the [MultiplePagesElement]
          * @param image The image that should be rendered in the [MultiplePagesElement]
          */
-        constructor(title: String, elements: ArrayList<OptionElement>, image: Identifier) {
+        constructor(title: String, elements: Array<OptionElement>, image: Identifier) {
             this.title = title
             this.elements = elements
             this.image = image
@@ -214,7 +208,7 @@ class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, v
          * @param elements The elements that should be shown when clicking on the [MultiplePagesElement]
          * @param description The description of the [MultiplePagesElement]
          */
-        constructor(title: String, elements: ArrayList<OptionElement>, description: String, setting: BooleanSetting) {
+        constructor(title: String, elements: Array<OptionElement>, description: String, setting: BooleanSetting) {
             this.title = title
             this.elements = elements
             this.image = null
@@ -222,8 +216,8 @@ class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, v
             this.setting = setting
         }
 
-        override fun getSearchKeywords(): ArrayList<String> {
-            return arrayListOf(Bewisclient.getTranslatedString(title))
+        override fun getSearchKeywords(): Array<String> {
+            return arrayOf(Bewisclient.getTranslatedString(title))
         }
     }
 
@@ -243,7 +237,7 @@ class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, v
     }
 
     override fun getElementByKeywordLamba(): (String) -> OptionElement? {
-        val collection = Search.collect((elementList.toList()))
+        val collection = Search.collect((elementList))
 
         return {
             val results = Search.search(it,collection)
@@ -255,13 +249,7 @@ class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, v
         }
     }
 
-    override fun getChildElementsForSearch(): ArrayList<OptionElement> {
-        val l = arrayListOf<OptionElement>()
-
-        elementList.forEach {
-            l.addAll(it.elements)
-        }
-
-        return l
+    override fun getChildElementsForSearch(): Array<OptionElement> {
+        return elementList.reduce({ acc, multiplePagesElement -> acc.also { it.addAll(multiplePagesElement.elements) }}, arrayListOf<OptionElement>()).toTypedArray()
     }
 }

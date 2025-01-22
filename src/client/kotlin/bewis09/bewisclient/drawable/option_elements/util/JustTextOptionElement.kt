@@ -24,7 +24,7 @@ open class JustTextOptionElement(val _title: String): OptionElement(_title,"") {
         return 20
     }
 
-    override fun getSearchKeywords(): ArrayList<String> {
-        return arrayListOf()
+    override fun getSearchKeywords(): Array<String> {
+        return arrayOf()
     }
 }

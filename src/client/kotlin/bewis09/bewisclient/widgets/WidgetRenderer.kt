@@ -5,7 +5,6 @@ import bewis09.bewisclient.widgets.lineWidgets.*
 import bewis09.bewisclient.widgets.specialWidgets.InventoryWidget
 import bewis09.bewisclient.widgets.specialWidgets.KeyWidget
 import bewis09.bewisclient.widgets.specialWidgets.TiwylaWidget
-import com.google.gson.JsonObject
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
@@ -19,31 +18,31 @@ class WidgetRenderer: HudRenderCallback {
     companion object {
         val effectWidget = EffectWidget()
         val biomeWidget = BiomeWidget()
+        val speedWidget = SpeedWidget()
+        val cpsWidget = CPSWidget()
+        val fpsWidget = FPSWidget()
+        val tiwylaWidget = TiwylaWidget()
+        val pingWidget = PingWidget()
+        val coordinatesWidget = CoordinatesWidget()
+        val dayWidget = DayWidget()
+        val daytimeWidget = DaytimeWidget()
+        val keyWidget = KeyWidget()
+        val inventoryWidget = InventoryWidget()
 
         val widgets = arrayListOf(
-                biomeWidget,
-                SpeedWidget(),
-                CPSWidget(),
-                FPSWidget(),
-                TiwylaWidget(),
-                PingWidget(),
-                CoordinatesWidget(),
-                effectWidget,
-                DayWidget(),
-                DaytimeWidget(),
-                KeyWidget(),
-                InventoryWidget()
+            biomeWidget,
+            speedWidget,
+            cpsWidget,
+            fpsWidget,
+            tiwylaWidget,
+            pingWidget,
+            coordinatesWidget,
+            effectWidget,
+            dayWidget,
+            daytimeWidget,
+            keyWidget,
+            inventoryWidget
         )
-
-        fun getOptionsObject(): JsonObject {
-            val array = JsonObject()
-
-            widgets.forEach {
-                array.add(it.id,it.getWidgetSettings())
-            }
-
-            return array
-        }
     }
 
     override fun onHudRender(drawContext: DrawContext?, tickCounter: RenderTickCounter) {

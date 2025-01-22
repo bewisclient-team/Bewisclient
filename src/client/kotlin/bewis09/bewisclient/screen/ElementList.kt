@@ -4,22 +4,17 @@ import bewis09.bewisclient.drawable.option_elements.*
 import bewis09.bewisclient.drawable.option_elements.cosmetics.CosmeticsDrawBigElement
 import bewis09.bewisclient.drawable.option_elements.cosmetics.CosmeticsElement
 import bewis09.bewisclient.drawable.option_elements.screenshot.ScreenshotElement
-import bewis09.bewisclient.drawable.option_elements.settings.*
+import bewis09.bewisclient.drawable.option_elements.settings.BooleanOptionElement
+import bewis09.bewisclient.drawable.option_elements.settings.TitleWidgetEnablerOptionElement
 import bewis09.bewisclient.drawable.option_elements.util.InfoElement
 import bewis09.bewisclient.drawable.option_elements.util.TitleOptionElement
-import bewis09.bewisclient.exception.WidgetToElementLoadingException
-import bewis09.bewisclient.settingsLoader.DefaultSettings
 import bewis09.bewisclient.settingsLoader.Settings
-import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.util.Util
 import bewis09.bewisclient.widgets.Widget
 import bewis09.bewisclient.widgets.WidgetRenderer
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
 import net.minecraft.client.MinecraftClient
 import net.minecraft.util.Identifier
 import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * Collections of the elements for the [MainOptionsScreen]
@@ -31,8 +26,8 @@ object ElementList: Settings() {
      */
     private val excludedProperties = arrayOf("posX","posY","partX","partY","effect","enabled")
 
-    val widgets: ()->ArrayList<OptionElement> = {
-        arrayListOf(
+    val widgets = {
+        arrayOf(
             TitleOptionElement("gui.widgets"),
             MultiplePagesOptionElement(
                 loadWidgetsFromDefault().toArray(arrayOf()),100
@@ -47,33 +42,19 @@ object ElementList: Settings() {
      */
     val newMainOptionsElements: ArrayList<()->OptionElement> = arrayListOf()
 
-    val design: ()->ArrayList<OptionElement> = {
-        arrayListOf(
-            TitleOptionElement("gui.design"),
-            FloatOptionElement(options_menu.animation_time),
-            FloatOptionElement(options_menu.scale),
-            BooleanOptionElement(options_menu.show_game_menu),
-            BooleanOptionElement(options_menu.show_title_menu),
-        )
-    }
+    val design = { options_menu.getElements() }
 
-    val scoreboard: ()->ArrayList<OptionElement> = {
-        arrayListOf(
-            TitleOptionElement("gui.scoreboard"),
-            FloatOptionElement(Settings.scoreboard.scale),
-            BooleanOptionElement(Settings.scoreboard.hide_numbers),
-        )
-    }
+    val scoreboard = { Settings.scoreboard.getElements() }
 
-    val cosmetics: ()->ArrayList<OptionElement> = {
+    val cosmetics = {
         Util.modFoundDependent("notenoughanimations","1.9.0",{ it <= 0 },{
-            arrayListOf(
+            arrayOf(
                 TitleOptionElement("nea_incompatible"),
                 InfoElement("cosmetics.nae_incompatible"),
                 ContactElement("nea_link","https://modrinth.com/mod/not-enough-animations")
             )
         },{
-            arrayListOf(
+            arrayOf(
                 TitleOptionElement("gui.cosmetics"),
                 CosmeticsDrawBigElement(),
                 CosmeticsDrawBigElement(true),
@@ -85,59 +66,23 @@ object ElementList: Settings() {
 
     }
 
-    val experimental: ()->ArrayList<OptionElement> = {
+    val experimental = {
         val a: ArrayList<OptionElement> = arrayListOf(
             TitleOptionElement("gui.experimental")
         )
         if(System.getProperty("os.name").lowercase(Locale.getDefault()).contains("win"))
-            a.add(BooleanOptionElement("%experimental.auto_update", EXPERIMENTAL,AUTO_UPDATE, GENERAL,true))
-        a
+            a.add(BooleanOptionElement(Settings.experimental.auto_update))
+        a.toTypedArray()
     }
 
-    val blockhit: ()->ArrayList<OptionElement> = {
-        arrayListOf(
-            TitleOptionElement("gui.blockhit"),
-            BooleanOptionElement(Settings.blockhit),
-            ColorPickerElement(Settings.blockhit.color),
-            FloatOptionElement(Settings.blockhit.alpha),
-            TitleOptionElement("gui.hit_overlay"),
-            BooleanOptionElement(hit_overlay),
-            ColorPickerElement(hit_overlay.color),
-            FloatOptionElement(hit_overlay.alpha)
-        )
-    }
+    val blockhit = { Settings.blockhit.getElements() }
 
-    val fullbright: ()->ArrayList<OptionElement> = {
-        arrayListOf(
-                TitleWidgetEnablerOptionElement(DESIGN,FULLBRIGHT,ENABLED, "gui.fullbright"){
-                    if (SettingsLoader.get(DESIGN, FULLBRIGHT, ENABLED))
-                        MinecraftClient.getInstance().options.gamma.value =
-                            SettingsLoader.get(DESIGN, FULLBRIGHT, FULLBRIGHT_VALUE).toDouble()
-                    else
-                        MinecraftClient.getInstance().options.gamma.value = 1.0
-                },
-                FloatOptionElement("%fullbright.value", FULLBRIGHT,FULLBRIGHT_VALUE, DESIGN, {
-                    if (SettingsLoader.get(DESIGN, FULLBRIGHT, ENABLED))
-                        MinecraftClient.getInstance().options.gamma.value = SettingsLoader.get(
-                            DESIGN,
-                            FULLBRIGHT,
-                            FULLBRIGHT_VALUE
-                        ).toDouble()
-                },true),
-                BooleanOptionElement("%fullbright.night_vision", FULLBRIGHT,NIGHT_VISION, DESIGN)
-        )
-    }
+    val fullbright = { Settings.fullbright.getElements() }
 
-    val better_visibility: ()->ArrayList<OptionElement> = {
-        arrayListOf(
-            TitleOptionElement("gui.better_visibility"),
-            MultipleBooleanOptionElement(Settings.better_visibility.multiple),
-            FloatOptionElement(Settings.better_visibility.lava_view)
-        )
-    }
+    val better_visibility = { Settings.better_visibility.getElements() }
 
-    val contact: ()->ArrayList<OptionElement> = {
-        arrayListOf(
+    val contact = {
+        arrayOf(
                 TitleOptionElement("gui.contact"),
                 ContactElement("modrinth","https://modrinth.com/mod/bewisclient"),
                 ContactElement("sources","https://github.com/Bewis09/bewisclient-2/"),
@@ -146,74 +91,30 @@ object ElementList: Settings() {
         )
     }
 
-    val zoom: ()->ArrayList<OptionElement> = {
-        arrayListOf(
-                TitleWidgetEnablerOptionElement(Settings.zoom.zoom_enabled, "gui.zoom"),
-                BooleanOptionElement(Settings.zoom.instant_zoom),
-                BooleanOptionElement(Settings.zoom.hard_zoom)
-        )
-    }
+    val zoom = { Settings.zoom.getElements() }
 
-    val pumpkin: ()->ArrayList<OptionElement> = {
-        arrayListOf(
-                TitleOptionElement("gui.pumpkin"),
-                BooleanOptionElement("%pumpkin_overlay.disable_pumpkin_overlay", arrayOf(),DISABLE_PUMPKIN_OVERLAY, DESIGN),
-                BooleanOptionElement("%pumpkin_overlay.show_pumpkin_icon", arrayOf(),SHOW_PUMPKIN_ICON, DESIGN)
-        )
-    }
+    val pumpkin = { Settings.pumpkin.getElements() }
 
-    val held_item_info: ()->ArrayList<OptionElement> = {
-        arrayListOf(
-                TitleWidgetEnablerOptionElement(DESIGN, HELD_ITEM_INFO, HELD_ITEM_INFO_ENABLED, "gui.held_item_info"),
-                FloatOptionElement("%held_item_info.maxinfolength", HELD_ITEM_INFO,MAX_INFO_LENGTH, DESIGN),
-        )
-    }
+    val held_item_info = { Settings.held_item_info.getElements() }
 
-    val util: ()->ArrayList<OptionElement> = {
-        arrayListOf(
-                TitleOptionElement("gui.util"),
-                BooleanOptionElement("%extend_status_effect_info", arrayOf(),EXTEND_STATUS_EFFECT_INFO, DESIGN, true),
-                FloatOptionElement("%fire_height", arrayOf(),FIRE_HEIGHT, DESIGN),
-                BooleanOptionElement("%screenshot_folder_open", arrayOf(),SCREENSHOT_OPEN_FOLDER, GENERAL, true)
-        )
-    }
+    val util = { utilities.getElements() }
 
-    val cleaner_debug_menu: ()->ArrayList<OptionElement> = {
-        arrayListOf(
-            TitleWidgetEnablerOptionElement(DESIGN,arrayOf(),CLEANER_DEBUG_MENU, "gui.cleaner_debug_menu"),
-            ContactElement("missing_option","c")
-        )
-    }
+    val cleaner_debug_menu = { cleanerDebugMenu.getElements() }
 
-    val donation: ()->ArrayList<OptionElement> = {
-        arrayListOf(
+    val donation: () -> Array<OptionElement> = {
+        arrayOf(
             DonateElement()
         )
     }
 
-    val perspective: ()->ArrayList<OptionElement> = {
-        arrayListOf(
-            TitleWidgetEnablerOptionElement(GENERAL,arrayOf(),PERSPECTIVE, "gui.perspective"),
-            ContactElement("missing_option","https://github.com/Bewis09/Bewisclient-2/issues/new?labels=Type:%20Enhancement,Part:%20Option&assignee=Bewis09&title=New%20Option:%20")
-        )
-    }
+    val perspective = { Settings.perspective.getElements() }
 
-    val shulker_box_tooltip: ()->ArrayList<OptionElement> = {
-        arrayListOf(
-            TitleWidgetEnablerOptionElement(DESIGN,arrayOf(), SHULKER_BOX_TOOLTIP, "gui.shulker_box_tooltip"),
-            ContactElement("missing_option","https://github.com/Bewis09/Bewisclient-2/issues/new?labels=Type:%20Enhancement,Part:%20Option&assignee=Bewis09&title=New%20Option:%20")
-        )
-    }
+    val shulker_box_tooltip = { shulkerBoxTooltip.getElements() }
 
-    val tnt_timer: ()->ArrayList<OptionElement> = {
-        arrayListOf(
-            TitleWidgetEnablerOptionElement(GENERAL, arrayOf(),TNT_TIMER, "gui.tnt_timer"),
-            ContactElement("missing_option","https://github.com/Bewis09/Bewisclient-2/issues/new?labels=Type:%20Enhancement,Part:%20Option&assignee=Bewis09&title=New%20Option:%20")
-        )
-    }
+    val tnt_timer = { tntTimer.getElements() }
 
-    val screenshot: ()->ArrayList<OptionElement> = {
-        arrayListOf(
+    val screenshot = {
+        arrayOf(
             TitleOptionElement("gui.screenshot"),
             ScreenshotElement()
         )
@@ -230,7 +131,7 @@ object ElementList: Settings() {
                     "gui.fullbright",
                     fullbright(),
                     Identifier.of("bewisclient", "textures/main_icons/fullbright.png"),
-                    DESIGN, FULLBRIGHT, ENABLED
+                    Settings.fullbright
                 ),
                 MultiplePagesOptionElement.MultiplePagesElement(
                     "gui.contact",
@@ -246,13 +147,13 @@ object ElementList: Settings() {
                     "gui.blockhit_hit_overlay",
                     blockhit(),
                     Identifier.of("bewisclient", "textures/main_icons/blockhit.png"),
-                    DESIGN, BLOCKHIT, ENABLED
+                    Settings.blockhit
                 ),
                 MultiplePagesOptionElement.MultiplePagesElement(
                     "gui.zoom",
                     zoom(),
                     Identifier.of("bewisclient", "textures/main_icons/zoom.png"),
-                    GENERAL, arrayOf(), ZOOM_ENABLED
+                    Settings.zoom
                 ),
                 MultiplePagesOptionElement.MultiplePagesElement(
                     "gui.pumpkin",
@@ -263,25 +164,25 @@ object ElementList: Settings() {
                     "gui.held_item_info",
                     held_item_info(),
                     Identifier.of("bewisclient", "textures/main_icons/held_item_info.png"),
-                    DESIGN, HELD_ITEM_INFO, HELD_ITEM_INFO_ENABLED
+                    Settings.held_item_info
                 ),
                 MultiplePagesOptionElement.MultiplePagesElement(
                     "gui.cleaner_debug_menu",
                     cleaner_debug_menu(),
                     Identifier.of("bewisclient", "textures/main_icons/cleaner_debug_menu.png"),
-                    DESIGN, arrayOf(), CLEANER_DEBUG_MENU
+                    cleanerDebugMenu
                 ),
                 MultiplePagesOptionElement.MultiplePagesElement(
                     "gui.shulker_box_tooltip",
                     shulker_box_tooltip(),
                     Identifier.of("bewisclient", "textures/main_icons/shulker_box_tooltip.png"),
-                    DESIGN, arrayOf(), SHULKER_BOX_TOOLTIP
+                    shulkerBoxTooltip
                 ),
                 MultiplePagesOptionElement.MultiplePagesElement(
                     "gui.tnt_timer",
                     tnt_timer(),
                     Identifier.of("bewisclient", "textures/main_icons/tnt_timer.png"),
-                    GENERAL, arrayOf(), TNT_TIMER
+                    tntTimer
                 ),
                 MultiplePagesOptionElement.MultiplePagesElement(
                     "gui.scoreboard",
@@ -297,7 +198,7 @@ object ElementList: Settings() {
                     "gui.perspective",
                     perspective(),
                     Identifier.of("bewisclient", "textures/main_icons/perspective.png"),
-                    GENERAL, arrayOf(), PERSPECTIVE
+                    Settings.perspective
                 ),
                 MultiplePagesOptionElement.MultiplePagesElement(
                     "gui.screenshot",
@@ -320,7 +221,7 @@ object ElementList: Settings() {
         val map: ArrayList<MultiplePagesOptionElement.MultiplePagesElement> = arrayListOf()
 
         WidgetRenderer.widgets.forEach { v: Widget<*> ->
-            val m: ArrayList<OptionElement> = loadWidgetsSingleFromDefault(v)
+            val m: Array<OptionElement> = loadWidgetsSingleFromDefault(v)
 
             if (!excludedProperties.contains(v.id))
                 map.add(MultiplePagesOptionElement.MultiplePagesElement("settings.widgets."+v.id, m,"description.settings.widgets."+v.id, v.settings.enabled))
@@ -334,13 +235,13 @@ object ElementList: Settings() {
      *
      * @param widget The [Widget] for which the elements should be loaded
      */
-    fun loadWidgetsSingleFromDefault(widget: Widget<*>): ArrayList<OptionElement> {
+    fun loadWidgetsSingleFromDefault(widget: Widget<*>): Array<OptionElement> {
         val map: ArrayList<OptionElement> = arrayListOf(
             TitleWidgetEnablerOptionElement(widget.settings.enabled,"gui.widgets","settings.widgets."+widget.id)
         )
 
         widget.getWidgetSettings().getSettingList().forEach {
-            if (!excludedProperties.contains(widget.id) && !excludedProperties.contains(it.id.id)) {
+            if (!excludedProperties.contains(widget.id) && !excludedProperties.contains(it.id)) {
                 it.createOptionElement()?.let { it1 -> map.add(it1) }
             }
         }
@@ -348,7 +249,7 @@ object ElementList: Settings() {
         if (MinecraftClient.getInstance()!!.world != null)
             map.add(WidgetPreviewOptionElement(widget))
 
-        return map
+        return map.toTypedArray()
     }
 }
 
@@ -357,10 +258,10 @@ object ElementList: Settings() {
  *
  * @return The modified [ArrayList]
  */
-fun ArrayList<OptionElement>.addNewElements(): ArrayList<OptionElement> {
+fun ArrayList<OptionElement>.addNewElements(): Array<OptionElement> {
     ElementList.newMainOptionsElements.forEach {
         this.add(it())
     }
 
-    return this
+    return this.toTypedArray()
 }

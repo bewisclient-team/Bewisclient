@@ -121,7 +121,7 @@ object SettingsLoader: Settings() {
      *
      * @see [Settings]
      */
-    fun set(settings: String, value: JsonElement, path: Array<String>, id: TypedSettingID<*>) = set(settings,(path).toMutableList()+id.id,value)
+    fun set(settings: String, value: JsonElement, path: Array<String>, id: String) = set(settings,(path).toMutableList()+id,value)
 
     /**
      * Changes a setting
@@ -134,7 +134,7 @@ object SettingsLoader: Settings() {
      *
      * @see [Settings]
      */
-    private fun set(settings: String, id: List<String>, value: JsonElement) {
+    fun set(settings: String, id: List<String>, value: JsonElement) {
         settingMap = HashMap()
 
         var set = getSettings(settings).asJsonObject
@@ -178,7 +178,7 @@ object SettingsLoader: Settings() {
      *
      * @see [Settings]
      */
-    fun get(settings: String, id: TypedSettingID<*>, path: Array<out String>, default: JsonPrimitive): JsonPrimitive {
+    fun get(settings: String, id: String, path: Array<out String>, default: JsonPrimitive): JsonPrimitive {
         return getUntyped(settings, getSettings(settings).asJsonObject, id, path, default)
     }
 
@@ -191,19 +191,16 @@ object SettingsLoader: Settings() {
      * @param settings The [JsonObject] that the setting should be in
      * @param id The ID of the Setting. Should not contain the path
      * @param path A collection of the path steps
-     * @param iteration The iteration of the setting getting-process.
      *
      * @return The value of the setting as a [JsonElement]
-     *
-     * @throws SettingNotFoundException if [iteration] is bigger than 1 (Which indicates that the setting hasn't been found in the given [JsonObject] and the default [JsonObject])
      *
      * @sample [getUntyped]
      *
      * @see [Settings]
      */
-    fun getUntyped(sID: String, settings: JsonObject, id: TypedSettingID<*>, path: Array<out String>, default: JsonPrimitive): JsonPrimitive {
-        val rId = path.toMutableList()+id.id
-        val rsId = (path.toMutableList()+id.id).toTypedArray().joinToString(".")
+    fun getUntyped(sID: String, settings: JsonObject, id: String, path: Array<out String>, default: JsonPrimitive): JsonPrimitive {
+        val rId = path.toMutableList()+id
+        val rsId = (path.toMutableList()+id).toTypedArray().joinToString(".")
         
         if(settingMap.containsKey("$sID.$rsId")) return settingMap["$sID.$rsId"]!!
         
@@ -239,6 +236,6 @@ object SettingsLoader: Settings() {
             GENERAL -> return GeneralSettings
             DESIGN -> return DesignSettings
         }
-        return DefaultSettings.gson.fromJson("{}",JsonObject::class.java)
+        return gson.fromJson("{}",JsonObject::class.java)
     }
 }

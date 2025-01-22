@@ -7,7 +7,7 @@ import bewis09.bewisclient.util.reduce
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 
-class MultipleBooleanSetting(settings: String, path: Array<String>, val children: Array<BooleanSetting>): Setting<JsonObject, ElementOptions>(settings, path.copyOfRange(0,path.size-1), path.last(), toDefaultJsonObject(children)) {
+class MultipleBooleanSetting(settings: String, path: Array<String>, val children: Array<BooleanSetting>): Setting<JsonObject, ElementOptions>(settings, path.copyOfRange(0,path.size-1), path.last(), toDefaultJsonObject(children), ElementOptions()) {
     override fun get(): JsonObject {
         throw InvalidSettingsGetterException()
     }

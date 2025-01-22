@@ -15,14 +15,14 @@ public abstract class CameraMixin {
 
     @ModifyArg(method = "update",at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/Camera;setRotation(FF)V"),index = 0)
     private float injectYaw(float yaw) {
-        if(thirdPerson && SettingsLoader.INSTANCE.get(Settings.GENERAL,new String[0],Settings.Companion.getPERSPECTIVE()))
+        if(thirdPerson && Settings.Companion.getPerspective().get())
             return yaw + MixinStatics.cameraAddYaw;
         return yaw;
     }
 
     @ModifyArg(method = "update",at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/Camera;setRotation(FF)V"),index = 1)
     private float injectPitch(float pitch) {
-        if(thirdPerson && SettingsLoader.INSTANCE.get(Settings.GENERAL,new String[0],Settings.Companion.getPERSPECTIVE()))
+        if(thirdPerson && Settings.Companion.getPerspective().get())
             return pitch + MixinStatics.cameraAddPitch;
         return pitch;
     }

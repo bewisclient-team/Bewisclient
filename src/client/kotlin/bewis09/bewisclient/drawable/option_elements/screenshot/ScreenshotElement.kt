@@ -160,10 +160,11 @@ class ScreenshotElement: OptionElement("","") {
         if(hoveredShot != -1) {
             screen.playDownSound(MinecraftClient.getInstance().soundManager)
 
-            screen.openNewSlice(arrayListOf(
+            screen.openNewSlice(arrayOf(
                 JustTextOptionElement(screenshots.reversed()[hoveredShot].name),
                 SingleScreenshotElement(screenshots.reversed()[hoveredShot])
-            ))
+            )
+            )
         }
 
         super.mouseClicked(mouseX, mouseY, button, screen)

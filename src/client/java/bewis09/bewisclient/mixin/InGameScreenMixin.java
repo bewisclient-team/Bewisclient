@@ -24,7 +24,7 @@ public class InGameScreenMixin extends Screen {
 
     @Inject(method = "initWidgets", at = @At("HEAD"))
     private void inject(CallbackInfo ci) {
-        if (SettingsLoader.INSTANCE.get(DESIGN, Settings.Companion.getSHOW_GAME_MENU(), Settings.Companion.getOPTIONS_MENU()))
+        if (Settings.Companion.getOptions_menu().getShow_game_menu().get())
             addDrawableChild(new UsableTexturedButtonWidget(width / 2 + 106, height / 4 + 56, 20, 20, new ButtonTextures(Identifier.of("bewisclient", "textures/sprites/bewisclient_button.png"), Identifier.of("bewisclient", "textures/sprites/bewisclient_button_highlighted.png")), (b) -> {
                 assert client != null;
                 client.setScreen(new MainOptionsScreen());

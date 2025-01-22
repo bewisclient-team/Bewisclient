@@ -26,7 +26,7 @@ open class MainOptionElement
     /**
      * An [ArrayList] of type [OptionElement] which will be displayed when opening a new page
      */
-    var elements: ArrayList<OptionElement>,
+    var elements: Array<OptionElement>,
     /**
      * The image that should be displayed when rendering the [MainOptionElement]
      */
@@ -86,7 +86,7 @@ open class MainOptionElement
         }
     }
 
-    override fun getChildElementsForSearch(): ArrayList<OptionElement>? {
+    override fun getChildElementsForSearch(): Array<OptionElement>? {
         return elements
     }
 }

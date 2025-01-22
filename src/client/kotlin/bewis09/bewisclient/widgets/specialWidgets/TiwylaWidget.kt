@@ -1,13 +1,10 @@
-@file:Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
-
 package bewis09.bewisclient.widgets.specialWidgets
 
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.api.APIEntryPoint.EntityListener
 import bewis09.bewisclient.mixin.ClientPlayerInteractionManagerMixin
+import bewis09.bewisclient.settingsLoader.SettingTypes
 import bewis09.bewisclient.widgets.Widget
-import com.google.gson.JsonObject
-import com.google.gson.JsonPrimitive
 import net.minecraft.block.*
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
@@ -29,14 +26,13 @@ import net.minecraft.util.hit.HitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.ColorHelper
 import java.util.*
-import java.util.Map
 import kotlin.math.ceil
 import kotlin.math.floor
 
 /**
  * A [Widget] to display information of the block/entity you are looking at
  */
-class TiwylaWidget: Widget<>("tiwyla") {
+class TiwylaWidget: Widget<SettingTypes.TiwylaWidgetSettingsObject>("tiwyla") {
 
     /**
      * The font [Identifier] for half hearts
@@ -97,9 +93,9 @@ class TiwylaWidget: Widget<>("tiwyla") {
     override fun render(drawContext: DrawContext,x:Int,y:Int) {
         if(getText().size==0) return
         drawContext.matrices.push()
-        drawContext.matrices.scale(getScale(),getScale(),1F)
-        drawContext.fill(x,y,x+getOriginalWidth(),y+getOriginalHeight(), ColorHelper.getArgb(((getProperty(TRANSPARENCY).times(255F)).toInt()),0,0,0))
-        drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, getText()[0],x+getOriginalWidth()/2,y+4,(0xFF000000L+getProperty(TOP_COLOR).getColor()).toInt())
+        drawContext.matrices.scale(settings.size.get(), settings.size.get(),1F)
+        drawContext.fill(x,y,x+getOriginalWidth(),y+getOriginalHeight(), ColorHelper.getArgb(((settings.transparency.get().times(255F)).toInt()),0,0,0))
+        drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, getText()[0],x+getOriginalWidth()/2,y+4,(0xFF000000L+settings.top_color.get().getColor()).toInt())
         drawContext.matrices.scale(0.7F,0.7F,1F)
         for ((index, text) in getText().iterator().withIndex()) {
             if(index!=0)
@@ -107,16 +103,16 @@ class TiwylaWidget: Widget<>("tiwyla") {
                     text.split("%")[1].toDouble(),
                     text.split("%")[2].toDouble(),
                     text.split("%")[3].toDouble()
-                ) else Text.of(text),((x+getOriginalWidth()/2)/0.7F).toInt(),((y+8*index+8)/0.7F).toInt(),(0xFF000000L+getProperty(BOTTOM_COLOR).getColor()).toInt())
+                ) else Text.of(text),((x+getOriginalWidth()/2)/0.7F).toInt(),((y+8*index+8)/0.7F).toInt(),(0xFF000000L+settings.bottom_color.get().getColor()).toInt())
         }
         drawContext.matrices.scale(1/0.7F,1/0.7F,1F)
         val hitResult = MinecraftClient.getInstance().crosshairTarget
         if (hitResult is BlockHitResult) {
-            if (getProperty(SHOW_BLOCK_ICON,*SELECT_PARTS)) {
+            if (settings.show_block_icon.get()) {
                 drawContext.drawItem(ItemStack(MinecraftClient.getInstance().world!!.getBlockState(hitResult.blockPos).block),x+10,y+12)
             }
 
-            if((MinecraftClient.getInstance().interactionManager as ClientPlayerInteractionManagerMixin?)!!.getCurrentBreakingProgress()!=0f && getProperty(SHOW_PROGRESS_BAR,*SELECT_PARTS)) {
+            if((MinecraftClient.getInstance().interactionManager as ClientPlayerInteractionManagerMixin?)!!.getCurrentBreakingProgress()!=0f && settings.show_progress_bar.get()) {
                 drawContext.drawHorizontalLine(x,
                     floor(x+getOriginalWidth()*((MinecraftClient.getInstance().interactionManager as ClientPlayerInteractionManagerMixin?)!!.getCurrentBreakingProgress())).toInt(),y+getOriginalHeight()-1,
                     0xAAFFFFFF.toInt()
@@ -158,9 +154,9 @@ class TiwylaWidget: Widget<>("tiwyla") {
      */
     private fun getTextFromBlock(hitResult: BlockHitResult, blockState: BlockState):ArrayList<String> {
         val firstLine = blockState.block.name.string
-        val secondLine = getBlockInformation(getProperty(FIRST_LINE).toInt(),blockState,hitResult.blockPos)
-        val thirdLine = getBlockInformation(getProperty(SECOND_LINE).toInt(),blockState,hitResult.blockPos)
-        val fourthLine = getBlockInformation(getProperty(THIRD_LINE).toInt(),blockState,hitResult.blockPos)
+        val secondLine = getBlockInformation(settings.first_line.get(),blockState,hitResult.blockPos)
+        val thirdLine = getBlockInformation(settings.seccond_line.get(),blockState,hitResult.blockPos)
+        val fourthLine = getBlockInformation(settings.third_line.get(),blockState,hitResult.blockPos)
 
         return arrayListOf(firstLine,secondLine,thirdLine,fourthLine)
     }
@@ -285,10 +281,10 @@ class TiwylaWidget: Widget<>("tiwyla") {
         val no = "${Bewisclient.getTranslatedString("mining_level")}: ${Bewisclient.getTranslatedString("mining_level.none")}"
         val def = "${Bewisclient.getTranslatedString("mining_level")}: ${Bewisclient.getTranslatedString("mining_level.wood")}"
 
-        val map = Map.of(
-                BlockTags.NEEDS_STONE_TOOL, "${Bewisclient.getTranslatedString("mining_level")}: ${Bewisclient.getTranslatedString("mining_level.stone")}",
-                BlockTags.NEEDS_IRON_TOOL, "${Bewisclient.getTranslatedString("mining_level")}: ${Bewisclient.getTranslatedString("mining_level.iron")}",
-                BlockTags.NEEDS_DIAMOND_TOOL, "${Bewisclient.getTranslatedString("mining_level")}: ${Bewisclient.getTranslatedString("mining_level.diamond")}"
+        val map = hashMapOf(
+                Pair(BlockTags.NEEDS_STONE_TOOL, "${Bewisclient.getTranslatedString("mining_level")}: ${Bewisclient.getTranslatedString("mining_level.stone")}"),
+                Pair(BlockTags.NEEDS_IRON_TOOL, "${Bewisclient.getTranslatedString("mining_level")}: ${Bewisclient.getTranslatedString("mining_level.iron")}"),
+                Pair(BlockTags.NEEDS_DIAMOND_TOOL, "${Bewisclient.getTranslatedString("mining_level")}: ${Bewisclient.getTranslatedString("mining_level.diamond")}")
         )
 
         for (m in map.entries) {
@@ -308,7 +304,7 @@ class TiwylaWidget: Widget<>("tiwyla") {
      */
     private fun getTextFromEntity(entity: Entity):ArrayList<String> {
         return if(entity is LivingEntity)
-            if(MinecraftClient.getInstance().isInSingleplayer && getProperty(SHOW_HEALTH_INFORMATION,*SELECT_PARTS)) {
+            if(MinecraftClient.getInstance().isInSingleplayer && settings.show_health_information.get()) {
                 if(entity.maxHealth>20 && entity.maxHealth <= 40) {
                     arrayListOf(
                         entity.name.string,
@@ -379,31 +375,7 @@ class TiwylaWidget: Widget<>("tiwyla") {
         return ceil(i) / 2.0
     }
 
-    override fun getWidgetSettings(): JsonObject {
-        val jsonObject = JsonObject()
-
-        jsonObject.add(ENABLED.id, JsonPrimitive(true))
-        jsonObject.add(TRANSPARENCY.id, JsonPrimitive(0.43))
-        jsonObject.add(SIZE.id, JsonPrimitive(1))
-        jsonObject.add(POSX.id, JsonPrimitive(5))
-        jsonObject.add(PARTX.id, JsonPrimitive(0))
-        jsonObject.add(POSY.id, JsonPrimitive(5))
-        jsonObject.add(PARTY.id, JsonPrimitive(-1))
-        jsonObject.add(TOP_COLOR.id, JsonPrimitive("0xFFFFFF"))
-        jsonObject.add(BOTTOM_COLOR.id, JsonPrimitive("0xFFFFFF"))
-        jsonObject.add(FIRST_LINE.id,JsonPrimitive(6F))
-        jsonObject.add(SECOND_LINE.id,JsonPrimitive(1F))
-        jsonObject.add(THIRD_LINE.id,JsonPrimitive(5F))
-
-        val elements = JsonObject()
-
-        elements.add(SHOW_BLOCK_ICON.id,JsonPrimitive(true))
-        elements.add(SHOW_HEALTH_INFORMATION.id,JsonPrimitive(true))
-        elements.add(SHOW_PROGRESS_BAR.id,JsonPrimitive(true))
-
-        jsonObject.add(SELECT_PARTS[0],elements)
-        jsonObject.add("info_tiwyla_health_removed",JsonPrimitive(""))
-
-        return jsonObject
+    override fun getWidgetSettings(): SettingTypes.TiwylaWidgetSettingsObject {
+        return SettingTypes.TiwylaWidgetSettingsObject(id, 5f,0f,5f,-1f, .43f, 1f)
     }
 }

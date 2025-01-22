@@ -22,7 +22,7 @@ public class MinecraftClientMixin {
             ci.cancel();
         }
 
-        if(Bewisclient.INSTANCE.getUpdate()!=null && SettingsLoader.INSTANCE.get(Settings.GENERAL, Settings.Companion.getEXPERIMENTAL(),Settings.Companion.getAUTO_UPDATE())) {
+        if(Bewisclient.INSTANCE.getUpdate()!=null && Settings.Companion.getExperimental().getAuto_update().get()) {
             var javaHome = System.getProperty("java.home");
             var f = new File(javaHome);
             f = new File(f, "bin");

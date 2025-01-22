@@ -13,11 +13,7 @@ import bewis09.bewisclient.mixin.ScreenMixin
 import bewis09.bewisclient.pop_up.PopUp
 import bewis09.bewisclient.screen.widget.WidgetConfigScreen
 import bewis09.bewisclient.settingsLoader.Settings
-import bewis09.bewisclient.settingsLoader.Settings.Companion.AUTO_UPDATE
-import bewis09.bewisclient.settingsLoader.Settings.Companion.DESIGN
-import bewis09.bewisclient.settingsLoader.Settings.Companion.EXPERIMENTAL
-import bewis09.bewisclient.settingsLoader.Settings.Companion.GENERAL
-import bewis09.bewisclient.settingsLoader.Settings.Companion.OPTIONS_MENU
+import bewis09.bewisclient.settingsLoader.Settings.Companion.options_menu
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.util.*
 import net.minecraft.client.MinecraftClient
@@ -134,7 +130,7 @@ open class MainOptionsScreen(val parent: Screen? = null) : Screen(Text.empty()) 
 
             if (System.getProperty("os.name").lowercase(Locale.getDefault()).contains("win")) {
                 Dialog.addDialog(ClickDialog(Bewisclient.getTranslationText("info.enable_auto_update"), Bewisclient.getTranslationText("info.enable")) {
-                    SettingsLoader.set(GENERAL,true, AUTO_UPDATE, *EXPERIMENTAL)
+                    Settings.experimental.auto_update.set(true)
 
                     Dialog.addDialog(TextDialog(Bewisclient.getTranslationText("info.auto_update_enable")))
 
@@ -325,13 +321,13 @@ open class MainOptionsScreen(val parent: Screen? = null) : Screen(Text.empty()) 
         if(popUp!=null) {
             return false
         }
-        ArrayList(allElements[slice]).forEach {it.charTyped(chr, modifiers)}
+        (allElements[slice]).forEach {it.charTyped(chr, modifiers)}
         return super.charTyped(chr, modifiers)
     }
 
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
         if(popUp==null) {
-            ArrayList(allElements[slice]).forEach {it.keyPressed(keyCode, scanCode, modifiers)}
+            (allElements[slice]).forEach {it.keyPressed(keyCode, scanCode, modifiers)}
         }
         return super.keyPressed(keyCode, scanCode, modifiers)
     }
@@ -382,9 +378,10 @@ open class MainOptionsScreen(val parent: Screen? = null) : Screen(Text.empty()) 
                     scrolls = arrayListOf(0f)
                     slice = 0
                 } else {
-                    allElements = arrayListOf(Search.search(it, searchCollection))
-                    allElements[0].add(HRElement())
-                    allElements[0].add(ContactElement("find_no_option","https://github.com/Bewis09/Bewisclient-2/issues/new?labels=Type:%20Enhancement,Part:%20Option&assignee=Bewis09&title=New%20Option:%20"))
+                    val z: ArrayList<OptionElement> = Search.search(it, searchCollection)
+                    z.add(HRElement())
+                    z.add(ContactElement("find_no_option","https://github.com/Bewis09/Bewisclient-2/issues/new?labels=Type:%20Enhancement,Part:%20Option&assignee=Bewis09&title=New%20Option:%20"))
+                    allElements = arrayListOf(z.toTypedArray())
                     scrolls = arrayListOf(0f)
                     slice = 0
                 }
@@ -429,7 +426,7 @@ open class MainOptionsScreen(val parent: Screen? = null) : Screen(Text.empty()) 
      *
      * @param elements Every [OptionElement] of the new slice
      */
-    fun openNewSlice(elements: ArrayList<OptionElement>) {
+    fun openNewSlice(elements: Array<OptionElement>) {
         if(animation.getType() == AnimationState.STABLE) {
             allElements.add(elements)
             scrolls.add(0F)
@@ -479,7 +476,7 @@ open class MainOptionsScreen(val parent: Screen? = null) : Screen(Text.empty()) 
      * @param colorStart The color on the left of the gradient
      * @param colorEnd The color on the right of the gradient
      */
-    private fun fillGradient(context: DrawContext, startX: Int, startY: Int, endX: Int, endY: Int, colorStart: Int, colorEnd: Int) {
+    private fun fillGradient(context: DrawContext, startX: Int, @Suppress("SameParameterValue") startY: Int, endX: Int, endY: Int, colorStart: Int, colorEnd: Int) {
         val vertexConsumer: VertexConsumer = (context as DrawContextMixin).vertexConsumers.getBuffer(RenderLayer.getGui())
         val matrix4f: Matrix4f = context.matrices.peek().positionMatrix
         vertexConsumer.vertex(matrix4f, endX.toFloat(), startY.toFloat(), 5f).color(colorEnd)
@@ -523,7 +520,7 @@ open class MainOptionsScreen(val parent: Screen? = null) : Screen(Text.empty()) 
         /**
          * The cached scale, that cannot change while clicking a mouse button for preventing scale change, while fading the scale fader
          */
-        var laS = 1.001f/ SettingsLoader.get(DESIGN, OPTIONS_MENU, Settings.SCALE)
+        var laS = 1.001f/ options_menu.scale.get()
 
         /**
          * Indicates if a mouse button is clicked
@@ -536,7 +533,7 @@ open class MainOptionsScreen(val parent: Screen? = null) : Screen(Text.empty()) 
         val scale: Float
             get() {
                 if(!clicked) {
-                    laS = 1.001f/SettingsLoader.get(DESIGN, OPTIONS_MENU, Settings.SCALE)
+                    laS = 1.001f/options_menu.scale.get()
                 }
                 return laS
             }

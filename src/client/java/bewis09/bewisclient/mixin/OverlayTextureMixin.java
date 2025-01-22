@@ -20,7 +20,7 @@ public class OverlayTextureMixin {
 
     @Inject(method = "<init>",at=@At("RETURN"))
     private void inject(CallbackInfo ci) {
-        if(SettingsLoader.INSTANCE.get(DESIGN, Settings.Companion.getHIT_OVERLAY(),Settings.Companion.getENABLED()))
+        if(Settings.Companion.getHit_overlay().get())
             KFJ.INSTANCE.overlayTexture(texture);
     }
 }

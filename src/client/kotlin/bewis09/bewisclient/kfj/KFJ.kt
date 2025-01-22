@@ -2,7 +2,6 @@ package bewis09.bewisclient.kfj
 
 import bewis09.bewisclient.MixinStatics
 import bewis09.bewisclient.settingsLoader.Settings
-import bewis09.bewisclient.settingsLoader.SettingsLoader.get
 import bewis09.bewisclient.util.NumberFormatter
 import bewis09.bewisclient.util.NumberFormatter.withAfterPointZero
 import bewis09.bewisclient.util.drawTexture
@@ -147,7 +146,7 @@ object KFJ: Settings() {
     fun renderScoreboard(context: DrawContext, objective: ScoreboardObjective, SCOREBOARD_ENTRY_COMPARATOR: Comparator<ScoreboardEntry>, SCOREBOARD_JOINER: String) {
         context.matrices.push()
 
-        val scale = get(DESIGN, SCOREBOARD, SCALE)
+        val scale = scoreboard.scale.get()
 
         context.matrices.scale(scale,scale,scale)
         context.matrices.translate(-MinecraftClient.getInstance().window.scaledWidth.toFloat()+MinecraftClient.getInstance().window.scaledWidth.toFloat()/scale,-MinecraftClient.getInstance().window.scaledWidth.toFloat()/4+MinecraftClient.getInstance().window.scaledWidth.toFloat()/scale/4,0f)
@@ -211,7 +210,7 @@ object KFJ: Settings() {
                     Colors.WHITE,
                     false
                 )
-                if(get(DESIGN, SCOREBOARD, HIDE_NUMBERS)) continue
+                if(Settings.scoreboard.hide_numbers.get()) continue
                 context.drawText(
                     MinecraftClient.getInstance().textRenderer,
                     sidebarEntry.score,
@@ -233,7 +232,7 @@ object KFJ: Settings() {
         textRenderer: TextRenderer,
         dispatcher: EntityRenderDispatcher
     ) {
-        if (!get(GENERAL, TNT_TIMER)) return
+        if (!tntTimer.get()) return
 
         val d = tntEntityRenderState.squaredDistanceToCamera
         if (d > 64.0) {
@@ -263,13 +262,10 @@ object KFJ: Settings() {
             for (j in 0..15) {
                 if (i < 8) {
                     nativeImage.setColorArgb(
-                        j, i, ColorHelper.getArgb((1- get(DESIGN, HIT_OVERLAY, ALPHA) *255).toInt(),ColorHelper.getRed(
-                            get(DESIGN, HIT_OVERLAY, COLOR)
-                                .getColor()),ColorHelper.getGreen(
-                            get(DESIGN, HIT_OVERLAY, COLOR)
-                                .getColor()),ColorHelper.getBlue(
-                            get(DESIGN, HIT_OVERLAY, COLOR)
-                                .getColor()))
+                        j, i, ColorHelper.getArgb((1- hit_overlay.alpha.get() *255).toInt(),ColorHelper.getRed(
+                            hit_overlay.color.get().getColor()),ColorHelper.getGreen(
+                            hit_overlay.color.get().getColor()),ColorHelper.getBlue(
+                            hit_overlay.color.get().getColor()))
                     )
                 } else {
                     val k = ((1.0f - j.toFloat() / 15.0f * 0.75f) * 255.0f).toInt()

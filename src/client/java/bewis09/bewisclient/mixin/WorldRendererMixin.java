@@ -33,14 +33,14 @@ public abstract class WorldRendererMixin {
 
     @Inject(method = "drawBlockOutline",at = @At("HEAD"), cancellable = true)
     private void drawBlockOutline(MatrixStack matrices, VertexConsumer vertexConsumer, Entity entity, double cameraX, double cameraY, double cameraZ, BlockPos pos, BlockState state, int color, CallbackInfo ci) {
-        if(SettingsLoader.INSTANCE.get(Settings.DESIGN,Settings.Companion.getBLOCKHIT(),Settings.Companion.getENABLED())) {
-            int in = (((ColorSaver.Companion.of(Integer.parseInt(SettingsLoader.INSTANCE.get(Settings.DESIGN, Settings.Companion.getBLOCKHIT(), Settings.Companion.getCOLOR()).toString().replace("0x", ""), 16))).getColor()) + 0x1000000) % 0x1000000;
+        if(Settings.Companion.getBlockhit().get()) {
+            int in = ((Settings.Companion.getBlockhit().getColor().get().getColor()) + 0x1000000) % 0x1000000;
             String str = NumberFormatter.INSTANCE.zeroBefore(in, 6, 16);
             try {
                 float r = Integer.decode("0x" + str.charAt(0) + str.charAt(1)) / 256f;
                 float g = Integer.decode("0x" + str.charAt(2) + str.charAt(3)) / 256f;
                 float b = Integer.decode("0x" + str.charAt(4) + str.charAt(5)) / 256f;
-                float a = SettingsLoader.INSTANCE.get(Settings.DESIGN, Settings.Companion.getBLOCKHIT(), Settings.Companion.getALPHA());
+                float a = Settings.Companion.getBlockhit().getAlpha().get();
                 VertexRendering.drawOutline(matrices, vertexConsumer, state.getOutlineShape(this.world, pos, ShapeContext.of(entity)), (double) pos.getX() - cameraX, (double) pos.getY() - cameraY, (double) pos.getZ() - cameraZ, ColorHelper.fromFloats(a, r, g, b));
             } catch (Exception e) {
                 VertexRendering.drawOutline(matrices, vertexConsumer, state.getOutlineShape(this.world, pos, ShapeContext.of(entity)), (double) pos.getX() - cameraX, (double) pos.getY() - cameraY, (double) pos.getZ() - cameraZ, color);

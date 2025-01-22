@@ -7,7 +7,7 @@ import bewis09.bewisclient.settingsLoader.settings.element_options.DefaultSettin
 import bewis09.bewisclient.util.ColorSaver
 import com.google.gson.JsonPrimitive
 
-class ColorSaverSetting(settings: String, path: Array<String>, id: String, defaultValue: ColorSaver, elementOptions: DefaultSettingElementOptions) : Setting<ColorSaver, DefaultSettingElementOptions>(settings, path, id, defaultValue, elementOptions) {
+class ColorSaverSetting(settings: String, path: Array<String>, id: String, defaultValue: ColorSaver, elementOptions: DefaultSettingElementOptions?) : Setting<ColorSaver, DefaultSettingElementOptions>(settings, path, id, defaultValue, elementOptions ?: DefaultSettingElementOptions()) {
     override fun get(): ColorSaver {
         return try {
             ColorSaver.of(SettingsLoader.get(settings, id, path, JsonPrimitive(defaultValue.toString())).asString)

@@ -21,13 +21,13 @@ class ArrayOptionElement(
     var isSelected: Boolean = false
 
     override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {
-        if(setting.enableFunction?.invoke() == false) return -8
+        if(setting.elementOptions.enableFunction?.invoke() == false) return -8
 
         val client = MinecraftClient.getInstance()
 
         val descriptionLines = client.textRenderer.wrapLines(Bewisclient.getTranslationText(description),width-34)
 
-        val height = 13 + if(setting.descriptionEnabled) descriptionLines.size*10 + 4 else 0
+        val height = 13 + if(setting.elementOptions.description) descriptionLines.size*10 + 4 else 0
 
         isSelected = x+width-150 < mouseX && y < mouseY && x+width > mouseX && y+13 > mouseY
 
@@ -35,7 +35,7 @@ class ArrayOptionElement(
 
         context.drawTextWithShadow(client.textRenderer, Bewisclient.getTranslationText(title),x+6,y+3,(alphaModifier+0xFFFFFF).toInt())
 
-        if(setting.descriptionEnabled)
+        if(setting.elementOptions.description)
             descriptionLines.iterator().withIndex().forEach { (index, line) ->
                 context.drawTextWithShadow(client.textRenderer, line, x + 6, y + 16 + 10 * index, (alphaModifier + 0x808080).toInt())
             }

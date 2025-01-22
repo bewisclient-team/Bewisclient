@@ -26,7 +26,7 @@ open class TitleOptionElement(vararg val titles: String): OptionElement(if(title
         return 20
     }
 
-    override fun getSearchKeywords(): ArrayList<String> {
-        return arrayListOf()
+    override fun getSearchKeywords(): Array<String> {
+        return arrayOf()
     }
 }
