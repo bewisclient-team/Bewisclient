@@ -29,7 +29,7 @@ object SettingTypes {
         val partY = FloatSetting(WIDGETS, arrayOf(id), "partY", partY, null)
         val transparency = FloatSetting(WIDGETS, arrayOf(id), "transparency", transparency, FloatSettingsElementOptions().withSliderInfo(FloatOptionElement.SliderInfo(0f, 1f, 2)))
         val size = FloatSetting(WIDGETS, arrayOf(id), "size", size, FloatSettingsElementOptions().withSliderInfo(FloatOptionElement.SliderInfo(0.2f, 2f, 2)))
-        val enabled = BooleanSetting(WIDGETS, arrayOf(id), "enabled", true, null)
+        val enabled = BooleanSetting(WIDGETS, arrayOf(id), "enabled", true, BooleanSettingsElementOptions().addPathToTitle())
 
         override fun getSettingList(): SettingList {
             return super.getSettingList().append(transparency, size, enabled)
@@ -49,7 +49,7 @@ object SettingTypes {
     }
 
     open class SpeedWidgetSettingsObject(id: String, posX: Float, partX: Float, posY: Float, partY: Float, transparency: Float, size: Float) : TextWidgetSettingsObject(id, posX, partX, posY, partY, transparency, size) {
-        val vertical_speed = BooleanSetting(WIDGETS, arrayOf(id), "vertical_speed", false, null)
+        val vertical_speed = BooleanSetting(WIDGETS, arrayOf(id), "vertical_speed", false, BooleanSettingsElementOptions().withDescription())
 
         override fun getSettingList(): SettingList {
             return super.getSettingList().append(vertical_speed)
@@ -88,10 +88,10 @@ object SettingTypes {
     }
 
     open class CoordinatesWidgetSettingsObject(id: String, posX: Float, partX: Float, posY: Float, partY: Float, transparency: Float, size: Float) : TextWidgetSettingsObject(id, posX, partX, posY, partY, transparency, size) {
-        val show_biome = BooleanSetting(WIDGETS, arrayOf(id, "select_parts"), "show_biome", false, null)
-        val show_direction = BooleanSetting(WIDGETS, arrayOf(id, "select_parts"), "show_direction", false, null)
+        val show_biome = BooleanSetting(WIDGETS, arrayOf(id, "select_parts"), "show_biome", true, null)
+        val show_direction = BooleanSetting(WIDGETS, arrayOf(id, "select_parts"), "show_direction", true, null)
         val select_parts = MultipleBooleanSetting(WIDGETS, arrayOf(id, "select_parts"), arrayOf(show_biome, show_direction))
-        val colorcode_biome = BooleanSetting(WIDGETS, arrayOf(id), "colorcode_biome", false, BooleanSettingsElementOptions().withEnableFunction {
+        val colorcode_biome = BooleanSetting(WIDGETS, arrayOf(id), "colorcode_biome", true, BooleanSettingsElementOptions().withEnableFunction {
             show_biome.get()
         })
 
@@ -119,8 +119,8 @@ object SettingTypes {
         val bottom_color = ColorSaverSetting(WIDGETS, arrayOf(id), "bottom_color", ColorSaver.of("0xFFFFFF"), null)
 
         val first_line = ArraySetting(WIDGETS, arrayOf(id), "first_line", tiwylaArray, 6, null)
-        val seccond_line = ArraySetting(WIDGETS, arrayOf(id), "seccond_line", tiwylaArray, 6, null)
-        val third_line = ArraySetting(WIDGETS, arrayOf(id), "third_line", tiwylaArray, 6, null)
+        val seccond_line = ArraySetting(WIDGETS, arrayOf(id), "seccond_line", tiwylaArray, 1, null)
+        val third_line = ArraySetting(WIDGETS, arrayOf(id), "third_line", tiwylaArray, 5, null)
 
         val show_block_icon = BooleanSetting(WIDGETS, arrayOf(id), "show_block_icon", true, null)
         val show_health_information = BooleanSetting(WIDGETS, arrayOf(id), "show_health_information", true, null)

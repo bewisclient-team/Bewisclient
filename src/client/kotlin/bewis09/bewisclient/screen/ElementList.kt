@@ -28,7 +28,7 @@ object ElementList: Settings() {
 
     val widgets = {
         arrayOf(
-            TitleOptionElement("gui.widgets"),
+            TitleOptionElement("setting.widgets"),
             MultiplePagesOptionElement(
                 loadWidgetsFromDefault().toArray(arrayOf()),100
             )
@@ -55,7 +55,7 @@ object ElementList: Settings() {
             )
         },{
             arrayOf(
-                TitleOptionElement("gui.cosmetics"),
+                TitleOptionElement("setting.cosmetics"),
                 CosmeticsDrawBigElement(),
                 CosmeticsDrawBigElement(true),
                 CosmeticsElement("cape", CosmeticsElement.RenderType.REVERSED),
@@ -68,7 +68,7 @@ object ElementList: Settings() {
 
     val experimental = {
         val a: ArrayList<OptionElement> = arrayListOf(
-            TitleOptionElement("gui.experimental")
+            TitleOptionElement("setting.experimental")
         )
         if(System.getProperty("os.name").lowercase(Locale.getDefault()).contains("win"))
             a.add(BooleanOptionElement(Settings.experimental.auto_update))
@@ -83,7 +83,7 @@ object ElementList: Settings() {
 
     val contact = {
         arrayOf(
-                TitleOptionElement("gui.contact"),
+                TitleOptionElement("setting.contact"),
                 ContactElement("modrinth","https://modrinth.com/mod/bewisclient"),
                 ContactElement("sources","https://github.com/Bewis09/bewisclient-2/"),
                 ContactElement("issues","https://github.com/Bewis09/Bewisclient-2/issues"),
@@ -115,100 +115,77 @@ object ElementList: Settings() {
 
     val screenshot = {
         arrayOf(
-            TitleOptionElement("gui.screenshot"),
+            TitleOptionElement("setting.screenshot"),
             ScreenshotElement()
         )
     }
 
     val main = {
         arrayListOf(
-            MainOptionElement("gui.widgets", "gui.widgets.description", widgets(), Identifier.of("bewisclient", "textures/main_icons/widgets.png")),
-            MainOptionElement("gui.design", "gui.design.description", design(), Identifier.of("bewisclient", "textures/main_icons/design.png")),
-            MainOptionElement("gui.util", "gui.util.description", util(), Identifier.of("bewisclient", "textures/main_icons/util.png")),
-            MainOptionElement("gui.cosmetics", "gui.cosmetics.description", cosmetics(), Identifier.of("bewisclient", "textures/main_icons/cosmetics.png")),
+            MainOptionElement("setting.widgets", "description.setting.widgets", widgets(), Identifier.of("bewisclient", "textures/main_icons/widgets.png")),
+            MainOptionElement("setting.option_menu", "description.setting.option_menu", design(), Identifier.of("bewisclient", "textures/main_icons/design.png")),
+            MainOptionElement("setting.util", "description.setting.util", util(), Identifier.of("bewisclient", "textures/main_icons/util.png")),
+            MainOptionElement("setting.cosmetics", "description.setting.cosmetics", cosmetics(), Identifier.of("bewisclient", "textures/main_icons/cosmetics.png")),
             MultiplePagesOptionElement(arrayOf(
-                MultiplePagesOptionElement.MultiplePagesElement(
-                    "gui.fullbright",
+                MultiplePagesOptionElement.ImagedMultiplePagesElement(
                     fullbright(),
-                    Identifier.of("bewisclient", "textures/main_icons/fullbright.png"),
                     Settings.fullbright
                 ),
-                MultiplePagesOptionElement.MultiplePagesElement(
-                    "gui.contact",
+                MultiplePagesOptionElement.ImagedMultiplePagesElement(
                     contact(),
-                    Identifier.of("bewisclient", "textures/main_icons/contact.png")
+                    "contact"
                 ),
-                MultiplePagesOptionElement.MultiplePagesElement(
-                    "gui.better_visibility",
+                MultiplePagesOptionElement.ImagedMultiplePagesElement(
                     better_visibility(),
-                    Identifier.of("bewisclient", "textures/main_icons/better_visibility.png")
+                    "better_visibility"
                 ),
-                MultiplePagesOptionElement.MultiplePagesElement(
-                    "gui.blockhit_hit_overlay",
+                MultiplePagesOptionElement.ImagedMultiplePagesElement(
                     blockhit(),
-                    Identifier.of("bewisclient", "textures/main_icons/blockhit.png"),
-                    Settings.blockhit
+                    "blockhit_and_hit_overlay"
                 ),
-                MultiplePagesOptionElement.MultiplePagesElement(
-                    "gui.zoom",
+                MultiplePagesOptionElement.ImagedMultiplePagesElement(
                     zoom(),
-                    Identifier.of("bewisclient", "textures/main_icons/zoom.png"),
                     Settings.zoom
                 ),
-                MultiplePagesOptionElement.MultiplePagesElement(
-                    "gui.pumpkin",
+                MultiplePagesOptionElement.ImagedMultiplePagesElement(
                     pumpkin(),
-                    Identifier.of("bewisclient", "textures/main_icons/pumpkin.png")
+                    Settings.pumpkin
                 ),
-                MultiplePagesOptionElement.MultiplePagesElement(
-                    "gui.held_item_info",
+                MultiplePagesOptionElement.ImagedMultiplePagesElement(
                     held_item_info(),
-                    Identifier.of("bewisclient", "textures/main_icons/held_item_info.png"),
                     Settings.held_item_info
                 ),
-                MultiplePagesOptionElement.MultiplePagesElement(
-                    "gui.cleaner_debug_menu",
+                MultiplePagesOptionElement.ImagedMultiplePagesElement(
                     cleaner_debug_menu(),
-                    Identifier.of("bewisclient", "textures/main_icons/cleaner_debug_menu.png"),
                     cleanerDebugMenu
                 ),
-                MultiplePagesOptionElement.MultiplePagesElement(
-                    "gui.shulker_box_tooltip",
+                MultiplePagesOptionElement.ImagedMultiplePagesElement(
                     shulker_box_tooltip(),
-                    Identifier.of("bewisclient", "textures/main_icons/shulker_box_tooltip.png"),
                     shulkerBoxTooltip
                 ),
-                MultiplePagesOptionElement.MultiplePagesElement(
-                    "gui.tnt_timer",
+                MultiplePagesOptionElement.ImagedMultiplePagesElement(
                     tnt_timer(),
-                    Identifier.of("bewisclient", "textures/main_icons/tnt_timer.png"),
                     tntTimer
                 ),
-                MultiplePagesOptionElement.MultiplePagesElement(
-                    "gui.scoreboard",
+                MultiplePagesOptionElement.ImagedMultiplePagesElement(
                     scoreboard(),
-                    Identifier.of("bewisclient", "textures/main_icons/scoreboard.png")
+                    "scoreboard"
                 ),
-                MultiplePagesOptionElement.MultiplePagesElement(
-                    "gui.experimental",
+                MultiplePagesOptionElement.ImagedMultiplePagesElement(
                     experimental(),
-                    Identifier.of("bewisclient", "textures/main_icons/experimental.png")
+                    "experimental"
                 ),
-                MultiplePagesOptionElement.MultiplePagesElement(
-                    "gui.perspective",
+                MultiplePagesOptionElement.ImagedMultiplePagesElement(
                     perspective(),
-                    Identifier.of("bewisclient", "textures/main_icons/perspective.png"),
                     Settings.perspective
                 ),
-                MultiplePagesOptionElement.MultiplePagesElement(
-                    "gui.screenshot",
+                MultiplePagesOptionElement.ImagedMultiplePagesElement(
                     screenshot(),
-                    Identifier.of("bewisclient", "textures/main_icons/screenshot.png")
+                    "screenshot"
                 ),
-                MultiplePagesOptionElement.MultiplePagesElement(
-                    "gui.donation",
+                MultiplePagesOptionElement.ImagedMultiplePagesElement(
                     donation(),
-                    Identifier.of("bewisclient", "textures/main_icons/donation.png")
+                    "donation"
                 )
             ),70),
         ).addNewElements()
@@ -224,7 +201,7 @@ object ElementList: Settings() {
             val m: Array<OptionElement> = loadWidgetsSingleFromDefault(v)
 
             if (!excludedProperties.contains(v.id))
-                map.add(MultiplePagesOptionElement.MultiplePagesElement("settings.widgets."+v.id, m,"description.settings.widgets."+v.id, v.settings.enabled))
+                map.add(MultiplePagesOptionElement.DescriptionedMultiplePagesElement( m,v.settings.enabled))
         }
 
         return map

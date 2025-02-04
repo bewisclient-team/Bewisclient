@@ -1,7 +1,6 @@
 package bewis09.bewisclient.mixin;
 
 import bewis09.bewisclient.settingsLoader.Settings;
-import bewis09.bewisclient.settingsLoader.SettingsLoader;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.OverlayTexture;
 import org.spongepowered.asm.mixin.*;

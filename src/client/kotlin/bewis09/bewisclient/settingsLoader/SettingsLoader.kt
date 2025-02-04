@@ -31,6 +31,14 @@ object SettingsLoader: Settings() {
      */
     var DesignSettings: JsonObject = JsonObject()
 
+    val overwrittenSettings: HashMap<String,List<String>> = hashMapOf(
+        Pair("blockhit.blockhit",listOf("blockhit.enabled")),
+        Pair("fullbright.fullbright",listOf("fullbright.enabled")),
+        Pair("hit_overlay.hit_overlay",listOf("hit_overlay.enabled")),
+        Pair("fullbright.fullbright_value",listOf("fullbright.value")),
+        Pair("zoom",listOf("zoom_enabled")),
+    )
+
     /**
      * Determines if the settings should be automatically saved after a setting change
      *
@@ -215,12 +223,25 @@ object SettingsLoader: Settings() {
                 } else if(j.isJsonObject) {
                     set = j.asJsonObject
                 } else {
-                    return default
+                    return defaultOrOld(rsId,sID,default)
                 }
             } else {
-                return default
+                return defaultOrOld(rsId,sID,default)
             }
         }
+        return defaultOrOld(rsId,sID,default)
+    }
+
+    fun defaultOrOld(rsID: String, settings: String, default: JsonPrimitive): JsonPrimitive {
+        if(overwrittenSettings.containsKey(rsID)) {
+            val list = overwrittenSettings[rsID]!!
+            for (k in list) {
+                val i = k.split(".")
+                val j = getUntyped(settings, getSettings(settings),i.last(),i.toTypedArray().sliceArray(0 until i.size - 1),default)
+                if(j!=default) return j
+            }
+        }
+
         return default
     }
 

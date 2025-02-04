@@ -15,6 +15,7 @@ import bewis09.bewisclient.settingsLoader.Settings
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.widgets.WidgetRenderer
 import com.google.gson.JsonObject
+import com.google.gson.JsonPrimitive
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
@@ -25,6 +26,7 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback
+import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.option.KeyBinding
 import net.minecraft.client.util.InputUtil
@@ -36,6 +38,7 @@ import net.minecraft.util.math.Vec3d
 import org.lwjgl.glfw.GLFW
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.io.File
 import java.lang.Float.min
 import javax.swing.Timer
 import kotlin.math.max
@@ -87,6 +90,11 @@ object Bewisclient : Settings(), ClientModInitializer {
 	 * Indicates if the user has been informed about the new update
 	 */
 	var updateInformed = false
+
+	val translationsFile = File(FabricLoader.getInstance().gameDir.toFile(), "bewisclient/debug/unresolved_translations.json")
+	val debugTranslations = translationsFile.exists()
+
+	var unresolvedTranslations = JsonObject()
 
 	override fun onInitializeClient() {
 		SettingsLoader.loadSettings()
@@ -148,22 +156,20 @@ object Bewisclient : Settings(), ClientModInitializer {
 			while (keyBinding1.wasPressed()) {
 				fullbright.set(true)
 				fullbright.fullbright_value.set(if(fullbright.fullbright_value.get() <= 1f) 10f else 1f)
-				MinecraftClient.getInstance().options.gamma.value = if(fullbright.fullbright_value.get() <= 1f) 10.0 else 1.0
-				printGammaMessage(if(fullbright.fullbright_value.get() <= 1f) 1f else 0.1f)
+				MinecraftClient.getInstance().options.gamma.value = fullbright.fullbright_value.get().toDouble()
+				printGammaMessage(fullbright.fullbright_value.get()/10f)
 			}
 
-			// TODO test 1500% message color
 			while (keyBinding2.wasPressed()) {
-				val value = min(15f, fullbright.fullbright_value.get() + 0.25f)
+				val value = min(10f, fullbright.fullbright_value.get() + 0.25f)
 				fullbright.set(true)
 				fullbright.fullbright_value.set(value)
 				MinecraftClient.getInstance().options.gamma.value = value.toDouble()
 				printGammaMessage(value/10f)
 			}
 
-			// TODO test -100% message color
 			while (keyBinding3.wasPressed()) {
-				val value = max(-1f, fullbright.fullbright_value.get() + 0.25f)
+				val value = max(0f, fullbright.fullbright_value.get() - 0.25f)
 				fullbright.set(true)
 				fullbright.fullbright_value.set(value)
 				MinecraftClient.getInstance().options.gamma.value = value.toDouble()
@@ -252,6 +258,12 @@ object Bewisclient : Settings(), ClientModInitializer {
 	 * @return A translated [Text] with prefix "bewisclient."
 	 */
 	fun getTranslationText(key: String): MutableText {
+		if(debugTranslations && Text.translatable("bewisclient.$key").string == "bewisclient.$key" && !unresolvedTranslations.has("bewisclient.$key")) {
+			unresolvedTranslations.add("bewisclient.$key", JsonPrimitive(""))
+
+			translationsFile.writeText(SettingsLoader.gson.toJson(unresolvedTranslations))
+		}
+
 		return Text.translatable("bewisclient.$key")
 	}
 

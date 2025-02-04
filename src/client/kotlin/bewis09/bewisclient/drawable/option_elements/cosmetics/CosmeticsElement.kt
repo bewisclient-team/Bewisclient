@@ -101,7 +101,7 @@ class CosmeticsElement(val type: String, val renderType: RenderType = RenderType
 
             context.drawCenteredTextWithShadow(
                 MinecraftClient.getInstance().textRenderer,
-                if(cosmeticsType.currentlySelected == pair.second.id) Bewisclient.getTranslationText("gui.disable") else Bewisclient.getTranslationText("gui.select"),
+                if(cosmeticsType.currentlySelected == pair.second.id) Bewisclient.getTranslationText("setting.disable") else Bewisclient.getTranslationText("setting.select"),
                 xOffset + 30,
                 y + 125,
                 (if(!hovered) 0xFFFFFFFF else 0xFFFFFF70).toInt()

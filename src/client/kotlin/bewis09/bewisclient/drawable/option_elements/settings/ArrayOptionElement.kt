@@ -25,7 +25,7 @@ class ArrayOptionElement(
 
         val client = MinecraftClient.getInstance()
 
-        val descriptionLines = client.textRenderer.wrapLines(Bewisclient.getTranslationText(description),width-34)
+        val descriptionLines = if(setting.elementOptions.description) client.textRenderer.wrapLines(Bewisclient.getTranslationText(description),width-34) else mutableListOf()
 
         val height = 13 + if(setting.elementOptions.description) descriptionLines.size*10 + 4 else 0
 

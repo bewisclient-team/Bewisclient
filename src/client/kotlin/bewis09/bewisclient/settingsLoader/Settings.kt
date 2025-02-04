@@ -2,6 +2,7 @@ package bewis09.bewisclient.settingsLoader
 
 import bewis09.bewisclient.drawable.option_elements.OptionElement
 import bewis09.bewisclient.drawable.option_elements.settings.FloatOptionElement.SliderInfo
+import bewis09.bewisclient.drawable.option_elements.util.TitleOptionElement
 import bewis09.bewisclient.settingsLoader.settings.*
 import bewis09.bewisclient.settingsLoader.settings.element_options.*
 import bewis09.bewisclient.util.ColorSaver
@@ -31,6 +32,10 @@ open class Settings {
 
         interface SettingToElementProvider {
             fun getElements(): Array<OptionElement> {
+                if(getTitle() != null) {
+                    return (mutableListOf(TitleOptionElement("setting."+getTitle()!!)) + getElementSettings().mapNotNull { it.createOptionElement() }.toTypedArray()).toTypedArray()
+                }
+
                 return getElementSettings().mapNotNull { it.createOptionElement() }.toTypedArray()
             }
 
@@ -68,19 +73,19 @@ open class Settings {
             }
         }
 
-        class FullbrightSettings: BooleanSetting(DESIGN, arrayOf("fullbright"), "enabled", false, BooleanSettingsElementOptions().asTitle().withValueChanger {
+        class FullbrightSettings: BooleanSetting(DESIGN, arrayOf("fullbright"), "fullbright", false, BooleanSettingsElementOptions().asTitle().withValueChanger {
             if (fullbright.get())
                 MinecraftClient.getInstance().options.gamma.value = fullbright.fullbright_value.get().toDouble()
             else
                 MinecraftClient.getInstance().options.gamma.value = 1.0
         }), SettingToElementProvider {
-            val fullbright_value: FloatSetting = FloatSetting(DESIGN, path, "value", 1f, FloatSettingsElementOptions().withSliderInfo(SliderInfo(0.0f, 10.0f, 1)).withValueChanger {
+            val fullbright_value: FloatSetting = FloatSetting(DESIGN, path, "fullbright_value", 1f, FloatSettingsElementOptions().withSliderInfo(SliderInfo(0.0f, 10.0f, 1)).withValueChanger {
                 if (fullbright.get())
                     MinecraftClient.getInstance().options.gamma.value = fullbright.fullbright_value.get().toDouble()
             }.withEnableFunction {
                 fullbright.get()
             })
-            val night_vision = BooleanSetting(DESIGN, path, "fullbright", false, null)
+            val night_vision = BooleanSetting(DESIGN, path, "night_vision", false, null)
 
             override fun getElementSettings(): Array<Setting<*,*>> {
                 return arrayOf(this, fullbright_value, night_vision)
@@ -113,7 +118,7 @@ open class Settings {
             }
         }
 
-        class ZoomSettings: BooleanSetting(GENERAL, arrayOf(), "zoom_enabled", true, BooleanSettingsElementOptions().asTitle()), SettingToElementProvider {
+        class ZoomSettings: BooleanSetting(GENERAL, arrayOf(), "zoom", true, BooleanSettingsElementOptions().asTitle()), SettingToElementProvider {
             val instant_zoom = BooleanSetting(GENERAL, arrayOf(), "instant_zoom", false, null)
             val hard_zoom = BooleanSetting(GENERAL, arrayOf(), "hard_zoom", false, null)
 
@@ -122,7 +127,7 @@ open class Settings {
             }
         }
 
-        class BlockhitSettings: BooleanSetting(DESIGN, arrayOf("blockhit"), "enabled", false, BooleanSettingsElementOptions().asTitle()), SettingToElementProvider {
+        class BlockhitSettings: BooleanSetting(DESIGN, arrayOf("blockhit"), "blockhit", false, BooleanSettingsElementOptions().asTitle()), SettingToElementProvider {
             val color = ColorSaverSetting(DESIGN, path, "color", ColorSaver.of(0), null)
             val alpha = FloatSetting(DESIGN, path, "alpha", 0.4f, FloatSettingsElementOptions().withSliderInfo(SliderInfo(0.0f,1.0f,2)))
 
@@ -135,7 +140,7 @@ open class Settings {
             }
         }
 
-        class HitOverlaySettings: BooleanSetting(DESIGN, arrayOf("blockhit","hit_overlay"), "enabled", false, BooleanSettingsElementOptions().asTitle()) {
+        class HitOverlaySettings: BooleanSetting(DESIGN, arrayOf("blockhit","hit_overlay"), "hit_overlay", false, BooleanSettingsElementOptions().asTitle()) {
             val color = ColorSaverSetting(DESIGN, path, "color", ColorSaver.of(0), null)
             val alpha = FloatSetting(DESIGN, path, "alpha", 0.33f, FloatSettingsElementOptions().withSliderInfo(SliderInfo(0.0f,1.0f,2)))
         }
