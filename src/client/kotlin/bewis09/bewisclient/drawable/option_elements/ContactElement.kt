@@ -2,7 +2,6 @@ package bewis09.bewisclient.drawable.option_elements
 
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.screen.MainOptionsScreen
-import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.util.EaseMode
 import bewis09.bewisclient.util.ScreenValuedTypedAnimation
 import bewis09.bewisclient.util.ValuedAnimation
@@ -23,7 +22,7 @@ open class ContactElement(title: String, val url: String): OptionElement("contac
     /**
      * The [ValuedAnimation] for the scaling when hovered
      */
-    var animation: ValuedAnimation = ValuedAnimation(System.currentTimeMillis(), SettingsLoader.get(DESIGN, OPTIONS_MENU, ANIMATION_TIME).roundToLong()/2, EaseMode.CONST, 0f, 0f)
+    var animation: ValuedAnimation = ValuedAnimation(System.currentTimeMillis(), options_menu.animation_time.get().roundToLong()/2, EaseMode.CONST, 0f, 0f)
 
     override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {
         val client = MinecraftClient.getInstance()
@@ -41,7 +40,7 @@ open class ContactElement(title: String, val url: String): OptionElement("contac
         if(isSelected != (animation.endValue==3f)) {
             animation = ValuedAnimation(
                 System.currentTimeMillis(),
-                SettingsLoader.get(DESIGN, OPTIONS_MENU, ANIMATION_TIME).roundToLong() / 3,
+                options_menu.animation_time.get().roundToLong() / 3,
                 EaseMode.EASE_IN_OUT,
                 animation.getValue(),
                 if (isSelected) 3f else 0f

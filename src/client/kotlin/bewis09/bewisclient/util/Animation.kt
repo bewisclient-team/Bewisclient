@@ -1,9 +1,6 @@
 package bewis09.bewisclient.util
 
-import bewis09.bewisclient.settingsLoader.Settings.Companion.ANIMATION_TIME
-import bewis09.bewisclient.settingsLoader.Settings.Companion.DESIGN
-import bewis09.bewisclient.settingsLoader.Settings.Companion.OPTIONS_MENU
-import bewis09.bewisclient.settingsLoader.SettingsLoader
+import bewis09.bewisclient.settingsLoader.Settings.Companion.options_menu
 import net.minecraft.util.math.MathHelper
 import kotlin.math.cos
 import kotlin.math.pow
@@ -19,7 +16,7 @@ open class Animation(val start: Long, val length: Long, val easeMode: EaseMode) 
     }
 }
 
-class ScreenAnimation: Animation(System.currentTimeMillis(), SettingsLoader.get(DESIGN, OPTIONS_MENU, ANIMATION_TIME).roundToLong(), EaseMode.EASE_IN_OUT)
+class ScreenAnimation: Animation(System.currentTimeMillis(), options_menu.animation_time.get().roundToLong(), EaseMode.EASE_IN_OUT)
 
 open class ValuedAnimation(start: Long, length: Long, easeMode: EaseMode, val startValue: Float, val endValue: Float): Animation(start,length, easeMode) {
     fun getValue(): Float {
@@ -29,9 +26,9 @@ open class ValuedAnimation(start: Long, length: Long, easeMode: EaseMode, val st
     }
 }
 
-open class ScreenValuedAnimation(startValue: Float, endValue: Float): ValuedAnimation(System.currentTimeMillis(), SettingsLoader.get(DESIGN, OPTIONS_MENU, ANIMATION_TIME).roundToLong(), EaseMode.EASE_IN_OUT, startValue, endValue) {}
+open class ScreenValuedAnimation(startValue: Float, endValue: Float): ValuedAnimation(System.currentTimeMillis(), options_menu.animation_time.get().roundToLong(), EaseMode.EASE_IN_OUT, startValue, endValue) {}
 
-open class ScreenValuedTypedAnimation(startValue: Float, endValue: Float, private val type: String): ValuedAnimation(System.currentTimeMillis(), SettingsLoader.get(DESIGN, OPTIONS_MENU, ANIMATION_TIME).roundToLong(), EaseMode.EASE_IN_OUT, startValue, endValue) {
+open class ScreenValuedTypedAnimation(startValue: Float, endValue: Float, private val type: String): ValuedAnimation(System.currentTimeMillis(), options_menu.animation_time.get().roundToLong(), EaseMode.EASE_IN_OUT, startValue, endValue) {
     fun getType(): String {
         return type
     }

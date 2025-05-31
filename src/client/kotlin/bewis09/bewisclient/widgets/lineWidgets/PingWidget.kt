@@ -4,13 +4,13 @@ import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.mixin.ClientPlayNetworkHandlerMixin
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.screen.widget.WidgetConfigScreen
-import com.google.gson.JsonObject
+import bewis09.bewisclient.settingsLoader.SettingTypes
 import net.minecraft.client.MinecraftClient
 
 /**
  * A [LineWidget] which displays the current latency of the server connection. Doesn't display in singleplayer worlds
  */
-class PingWidget: LineWidget("ping",80,true) {
+class PingWidget: LineWidget<SettingTypes.TextWidgetSettingsObject>("ping",80,true) {
 
     /**
      * The current latency cached, so that there isn't a packet send every render tick
@@ -65,7 +65,7 @@ class PingWidget: LineWidget("ping",80,true) {
         }
     }
 
-    override fun getWidgetSettings(): JsonObject {
-        return getWidgetSettings(0.7f,5f,1f,104f,-1f)
+    override fun getWidgetSettings(): SettingTypes.TextWidgetSettingsObject {
+        return SettingTypes.TextWidgetSettingsObject(id, 0.7f,5f,1f,104f,0.43f, -1f)
     }
 }

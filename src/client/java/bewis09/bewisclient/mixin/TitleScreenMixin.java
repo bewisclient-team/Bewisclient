@@ -30,12 +30,12 @@ public class TitleScreenMixin extends Screen {
 
     @Inject(method = "init",at=@At("HEAD"))
     private void init(CallbackInfo ci) {
-        if(SettingsLoader.INSTANCE.get(DESIGN, Settings.Companion.getFULLBRIGHT(),Settings.Companion.getENABLED()))
-            MinecraftClient.getInstance().options.getGamma().setValue((double) SettingsLoader.INSTANCE.get(DESIGN,Settings.Companion.getFULLBRIGHT(),Settings.Companion.getFULLBRIGHT_VALUE()));
-        if(SettingsLoader.INSTANCE.get(DESIGN, Settings.Companion.getSHOW_TITLE_MENU(),Settings.Companion.getOPTIONS_MENU()))
+        if(Settings.Companion.getFullbright().get())
+            MinecraftClient.getInstance().options.getGamma().setValue(Settings.Companion.getFullbright().getFullbright_value().get().doubleValue());
+        if(Settings.Companion.getOptions_menu().getShow_title_menu().get())
             addDrawableChild(new UsableTexturedButtonWidget(width/2+104,this.height / 4 + 72,20,20,new ButtonTextures(Identifier.of("bewisclient","textures/sprites/bewisclient_button.png"),Identifier.of("bewisclient","textures/sprites/bewisclient_button_highlighted.png")),(b)->{
                 assert client != null;
-                if(!SettingsLoader.INSTANCE.get(DESIGN, Companion.getOPTIONS_MENU(), Companion.getSHOWN_START_MENU())) {
+                if(!Settings.Companion.getOptions_menu().getShown_start_menu().get()) {
                     client.setScreen(new WelcomingScreen());
                 } else {
                     client.setScreen(new MainOptionsScreen());

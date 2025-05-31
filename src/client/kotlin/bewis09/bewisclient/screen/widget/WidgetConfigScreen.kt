@@ -26,7 +26,7 @@ class WidgetConfigScreen(var parent: MainOptionsScreen): Screen(Text.empty()) {
     /**
      * The [Widget] that is currently hovered over
      */
-    private var hoveredWidget: Widget? = null
+    private var hoveredWidget: Widget<*>? = null
 
     /**
      * The time when the animation when opening/closing the screen has started
@@ -43,7 +43,7 @@ class WidgetConfigScreen(var parent: MainOptionsScreen): Screen(Text.empty()) {
     /**
      * The [Widget] that is currently selected
      */
-    var _sel_element: Widget? = null
+    var _sel_element: Widget<*>? = null
 
     /**
      * The offset of the [_sel_element] in x-direction in cause of moving it
@@ -61,11 +61,7 @@ class WidgetConfigScreen(var parent: MainOptionsScreen): Screen(Text.empty()) {
             alphaStart= System.currentTimeMillis()
         }
 
-        val animationSpeed = MathHelper.clamp(SettingsLoader.get(
-            Settings.DESIGN,
-            Settings.OPTIONS_MENU,
-            Settings.ANIMATION_TIME
-        ).toInt(),1,500).toFloat()
+        val animationSpeed = MathHelper.clamp(Settings.options_menu.animation_time.get().toInt(),1,500).toFloat()
 
         if(alphaDirection ==1 && (System.currentTimeMillis() - alphaStart)/animationSpeed>1) {
             MinecraftClient.getInstance().setScreen(parent)
@@ -107,7 +103,7 @@ class WidgetConfigScreen(var parent: MainOptionsScreen): Screen(Text.empty()) {
                         Bewisclient.getTranslationText("widgets." + hoveredWidget?.id),
                         Bewisclient.getTranslationText("screen.info.shift").formatted(Formatting.GRAY),
                         Bewisclient.getTranslationText("screen.info.right").formatted(Formatting.GRAY),
-                        Bewisclient.getTranslationText("screen.info.scroll").formatted(Formatting.GRAY).append(" (${hoveredWidget!!.getProperty(Settings.SIZE)})")
+                        Bewisclient.getTranslationText("screen.info.scroll").formatted(Formatting.GRAY).append(" (${hoveredWidget!!.settings.size.get()})")
                 ) as List<Text>?, mouseX, mouseY)
             }
         }
@@ -136,7 +132,7 @@ class WidgetConfigScreen(var parent: MainOptionsScreen): Screen(Text.empty()) {
 
                 parent = MainOptionsScreen()
                 parent.allElements.add(ElementList.widgets())
-                parent.allElements.add(ElementList.loadWidgetsSingleFromDefault(hoveredWidget!!,hoveredWidget!!.getWidgetSettings(),hoveredWidget!!.id))
+                parent.allElements.add(ElementList.loadWidgetsSingleFromDefault(hoveredWidget!!))
                 parent.scrolls.add(0f)
                 parent.scrolls.add(0f)
                 parent.slice = 2
@@ -153,7 +149,7 @@ class WidgetConfigScreen(var parent: MainOptionsScreen): Screen(Text.empty()) {
 
     override fun mouseScrolled(mouseX: Double, mouseY: Double, horizontalAmount: Double, verticalAmount: Double): Boolean {
         if(hoveredWidget!=null) {
-            hoveredWidget!!.setProperty(Settings.SIZE, MathHelper.clamp((round((hoveredWidget!!.getProperty(Settings.SIZE)+verticalAmount.toFloat()/10f)*100)/100f),0.2f,2f))
+            hoveredWidget!!.settings.size.set(MathHelper.clamp((round((hoveredWidget!!.settings.size.get()+verticalAmount.toFloat()/10f)*100)/100f),0.2f,2f))
         }
         return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)
     }

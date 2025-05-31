@@ -2,9 +2,7 @@ package bewis09.bewisclient.drawable.option_elements
 
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.screen.MainOptionsScreen
-import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.util.EaseMode
-import bewis09.bewisclient.util.Search
 import bewis09.bewisclient.util.ValuedAnimation
 import bewis09.bewisclient.util.drawTexture
 import com.mojang.blaze3d.systems.RenderSystem
@@ -28,17 +26,17 @@ open class MainOptionElement
     /**
      * An [ArrayList] of type [OptionElement] which will be displayed when opening a new page
      */
-    var elements: ArrayList<OptionElement>,
+    var elements: Array<OptionElement>,
     /**
      * The image that should be displayed when rendering the [MainOptionElement]
      */
     val image: Identifier
-) : OptionElement(title, description), Search.SearchableElement<OptionElement> {
+) : OptionElement( title, description) {
 
     /**
      * The [ValuedAnimation] for the scaling when hovered
      */
-    var animation: ValuedAnimation = ValuedAnimation(System.currentTimeMillis(), SettingsLoader.get(DESIGN, OPTIONS_MENU, ANIMATION_TIME).roundToLong()/2, EaseMode.CONST, 0f, 0f)
+    var animation: ValuedAnimation = ValuedAnimation(System.currentTimeMillis(), options_menu.animation_time.get().roundToLong()/2, EaseMode.CONST, 0f, 0f)
 
     override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {
         val client = MinecraftClient.getInstance()
@@ -54,7 +52,7 @@ open class MainOptionElement
         val isSelected: Boolean = (x < mouseX && y < mouseY && x+width > mouseX && y+height > mouseY)
 
         if(isSelected != (animation.endValue==3f)) {
-            animation = ValuedAnimation(System.currentTimeMillis(), SettingsLoader.get(DESIGN, OPTIONS_MENU, ANIMATION_TIME).roundToLong()/3, EaseMode.EASE_IN_OUT, animation.getValue(), if(isSelected) 3f else 0f)
+            animation = ValuedAnimation(System.currentTimeMillis(), options_menu.animation_time.get().roundToLong()/3, EaseMode.EASE_IN_OUT, animation.getValue(), if(isSelected) 3f else 0f)
         }
 
         context.matrices.translate(x.toFloat(),y.toFloat(),0f)
@@ -88,7 +86,7 @@ open class MainOptionElement
         }
     }
 
-    override fun getChildElementsForSearch(): ArrayList<OptionElement>? {
+    override fun getChildElementsForSearch(): Array<OptionElement>? {
         return elements
     }
 }

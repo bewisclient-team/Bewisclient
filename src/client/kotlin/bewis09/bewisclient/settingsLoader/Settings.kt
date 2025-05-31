@@ -1,160 +1,230 @@
 package bewis09.bewisclient.settingsLoader
 
-import bewis09.bewisclient.settingsLoader.SettingsLoader.TypedSettingID
+import bewis09.bewisclient.drawable.option_elements.OptionElement
+import bewis09.bewisclient.drawable.option_elements.settings.FloatOptionElement.SliderInfo
+import bewis09.bewisclient.drawable.option_elements.util.TitleOptionElement
+import bewis09.bewisclient.settingsLoader.settings.*
+import bewis09.bewisclient.settingsLoader.settings.element_options.*
 import bewis09.bewisclient.util.ColorSaver
+import net.minecraft.client.MinecraftClient
 
 /**
  * A collection of all settings and setting paths
  */
-@Suppress("unused")
 open class Settings {
     companion object {
-        // General
-        val ENABLED = createBoolean("enabled")
-        val TEXT_COLOR = createColor("text_color")
-        val COLOR = createColor("color")
-        val ALPHA = createFloat("alpha")
-        val SCALE = createFloat("scale")
+        val scoreboard = ScoreboardSettings()
+        val experimental = ExperimentalSettings()
+        val fullbright = FullbrightSettings()
+        val better_visibility = BetterVisibilitySettings()
+        val zoom = ZoomSettings()
+        val blockhit = BlockhitSettings()
+        val hit_overlay = HitOverlaySettings()
+        val pumpkin = PumpkinSettings()
+        val held_item_info = HeldItemInfoSettings()
+        val options_menu = OptionMenuSettings()
+        val cosmetics = CosmeticsSettings()
+        val perspective = PerspectiveSettings()
+        val utilities = UtilitiesSettings()
+        val cleanerDebugMenu = CleanerDebugMenuSettings()
+        val shulkerBoxTooltip = ShulkerBoxTooltipSettings()
+        val tntTimer = TNTTimerSettings()
 
-        // Widgets
-        val SIZE = createFloat("size")
-        val POSX = createFloat("posX")
-        val POSY = createFloat("posY")
-        val PARTX = createFloat("partX")
-        val TRANSPARENCY = createFloat("transparency")
-        val PARTY = createFloat("partY")
-        val CLOCK24 = createBoolean("24Clock")
-        val FIRST_LINE = createFloat("first_line")
-        val SECOND_LINE = createFloat("second_line")
-        val THIRD_LINE = createFloat("third_line")
-        val SHOW_BIOME = createBoolean("show_biome")
-        val SHOW_DIRECTION = createBoolean("show_direction")
-        val COLORCODE_BIOME = createBoolean("colorcode_biome")
-        val CPS_ELEMENTS = createFloat("cps_elements")
-        val TOP_COLOR = createColor("top_color")
-        val BOTTOM_COLOR = createColor("bottom_color")
-        val SHOW_BLOCK_ICON = createBoolean("show_block_icon")
-        val SHOW_HEALTH_INFORMATION = createBoolean("show_health_information")
-        val SHOW_PROGRESS_BAR = createBoolean("show_progress_bar")
-        val VERTICAL_SPEED = createBoolean("vertical_speed")
-        val SHOW_SPACE_BAR = createBoolean("show_space_bar")
-        val SHOW_MOVEMENT_KEYS = createBoolean("show_movement_keys")
-        val SHOW_MOUSE_BUTTON = createBoolean("show_mouse_button")
-        val SHOW_CPS = createBoolean("show_cps")
-        val SELECT_PARTS = arrayOf("select_parts")
+        interface SettingToElementProvider {
+            fun getElements(): Array<OptionElement> {
+                if(getTitle() != null) {
+                    return (mutableListOf(TitleOptionElement("setting."+getTitle()!!)) + getElementSettings().mapNotNull { it.createOptionElement() }.toTypedArray()).toTypedArray()
+                }
 
-        val SPEED = arrayOf("speed")
+                return getElementSettings().mapNotNull { it.createOptionElement() }.toTypedArray()
+            }
 
-        // Options Menu
-        val OPTIONS_MENU = arrayOf("options_menu")
-        val ANIMATION_TIME = createFloat("animation_time")
-        val SHOW_TITLE_MENU = createBoolean("show_title_menu")
-        val SHOW_GAME_MENU = createBoolean("show_game_menu")
-        val SHOWN_START_MENU = createBoolean("shown_start_menu")
+            fun getElementSettings(): Array<Setting<*,*>>
 
-        // Scoreboard
-        val SCOREBOARD = arrayOf("scoreboard")
-        val HIDE_NUMBERS = createBoolean("hide_numbers")
+            fun getTitle(): String? = null
+        }
 
-        // Experimental
-        val EXPERIMENTAL = arrayOf("experimental")
-        val AUTO_UPDATE = createBoolean("auto_update")
+        class ScoreboardSettings: SettingToElementProvider {
+            private val path = arrayOf("scoreboard")
 
-        // Blockhit
-        val BLOCKHIT = arrayOf("blockhit")
-        val HIT_OVERLAY = arrayOf("blockhit", "hit_overlay")
+            val scale = FloatSetting(DESIGN, path, "scale", 1f, FloatSettingsElementOptions().withSliderInfo(SliderInfo(0.5f,1.5f,2)))
+            val hide_numbers = BooleanSetting(DESIGN, path, "hide_numbers", false, null)
 
-        // Fullbright
-        val FULLBRIGHT = arrayOf("fullbright")
-        val FULLBRIGHT_VALUE = createFloat("value")
-        val NIGHT_VISION = createBoolean("night_vision")
+            override fun getElementSettings(): Array<Setting<*,*>> {
+                return arrayOf(scale, hide_numbers)
+            }
 
-        // Categories
+            override fun getTitle(): String {
+                return "scorboard"
+            }
+        }
+
+        class ExperimentalSettings: SettingToElementProvider {
+            private val path = arrayOf("experimental")
+
+            val auto_update = BooleanSetting(GENERAL, path, "auto_update", false, null)
+
+            override fun getElementSettings(): Array<Setting<*,*>> {
+                return arrayOf(auto_update)
+            }
+
+            override fun getTitle(): String {
+                return "experimental"
+            }
+        }
+
+        class FullbrightSettings: BooleanSetting(DESIGN, arrayOf("fullbright"), "fullbright", false, BooleanSettingsElementOptions().asTitle().withValueChanger {
+            if (fullbright.get())
+                MinecraftClient.getInstance().options.gamma.value = fullbright.fullbright_value.get().toDouble()
+            else
+                MinecraftClient.getInstance().options.gamma.value = 1.0
+        }), SettingToElementProvider {
+            val fullbright_value: FloatSetting = FloatSetting(DESIGN, path, "fullbright_value", 1f, FloatSettingsElementOptions().withSliderInfo(SliderInfo(0.0f, 10.0f, 1)).withValueChanger {
+                if (fullbright.get())
+                    MinecraftClient.getInstance().options.gamma.value = fullbright.fullbright_value.get().toDouble()
+            }.withEnableFunction {
+                fullbright.get()
+            })
+            val night_vision = BooleanSetting(DESIGN, path, "night_vision", false, null)
+
+            override fun getElementSettings(): Array<Setting<*,*>> {
+                return arrayOf(this, fullbright_value, night_vision)
+            }
+        }
+
+        class BetterVisibilitySettings: SettingToElementProvider {
+            private val path = arrayOf("better_visibility")
+
+            val lava = BooleanSetting(DESIGN, path, "lava", false, null)
+            val water = BooleanSetting(DESIGN, path, "water", false, null)
+            val nether = BooleanSetting(DESIGN, path, "nether", false, null)
+            val powder_snow = BooleanSetting(DESIGN, path, "powder_snow", false, null)
+            val terrain_fog = BooleanSetting(DESIGN, path, "terrain_fog", false, null)
+
+            val multiple = MultipleBooleanSetting(DESIGN, path, arrayOf(
+                lava, water, nether, powder_snow, terrain_fog
+            ))
+
+            val lava_view = FloatSetting(DESIGN, path, "lava_view", 0.5f, FloatSettingsElementOptions().withSliderInfo(SliderInfo(0.0f, 1.0f, 2)).withEnableFunction {
+                return@withEnableFunction lava.get()
+            })
+
+            override fun getElementSettings(): Array<Setting<*,*>> {
+                return arrayOf(multiple, lava_view)
+            }
+
+            override fun getTitle(): String {
+                return "better_visibility"
+            }
+        }
+
+        class ZoomSettings: BooleanSetting(GENERAL, arrayOf(), "zoom", true, BooleanSettingsElementOptions().asTitle()), SettingToElementProvider {
+            val instant_zoom = BooleanSetting(GENERAL, arrayOf(), "instant_zoom", false, null)
+            val hard_zoom = BooleanSetting(GENERAL, arrayOf(), "hard_zoom", false, null)
+
+            override fun getElementSettings(): Array<Setting<*,*>> {
+                return arrayOf(this, instant_zoom, hard_zoom)
+            }
+        }
+
+        class BlockhitSettings: BooleanSetting(DESIGN, arrayOf("blockhit"), "blockhit", false, BooleanSettingsElementOptions().asTitle()), SettingToElementProvider {
+            val color = ColorSaverSetting(DESIGN, path, "color", ColorSaver.of(0), DefaultSettingElementOptions().addPathToTitle())
+            val alpha = FloatSetting(DESIGN, path, "alpha", 0.4f, FloatSettingsElementOptions().withSliderInfo(SliderInfo(0.0f,1.0f,2)).addPathToTitle())
+
+            override fun getElementSettings(): Array<Setting<*,*>> {
+                return arrayOf(this, color, alpha, hit_overlay, hit_overlay.color, hit_overlay.alpha)
+            }
+
+            override fun getTitle(): String {
+                return "blockhit_hit_overlay"
+            }
+        }
+
+        class HitOverlaySettings: BooleanSetting(DESIGN, arrayOf("blockhit","hit_overlay"), "hit_overlay", false, BooleanSettingsElementOptions().asTitle()) {
+            val color = ColorSaverSetting(DESIGN, path, "color", ColorSaver.of(0), DefaultSettingElementOptions().addPathToTitle())
+            val alpha = FloatSetting(DESIGN, path, "alpha", 0.33f, FloatSettingsElementOptions().withSliderInfo(SliderInfo(0.0f,1.0f,2)).addPathToTitle())
+        }
+
+        class PumpkinSettings: BooleanSetting(DESIGN, arrayOf(), "disable_pumpkin_overlay", false, BooleanSettingsElementOptions().asTitle()), SettingToElementProvider {
+            val show_pumpkin_icon = BooleanSetting(DESIGN, arrayOf(), "show_pumpkin_icon", false, null)
+
+            override fun getElementSettings(): Array<Setting<*,*>> {
+                return arrayOf(this, show_pumpkin_icon)
+            }
+        }
+
+        class HeldItemInfoSettings: BooleanSetting(DESIGN, arrayOf("held_item_info"), "held_item_info", false, BooleanSettingsElementOptions().asTitle()), SettingToElementProvider {
+            val maxinfolength = FloatSetting(DESIGN, path, "maxinfolength", 5.0f, FloatSettingsElementOptions().withSliderInfo(SliderInfo(1f,10f,0)))
+
+            override fun getElementSettings(): Array<Setting<*,*>> {
+                return arrayOf(this, maxinfolength)
+            }
+        }
+
+        class OptionMenuSettings: SettingToElementProvider {
+            private val path = arrayOf("options_menu")
+
+            val animation_time = FloatSetting(DESIGN, path, "animation_time", 200f, FloatSettingsElementOptions().withSliderInfo(SliderInfo(0f,500f,0)))
+            val show_title_menu = BooleanSetting(DESIGN, path, "show_title_menu", true, null)
+            val show_game_menu = BooleanSetting(DESIGN, path, "show_game_menu", true, null)
+            val shown_start_menu = BooleanSetting(DESIGN, path, "shown_start_menu", true, null)
+            val scale = FloatSetting(DESIGN, path, "scale", 0.75f, FloatSettingsElementOptions().withSliderInfo(SliderInfo(0.5f,1f,2)).addPathToTitle())
+
+            override fun getElementSettings(): Array<Setting<*,*>> {
+                return arrayOf(animation_time,scale,show_game_menu,show_title_menu)
+            }
+
+            override fun getTitle(): String {
+                return "option_menu"
+            }
+        }
+
+        class UtilitiesSettings: SettingToElementProvider {
+            val screenshot_folder_open = BooleanSetting(GENERAL, arrayOf(), "screenshot_folder_open", false, null)
+            val fire_height = FloatSetting(DESIGN, arrayOf(), "fire_height", 1.0f, FloatSettingsElementOptions().withSliderInfo(SliderInfo(0.6f,1f,2)))
+            val extend_status_effect_info = BooleanSetting(DESIGN, arrayOf(), "extend_status_effect_info", false, null)
+
+            override fun getTitle(): String {
+                return "utilities"
+            }
+
+            override fun getElementSettings(): Array<Setting<*,*>> {
+                return arrayOf(screenshot_folder_open, fire_height, extend_status_effect_info)
+            }
+        }
+
+        class PerspectiveSettings: BooleanSetting(GENERAL, arrayOf(), "perspective", false, BooleanSettingsElementOptions().asTitle()), SettingToElementProvider {
+            override fun getElementSettings(): Array<Setting<*,*>> {
+                return arrayOf(this)
+            }
+        }
+
+        class TNTTimerSettings: BooleanSetting(GENERAL, arrayOf(), "tnt_timer", false, BooleanSettingsElementOptions().asTitle()), SettingToElementProvider {
+            override fun getElementSettings(): Array<Setting<*,*>> {
+                return arrayOf(this)
+            }
+        }
+
+        class ShulkerBoxTooltipSettings: BooleanSetting(DESIGN, arrayOf(), "shulker_box_tooltip", false, BooleanSettingsElementOptions().asTitle()), SettingToElementProvider {
+            override fun getElementSettings(): Array<Setting<*,*>> {
+                return arrayOf(this)
+            }
+        }
+
+        class CleanerDebugMenuSettings: BooleanSetting(DESIGN, arrayOf(), "cleaner_debug_menu", false, BooleanSettingsElementOptions().asTitle()), SettingToElementProvider {
+            override fun getElementSettings(): Array<Setting<*,*>> {
+                return arrayOf(this)
+            }
+        }
+
+        class CosmeticsSettings {
+            val cape = StringSetting(DESIGN, arrayOf(), "cape", "")
+            val wing = StringSetting(DESIGN, arrayOf(), "wing", "")
+            val hat = StringSetting(DESIGN, arrayOf(), "hat", "")
+        }
+
         const val WIDGETS = "widgets"
         const val DESIGN = "design"
         const val GENERAL = "general"
-
-        // Better Visibility
-        val BETTER_VISIBILITY = arrayOf("better_visibility")
-        val LAVA_VIEW = createFloat("lava_view")
-        val LAVA = createBoolean("lava")
-        val NETHER = createBoolean("nether")
-        val WATER = createBoolean("water")
-        val POWDER_SNOW = createBoolean("powder_snow")
-        val TERRAIN_FOG = createBoolean("terrain_fog")
-
-        // Zoom
-        val ZOOM_ENABLED = createBoolean("zoom_enabled")
-        val INSTANT_ZOOM = createBoolean("instant_zoom")
-        val HARD_ZOOM = createBoolean("hard_zoom")
-
-        // Pumpkin
-        val DISABLE_PUMPKIN_OVERLAY = createBoolean("disable_pumpkin_overlay")
-        val SHOW_PUMPKIN_ICON = createBoolean("show_pumpkin_icon")
-
-        // Held Item Info
-        val HELD_ITEM_INFO = arrayOf("held_item_info")
-        val HELD_ITEM_INFO_ENABLED = createBoolean("held_item_info")
-        val MAX_INFO_LENGTH = createFloat("maxinfolength")
-
-        // Util
-        val EXTEND_STATUS_EFFECT_INFO = createBoolean("extend_status_effect_info")
-        val FIRE_HEIGHT = createFloat("fire_height")
-        val SCREENSHOT_OPEN_FOLDER = createBoolean("screenshot_folder_open")
-
-        // Cleaner Debug Menu
-        val CLEANER_DEBUG_MENU = createBoolean("cleaner_debug_menu")
-
-        // Shulker Box Tooltip
-        val SHULKER_BOX_TOOLTIP = createBoolean("shulker_box_tooltip")
-
-        // TNT Timer
-        val TNT_TIMER = createBoolean("tnt_timer")
-
-        // Perspective
-        val PERSPECTIVE = createBoolean("perspective")
-
-        // Cosmetics
-        val CAPE = createString("cape")
-        val WING = createString("wing")
-        val HAT = createString("hat")
-
-        /**
-         * Converts a path and an id to the original point notation ("path1.path2.[[...]].id")
-         *
-         * @param path The path as an [Array] of type [String]
-         * @param id The ID of the setting
-         *
-         * @return The path and id in point notation
-         */
-        fun toPointNotation(path: Array<String>, id: TypedSettingID<*>) = path.joinToString(".") + "." + id.id
-
-        /**
-         * @param s The id of the setting
-         *
-         * @return A [TypedSettingID] of type [Boolean] with id [s]
-         */
-        fun createBoolean(s: String) = TypedSettingID<Boolean>(s)
-
-        /**
-         * @param s The id of the setting
-         *
-         * @return A [TypedSettingID] of type [String] with id [s]
-         */
-        fun createString(s: String) = TypedSettingID<String>(s)
-
-        /**
-         * @param s The id of the setting
-         *
-         * @return A [TypedSettingID] of type [ColorSaver] with id [s]
-         */
-        fun createColor(s: String) = TypedSettingID<ColorSaver>(s)
-
-        /**
-         * @param s The id of the setting
-         *
-         * @return A [TypedSettingID] of type [Float] with id [s]
-         */
-        fun createFloat(s: String) = TypedSettingID<Float>(s)
     }
 }

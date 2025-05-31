@@ -207,7 +207,7 @@ object ServerConnection {
 
         cosmetic_data.forEach {
             try {
-                if ((it.default || specials.contains(it)) && it.old_id != null && it.old_id == SettingsLoader.get(Settings.DESIGN, SettingsLoader.TypedSettingID<Float>(it.type)).toInt()) {
+                if ((it.default || specials.contains(it)) && it.old_id != null && it.old_id == SettingsLoader.get(Settings.DESIGN, it.type, arrayOf(), JsonPrimitive(-1)).asInt) {
                     Cosmetics.getCosmeticsType(it.type).currentlySelected = it.id
                 }
             } catch (_: Exception) {}

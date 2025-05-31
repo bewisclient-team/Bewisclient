@@ -96,3 +96,13 @@ fun DrawContext.drawTexture(
         height
     )
 }
+
+inline fun <S, T> Array<out T>.reduce(operation: (acc: S, T) -> S, initial_accumulator: S): S {
+    if (isEmpty())
+        throw UnsupportedOperationException("Empty array can't be reduced.")
+    var accumulator: S = initial_accumulator
+    for (index in 1..lastIndex) {
+        accumulator = operation(accumulator, this[index])
+    }
+    return accumulator
+}

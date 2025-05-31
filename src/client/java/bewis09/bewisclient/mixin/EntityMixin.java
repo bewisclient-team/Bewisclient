@@ -17,7 +17,7 @@ import java.util.Objects;
 public class EntityMixin {
     @Inject(method = "changeLookDirection",at=@At("HEAD"),cancellable = true)
     public void inject(double cursorDeltaX, double cursorDeltaY, CallbackInfo ci) {
-        if(!MinecraftClient.getInstance().options.getPerspective().isFirstPerson() && Objects.requireNonNull(Bewisclient.INSTANCE.getFreeLookKeyBinding()).isPressed() && SettingsLoader.INSTANCE.get(Settings.GENERAL,new String[0],Settings.Companion.getPERSPECTIVE())) {
+        if(!MinecraftClient.getInstance().options.getPerspective().isFirstPerson() && Objects.requireNonNull(Bewisclient.INSTANCE.getFreeLookKeyBinding()).isPressed() && Settings.Companion.getPerspective().get()) {
             MixinStatics.cameraAddPitch += (float) (cursorDeltaY * 0.15f);
             MixinStatics.cameraAddYaw += (float) (cursorDeltaX * 0.15f);
             ci.cancel();

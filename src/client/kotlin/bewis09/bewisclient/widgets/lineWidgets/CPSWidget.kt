@@ -1,26 +1,22 @@
 package bewis09.bewisclient.widgets.lineWidgets
 
 import bewis09.bewisclient.Bewisclient
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
-import com.google.gson.JsonPrimitive
+import bewis09.bewisclient.settingsLoader.SettingTypes
 
 /**
  * A [LineWidget] which displays the current CPS
  */
-class CPSWidget: LineWidget("cps",80,true) {
+class CPSWidget: LineWidget<SettingTypes.CPSWidgetSettingsObject>("cps",80,true) {
     override fun getText(): ArrayList<String> {
-        when (getProperty(CPS_ELEMENTS)) {
-            0f -> return arrayListOf("${Bewisclient.lCount()} | ${Bewisclient.rCount()} CPS")
-            1f -> return arrayListOf("${Bewisclient.lCount()} CPS")
-            2f -> return arrayListOf("${Bewisclient.rCount()} CPS")
+        when (settings.cps_elements.get()) {
+            0 -> return arrayListOf("${Bewisclient.lCount()} | ${Bewisclient.rCount()} CPS")
+            1 -> return arrayListOf("${Bewisclient.lCount()} CPS")
+            2 -> return arrayListOf("${Bewisclient.rCount()} CPS")
         }
         return arrayListOf("${Bewisclient.lCount()} | ${Bewisclient.rCount()} CPS")
     }
 
-    override fun getWidgetSettings(): JsonObject {
-        val list = super.getWidgetSettings(.7f,5f,1f,56f,-1f)
-        list.add(CPS_ELEMENTS.id, JsonPrimitive(0) as JsonElement)
-        return list
+    override fun getWidgetSettings(): SettingTypes.CPSWidgetSettingsObject {
+        return SettingTypes.CPSWidgetSettingsObject(id,5f,1f,56f,-1f,.43f,.7f)
     }
 }

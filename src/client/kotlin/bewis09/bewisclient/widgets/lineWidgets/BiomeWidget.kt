@@ -1,7 +1,6 @@
 package bewis09.bewisclient.widgets.lineWidgets
 
-import com.google.gson.JsonObject
-import com.google.gson.JsonPrimitive
+import bewis09.bewisclient.settingsLoader.SettingTypes
 import net.minecraft.client.MinecraftClient
 import net.minecraft.registry.RegistryKey
 import net.minecraft.registry.entry.RegistryEntry
@@ -14,10 +13,10 @@ import net.minecraft.world.biome.BiomeKeys
 /**
  * A [LineWidget] which displays the current biome
  */
-class BiomeWidget: LineWidget("biome",150, true) {
+class BiomeWidget: LineWidget<SettingTypes.ColorcodeBiomeWidgetSettingsObject>("biome",150, true) {
 
     override fun getText(): ArrayList<String> {
-        return arrayListOf(getText(getProperty(COLORCODE_BIOME)))
+        return arrayListOf(getText(settings.colorcode_biome.get()))
     }
 
     companion object {
@@ -122,19 +121,7 @@ class BiomeWidget: LineWidget("biome",150, true) {
         }
     }
 
-    override fun getWidgetSettings(): JsonObject {
-        val list = JsonObject()
-
-        list.add(ENABLED.id, JsonPrimitive(true))
-        list.add(TRANSPARENCY.id, JsonPrimitive(0.43f))
-        list.add(SIZE.id, JsonPrimitive(.7f))
-        list.add(POSX.id, JsonPrimitive(5f))
-        list.add(PARTX.id, JsonPrimitive(-1f))
-        list.add(POSY.id, JsonPrimitive(5f))
-        list.add(PARTY.id, JsonPrimitive(1f))
-        list.add(COLORCODE_BIOME.id,JsonPrimitive(true))
-        list.add(TEXT_COLOR.id, JsonPrimitive("0xFFFFFF"))
-
-        return list
+    override fun getWidgetSettings(): SettingTypes.ColorcodeBiomeWidgetSettingsObject {
+        return SettingTypes.ColorcodeBiomeWidgetSettingsObject(id,5f,-1f,5f,1f,0.43f,.7f)
     }
 }

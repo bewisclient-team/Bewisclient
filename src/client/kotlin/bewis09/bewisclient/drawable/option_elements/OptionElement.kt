@@ -111,12 +111,12 @@ abstract class OptionElement(val title: String, val description: String) : Setti
 
     }
 
-    override fun getChildElementsForSearch(): ArrayList<OptionElement>? {
+    override fun getChildElementsForSearch(): Array<OptionElement>? {
         return null
     }
 
-    override fun getSearchKeywords(): ArrayList<String> {
-        if(Bewisclient.getTranslatedString(title)== "bewisclient.$title") return arrayListOf()
-        return arrayListOf(Bewisclient.getTranslatedString(title))
+    override fun getSearchKeywords(): Array<String> {
+        if(Bewisclient.getTranslatedString(title)== "bewisclient.$title") return arrayOf()
+        return arrayOf(Bewisclient.getTranslatedString(title))
     }
 }

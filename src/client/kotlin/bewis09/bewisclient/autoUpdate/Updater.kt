@@ -2,7 +2,6 @@ package bewis09.bewisclient.autoUpdate
 
 import bewis09.bewisclient.Bewisclient.update
 import bewis09.bewisclient.settingsLoader.Settings
-import bewis09.bewisclient.settingsLoader.SettingsLoader
 import com.google.gson.JsonObject
 import net.fabricmc.loader.api.FabricLoader
 import org.apache.commons.io.FileUtils
@@ -27,7 +26,7 @@ object Updater {
             return
         }
 
-        if(!SettingsLoader.get(Settings.GENERAL, Settings.EXPERIMENTAL, Settings.AUTO_UPDATE)) return
+        if(!Settings.experimental.auto_update.get()) return
 
         val file = File(FabricLoader.getInstance().gameDir.pathString+"\\bewisclient\\download\\"+ update!!["name"].asString.lowercase(
             Locale.getDefault()

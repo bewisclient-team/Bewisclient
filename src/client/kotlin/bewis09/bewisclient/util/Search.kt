@@ -7,7 +7,7 @@ package bewis09.bewisclient.util
  */
 object Search {
 
-    fun <K: SearchableElement<K>> collect(elements: Collection<K>): ArrayList<(String) -> K?> {
+    fun <K: SearchableElement<K>> collect(elements: Array<K>): Array<(String) -> K?> {
         val list = arrayListOf<(String)->K?>()
 
         elements.forEach {
@@ -18,7 +18,7 @@ object Search {
             list.addAll(it.collectChildLambas())
         }
 
-        return list
+        return list.toTypedArray()
     }
 
     /**
@@ -27,8 +27,8 @@ object Search {
      * @param [lambas] A [java.util.ArrayList] with the lambas that can return an element according to the keyword
      * @return A [java.util.ArrayList] containing the elements which were returned by the [lambas]
      */
-    fun <K: SearchableElement<K>> search(key: String, lambas: ArrayList<(String) -> K?>): ArrayList<K> {
-        val resultList = arrayListOf<K>()
+    fun <T> search(key: String, lambas: Array<(String) -> T?>): ArrayList<T> {
+        val resultList = arrayListOf<T>()
 
         lambas.forEach {
             val a = it(key)
@@ -49,7 +49,7 @@ object Search {
         /**
          * @return Returns the keywords that the search engine uses to list the corresponding elements as an [java.util.ArrayList]
          */
-        fun getSearchKeywords(): ArrayList<String>? {
+        fun getSearchKeywords(): Array<String>? {
             return null
         }
 
@@ -69,7 +69,7 @@ object Search {
          *
          * Should return null or an empty [java.util.ArrayList] if there are no children
          */
-        fun getChildElementsForSearch(): ArrayList<K>? {
+        fun getChildElementsForSearch(): Array<K>? {
             return null
         }
 

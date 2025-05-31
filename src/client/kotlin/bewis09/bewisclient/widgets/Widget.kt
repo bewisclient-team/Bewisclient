@@ -2,11 +2,9 @@ package bewis09.bewisclient.widgets
 
 import bewis09.bewisclient.mixin.BossBarHudMixin
 import bewis09.bewisclient.screen.widget.WidgetConfigScreen
+import bewis09.bewisclient.settingsLoader.SettingTypes
 import bewis09.bewisclient.settingsLoader.Settings
 import bewis09.bewisclient.settingsLoader.SettingsLoader
-import bewis09.bewisclient.util.ColorSaver
-import com.google.gson.JsonObject
-import com.google.gson.JsonPrimitive
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import kotlin.math.abs
@@ -17,7 +15,16 @@ import kotlin.math.roundToInt
  *
  * @param id The id of the widget
  */
-abstract class Widget(val id: String): Settings() {
+abstract class Widget<K: SettingTypes.DefaultWidgetSettingsObject>(val id: String): Settings() {
+    private lateinit var intern_settings: K
+
+    val settings: K
+        get() {
+            if(!this::intern_settings.isInitialized) intern_settings = getWidgetSettings()
+
+            return intern_settings
+        }
+
     /**
      * Renders the widget that the position that is set in the settings
      *
@@ -47,26 +54,6 @@ abstract class Widget(val id: String): Settings() {
     abstract fun getOriginalHeight(): Int
 
     /**
-     * @return The scaling of the widget
-     */
-    open fun getScale(): Float = getProperty(SIZE)
-
-    /**
-     * @return If the widget should be shown
-     */
-    open fun isEnabled(): Boolean = getProperty(ENABLED)
-
-    /**
-     * @return The x position saved in the settings (Not the real x position)
-     */
-    private fun getSavedPosX(): Float = getProperty(POSX)
-
-    /**
-     * @return The y position saved in the settings (Not the real x position)
-     */
-    private fun getSavedPosY(): Float = getProperty(POSY)
-
-    /**
      * @return The scaled width of the screen
      */
     fun getScreenWidth(): Int = MinecraftClient.getInstance().window.scaledWidth
@@ -77,27 +64,17 @@ abstract class Widget(val id: String): Settings() {
     fun getScreenHeight(): Int = MinecraftClient.getInstance().window.scaledHeight
 
     /**
-     * @return The horizontal part of the screen where the widget should be shown (-1; 0; 1)
-     */
-    private fun getSavedPartX(): Int = getProperty(PARTX).toInt()
-
-    /**
-     * @return The vertical part of the screen where the widget should be shown (-1; 1)
-     */
-    private fun getSavedPartY(): Int = getProperty(PARTY).toInt()
-
-    /**
      * Use [getPosX] instead of this, if you want scaling
      *
      * @return the real x-position without scaling
      */
     open fun getOriginalPosX(): Int {
-        if(getSavedPartX()==-1)
-            return (getSavedPosX()).roundToInt()
-        if(getSavedPartX()==0) {
-            return ((getScreenWidth()/2+getSavedPosX()-getWidth()/2)).roundToInt()
+        if(settings.partX.get()==-1f)
+            return (settings.posX.get()).roundToInt()
+        if(settings.partX.get()==0f) {
+            return ((getScreenWidth()/2+settings.posX.get()-getWidth()/2)).roundToInt()
         }
-        return ((getScreenWidth()-getSavedPosX()-getWidth())).roundToInt()
+        return ((getScreenWidth()-settings.posX.get()-getWidth())).roundToInt()
     }
 
     /**
@@ -106,117 +83,44 @@ abstract class Widget(val id: String): Settings() {
      * @return the real y-position without scaling
      */
     fun getOriginalPosY(): Int {
-        if(getSavedPartY()==-1)
-            return (getSavedPosY()).roundToInt()
-        if(getSavedPartY()==0)
-            return ((getScreenHeight()/2+getSavedPosY()-getHeight()/2)).roundToInt()
-        return ((getScreenHeight()-getSavedPosY()-getHeight())).roundToInt()
+        if(settings.partY.get()==-1f)
+            return (settings.posY.get()).roundToInt()
+        return ((getScreenHeight()-settings.posY.get()-getHeight())).roundToInt()
     }
 
     /**
      * @return The x-coordinate where the widget should start to be drawn after applying the scaling
      */
     fun getPosX(): Int {
-        if(getSavedPartX()==-1)
-            return (getSavedPosX()/getScale()).roundToInt()
-        if(getSavedPartX()==0)
-            return ((getScreenWidth()/2+getSavedPosX()-getWidth()/2)/getScale()).roundToInt()
-        return ((getScreenWidth()-getSavedPosX()-getWidth())/getScale()).roundToInt()
+        if(settings.partX.get()==-1f)
+            return (settings.posX.get()/settings.size.get()).roundToInt()
+        if(settings.partX.get()==0f)
+            return ((getScreenWidth()/2+settings.posX.get()-getWidth()/2)/settings.size.get()).roundToInt()
+        return ((getScreenWidth()-settings.posX.get()-getWidth())/settings.size.get()).roundToInt()
     }
 
     /**
      * @return The y-coordinate where the widget should start to be drawn after applying the scaling
      */
     fun getPosY(): Int {
-        if(getSavedPartY()==-1) {
-            if(getSavedPartX()==0 && MinecraftClient.getInstance().currentScreen !is WidgetConfigScreen) {
-                return ((getSavedPosY()+(MinecraftClient.getInstance().inGameHud.bossBarHud as BossBarHudMixin).bossBars.size*19)/getScale()).roundToInt()
+        if(settings.partY.get()==-1f) {
+            if(settings.partX.get()==0f && MinecraftClient.getInstance().currentScreen !is WidgetConfigScreen) {
+                return ((settings.posY.get()+(MinecraftClient.getInstance().inGameHud.bossBarHud as BossBarHudMixin).bossBars.size*19)/settings.size.get()).roundToInt()
             }
-            return (getSavedPosY()/getScale()).roundToInt()
+            return (settings.posY.get()/settings.size.get()).roundToInt()
         }
-        if(getSavedPartY()==0)
-            return ((getScreenHeight()/2+getSavedPosY()-getHeight()/2)/getScale()).roundToInt()
-        return ((getScreenHeight()-getSavedPosY()-getHeight())/getScale()).roundToInt()
+        return ((getScreenHeight()-settings.posY.get()-getHeight())/settings.size.get()).roundToInt()
     }
 
     /**
      * @return The scaled width of the widget
      */
-    fun getWidth(): Int = (getScale() * getOriginalWidth()).roundToInt()
+    fun getWidth(): Int = (settings.size.get() * getOriginalWidth()).roundToInt()
 
     /**
      * @return The scaled height of the widget
      */
-    fun getHeight(): Int = (getScale() * getOriginalHeight()).roundToInt()
-
-    /**
-     * Returns a property of the widget
-     *
-     * @param setting the [SettingsLoader.TypedSettingID] of the setting you are searching for
-     * @param K the type of the setting you are searching for
-     *
-     * @return The value of the Setting as [K]
-     *
-     * @throws ClassCastException if K is not of type [Float], [Boolean], [ColorSaver], [String]
-     *
-     * @see [Settings]
-     */
-    @Suppress("unchecked_cast")
-    inline fun <reified K> getProperty(setting: SettingsLoader.TypedSettingID<K>): K {
-        when (true) {
-            K::class.java.name.lowercase().contains("float") -> return SettingsLoader.get(WIDGETS,setting as SettingsLoader.TypedSettingID<Float>,id) as K
-            K::class.java.name.lowercase().contains("boolean") -> return SettingsLoader.get(WIDGETS,setting as SettingsLoader.TypedSettingID<Boolean>,id) as K
-            K::class.java.name.lowercase().contains("colorsaver") -> return SettingsLoader.get(WIDGETS,setting as SettingsLoader.TypedSettingID<ColorSaver>,id) as K
-            K::class.java.name.lowercase().contains("string") -> return SettingsLoader.get(WIDGETS,setting as SettingsLoader.TypedSettingID<String>,id) as K
-            else -> {}
-        }
-        throw ClassCastException()
-    }
-
-    /**
-     * Returns a property of the widget
-     *
-     * @param setting the [SettingsLoader.TypedSettingID] of the setting you are searching for
-     * @param path the path of the setting. Should be relative to [id]
-     * @param K the type of the setting you are searching for
-     *
-     * @return The value of the Setting as [K]
-     *
-     * @throws ClassCastException if K is not of type [Float], [Boolean], [ColorSaver], [String]
-     *
-     * @see [Settings]
-     */
-    @Suppress("unchecked_cast")
-    inline fun <reified K> getProperty(setting: SettingsLoader.TypedSettingID<K>, vararg path: String): K {
-        when (true) {
-            K::class.java.name.lowercase().contains("float") -> return SettingsLoader.get(WIDGETS,setting as SettingsLoader.TypedSettingID<Float>,id,*path) as K
-            K::class.java.name.lowercase().contains("boolean") -> return SettingsLoader.get(WIDGETS,setting as SettingsLoader.TypedSettingID<Boolean>,id,*path) as K
-            K::class.java.name.lowercase().contains("colorsaver") -> return SettingsLoader.get(WIDGETS,setting as SettingsLoader.TypedSettingID<ColorSaver>,id,*path) as K
-            K::class.java.name.lowercase().contains("string") -> return SettingsLoader.get(WIDGETS,setting as SettingsLoader.TypedSettingID<String>,id,*path) as K
-            else -> {}
-        }
-        throw ClassCastException()
-    }
-
-    /**
-     * Sets a property of the widget
-     *
-     * @param setting the [SettingsLoader.TypedSettingID] of the setting you are searching for
-     * @param value The new value of the Setting as [K]
-     * @param K the type of the setting you are searching for
-     *
-     * @see [Settings]
-     */
-    @Suppress("unchecked_cast")
-    inline fun <reified K> setProperty(setting: SettingsLoader.TypedSettingID<K>, value: K) {
-        when (value) {
-            is Number -> SettingsLoader.set(WIDGETS,value,setting as SettingsLoader.TypedSettingID<Number>,id)
-            is Boolean -> SettingsLoader.set(WIDGETS,value,setting as SettingsLoader.TypedSettingID<Boolean>,id)
-            is ColorSaver -> SettingsLoader.set(WIDGETS,value,setting as SettingsLoader.TypedSettingID<ColorSaver>,id)
-            is String -> SettingsLoader.set(WIDGETS,value,setting as SettingsLoader.TypedSettingID<String>,id)
-            else -> {}
-        }
-    }
+    fun getHeight(): Int = (settings.size.get() * getOriginalHeight()).roundToInt()
 
     /**
      * Set the x-position of the widget
@@ -249,9 +153,9 @@ abstract class Widget(val id: String): Settings() {
         if(part!=0f && abs(pos-2.5)<5 && !sneak)
             pos = 5f
         SettingsLoader.disableAutoSave()
-        setProperty(PARTX,part)
+        settings.partX.set(part)
         SettingsLoader.disableAutoSave()
-        setProperty(POSX,pos)
+        settings.posX.set(pos)
     }
 
     /**
@@ -279,44 +183,17 @@ abstract class Widget(val id: String): Settings() {
         if(abs(pos-2.5)<5 && !sneak)
             pos = 5f
         SettingsLoader.disableAutoSave()
-        setProperty(PARTY,part)
+        settings.partY.set(part)
         SettingsLoader.disableAutoSave()
-        setProperty(POSY,pos)
+        settings.posY.set(pos)
     }
 
     /**
-     * @return The settings of the widget as a [JsonObject]
+     * @return The settings of the widget as a [SettingTypes.DefaultWidgetSettingsObject]
      */
-    abstract fun getWidgetSettings(): JsonObject
+    abstract fun getWidgetSettings(): K
 
-    /**
-     * Use [getWidgetSettings] if you want to add additional settings
-     *
-     * @param size The default size of the widget
-     * @param posX The default saved x-position
-     * @param partX The default horizontal part of the screen where the widget is originally located in
-     * @param posY The default saved y-position
-     * @param partY The default vertical part of the screen where the widget is originally located in
-     *
-     * @return The default settings of the widget as a [JsonObject]
-     */
-    fun getWidgetSettings(size: Float,posX: Float,partX: Float,posY: Float,partY: Float): JsonObject {
-        val jsonObject = JsonObject()
+    open fun isScalable() = true
 
-        jsonObject.add(ENABLED.id, JsonPrimitive(true))
-        jsonObject.add(TRANSPARENCY.id, JsonPrimitive(0.43f))
-        jsonObject.add(SIZE.id, JsonPrimitive(size))
-        jsonObject.add(POSX.id, JsonPrimitive(posX))
-        jsonObject.add(PARTX.id, JsonPrimitive(partX))
-        jsonObject.add(POSY.id, JsonPrimitive(posY))
-        jsonObject.add(PARTY.id, JsonPrimitive(partY))
-        jsonObject.add(TEXT_COLOR.id, JsonPrimitive("0xFFFFFF"))
-
-        return jsonObject
-    }
-
-    /**
-     * @return The settings for which the description should be shown
-     */
-    open fun getDescriptionSettings(): ArrayList<String>? { return null }
+    open fun isEnabled() = settings.enabled.get()
 }
