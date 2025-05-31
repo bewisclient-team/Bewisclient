@@ -13,7 +13,7 @@ import kotlin.math.roundToInt
  *
  * @param widget The [Widget] that should be rendered
  */
-class WidgetPreviewOptionElement(val widget: Widget<*>?): OptionElement("","") {
+class WidgetPreviewOptionElement(val widget: Widget<*>?) : OptionElement("", "") {
     override fun getElementByKeywordLamba(): (String) -> OptionElement? {
         return { null }
     }
@@ -27,40 +27,41 @@ class WidgetPreviewOptionElement(val widget: Widget<*>?): OptionElement("","") {
         mouseY: Int,
         alphaModifier: Long
     ): Int {
-        if(widget==null) return 0
+        if (widget == null) return 0
 
         context.matrices.scale(scale, scale, scale)
-        RenderSystem.setShaderColor(1F,1F,1F, (alphaModifier.toFloat()/0xFFFFFFFF))
+        RenderSystem.setShaderColor(1F, 1F, 1F, (alphaModifier.toFloat() / 0xFFFFFFFF))
 
-        RenderSystem.enableBlend()
-
-        context.drawTexture({ texture: Identifier? ->
-            RenderLayer.getGuiTexturedOverlay( texture )
-        },Identifier.of("textures/block/light_blue_concrete.png"),
-            ((x+width/2)/scale-widget.getOriginalWidth()/2).roundToInt()-2, ((y/scale)).roundToInt()+1,0f,0f,
-            (widget.getOriginalWidth())+4, ((widget.getOriginalHeight()))+4,(widget.getOriginalWidth())+4,((widget.getOriginalHeight()))+4,32,32)
-
-        context.drawBorder(
-            ((x+width/2)/scale-widget.getOriginalWidth()/2).roundToInt()-2, (y/scale).roundToInt()+1,
-            (widget.getOriginalWidth()+4f).roundToInt(),
-            (widget.getOriginalHeight()+4),0xFF000000.toInt())
+        context.drawTexture(
+            { texture: Identifier? ->
+                RenderLayer.getGuiTexturedOverlay(texture)
+            }, Identifier.of("textures/block/light_blue_concrete.png"),
+            ((x + width / 2) / scale - widget.getOriginalWidth() / 2).roundToInt() - 2, ((y / scale)).roundToInt() + 1, 0f, 0f,
+            (widget.getOriginalWidth()) + 4, ((widget.getOriginalHeight())) + 4, (widget.getOriginalWidth()) + 4, ((widget.getOriginalHeight())) + 4, 32, 32
+        )
 
         context.drawBorder(
-            ((x+width/2)/scale-widget.getOriginalWidth()/2).roundToInt()-3, (y/scale).roundToInt(),
-            (widget.getOriginalWidth()+6f).roundToInt(),
-            (widget.getOriginalHeight()+6),0xFFFFFFFF.toInt())
+            ((x + width / 2) / scale - widget.getOriginalWidth() / 2).roundToInt() - 2, (y / scale).roundToInt() + 1,
+            (widget.getOriginalWidth() + 4f).roundToInt(),
+            (widget.getOriginalHeight() + 4), 0xFF000000.toInt()
+        )
 
-        context.matrices.scale(1/widget.settings.size.get(), 1/widget.settings.size.get(), 1/widget.settings.size.get())
+        context.drawBorder(
+            ((x + width / 2) / scale - widget.getOriginalWidth() / 2).roundToInt() - 3, (y / scale).roundToInt(),
+            (widget.getOriginalWidth() + 6f).roundToInt(),
+            (widget.getOriginalHeight() + 6), 0xFFFFFFFF.toInt()
+        )
 
-        widget.render(context,(((x+width/2)/scale-widget.getOriginalWidth()/2)).roundToInt(), ((y/scale+3f)).roundToInt())
+        context.matrices.scale(1 / widget.settings.size.get(), 1 / widget.settings.size.get(), 1 / widget.settings.size.get())
 
-        RenderSystem.setShaderColor(1F,1F,1F, (alphaModifier.toFloat()/0xFFFFFFFF))
-        RenderSystem.disableBlend()
+        widget.render(context, (((x + width / 2) / scale - widget.getOriginalWidth() / 2)).roundToInt(), ((y / scale + 3f)).roundToInt())
 
-        context.matrices.scale(1/scale, 1/scale, 1/scale)
-        context.fill(0,0,0,0,0)
-        RenderSystem.setShaderColor(1F,1F,1F, 1F)
+        RenderSystem.setShaderColor(1F, 1F, 1F, (alphaModifier.toFloat() / 0xFFFFFFFF))
 
-        return (widget.getOriginalHeight()*scale+4).roundToInt()
+        context.matrices.scale(1 / scale, 1 / scale, 1 / scale)
+        context.fill(0, 0, 0, 0, 0)
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F)
+
+        return (widget.getOriginalHeight() * scale + 4).roundToInt()
     }
 }

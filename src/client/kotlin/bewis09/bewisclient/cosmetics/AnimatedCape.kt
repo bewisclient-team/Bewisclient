@@ -2,7 +2,7 @@ package bewis09.bewisclient.cosmetics
 
 import net.minecraft.util.Identifier
 
-class AnimatedCape(type: CosmeticsType, id: String, val frames: Int, val length: Int): Cosmetic(type, id) {
+class AnimatedCape(type: CosmeticsType, id: String, val frames: Int, val length: Int) : Cosmetic(type, id) {
     val identifiers = arrayListOf<Identifier>()
 
     init {

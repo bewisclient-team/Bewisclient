@@ -7,7 +7,6 @@ import bewis09.bewisclient.util.NumberFormatter.withAfterPointZero
 import bewis09.bewisclient.util.drawTexture
 import com.google.common.collect.Lists
 import com.google.common.collect.Ordering
-import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
@@ -16,8 +15,6 @@ import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.render.VertexConsumerProvider
 import net.minecraft.client.render.entity.EntityRenderDispatcher
 import net.minecraft.client.render.entity.state.TntEntityRenderState
-import net.minecraft.client.texture.NativeImage
-import net.minecraft.client.texture.NativeImageBackedTexture
 import net.minecraft.client.texture.StatusEffectSpriteManager
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.effect.StatusEffect
@@ -38,7 +35,7 @@ import kotlin.math.max
 /**
  * A class used to write code executed in a mixin in kotlin
  */
-object KFJ: Settings() {
+object KFJ : Settings() {
     /**
      * The texture used for the background of the remaining time of a status effect
      */
@@ -148,8 +145,12 @@ object KFJ: Settings() {
 
         val scale = scoreboard.scale.get()
 
-        context.matrices.scale(scale,scale,scale)
-        context.matrices.translate(-MinecraftClient.getInstance().window.scaledWidth.toFloat()+MinecraftClient.getInstance().window.scaledWidth.toFloat()/scale,-MinecraftClient.getInstance().window.scaledWidth.toFloat()/4+MinecraftClient.getInstance().window.scaledWidth.toFloat()/scale/4,0f)
+        context.matrices.scale(scale, scale, scale)
+        context.matrices.translate(
+            -MinecraftClient.getInstance().window.scaledWidth.toFloat() + MinecraftClient.getInstance().window.scaledWidth.toFloat() / scale,
+            -MinecraftClient.getInstance().window.scaledWidth.toFloat() / 4 + MinecraftClient.getInstance().window.scaledWidth.toFloat() / scale / 4,
+            0f
+        )
         val scoreboard: Scoreboard = objective.scoreboard
         val numberFormat: NumberFormat = objective.getNumberFormatOr(StyledNumberFormat.RED as NumberFormat)
         val sidebarEntries =
@@ -210,7 +211,7 @@ object KFJ: Settings() {
                     Colors.WHITE,
                     false
                 )
-                if(Settings.scoreboard.hide_numbers.get()) continue
+                if (Settings.scoreboard.hide_numbers.get()) continue
                 context.drawText(
                     MinecraftClient.getInstance().textRenderer,
                     sidebarEntry.score,
@@ -252,31 +253,31 @@ object KFJ: Settings() {
         textRenderer.draw(s, 0f, 0f, -1, false, matrix4f, vertexConsumerProvider, TextRenderer.TextLayerType.POLYGON_OFFSET, 0, LightmapTextureManager.applyEmission(light, 2))
     }
 
-    /**
-     * @see [bewis09.bewisclient.mixin.OverlayTextureMixin.inject]
-     */
-    fun overlayTexture(texture: NativeImageBackedTexture) {
-        val nativeImage: NativeImage = texture.image!!
-
-        for (i in 0..15) {
-            for (j in 0..15) {
-                if (i < 8) {
-                    nativeImage.setColorArgb(
-                        j, i, ColorHelper.getArgb((1- hit_overlay.alpha.get() *255).toInt(),ColorHelper.getRed(
-                            hit_overlay.color.get().getColor()),ColorHelper.getGreen(
-                            hit_overlay.color.get().getColor()),ColorHelper.getBlue(
-                            hit_overlay.color.get().getColor()))
-                    )
-                } else {
-                    val k = ((1.0f - j.toFloat() / 15.0f * 0.75f) * 255.0f).toInt()
-                    nativeImage.setColorArgb(j, i, ColorHelper.withAlpha(k, -1))
-                }
-            }
-        }
-
-        RenderSystem.activeTexture(33985)
-        texture.bindTexture()
-        nativeImage.upload(0, 0, 0, 0, 0, nativeImage.width, nativeImage.height, false)
-        RenderSystem.activeTexture(33984)
-    }
+//    /**
+//     * @see [bewis09.bewisclient.mixin.OverlayTextureMixin.inject]
+//     */
+//    fun overlayTexture(texture: NativeImageBackedTexture) {
+//        val nativeImage: NativeImage = texture.image!!
+//
+//        for (i in 0..15) {
+//            for (j in 0..15) {
+//                if (i < 8) {
+//                    nativeImage.setColorArgb(
+//                        j, i, ColorHelper.getArgb((1- hit_overlay.alpha.get() *255).toInt(),ColorHelper.getRed(
+//                            hit_overlay.color.get().getColor()),ColorHelper.getGreen(
+//                            hit_overlay.color.get().getColor()),ColorHelper.getBlue(
+//                            hit_overlay.color.get().getColor()))
+//                    )
+//                } else {
+//                    val k = ((1.0f - j.toFloat() / 15.0f * 0.75f) * 255.0f).toInt()
+//                    nativeImage.setColorArgb(j, i, ColorHelper.withAlpha(k, -1))
+//                }
+//            }
+//        }
+//
+//        RenderSystem.activeTexture(33985)
+//        texture.bindTexture()
+//        nativeImage.upload(0, 0, 0, 0, 0, nativeImage.width, nativeImage.height, false)
+//        RenderSystem.activeTexture(33984)
+//    }
 }

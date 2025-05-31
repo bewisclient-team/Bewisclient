@@ -1,8 +1,6 @@
 package bewis09.bewisclient.mixin;
 
 import bewis09.bewisclient.settingsLoader.Settings;
-import bewis09.bewisclient.settingsLoader.SettingsLoader;
-import bewis09.bewisclient.util.ColorSaver;
 import bewis09.bewisclient.util.NumberFormatter;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
@@ -24,16 +22,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(WorldRenderer.class)
 public abstract class WorldRendererMixin {
 
-    @Shadow @Nullable private ClientWorld world;
+    @Shadow
+    @Nullable
+    private ClientWorld world;
 
     /**
      * @author Mojang
      * @reason Why not
      */
 
-    @Inject(method = "drawBlockOutline",at = @At("HEAD"), cancellable = true)
+    @Inject(method = "drawBlockOutline", at = @At("HEAD"), cancellable = true)
     private void drawBlockOutline(MatrixStack matrices, VertexConsumer vertexConsumer, Entity entity, double cameraX, double cameraY, double cameraZ, BlockPos pos, BlockState state, int color, CallbackInfo ci) {
-        if(Settings.Companion.getBlockhit().get()) {
+        if (Settings.Companion.getBlockhit().get()) {
             int in = ((Settings.Companion.getBlockhit().getColor().get().getColor()) + 0x1000000) % 0x1000000;
             String str = NumberFormatter.INSTANCE.zeroBefore(in, 6, 16);
             try {

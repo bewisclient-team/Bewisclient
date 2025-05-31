@@ -47,7 +47,7 @@ open class MainOptionsScreen(val parent: Screen? = null) : Screen(Text.empty()) 
     /**
      * The [Animation]
      */
-    var animation = ScreenValuedTypedAnimation(1f,0f, AnimationState.MAIN_UNSTARTED)
+    var animation = ScreenValuedTypedAnimation(1f, 0f, AnimationState.MAIN_UNSTARTED)
 
     /**
      * The screen that should be shown after the animation, if it isn't another page of the [MainOptionsScreen]
@@ -93,17 +93,19 @@ open class MainOptionsScreen(val parent: Screen? = null) : Screen(Text.empty()) 
 
     private var popUp: PopUp? = null
 
-    private var popUpAnimation: ScreenValuedAnimation = ScreenValuedAnimation(1f,1f)
+    private var popUpAnimation: ScreenValuedAnimation = ScreenValuedAnimation(1f, 1f)
 
     /**
      * The textures of the close button
      */
-    private val closeTextures: ButtonTextures = ButtonTextures(Identifier.of("bewisclient","textures/sprites/close_button.png"), Identifier.of("bewisclient","textures/sprites/close_button_highlighted.png"))
+    private val closeTextures: ButtonTextures =
+        ButtonTextures(Identifier.of("bewisclient", "textures/sprites/close_button.png"), Identifier.of("bewisclient", "textures/sprites/close_button_highlighted.png"))
 
     /**
      * The textures of the back button
      */
-    private val backTextures: ButtonTextures = ButtonTextures(Identifier.of("bewisclient","textures/sprites/back_button.png"),Identifier.of("bewisclient","textures/sprites/back_button_highlighted.png"))
+    private val backTextures: ButtonTextures =
+        ButtonTextures(Identifier.of("bewisclient", "textures/sprites/back_button.png"), Identifier.of("bewisclient", "textures/sprites/back_button_highlighted.png"))
 
     /**
      * An [ArrayList] of type [ArrayList] which collects the collection of every [OptionElement] on each slice
@@ -111,7 +113,7 @@ open class MainOptionsScreen(val parent: Screen? = null) : Screen(Text.empty()) 
     var allElements = arrayListOf(ElementList.main())
 
     init {
-        if(Bewisclient.update!=null && !Bewisclient.updateInformed) {
+        if (Bewisclient.update != null && !Bewisclient.updateInformed) {
             Bewisclient.updateInformed = true
 
             Dialog.addDialog(ClickDialog(Bewisclient.getTranslationText("info.new_update"), Bewisclient.getTranslationText("info.download")) {
@@ -148,36 +150,36 @@ open class MainOptionsScreen(val parent: Screen? = null) : Screen(Text.empty()) 
             this.renderPanoramaBackground(context, delta)
         }
 
-        if(popUp!=null) {
-            mouseX=Int.MIN_VALUE
-            mouseY=Int.MIN_VALUE
+        if (popUp != null) {
+            mouseX = Int.MIN_VALUE
+            mouseY = Int.MIN_VALUE
         }
 
         context!!
 
         correctScroll()
         var animationFrame = 1F
-        if(animation.hasEnded() && animation.getType()!=AnimationState.STABLE) {
-            if(animation.getType()==AnimationState.MAIN && animation.endValue==0f) {
+        if (animation.hasEnded() && animation.getType() != AnimationState.STABLE) {
+            if (animation.getType() == AnimationState.MAIN && animation.endValue == 0f) {
                 client?.setScreen(animatedScreen)
                 return
             }
-            if (animation.getType()==AnimationState.SLIDE) {
+            if (animation.getType() == AnimationState.SLIDE) {
                 if (animation.endValue == 0f) {
-                    scrolls.removeAt(scrolls.size-1)
-                    allElements.removeAt(allElements.size-1)
+                    scrolls.removeAt(scrolls.size - 1)
+                    allElements.removeAt(allElements.size - 1)
                 } else {
                     slice++
                 }
             }
             animation = JustTypedScreenAnimation(AnimationState.STABLE)
         }
-        if(animation.getType()!=AnimationState.STABLE) {
+        if (animation.getType() != AnimationState.STABLE) {
             animationFrame = animation.getValue()
         }
 
-        var middleAnimationFrame = 1-animationFrame
-        if(animation.getType()==AnimationState.SLIDE)
+        var middleAnimationFrame = 1 - animationFrame
+        if (animation.getType() == AnimationState.SLIDE)
             animationFrame = 1f
         else
             middleAnimationFrame = 1f
@@ -187,52 +189,56 @@ open class MainOptionsScreen(val parent: Screen? = null) : Screen(Text.empty()) 
         }
 
         context.fill(
-            ((this.width/4) +4-6+6*animationFrame).toInt(),0,
-            ((this.width-this.width/4-2)-2+6-6*animationFrame).toInt(),this.height,
-            ((0x88*animationFrame).toLong()*0x1000000).toInt()
+            ((this.width / 4) + 4 - 6 + 6 * animationFrame).toInt(), 0,
+            ((this.width - this.width / 4 - 2) - 2 + 6 - 6 * animationFrame).toInt(), this.height,
+            ((0x88 * animationFrame).toLong() * 0x1000000).toInt()
         )
 
         bottomAnimation.forEach {
             it.y = (height - (24 * animationFrame)).toInt()
         }
 
-        val width = (this.width* scale.toDouble()).toInt()
-        val height = (this.height* scale.toDouble()).toInt()
+        val width = (this.width * scale.toDouble()).toInt()
+        val height = (this.height * scale.toDouble()).toInt()
 
         context.matrices.push()
-        context.matrices.scale(1f/ scale,1f/ scale,1f/ scale)
+        context.matrices.scale(1f / scale, 1f / scale, 1f / scale)
 
         var h = 4 + scrolls[slice].toInt()
 
-        normalOffset = (width/2*(middleAnimationFrame-1)).roundToInt()
+        normalOffset = (width / 2 * (middleAnimationFrame - 1)).roundToInt()
 
-        context.matrices.translate(normalOffset.toFloat(),0f,0f)
+        context.matrices.translate(normalOffset.toFloat(), 0f, 0f)
 
-        currentScissors = Rectangle2D((width/4+4*animationFrame).toInt()-normalOffset,0, (width-(width/4+4*animationFrame)).toInt()-normalOffset,(height))
-        context.enableScissor(currentScissors.x,currentScissors.y,currentScissors.x2,currentScissors.y2)
+        currentScissors = Rectangle2D((width / 4 + 4 * animationFrame).toInt() - normalOffset, 0, (width - (width / 4 + 4 * animationFrame)).toInt() - normalOffset, (height))
+        context.enableScissor(currentScissors.x, currentScissors.y, currentScissors.x2, currentScissors.y2)
 
-        allElements[slice].forEach {element ->
-            h+=8+element.render(context,
-                    width/4+10,
-                    h,
-                    width/2-20,
-                    (mouseX* scale).toInt(),
-                    (mouseY* scale).toInt(),
-                    max(10,floor(animationFrame*255).toLong() )*0x1000000L)
+        allElements[slice].forEach { element ->
+            h += 8 + element.render(
+                context,
+                width / 4 + 10,
+                h,
+                width / 2 - 20,
+                (mouseX * scale).toInt(),
+                (mouseY * scale).toInt(),
+                max(10, floor(animationFrame * 255).toLong()) * 0x1000000L
+            )
         }
 
         totalHeight = h - scrolls[slice].toInt() + 8
 
-        if(animation.getType()==AnimationState.SLIDE) {
-            h = 4  + scrolls[slice+1].toInt()
-            allElements[slice+1].forEach {element ->
-                h+=8+element.render(context,
-                        width/4+10 + width/2,
-                        h,
-                        width/2-20,
-                        (mouseX* scale).toInt(),
-                        (mouseY* scale).toInt(),
-                        max(10,floor(animationFrame*255).toLong() )*0x1000000L)
+        if (animation.getType() == AnimationState.SLIDE) {
+            h = 4 + scrolls[slice + 1].toInt()
+            allElements[slice + 1].forEach { element ->
+                h += 8 + element.render(
+                    context,
+                    width / 4 + 10 + width / 2,
+                    h,
+                    width / 2 - 20,
+                    (mouseX * scale).toInt(),
+                    (mouseY * scale).toInt(),
+                    max(10, floor(animationFrame * 255).toLong()) * 0x1000000L
+                )
             }
         }
 
@@ -241,104 +247,114 @@ open class MainOptionsScreen(val parent: Screen? = null) : Screen(Text.empty()) 
         context.matrices.pop()
 
         context.matrices.push()
-        context.matrices.translate(0f,0f,1000f)
+        context.matrices.translate(0f, 0f, 1000f)
 
-        context.enableScissor(((this.width/4) +4-6+6*animationFrame).toInt(),(this.height-28*animationFrame).toInt(),
-            ((this.width-this.width/4-2)-2+6-6*animationFrame).toInt(),this.height)
-        context.fill(0,0,width,height, ((0xD0*animationFrame).toLong()*0x1000000).toInt())
+        context.enableScissor(
+            ((this.width / 4) + 4 - 6 + 6 * animationFrame).toInt(), (this.height - 28 * animationFrame).toInt(),
+            ((this.width - this.width / 4 - 2) - 2 + 6 - 6 * animationFrame).toInt(), this.height
+        )
+        context.fill(0, 0, width, height, ((0xD0 * animationFrame).toLong() * 0x1000000).toInt())
         context.disableScissor()
 
         for (drawable in (this as ScreenMixin).getDrawables()) {
-            if(drawable is ClickableWidget)
-                drawable.setAlpha(max(0.05f,animationFrame))
+            if (drawable is ClickableWidget)
+                drawable.setAlpha(max(0.05f, animationFrame))
             drawable.render(context, mouseX, mouseY, delta)
         }
 
         context.matrices.pop()
 
-        fillGradient(context, (this.width/4) -2,0, ((this.width/4)+6*animationFrame).toInt()-2,this.height,0,
-            ((0xFF*animationFrame).toLong()*0x1000000).toInt()
+        fillGradient(
+            context, (this.width / 4) - 2, 0, ((this.width / 4) + 6 * animationFrame).toInt() - 2, this.height, 0,
+            ((0xFF * animationFrame).toLong() * 0x1000000).toInt()
         )
-        fillGradient(context, (this.width-(this.width/4)-6*animationFrame).toInt()+2,0,this.width- (this.width/4) +2,this.height,
-            ((0xFF*animationFrame).toLong()*0x1000000).toInt(), 0)
+        fillGradient(
+            context, (this.width - (this.width / 4) - 6 * animationFrame).toInt() + 2, 0, this.width - (this.width / 4) + 2, this.height,
+            ((0xFF * animationFrame).toLong() * 0x1000000).toInt(), 0
+        )
 
         context.matrices.push()
 
-        context.matrices.translate(0f,0f,100f)
-        context.matrices.scale(1f/ scale,1f/ scale,1f/ scale)
-        Dialog.render(context,width,mouseX,mouseY)
-        context.matrices.translate(0f,0f,-100f)
+        context.matrices.translate(0f, 0f, 100f)
+        context.matrices.scale(1f / scale, 1f / scale, 1f / scale)
+        Dialog.render(context, width, mouseX, mouseY)
+        context.matrices.translate(0f, 0f, -100f)
 
-        if(popUpAnimation.getProgress()==1f && popUpAnimation.getValue()==0f) {
+        if (popUpAnimation.getProgress() == 1f && popUpAnimation.getValue() == 0f) {
             popUp = null
         }
 
-        context.matrices.translate(0f,0f,10000f)
-        popUp?.render(context, (mX* scale).toInt(),
-            (mY* scale).toInt(), delta, (width/2-popUp!!.getWidth()/2), (height/3-popUp!!.getHeight()/2),
+        context.matrices.translate(0f, 0f, 10000f)
+        popUp?.render(
+            context, (mX * scale).toInt(),
+            (mY * scale).toInt(), delta, (width / 2 - popUp!!.getWidth() / 2), (height / 3 - popUp!!.getHeight() / 2),
             popUpAnimation.getValue().coerceAtLeast(4 / 255f)
         )
-        context.matrices.translate(0f,0f,-10000f)
+        context.matrices.translate(0f, 0f, -10000f)
 
         context.matrices.pop()
     }
 
     fun setPopUp(popUp: PopUp?, animate: Boolean) {
-        if(!animate) {
+        if (!animate) {
             this.popUp = popUp
-            popUpAnimation = ScreenValuedAnimation(1f,1f)
-        } else if(popUp!=null) {
+            popUpAnimation = ScreenValuedAnimation(1f, 1f)
+        } else if (popUp != null) {
             this.popUp = popUp
-            popUpAnimation = ScreenValuedAnimation(0f,1f)
+            popUpAnimation = ScreenValuedAnimation(0f, 1f)
         } else {
-            popUpAnimation = ScreenValuedAnimation(1f,0f)
+            popUpAnimation = ScreenValuedAnimation(1f, 0f)
         }
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
-        if(popUp!=null) {
-            popUp?.mouseClicked((mouseX.toInt()* scale).toInt(),
-                (mouseY.toInt()* scale).toInt(), ((width* scale/2-popUp!!.getWidth()/2).toInt()), ((height* scale/3-popUp!!.getHeight()/2).toInt()))
+        if (popUp != null) {
+            popUp?.mouseClicked(
+                (mouseX.toInt() * scale).toInt(),
+                (mouseY.toInt() * scale).toInt(), ((width * scale / 2 - popUp!!.getWidth() / 2).toInt()), ((height * scale / 3 - popUp!!.getHeight() / 2).toInt())
+            )
             return true
         }
         clicked = true
-        if(animation.getType()==AnimationState.STABLE && mouseX>width/4 && mouseX<width/4*3 && mouseY<height-28) {
-            allElements[slice].forEach {it.mouseClicked(mouseX* scale, mouseY* scale, button, this)}
+        if (animation.getType() == AnimationState.STABLE && mouseX > width / 4 && mouseX < width / 4 * 3 && mouseY < height - 28) {
+            allElements[slice].forEach { it.mouseClicked(mouseX * scale, mouseY * scale, button, this) }
         }
         Dialog.mouseClicked(mouseX, mouseY, button)
         return super.mouseClicked(mouseX, mouseY, button)
     }
 
     override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int): Boolean {
-        popUp?.mouseReleased((mouseX.toInt()* scale).toInt(),
-            (mouseY.toInt()* scale).toInt(), ((width* scale/2-popUp!!.getWidth()/2).toInt()), ((height* scale/3-popUp!!.getHeight()/2).toInt()))
+        popUp?.mouseReleased(
+            (mouseX.toInt() * scale).toInt(),
+            (mouseY.toInt() * scale).toInt(), ((width * scale / 2 - popUp!!.getWidth() / 2).toInt()), ((height * scale / 3 - popUp!!.getHeight() / 2).toInt())
+        )
         clicked = false
-        allElements[slice].forEach {it.mouseReleased(mouseX* scale, mouseY* scale, button)}
+        allElements[slice].forEach { it.mouseReleased(mouseX * scale, mouseY * scale, button) }
         return super.mouseReleased(mouseX, mouseY, button)
     }
 
     override fun charTyped(chr: Char, modifiers: Int): Boolean {
-        if(popUp!=null) {
+        if (popUp != null) {
             return false
         }
-        (allElements[slice]).forEach {it.charTyped(chr, modifiers)}
+        (allElements[slice]).forEach { it.charTyped(chr, modifiers) }
         return super.charTyped(chr, modifiers)
     }
 
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
-        if(popUp==null) {
-            (allElements[slice]).forEach {it.keyPressed(keyCode, scanCode, modifiers)}
+        if (popUp == null) {
+            (allElements[slice]).forEach { it.keyPressed(keyCode, scanCode, modifiers) }
         }
         return super.keyPressed(keyCode, scanCode, modifiers)
     }
 
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, deltaX: Double, deltaY: Double): Boolean {
-        if(popUp!=null) {
-            popUp?.mouseDragged(mouseX.toInt(),mouseY.toInt(),deltaX,deltaY, (((width/2-popUp!!.getWidth())* scale/2).toInt()), (((height/3-popUp!!.getHeight())* scale/2).toInt()))
+        if (popUp != null) {
+            popUp?.mouseDragged(mouseX.toInt(), mouseY.toInt(), deltaX, deltaY, (((width / 2 - popUp!!.getWidth()) * scale / 2).toInt()), (((height / 3 - popUp!!.getHeight()) * scale / 2).toInt()))
             return false
         }
-        if(animation.getType()==AnimationState.STABLE && mouseX>width/4 && mouseX<width/4*3 && mouseY<height-28) {
-            allElements[slice].forEach {it.onDrag(mouseX* scale, mouseY* scale, deltaX* scale, deltaY* scale, button)}
+        if (animation.getType() == AnimationState.STABLE && mouseX > width / 4 && mouseX < width / 4 * 3 && mouseY < height - 28) {
+            allElements[slice].forEach { it.onDrag(mouseX * scale, mouseY * scale, deltaX * scale, deltaY * scale, button) }
         }
         return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)
     }
@@ -346,30 +362,30 @@ open class MainOptionsScreen(val parent: Screen? = null) : Screen(Text.empty()) 
     override fun init() {
         bottomAnimation = arrayListOf()
 
-        if(animation.getType()==AnimationState.MAIN_UNSTARTED) {
-            animation = ScreenValuedTypedAnimation(0f,1f,AnimationState.MAIN)
+        if (animation.getType() == AnimationState.MAIN_UNSTARTED) {
+            animation = ScreenValuedTypedAnimation(0f, 1f, AnimationState.MAIN)
         }
-        bottomAnimation.add(addDrawableChild(UsableTexturedButtonWidget(width/4+8,height-24,20,20, backTextures) {
+        bottomAnimation.add(addDrawableChild(UsableTexturedButtonWidget(width / 4 + 8, height - 24, 20, 20, backTextures) {
             goBack()
         }))
-        bottomAnimation.add(addDrawableChild(UsableTexturedButtonWidget(width/4*3-28,height-24,20,20,closeTextures) {
+        bottomAnimation.add(addDrawableChild(UsableTexturedButtonWidget(width / 4 * 3 - 28, height - 24, 20, 20, closeTextures) {
             startAllAnimation(null)
         }))
         val gui_button = (addDrawableChild(ButtonWidget.builder(Bewisclient.getTranslationText("gui.edit_hud")) {
             startAllAnimation(WidgetConfigScreen(this))
-        }.dimensions(width/4+30,height-24,width/6-29,20).build()))
-        if(MinecraftClient.getInstance().world == null) {
+        }.dimensions(width / 4 + 30, height - 24, width / 6 - 29, 20).build()))
+        if (MinecraftClient.getInstance().world == null) {
             gui_button.active = false
         }
         bottomAnimation.add(gui_button)
         bottomAnimation.add(addDrawableChild(ButtonWidget.builder(Bewisclient.getTranslationText("gui.load_from_file")) {
             SettingsLoader.loadSettings()
-        }.dimensions(width/4*3-1-width/6,height-24,width/6-29,20).build()))
-        searchBar = addDrawableChild(TextFieldWidget(MinecraftClient.getInstance().textRenderer,width/2+4-width/12,height-24,width/6-8,20,Text.empty()))
+        }.dimensions(width / 4 * 3 - 1 - width / 6, height - 24, width / 6 - 29, 20).build()))
+        searchBar = addDrawableChild(TextFieldWidget(MinecraftClient.getInstance().textRenderer, width / 2 + 4 - width / 12, height - 24, width / 6 - 8, 20, Text.empty()))
         searchBar?.setChangedListener {
-            if(animation.getType()!=AnimationState.STABLE) {
-                if(it!="")
-                    searchBar!!.text=""
+            if (animation.getType() != AnimationState.STABLE) {
+                if (it != "")
+                    searchBar!!.text = ""
                 return@setChangedListener
             }
             if (!shouldNotNotifyChange) {
@@ -380,14 +396,14 @@ open class MainOptionsScreen(val parent: Screen? = null) : Screen(Text.empty()) 
                 } else {
                     val z: ArrayList<OptionElement> = Search.search(it, searchCollection)
                     z.add(HRElement())
-                    z.add(ContactElement("find_no_option","https://github.com/Bewis09/Bewisclient-2/issues/new?labels=Type:%20Enhancement,Part:%20Option&assignee=Bewis09&title=New%20Option:%20"))
+                    z.add(ContactElement("find_no_option", "https://github.com/Bewis09/Bewisclient-2/issues/new?labels=Type:%20Enhancement,Part:%20Option&assignee=Bewis09&title=New%20Option:%20"))
                     allElements = arrayListOf(z.toTypedArray())
                     scrolls = arrayListOf(0f)
                     slice = 0
                 }
             }
         }
-        if(!shouldNotRedoFocus) {
+        if (!shouldNotRedoFocus) {
             searchBar?.isFocused = true
             focused = searchBar
         }
@@ -401,7 +417,7 @@ open class MainOptionsScreen(val parent: Screen? = null) : Screen(Text.empty()) 
      * @param screen The screen that the animation should go to or null if the screen should close
      */
     fun startAllAnimation(screen: Screen?) {
-        animation = ScreenValuedTypedAnimation(1f,0f,AnimationState.MAIN)
+        animation = ScreenValuedTypedAnimation(1f, 0f, AnimationState.MAIN)
         animatedScreen = screen
     }
 
@@ -409,11 +425,11 @@ open class MainOptionsScreen(val parent: Screen? = null) : Screen(Text.empty()) 
      * Goes back to the last slice or closes the screen if the current slice is the first one
      */
     fun goBack() {
-        if(animation.getType()==AnimationState.STABLE)
-            if(slice>0) {
+        if (animation.getType() == AnimationState.STABLE)
+            if (slice > 0) {
                 shouldNotNotifyChange = true
                 searchBar?.text = ""
-                animation = ScreenValuedTypedAnimation(1f,0f,AnimationState.SLIDE)
+                animation = ScreenValuedTypedAnimation(1f, 0f, AnimationState.SLIDE)
                 slice--
                 shouldNotNotifyChange = false
             } else {
@@ -427,15 +443,15 @@ open class MainOptionsScreen(val parent: Screen? = null) : Screen(Text.empty()) 
      * @param elements Every [OptionElement] of the new slice
      */
     fun openNewSlice(elements: Array<OptionElement>) {
-        if(animation.getType() == AnimationState.STABLE) {
+        if (animation.getType() == AnimationState.STABLE) {
             allElements.add(elements)
             scrolls.add(0F)
-            animation = ScreenValuedTypedAnimation(0f,1f,AnimationState.SLIDE)
+            animation = ScreenValuedTypedAnimation(0f, 1f, AnimationState.SLIDE)
         }
     }
 
     override fun close() {
-        if(popUp!=null) return setPopUp(null,true)
+        if (popUp != null) return setPopUp(null, true)
         goBack()
     }
 
@@ -489,13 +505,13 @@ open class MainOptionsScreen(val parent: Screen? = null) : Screen(Text.empty()) 
      * Corrects the scroll in the correct range
      */
     fun correctScroll() {
-        scrolls[slice]=max((height* scale -32-totalHeight),scrolls[slice])
-        scrolls[slice]=min(0f,scrolls[slice])
+        scrolls[slice] = max((height * scale - 32 - totalHeight), scrolls[slice])
+        scrolls[slice] = min(0f, scrolls[slice])
     }
 
     override fun mouseScrolled(mouseX: Double, mouseY: Double, horizontalAmount: Double, verticalAmount: Double): Boolean {
-        if(animation.getType()==AnimationState.STABLE)
-            scrolls[slice]+=verticalAmount.toFloat()*20
+        if (animation.getType() == AnimationState.STABLE)
+            scrolls[slice] += verticalAmount.toFloat() * 20
         correctScroll()
         return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)
     }
@@ -520,7 +536,7 @@ open class MainOptionsScreen(val parent: Screen? = null) : Screen(Text.empty()) 
         /**
          * The cached scale, that cannot change while clicking a mouse button for preventing scale change, while fading the scale fader
          */
-        var laS = 1.001f/ options_menu.scale.get()
+        var laS = 1.001f / options_menu.scale.get()
 
         /**
          * Indicates if a mouse button is clicked
@@ -532,13 +548,13 @@ open class MainOptionsScreen(val parent: Screen? = null) : Screen(Text.empty()) 
          */
         val scale: Float
             get() {
-                if(!clicked) {
-                    laS = 1.001f/options_menu.scale.get()
+                if (!clicked) {
+                    laS = 1.001f / options_menu.scale.get()
                 }
                 return laS
             }
 
-        var currentScissors: Rectangle2D = Rectangle2D(0,0,0,0)
+        var currentScissors: Rectangle2D = Rectangle2D(0, 0, 0, 0)
 
         var normalOffset = 0
     }

@@ -13,7 +13,7 @@ import net.minecraft.client.render.RenderTickCounter
 /**
  * A [HudRenderCallback] that renders the Widgets
  */
-class WidgetRenderer: HudRenderCallback {
+class WidgetRenderer : HudRenderCallback {
 
     companion object {
         val effectWidget = EffectWidget()
@@ -46,7 +46,7 @@ class WidgetRenderer: HudRenderCallback {
     }
 
     override fun onHudRender(drawContext: DrawContext?, tickCounter: RenderTickCounter) {
-        if(MinecraftClient.getInstance().currentScreen !is WidgetConfigScreen && !MinecraftClient.getInstance().options.hudHidden) {
+        if (MinecraftClient.getInstance().currentScreen !is WidgetConfigScreen && !MinecraftClient.getInstance().options.hudHidden) {
             widgets.forEach {
                 if (drawContext != null && it.isEnabled()) {
                     it.render(drawContext)

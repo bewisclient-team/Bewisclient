@@ -26,14 +26,16 @@ object Updater {
             return
         }
 
-        if(!Settings.experimental.auto_update.get()) return
+        if (!Settings.experimental.auto_update.get()) return
 
-        val file = File(FabricLoader.getInstance().gameDir.pathString+"\\bewisclient\\download\\"+ update!!["name"].asString.lowercase(
-            Locale.getDefault()
-        ).replace(" ", "-")+".jar")
+        val file = File(
+            FabricLoader.getInstance().gameDir.pathString + "\\bewisclient\\download\\" + update!!["name"].asString.lowercase(
+                Locale.getDefault()
+            ).replace(" ", "-") + ".jar"
+        )
 
         file.parentFile.mkdirs()
-        if(!file.exists()) {
+        if (!file.exists()) {
             var fileURL: String? = null
 
             for (i in version.get("files").asJsonArray) {
@@ -42,16 +44,16 @@ object Updater {
                 }
             }
 
-            if(fileURL!=null) {
+            if (fileURL != null) {
                 val stream = URI(fileURL).toURL().openStream()
 
                 stream.copyTo(file.outputStream())
             }
         }
 
-        val f = File(FabricLoader.getInstance().gameDir.pathString+"\\bewisclient\\java\\JavaUpdater.class")
+        val f = File(FabricLoader.getInstance().gameDir.pathString + "\\bewisclient\\java\\JavaUpdater.class")
 
-        if(!f.exists()) {
+        if (!f.exists()) {
             f.parentFile.mkdirs()
             f.createNewFile()
 

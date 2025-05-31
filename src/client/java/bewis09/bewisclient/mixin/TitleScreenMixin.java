@@ -6,7 +6,6 @@ import bewis09.bewisclient.screen.MainOptionsScreen;
 import bewis09.bewisclient.screen.WelcomingScreen;
 import bewis09.bewisclient.server.ServerConnection;
 import bewis09.bewisclient.settingsLoader.Settings;
-import bewis09.bewisclient.settingsLoader.SettingsLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ButtonTextures;
 import net.minecraft.client.gui.screen.Screen;
@@ -19,8 +18,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static bewis09.bewisclient.settingsLoader.Settings.*;
-
 @Mixin(TitleScreen.class)
 public class TitleScreenMixin extends Screen {
 
@@ -28,14 +25,14 @@ public class TitleScreenMixin extends Screen {
         super(title);
     }
 
-    @Inject(method = "init",at=@At("HEAD"))
+    @Inject(method = "init", at = @At("HEAD"))
     private void init(CallbackInfo ci) {
-        if(Settings.Companion.getFullbright().get())
+        if (Settings.Companion.getFullbright().get())
             MinecraftClient.getInstance().options.getGamma().setValue(Settings.Companion.getFullbright().getFullbright_value().get().doubleValue());
-        if(Settings.Companion.getOptions_menu().getShow_title_menu().get())
-            addDrawableChild(new UsableTexturedButtonWidget(width/2+104,this.height / 4 + 72,20,20,new ButtonTextures(Identifier.of("bewisclient","textures/sprites/bewisclient_button.png"),Identifier.of("bewisclient","textures/sprites/bewisclient_button_highlighted.png")),(b)->{
+        if (Settings.Companion.getOptions_menu().getShow_title_menu().get())
+            addDrawableChild(new UsableTexturedButtonWidget(width / 2 + 104, this.height / 4 + 72, 20, 20, new ButtonTextures(Identifier.of("bewisclient", "textures/sprites/bewisclient_button.png"), Identifier.of("bewisclient", "textures/sprites/bewisclient_button_highlighted.png")), (b) -> {
                 assert client != null;
-                if(!Settings.Companion.getOptions_menu().getShown_start_menu().get()) {
+                if (!Settings.Companion.getOptions_menu().getShown_start_menu().get()) {
                     client.setScreen(new WelcomingScreen());
                 } else {
                     client.setScreen(new MainOptionsScreen());

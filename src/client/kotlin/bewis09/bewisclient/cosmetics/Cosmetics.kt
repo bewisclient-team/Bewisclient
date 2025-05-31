@@ -14,6 +14,6 @@ object Cosmetics {
     }
 
     fun registerCosmetic(cosmetic: Cosmetic, default: Boolean) {
-        cosmetic.type.registerCosmetic(cosmetic.id,cosmetic,default)
+        cosmetic.type.registerCosmetic(cosmetic.id, cosmetic, default)
     }
 }

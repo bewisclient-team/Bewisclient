@@ -7,7 +7,8 @@ import bewis09.bewisclient.util.reduce
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 
-class MultipleBooleanSetting(settings: String, path: Array<String>, val children: Array<BooleanSetting>): Setting<JsonObject, ElementOptions>(settings, path.copyOfRange(0,path.size-1), path.last(), toDefaultJsonObject(children), ElementOptions()) {
+class MultipleBooleanSetting(settings: String, path: Array<String>, val children: Array<BooleanSetting>) :
+    Setting<JsonObject, ElementOptions>(settings, path.copyOfRange(0, path.size - 1), path.last(), toDefaultJsonObject(children), ElementOptions()) {
     override fun get(): JsonObject {
         throw InvalidSettingsGetterException()
     }
@@ -20,10 +21,10 @@ class MultipleBooleanSetting(settings: String, path: Array<String>, val children
         return MultipleBooleanOptionElement(this)
     }
 
-    class InvalidSettingsGetterException: Exception("Tried to get an JsonObject setting, which is not allowed")
-    class InvalidSettingsSetterException: Exception("Tried to set an JsonObject setting, which is not allowed")
+    class InvalidSettingsGetterException : Exception("Tried to get an JsonObject setting, which is not allowed")
+    class InvalidSettingsSetterException : Exception("Tried to set an JsonObject setting, which is not allowed")
 }
 
 fun toDefaultJsonObject(children: Array<BooleanSetting>): JsonObject {
-    return children.reduce({ acc, booleanSetting -> acc.apply { acc.add(booleanSetting.id, JsonPrimitive(booleanSetting.id)) }  }, JsonObject())
+    return children.reduce({ acc, booleanSetting -> acc.apply { acc.add(booleanSetting.id, JsonPrimitive(booleanSetting.id)) } }, JsonObject())
 }

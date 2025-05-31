@@ -28,12 +28,12 @@ class WingFeatureRenderer(context: FeatureRendererContext<PlayerEntityRenderStat
         part1 = modelPartData.addChild(
             "wing", ModelPartBuilder.create().uv(0, 0)
                 .cuboid(1f, -2f, 2f, 0f, 16f, 16f, Dilation(0.001f)),
-            ModelTransform.pivot(0.0f, 0f, 2f)
+            ModelTransform.origin(0.0f, 0f, 2f)
         ).createPart(32, 16)
         part2 = modelPartData.addChild(
             "wing", ModelPartBuilder.create().uv(0, 0)
                 .cuboid(-1f, -2f, 2f, 0f, 16f, 16f, Dilation(0.001f)),
-            ModelTransform.pivot(0.0f, 0f, 2f)
+            ModelTransform.origin(0.0f, 0f, 2f)
         ).createPart(32, 16)
     }
 
@@ -49,15 +49,15 @@ class WingFeatureRenderer(context: FeatureRendererContext<PlayerEntityRenderStat
                 part1.yaw = (body.yaw + abs((clamped_value - 30).toDouble()) / 30f).toFloat()
                 part1.pitch = body.pitch
                 part1.roll = body.roll
-                part1.pivotX = body.pivotX
-                part1.pivotY = body.pivotY
-                part1.pivotZ = body.pivotZ + 2
+                part1.originX = body.originX
+                part1.originY = body.originY
+                part1.originZ = body.originZ + 2
                 part2.yaw = (body.yaw - abs((clamped_value - 30).toDouble()) / 30f).toFloat()
                 part2.pitch = body.pitch
                 part2.roll = body.roll
-                part2.pivotX = body.pivotX
-                part2.pivotY = body.pivotY
-                part2.pivotZ = body.pivotZ + 2
+                part2.originX = body.originX
+                part2.originY = body.originY
+                part2.originZ = body.originZ + 2
                 part1.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(texture, false)), light, OverlayTexture.DEFAULT_UV)
                 part2.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(texture, false)), light, OverlayTexture.DEFAULT_UV)
             }

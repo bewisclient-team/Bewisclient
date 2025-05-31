@@ -12,7 +12,10 @@ import net.minecraft.client.network.ClientPlayerEntity
 import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.LivingEntity
-import net.minecraft.entity.passive.*
+import net.minecraft.entity.passive.AxolotlEntity
+import net.minecraft.entity.passive.LlamaEntity
+import net.minecraft.entity.passive.RabbitEntity
+import net.minecraft.entity.passive.TraderLlamaEntity
 import net.minecraft.item.ItemStack
 import net.minecraft.registry.Registries
 import net.minecraft.registry.tag.BlockTags
@@ -32,7 +35,7 @@ import kotlin.math.floor
 /**
  * A [Widget] to display information of the block/entity you are looking at
  */
-class TiwylaWidget: Widget<SettingTypes.TiwylaWidgetSettingsObject>("tiwyla") {
+class TiwylaWidget : Widget<SettingTypes.TiwylaWidgetSettingsObject>("tiwyla") {
 
     /**
      * The font [Identifier] for half hearts
@@ -44,42 +47,42 @@ class TiwylaWidget: Widget<SettingTypes.TiwylaWidgetSettingsObject>("tiwyla") {
          * A [HashMap] of the block which have a property displayed
          */
         val extraInfo = hashMapOf<Block, Property<*>>(
-                Pair(Blocks.REDSTONE_WIRE, RedstoneWireBlock.POWER),
-                Pair(Blocks.SCULK_SENSOR, SculkSensorBlock.POWER),
-                Pair(Blocks.NOTE_BLOCK, NoteBlock.NOTE),
-                Pair(Blocks.HOPPER, HopperBlock.ENABLED),
-                Pair(Blocks.TNT, TntBlock.UNSTABLE),
-                Pair(Blocks.TRIPWIRE_HOOK, TripwireBlock.ATTACHED),
-                Pair(Blocks.TRIPWIRE, TripwireBlock.ATTACHED),
-                Pair(Blocks.SCULK_SHRIEKER, SculkShriekerBlock.CAN_SUMMON)
+            Pair(Blocks.REDSTONE_WIRE, RedstoneWireBlock.POWER),
+            Pair(Blocks.SCULK_SENSOR, SculkSensorBlock.POWER),
+            Pair(Blocks.NOTE_BLOCK, NoteBlock.NOTE),
+            Pair(Blocks.HOPPER, HopperBlock.ENABLED),
+            Pair(Blocks.TNT, TntBlock.UNSTABLE),
+            Pair(Blocks.TRIPWIRE_HOOK, TripwireBlock.ATTACHED),
+            Pair(Blocks.TRIPWIRE, TripwireBlock.ATTACHED),
+            Pair(Blocks.SCULK_SHRIEKER, SculkShriekerBlock.CAN_SUMMON)
         )
 
         /**
          * A [HashMap] of the entities which have special information displayed
          */
         val entityExtraInfo = hashMapOf<EntityType<*>, EntityListener>(
-                Pair(EntityType.CAT, EntityListener {
-                    if(it is CatEntity) Registries.CAT_VARIANT.getId(it.variant.value())?.path else ""
-                }),
-                Pair(EntityType.FROG, EntityListener {
-                    if(it is FrogEntity) Registries.FROG_VARIANT.getId(it.variant.value())?.path else ""
-                }),
-                Pair(EntityType.AXOLOTL, EntityListener {
-                    if(it is AxolotlEntity) it.variant.name else ""
-                }),
-                Pair(EntityType.HORSE, EntityListener {
-                    if (it is HorseEntity) it.variant.name.lowercase(Locale.getDefault()) + ", " + it.marking.name.lowercase(Locale.getDefault()) else ""
-                }),
-                Pair(EntityType.RABBIT, EntityListener {
-                    if(it is RabbitEntity) it.variant.name else ""
-                }),
-                Pair(EntityType.LLAMA, EntityListener {
-                    if(it is LlamaEntity) it.variant.name.lowercase(Locale.getDefault()) + ", ${Bewisclient.getTranslatedString("strength")}: " + it.strength.toString() else ""
-                }),
-                Pair(EntityType.TRADER_LLAMA, EntityListener {
-                    if(it is TraderLlamaEntity) it.variant.name.lowercase(Locale.getDefault()) + ", ${Bewisclient.getTranslatedString("strength")}: " + it.strength.toString() else ""
-                }),
-                Pair(EntityType.WITHER, EntityListener {if(it.health<150) Bewisclient.getTranslatedString("wither.second_stage") else Bewisclient.getTranslatedString("wither.first_stage")})
+//                Pair(EntityType.CAT, EntityListener {
+//                    if(it is CatEntity) Registries.CAT_VARIANT.getId(it.variant.value())?.path else ""
+//                }),
+//                Pair(EntityType.FROG, EntityListener {
+//                    if(it is FrogEntity) Registries.FROG_VARIANT.getId(it.variant.value())?.path else ""
+//                }),
+            Pair(EntityType.AXOLOTL, EntityListener {
+                if (it is AxolotlEntity) it.variant.name else ""
+            }),
+//                Pair(EntityType.HORSE, EntityListener {
+//                    if (it is HorseEntity) it.variant.name.lowercase(Locale.getDefault()) + ", " + it.marking.name.lowercase(Locale.getDefault()) else ""
+//                }),
+            Pair(EntityType.RABBIT, EntityListener {
+                if (it is RabbitEntity) it.variant.name else ""
+            }),
+            Pair(EntityType.LLAMA, EntityListener {
+                if (it is LlamaEntity) it.variant.name.lowercase(Locale.getDefault()) + ", ${Bewisclient.getTranslatedString("strength")}: " + it.strength.toString() else ""
+            }),
+            Pair(EntityType.TRADER_LLAMA, EntityListener {
+                if (it is TraderLlamaEntity) it.variant.name.lowercase(Locale.getDefault()) + ", ${Bewisclient.getTranslatedString("strength")}: " + it.strength.toString() else ""
+            }),
+            Pair(EntityType.WITHER, EntityListener { if (it.health < 150) Bewisclient.getTranslatedString("wither.second_stage") else Bewisclient.getTranslatedString("wither.first_stage") })
         )
     }
 
@@ -90,31 +93,35 @@ class TiwylaWidget: Widget<SettingTypes.TiwylaWidgetSettingsObject>("tiwyla") {
         return getTextFromType(MinecraftClient.getInstance().crosshairTarget)
     }
 
-    override fun render(drawContext: DrawContext,x:Int,y:Int) {
-        if(getText().size==0) return
+    override fun render(drawContext: DrawContext, x: Int, y: Int) {
+        if (getText().size == 0) return
         drawContext.matrices.push()
-        drawContext.matrices.scale(settings.size.get(), settings.size.get(),1F)
-        drawContext.fill(x,y,x+getOriginalWidth(),y+getOriginalHeight(), ColorHelper.getArgb(((settings.transparency.get().times(255F)).toInt()),0,0,0))
-        drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, getText()[0],x+getOriginalWidth()/2,y+4,(0xFF000000L+settings.top_color.get().getColor()).toInt())
-        drawContext.matrices.scale(0.7F,0.7F,1F)
+        drawContext.matrices.scale(settings.size.get(), settings.size.get(), 1F)
+        drawContext.fill(x, y, x + getOriginalWidth(), y + getOriginalHeight(), ColorHelper.getArgb(((settings.transparency.get().times(255F)).toInt()), 0, 0, 0))
+        drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, getText()[0], x + getOriginalWidth() / 2, y + 4, (0xFF000000L + settings.top_color.get().getColor()).toInt())
+        drawContext.matrices.scale(0.7F, 0.7F, 1F)
         for ((index, text) in getText().iterator().withIndex()) {
-            if(index!=0)
-                drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer,if (text.split("%")[0]=="cTH") convertToHearths(
-                    text.split("%")[1].toDouble(),
-                    text.split("%")[2].toDouble(),
-                    text.split("%")[3].toDouble()
-                ) else Text.of(text),((x+getOriginalWidth()/2)/0.7F).toInt(),((y+8*index+8)/0.7F).toInt(),(0xFF000000L+settings.bottom_color.get().getColor()).toInt())
+            if (index != 0)
+                drawContext.drawCenteredTextWithShadow(
+                    MinecraftClient.getInstance().textRenderer, if (text.split("%")[0] == "cTH") convertToHearths(
+                        text.split("%")[1].toDouble(),
+                        text.split("%")[2].toDouble(),
+                        text.split("%")[3].toDouble()
+                    ) else Text.of(text), ((x + getOriginalWidth() / 2) / 0.7F).toInt(), ((y + 8 * index + 8) / 0.7F).toInt(), (0xFF000000L + settings.bottom_color.get().getColor()).toInt()
+                )
         }
-        drawContext.matrices.scale(1/0.7F,1/0.7F,1F)
+        drawContext.matrices.scale(1 / 0.7F, 1 / 0.7F, 1F)
         val hitResult = MinecraftClient.getInstance().crosshairTarget
         if (hitResult is BlockHitResult) {
             if (settings.show_block_icon.get()) {
-                drawContext.drawItem(ItemStack(MinecraftClient.getInstance().world!!.getBlockState(hitResult.blockPos).block),x+10,y+12)
+                drawContext.drawItem(ItemStack(MinecraftClient.getInstance().world!!.getBlockState(hitResult.blockPos).block), x + 10, y + 12)
             }
 
-            if((MinecraftClient.getInstance().interactionManager as ClientPlayerInteractionManagerMixin?)!!.getCurrentBreakingProgress()!=0f && settings.show_progress_bar.get()) {
-                drawContext.drawHorizontalLine(x,
-                    floor(x+getOriginalWidth()*((MinecraftClient.getInstance().interactionManager as ClientPlayerInteractionManagerMixin?)!!.getCurrentBreakingProgress())).toInt(),y+getOriginalHeight()-1,
+            if ((MinecraftClient.getInstance().interactionManager as ClientPlayerInteractionManagerMixin?)!!.getCurrentBreakingProgress() != 0f && settings.show_progress_bar.get()) {
+                drawContext.drawHorizontalLine(
+                    x,
+                    floor(x + getOriginalWidth() * ((MinecraftClient.getInstance().interactionManager as ClientPlayerInteractionManagerMixin?)!!.getCurrentBreakingProgress())).toInt(),
+                    y + getOriginalHeight() - 1,
                     0xAAFFFFFF.toInt()
                 )
             }
@@ -124,7 +131,7 @@ class TiwylaWidget: Widget<SettingTypes.TiwylaWidgetSettingsObject>("tiwyla") {
     }
 
     override fun getOriginalWidth(): Int {
-        return 150.coerceAtLeast(MinecraftClient.getInstance().textRenderer.getWidth(if(getText().size > 0) getText()[0] else "") + 50)
+        return 150.coerceAtLeast(MinecraftClient.getInstance().textRenderer.getWidth(if (getText().size > 0) getText()[0] else "") + 50)
     }
 
     override fun getOriginalHeight(): Int {
@@ -136,12 +143,12 @@ class TiwylaWidget: Widget<SettingTypes.TiwylaWidgetSettingsObject>("tiwyla") {
      *
      * @return The multiple lines of text according to [hitResult]
      */
-    private fun getTextFromType(hitResult: HitResult?):ArrayList<String> {
-        if(hitResult==null)
+    private fun getTextFromType(hitResult: HitResult?): ArrayList<String> {
+        if (hitResult == null)
             return arrayListOf()
-        if(hitResult.type==HitResult.Type.BLOCK)
-            return getTextFromBlock(hitResult as BlockHitResult,MinecraftClient.getInstance().world!!.getBlockState(hitResult.blockPos))
-        if(hitResult.type==HitResult.Type.ENTITY)
+        if (hitResult.type == HitResult.Type.BLOCK)
+            return getTextFromBlock(hitResult as BlockHitResult, MinecraftClient.getInstance().world!!.getBlockState(hitResult.blockPos))
+        if (hitResult.type == HitResult.Type.ENTITY)
             return getTextFromEntity((hitResult as EntityHitResult).entity)
         return arrayListOf()
     }
@@ -152,13 +159,13 @@ class TiwylaWidget: Widget<SettingTypes.TiwylaWidgetSettingsObject>("tiwyla") {
      *
      * @return The text depending on the block the player is looking at
      */
-    private fun getTextFromBlock(hitResult: BlockHitResult, blockState: BlockState):ArrayList<String> {
+    private fun getTextFromBlock(hitResult: BlockHitResult, blockState: BlockState): ArrayList<String> {
         val firstLine = blockState.block.name.string
-        val secondLine = getBlockInformation(settings.first_line.get(),blockState,hitResult.blockPos)
-        val thirdLine = getBlockInformation(settings.seccond_line.get(),blockState,hitResult.blockPos)
-        val fourthLine = getBlockInformation(settings.third_line.get(),blockState,hitResult.blockPos)
+        val secondLine = getBlockInformation(settings.first_line.get(), blockState, hitResult.blockPos)
+        val thirdLine = getBlockInformation(settings.seccond_line.get(), blockState, hitResult.blockPos)
+        val fourthLine = getBlockInformation(settings.third_line.get(), blockState, hitResult.blockPos)
 
-        return arrayListOf(firstLine,secondLine,thirdLine,fourthLine)
+        return arrayListOf(firstLine, secondLine, thirdLine, fourthLine)
     }
 
     /**
@@ -172,13 +179,13 @@ class TiwylaWidget: Widget<SettingTypes.TiwylaWidgetSettingsObject>("tiwyla") {
         when (i) {
             0 -> return getTool(blockState.block)
             1 -> return getLevel(blockState.block)
-            2 -> return getBreakingTime(blockPos,blockState)
+            2 -> return getBreakingTime(blockPos, blockState)
             3 -> return getProgress() ?: getTool(blockState.block)
             4 -> return getProgress() ?: getLevel(blockState.block)
-            5 -> return getProgress() ?: getBreakingTime(blockPos,blockState)
+            5 -> return getProgress() ?: getBreakingTime(blockPos, blockState)
             6 -> return getExtra(blockState) ?: getTool(blockState.block)
             7 -> return getExtra(blockState) ?: getLevel(blockState.block)
-            8 -> return getExtra(blockState) ?: getBreakingTime(blockPos,blockState)
+            8 -> return getExtra(blockState) ?: getBreakingTime(blockPos, blockState)
         }
         return ""
     }
@@ -188,7 +195,7 @@ class TiwylaWidget: Widget<SettingTypes.TiwylaWidgetSettingsObject>("tiwyla") {
      */
     private fun getProgress(): String? {
         val s = ((MinecraftClient.getInstance().interactionManager as ClientPlayerInteractionManagerMixin?)!!.getCurrentBreakingProgress() * 100)
-        if(s==0F) {
+        if (s == 0F) {
             return null
         }
         return "${Bewisclient.getTranslatedString("progress")}: ${Math.round(s)}%"
@@ -200,7 +207,7 @@ class TiwylaWidget: Widget<SettingTypes.TiwylaWidgetSettingsObject>("tiwyla") {
      * @return The special information of the [LivingEntity] the player is looking at
      */
     private fun getExtra(entity: LivingEntity): String? {
-        return if(entityExtraInfo.contains(entity.type)) {
+        return if (entityExtraInfo.contains(entity.type)) {
             entityExtraInfo[entity.type]?.getExtra(entity)
         } else null
     }
@@ -211,7 +218,7 @@ class TiwylaWidget: Widget<SettingTypes.TiwylaWidgetSettingsObject>("tiwyla") {
      * @return The special information of the block the player is looking at
      */
     private fun getExtra(blockState: BlockState): String? {
-        return if(extraInfo.contains(blockState.block)) {
+        return if (extraInfo.contains(blockState.block)) {
             "${firstStringUp("${extraInfo[blockState.block]?.name}")}: ${blockState.get(extraInfo[blockState.block])}"
         } else null
     }
@@ -240,20 +247,20 @@ class TiwylaWidget: Widget<SettingTypes.TiwylaWidgetSettingsObject>("tiwyla") {
      *
      * @return A formatted [String] containing the time required to break a block
      */
-    private fun getBreakingTime(blockPos: BlockPos,blockState: BlockState): String {
+    private fun getBreakingTime(blockPos: BlockPos, blockState: BlockState): String {
         val player: ClientPlayerEntity = MinecraftClient.getInstance().player!!
-        if(blockState.calcBlockBreakingDelta(player,MinecraftClient.getInstance().world,blockPos)>1) {
+        if (blockState.calcBlockBreakingDelta(player, MinecraftClient.getInstance().world, blockPos) > 1) {
             return Bewisclient.getTranslatedString("instant")
         }
-        val secs = Math.round(1f/blockState.calcBlockBreakingDelta(player,MinecraftClient.getInstance().world,blockPos)*5F)/100F
-        if(secs>(3600*24)) {
-            return "${Math.round(secs/36/24)/100F} ${Bewisclient.getTranslatedString("days")}"
+        val secs = Math.round(1f / blockState.calcBlockBreakingDelta(player, MinecraftClient.getInstance().world, blockPos) * 5F) / 100F
+        if (secs > (3600 * 24)) {
+            return "${Math.round(secs / 36 / 24) / 100F} ${Bewisclient.getTranslatedString("days")}"
         }
-        if(secs>3600) {
-            return "${Math.round(secs/36)/100F} ${Bewisclient.getTranslatedString("hours")}"
+        if (secs > 3600) {
+            return "${Math.round(secs / 36) / 100F} ${Bewisclient.getTranslatedString("hours")}"
         }
-        if(secs>60) {
-            return "${Math.round(secs/6*10)/100F} ${Bewisclient.getTranslatedString("minutes")}"
+        if (secs > 60) {
+            return "${Math.round(secs / 6 * 10) / 100F} ${Bewisclient.getTranslatedString("minutes")}"
         }
         return "$secs ${Bewisclient.getTranslatedString("seconds")}"
     }
@@ -282,18 +289,18 @@ class TiwylaWidget: Widget<SettingTypes.TiwylaWidgetSettingsObject>("tiwyla") {
         val def = "${Bewisclient.getTranslatedString("mining_level")}: ${Bewisclient.getTranslatedString("mining_level.wood")}"
 
         val map = hashMapOf(
-                Pair(BlockTags.NEEDS_STONE_TOOL, "${Bewisclient.getTranslatedString("mining_level")}: ${Bewisclient.getTranslatedString("mining_level.stone")}"),
-                Pair(BlockTags.NEEDS_IRON_TOOL, "${Bewisclient.getTranslatedString("mining_level")}: ${Bewisclient.getTranslatedString("mining_level.iron")}"),
-                Pair(BlockTags.NEEDS_DIAMOND_TOOL, "${Bewisclient.getTranslatedString("mining_level")}: ${Bewisclient.getTranslatedString("mining_level.diamond")}")
+            Pair(BlockTags.NEEDS_STONE_TOOL, "${Bewisclient.getTranslatedString("mining_level")}: ${Bewisclient.getTranslatedString("mining_level.stone")}"),
+            Pair(BlockTags.NEEDS_IRON_TOOL, "${Bewisclient.getTranslatedString("mining_level")}: ${Bewisclient.getTranslatedString("mining_level.iron")}"),
+            Pair(BlockTags.NEEDS_DIAMOND_TOOL, "${Bewisclient.getTranslatedString("mining_level")}: ${Bewisclient.getTranslatedString("mining_level.diamond")}")
         )
 
         for (m in map.entries) {
-            if(block.defaultState.isIn(m.key)) {
+            if (block.defaultState.isIn(m.key)) {
                 return m.value
             }
         }
 
-        if(block.defaultState.isToolRequired) return def
+        if (block.defaultState.isToolRequired) return def
         return no
     }
 
@@ -302,10 +309,10 @@ class TiwylaWidget: Widget<SettingTypes.TiwylaWidgetSettingsObject>("tiwyla") {
      *
      * @return The information of an [Entity]
      */
-    private fun getTextFromEntity(entity: Entity):ArrayList<String> {
-        return if(entity is LivingEntity)
-            if(MinecraftClient.getInstance().isInSingleplayer && settings.show_health_information.get()) {
-                if(entity.maxHealth>20 && entity.maxHealth <= 40) {
+    private fun getTextFromEntity(entity: Entity): ArrayList<String> {
+        return if (entity is LivingEntity)
+            if (MinecraftClient.getInstance().isInSingleplayer && settings.show_health_information.get()) {
+                if (entity.maxHealth > 20 && entity.maxHealth <= 40) {
                     arrayListOf(
                         entity.name.string,
                         "cTH%${20f.coerceAtMost(entity.health)}%${20f.coerceAtMost(entity.maxHealth)}%${0}",
@@ -321,13 +328,13 @@ class TiwylaWidget: Widget<SettingTypes.TiwylaWidgetSettingsObject>("tiwyla") {
                 }
             } else {
                 arrayListOf(
-                        entity.name.string,
-                        getExtra(entity) ?: Registries.ENTITY_TYPE.getId(entity.type).toString()
+                    entity.name.string,
+                    getExtra(entity) ?: Registries.ENTITY_TYPE.getId(entity.type).toString()
                 )
             }
         else
             arrayListOf(
-                    entity.name.string
+                entity.name.string
             )
     }
 
@@ -357,10 +364,10 @@ class TiwylaWidget: Widget<SettingTypes.TiwylaWidgetSettingsObject>("tiwyla") {
             val isMaxHalf = maxhealth != (((maxhealth * 2).toInt().toDouble()) / 2).toInt().toDouble()
             val maxhealthleft = (maxhealth - ((health.toInt()) + (if (isHalf) 1 else 0)) + (if (isMaxHalf) 1 else 0)).toInt()
             return Text.literal("❤".repeat(health.toInt())).setStyle(Style.EMPTY.withColor(0xFF0000))
-                    .append(Text.literal(if (isHalf) "\uE0aa" else "").setStyle(Style.EMPTY.withFont(identifier).withColor(0xFFFFFF)))
-                    .append(Text.literal("❤".repeat(maxhealthleft)).setStyle(Style.EMPTY.withColor(0xFFFFFF)))
-                    .append(Text.literal("❤".repeat(absorbtion.toInt())).setStyle(Style.EMPTY.withColor(0xFFFF00)))
-                    .append(Text.literal(if (isAbso) "\uE0ab" else "").setStyle(Style.EMPTY.withFont(identifier).withColor(0xFFFFFF)))
+                .append(Text.literal(if (isHalf) "\uE0aa" else "").setStyle(Style.EMPTY.withFont(identifier).withColor(0xFFFFFF)))
+                .append(Text.literal("❤".repeat(maxhealthleft)).setStyle(Style.EMPTY.withColor(0xFFFFFF)))
+                .append(Text.literal("❤".repeat(absorbtion.toInt())).setStyle(Style.EMPTY.withColor(0xFFFF00)))
+                .append(Text.literal(if (isAbso) "\uE0ab" else "").setStyle(Style.EMPTY.withFont(identifier).withColor(0xFFFFFF)))
         } catch (e: Exception) {
             return Text.of("")
         }
@@ -376,6 +383,6 @@ class TiwylaWidget: Widget<SettingTypes.TiwylaWidgetSettingsObject>("tiwyla") {
     }
 
     override fun getWidgetSettings(): SettingTypes.TiwylaWidgetSettingsObject {
-        return SettingTypes.TiwylaWidgetSettingsObject(id, 5f,0f,5f,-1f, .43f, 1f)
+        return SettingTypes.TiwylaWidgetSettingsObject(id, 5f, 0f, 5f, -1f, .43f, 1f)
     }
 }

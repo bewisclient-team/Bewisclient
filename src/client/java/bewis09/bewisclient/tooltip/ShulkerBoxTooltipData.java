@@ -9,7 +9,7 @@ import net.minecraft.util.collection.DefaultedList;
  * The {@link TooltipData} for the ShulkerBoxTooltip
  *
  * @param inventory The inventory of the Shulker Box
- * @param color The color of the Shulker Box
+ * @param color     The color of the Shulker Box
  */
 public record ShulkerBoxTooltipData(DefaultedList<ItemStack> inventory, DyeColor color) implements TooltipData {
 

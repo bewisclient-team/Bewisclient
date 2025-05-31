@@ -52,7 +52,7 @@ public class MixinStatics {
     /**
      * A class originally used in the {@link BackgroundRenderer} class
      */
-    @Environment(value=EnvType.CLIENT)
+    @Environment(value = EnvType.CLIENT)
     public static class FogData {
         public final BackgroundRenderer.FogType fogType;
         public float fogStart;

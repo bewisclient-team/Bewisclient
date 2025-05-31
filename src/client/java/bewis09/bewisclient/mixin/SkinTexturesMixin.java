@@ -13,11 +13,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(SkinTextures.class)
 public abstract class SkinTexturesMixin {
 
-    @Shadow public abstract int hashCode();
+    @Shadow
+    public abstract int hashCode();
 
-    @Inject(method = "capeTexture",at=@At("HEAD"), cancellable = true)
+    @Inject(method = "capeTexture", at = @At("HEAD"), cancellable = true)
     void getCapeTexture(CallbackInfoReturnable<Identifier> cir) {
-        if(Cosmetics.INSTANCE.getCapes().getTexture() != null && MixinStatics.OwnPlayerSkinTextures.contains(this.hashCode())) {
+        if (Cosmetics.INSTANCE.getCapes().getTexture() != null && MixinStatics.OwnPlayerSkinTextures.contains(this.hashCode())) {
             cir.setReturnValue(Cosmetics.INSTANCE.getCapes().getTexture());
         }
     }

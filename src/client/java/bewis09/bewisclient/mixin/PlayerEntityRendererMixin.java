@@ -19,7 +19,7 @@ public abstract class PlayerEntityRendererMixin extends LivingEntityRenderer<Abs
         super(ctx, model, shadowRadius);
     }
 
-    @Inject(method = "<init>",at=@At("RETURN"))
+    @Inject(method = "<init>", at = @At("RETURN"))
     public void inject(EntityRendererFactory.Context ctx, boolean slim, CallbackInfo ci) {
         this.addFeature(new WingFeatureRenderer(this));
         this.addFeature(new HatFeatureRenderer(this));

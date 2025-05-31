@@ -17,7 +17,7 @@ object NumberFormatter {
      * @return The [String] with the specific number of digits after the decimal point
      */
     fun withAfterPointZero(number: Double, afterPoint: Int): String {
-        if(afterPoint == 0) return round(number).toString()
+        if (afterPoint == 0) return round(number).toString()
         val v: Double = Math.round(number * 10.0.pow(afterPoint)) / 10.0.pow(afterPoint)
         val str = StringBuilder(v.toString())
         while (str.split(".").size == 1 || str.split(".")[1].length < afterPoint) {
@@ -36,7 +36,7 @@ object NumberFormatter {
      * @return The [String] with a specific number of digits
      */
     fun zeroBefore(number: Int, count: Int): String {
-        return zeroBefore(number, count,10)
+        return zeroBefore(number, count, 10)
     }
 
     /**

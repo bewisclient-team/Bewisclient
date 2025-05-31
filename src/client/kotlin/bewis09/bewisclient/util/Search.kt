@@ -7,8 +7,8 @@ package bewis09.bewisclient.util
  */
 object Search {
 
-    fun <K: SearchableElement<K>> collect(elements: Array<K>): Array<(String) -> K?> {
-        val list = arrayListOf<(String)->K?>()
+    fun <K : SearchableElement<K>> collect(elements: Array<K>): Array<(String) -> K?> {
+        val list = arrayListOf<(String) -> K?>()
 
         elements.forEach {
             list.add(it.getElementByKeywordLamba())
@@ -32,7 +32,7 @@ object Search {
 
         lambas.forEach {
             val a = it(key)
-            if(a!=null)
+            if (a != null)
                 resultList.add(a)
         }
 
@@ -44,7 +44,7 @@ object Search {
      * @param K The type of the result - Should always be the type of the class that implements this interface
      * @throws [java.lang.ClassCastException] if [K] is not in the hierarchy of the class that implements this interface
      */
-    interface SearchableElement<K: SearchableElement<K>> {
+    interface SearchableElement<K : SearchableElement<K>> {
 
         /**
          * @return Returns the keywords that the search engine uses to list the corresponding elements as an [java.util.ArrayList]
@@ -54,7 +54,7 @@ object Search {
         }
 
         fun collectChildLambas(): ArrayList<(String) -> K?> {
-            val list = arrayListOf<(String)->K?>()
+            val list = arrayListOf<(String) -> K?>()
 
             getChildElementsForSearch()?.forEach {
                 list.add(it.getElementByKeywordLamba())
@@ -78,7 +78,7 @@ object Search {
          * @return A Lamba that has a [String] as input, which is the keyword that is searched for and returns an element that will be shown or null if non should be shown
          */
         @Suppress("unchecked_cast")
-        fun getElementByKeywordLamba(): (String)->K? {
+        fun getElementByKeywordLamba(): (String) -> K? {
             return fun(it: String): K? {
                 getSearchKeywords()?.forEach { keyword: String ->
                     if (keyword.lowercase().contains(it.lowercase())) return this as K

@@ -4,9 +4,9 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.text.Text
 
-class TextDialog(val text: Text): Dialog(5000) {
+class TextDialog(val text: Text) : Dialog(5000) {
     override fun renderText(context: DrawContext, width: Int, y: Int, mouseX: Int, mouseY: Int): Int {
-        val lines = MinecraftClient.getInstance().textRenderer.wrapLines(text,getWidth(width)-4)
+        val lines = MinecraftClient.getInstance().textRenderer.wrapLines(text, getWidth(width) - 4)
 
         lines.forEachIndexed { index, it ->
             context.drawCenteredTextWithShadow(
@@ -18,6 +18,6 @@ class TextDialog(val text: Text): Dialog(5000) {
             )
         }
 
-        return lines.size*11+2
+        return lines.size * 11 + 2
     }
 }

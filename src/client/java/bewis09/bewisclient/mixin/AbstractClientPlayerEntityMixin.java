@@ -26,11 +26,12 @@ public abstract class AbstractClientPlayerEntityMixin extends PlayerEntity {
         super(world, pos, yaw, gameProfile);
     }
 
-    @Shadow protected abstract @Nullable PlayerListEntry getPlayerListEntry();
+    @Shadow
+    protected abstract @Nullable PlayerListEntry getPlayerListEntry();
 
-    @Inject(method = "getSkinTextures",at = @At("HEAD"), cancellable = true)
+    @Inject(method = "getSkinTextures", at = @At("HEAD"), cancellable = true)
     public void getSkinTextures(CallbackInfoReturnable<SkinTextures> cir) {
-        if(Objects.equals(getGameProfile().getName(), MinecraftClient.getInstance().getGameProfile().getName())) {
+        if (Objects.equals(getGameProfile().getName(), MinecraftClient.getInstance().getGameProfile().getName())) {
             PlayerListEntry playerListEntry = this.getPlayerListEntry();
             cir.setReturnValue(playerListEntry == null ?
                     withCape(DefaultSkinHelper.getSkinTextures(this.getUuid())) :
@@ -40,7 +41,7 @@ public abstract class AbstractClientPlayerEntityMixin extends PlayerEntity {
 
     @Unique
     public SkinTextures withCape(SkinTextures textures) {
-        if(!MixinStatics.OwnPlayerSkinTextures.contains(textures.hashCode()))
+        if (!MixinStatics.OwnPlayerSkinTextures.contains(textures.hashCode()))
             MixinStatics.OwnPlayerSkinTextures.add(textures.hashCode());
         return textures;
     }

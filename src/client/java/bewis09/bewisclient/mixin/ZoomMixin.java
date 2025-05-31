@@ -3,7 +3,6 @@ package bewis09.bewisclient.mixin;
 import bewis09.bewisclient.MixinStatics;
 import bewis09.bewisclient.ZoomImplementer;
 import bewis09.bewisclient.settingsLoader.Settings;
-import bewis09.bewisclient.settingsLoader.SettingsLoader;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.Camera;
@@ -13,8 +12,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import static bewis09.bewisclient.settingsLoader.Settings.GENERAL;
 
 @Environment(EnvType.CLIENT)
 @Mixin(GameRenderer.class)
@@ -38,9 +35,9 @@ public class ZoomMixin implements ZoomImplementer {
     @Unique
     double zoomgoal = 0.23;
 
-    @Inject(method = "getFov",at=@At("RETURN"),cancellable = true)
+    @Inject(method = "getFov", at = @At("RETURN"), cancellable = true)
     private void getFov(Camera camera, float tickDelta, boolean changingFov, CallbackInfoReturnable<Float> cir) {
-        if(Settings.Companion.getZoom().get()) {
+        if (Settings.Companion.getZoom().get()) {
             if (!Settings.Companion.getZoom().getInstant_zoom().get()) {
                 if (MixinStatics.isZoomed != lastZoomed || zoomgoal != lastZoomGoal) {
                     zoomStart = getZoomFactor();
@@ -66,8 +63,8 @@ public class ZoomMixin implements ZoomImplementer {
     @Unique
     public double getZoomFactor() {
         long l = System.currentTimeMillis();
-        if(zoomStartTime+100 > l) {
-            return ((zoomEnd)*((l - zoomStartTime)/100f))+((zoomStart)*(1-(l - zoomStartTime)/100f));
+        if (zoomStartTime + 100 > l) {
+            return ((zoomEnd) * ((l - zoomStartTime) / 100f)) + ((zoomStart) * (1 - (l - zoomStartTime) / 100f));
         } else {
             return (zoomEnd);
         }

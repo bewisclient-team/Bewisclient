@@ -10,7 +10,7 @@ import net.minecraft.client.gui.DrawContext
  *
  * @param titles The translation keys of the titles that are separated by ">>"
  */
-open class TitleOptionElement(vararg val titles: String): OptionElement(if(titles.isNotEmpty()) titles.last() else "","") {
+open class TitleOptionElement(vararg val titles: String) : OptionElement(if (titles.isNotEmpty()) titles.last() else "", "") {
     override fun render(
         context: DrawContext,
         x: Int,
@@ -20,8 +20,10 @@ open class TitleOptionElement(vararg val titles: String): OptionElement(if(title
         mouseY: Int,
         alphaModifier: Long
     ): Int {
-        context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer,
-            titles.joinToString(" >> ") { Bewisclient.getTranslatedString(it) },x+width/2,y+5,(alphaModifier+0xFFFFFF).toInt())
+        context.drawCenteredTextWithShadow(
+            MinecraftClient.getInstance().textRenderer,
+            titles.joinToString(" >> ") { Bewisclient.getTranslatedString(it) }, x + width / 2, y + 5, (alphaModifier + 0xFFFFFF).toInt()
+        )
 
         return 20
     }

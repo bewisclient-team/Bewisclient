@@ -2,7 +2,11 @@ package bewis09.bewisclient.settingsLoader
 
 import bewis09.bewisclient.exception.SettingNotFoundException
 import bewis09.bewisclient.screen.MainOptionsScreen
+import bewis09.bewisclient.settingsLoader.SettingsLoader.autoSave
+import bewis09.bewisclient.settingsLoader.SettingsLoader.disableAutoSave
 import bewis09.bewisclient.settingsLoader.SettingsLoader.get
+import bewis09.bewisclient.settingsLoader.SettingsLoader.getUntyped
+import bewis09.bewisclient.settingsLoader.SettingsLoader.set
 import com.google.gson.*
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.MinecraftClient
@@ -10,7 +14,7 @@ import java.io.File
 import java.io.PrintWriter
 import java.util.*
 
-object SettingsLoader: Settings() {
+object SettingsLoader : Settings() {
     /**
      * Gson for the Settings Loader
      */
@@ -31,12 +35,12 @@ object SettingsLoader: Settings() {
      */
     var DesignSettings: JsonObject = JsonObject()
 
-    val overwrittenSettings: HashMap<String,List<String>> = hashMapOf(
-        Pair("blockhit.blockhit",listOf("blockhit.enabled")),
-        Pair("fullbright.fullbright",listOf("fullbright.enabled")),
-        Pair("hit_overlay.hit_overlay",listOf("hit_overlay.enabled")),
-        Pair("fullbright.fullbright_value",listOf("fullbright.value")),
-        Pair("zoom",listOf("zoom_enabled")),
+    val overwrittenSettings: HashMap<String, List<String>> = hashMapOf(
+        Pair("blockhit.blockhit", listOf("blockhit.enabled")),
+        Pair("fullbright.fullbright", listOf("fullbright.enabled")),
+        Pair("hit_overlay.hit_overlay", listOf("hit_overlay.enabled")),
+        Pair("fullbright.fullbright_value", listOf("fullbright.value")),
+        Pair("zoom", listOf("zoom_enabled")),
     )
 
     /**
@@ -54,7 +58,7 @@ object SettingsLoader: Settings() {
         GeneralSettings = loadSetting(GENERAL)
         DesignSettings = loadSetting(DESIGN)
 
-        if(MinecraftClient.getInstance().currentScreen is MainOptionsScreen)
+        if (MinecraftClient.getInstance().currentScreen is MainOptionsScreen)
             (MinecraftClient.getInstance().currentScreen as MainOptionsScreen).startAllAnimation(MainOptionsScreen())
     }
 
@@ -65,7 +69,7 @@ object SettingsLoader: Settings() {
      * @return The [JsonObject] the settings got loaded into
      */
     private fun loadSetting(id: String): JsonObject {
-        val file = File((FabricLoader.getInstance().gameDir).toString()+"/bewisclient/"+id+".json")
+        val file = File((FabricLoader.getInstance().gameDir).toString() + "/bewisclient/" + id + ".json")
 
         var gsonLoaded: JsonObject
 
@@ -77,7 +81,7 @@ object SettingsLoader: Settings() {
                 str += scanner.nextLine()
             }
 
-            gsonLoaded = gson.fromJson(str,JsonElement::class.java) as JsonObject
+            gsonLoaded = gson.fromJson(str, JsonElement::class.java) as JsonObject
         } catch (e: Exception) {
             System.err.println("ERROR LOADING SETTINGS FILE $id")
             file.parentFile.mkdirs()
@@ -85,7 +89,7 @@ object SettingsLoader: Settings() {
             gsonLoaded = JsonObject()
         }
 
-        saveSettings(id,gsonLoaded)
+        saveSettings(id, gsonLoaded)
 
         return gsonLoaded
     }
@@ -93,7 +97,9 @@ object SettingsLoader: Settings() {
     /**
      * Disables autosave when changing a setting. Only affects the next setting change, after that [autoSave] will be turned back to true
      */
-    fun disableAutoSave() { autoSave = false }
+    fun disableAutoSave() {
+        autoSave = false
+    }
 
     /**
      * Saves the settings to a file
@@ -101,8 +107,8 @@ object SettingsLoader: Settings() {
      * @param id The id of the setting category and the name of the file
      * @param settings The settings that should be saved as a [JsonObject]
      */
-    fun saveSettings(id:String,settings: JsonObject) {
-        val file = File((FabricLoader.getInstance().gameDir).toString()+"/bewisclient/"+id+".json")
+    fun saveSettings(id: String, settings: JsonObject) {
+        val file = File((FabricLoader.getInstance().gameDir).toString() + "/bewisclient/" + id + ".json")
         val printWriter = PrintWriter(file)
         printWriter.print(gson.toJson(settings))
         printWriter.close()
@@ -129,7 +135,7 @@ object SettingsLoader: Settings() {
      *
      * @see [Settings]
      */
-    fun set(settings: String, value: JsonElement, path: Array<String>, id: String) = set(settings,(path).toMutableList()+id,value)
+    fun set(settings: String, value: JsonElement, path: Array<String>, id: String) = set(settings, (path).toMutableList() + id, value)
 
     /**
      * Changes a setting
@@ -149,27 +155,27 @@ object SettingsLoader: Settings() {
 
         for ((index, i) in id.withIndex()) {
             val j = set.get(i)
-            if(index==(id.size-1)) {
-                set.add(i,value)
-            } else if(j!=null && j.isJsonObject) {
+            if (index == (id.size - 1)) {
+                set.add(i, value)
+            } else if (j != null && j.isJsonObject) {
                 set = j.asJsonObject
             } else {
                 val t = JsonObject()
 
-                set.add(i,t)
+                set.add(i, t)
                 set = t
             }
         }
 
-        if(autoSave) saveAllSettings()
+        if (autoSave) saveAllSettings()
 
-        autoSave=true
+        autoSave = true
     }
 
     /**
      * A [HashMap] used to cache the results of the [get] functions
      */
-    var settingMap = HashMap<String,JsonPrimitive>()
+    var settingMap = HashMap<String, JsonPrimitive>()
 
     /**
      * Gets the value of a setting
@@ -207,38 +213,38 @@ object SettingsLoader: Settings() {
      * @see [Settings]
      */
     fun getUntyped(sID: String, settings: JsonObject, id: String, path: Array<out String>, default: JsonPrimitive): JsonPrimitive {
-        val rId = path.toMutableList()+id
-        val rsId = (path.toMutableList()+id).toTypedArray().joinToString(".")
-        
-        if(settingMap.containsKey("$sID.$rsId")) return settingMap["$sID.$rsId"]!!
-        
+        val rId = path.toMutableList() + id
+        val rsId = (path.toMutableList() + id).toTypedArray().joinToString(".")
+
+        if (settingMap.containsKey("$sID.$rsId")) return settingMap["$sID.$rsId"]!!
+
         var set = settings
 
         for ((index, i) in rId.withIndex()) {
             val j = set.get(i)
-            if(j!=null) {
-                if(index==(rId.size-1)) {
+            if (j != null) {
+                if (index == (rId.size - 1)) {
                     settingMap["$sID.$id"] = j as JsonPrimitive
                     return j
-                } else if(j.isJsonObject) {
+                } else if (j.isJsonObject) {
                     set = j.asJsonObject
                 } else {
-                    return defaultOrOld(rsId,sID,default)
+                    return defaultOrOld(rsId, sID, default)
                 }
             } else {
-                return defaultOrOld(rsId,sID,default)
+                return defaultOrOld(rsId, sID, default)
             }
         }
-        return defaultOrOld(rsId,sID,default)
+        return defaultOrOld(rsId, sID, default)
     }
 
     fun defaultOrOld(rsID: String, settings: String, default: JsonPrimitive): JsonPrimitive {
-        if(overwrittenSettings.containsKey(rsID)) {
+        if (overwrittenSettings.containsKey(rsID)) {
             val list = overwrittenSettings[rsID]!!
             for (k in list) {
                 val i = k.split(".")
-                val j = getUntyped(settings, getSettings(settings),i.last(),i.toTypedArray().sliceArray(0 until i.size - 1),default)
-                if(j!=default) return j
+                val j = getUntyped(settings, getSettings(settings), i.last(), i.toTypedArray().sliceArray(0 until i.size - 1), default)
+                if (j != default) return j
             }
         }
 
@@ -257,6 +263,6 @@ object SettingsLoader: Settings() {
             GENERAL -> return GeneralSettings
             DESIGN -> return DesignSettings
         }
-        return gson.fromJson("{}",JsonObject::class.java)
+        return gson.fromJson("{}", JsonObject::class.java)
     }
 }

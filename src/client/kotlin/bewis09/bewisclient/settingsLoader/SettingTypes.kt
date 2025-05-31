@@ -36,7 +36,8 @@ object SettingTypes {
         }
     }
 
-    open class TextWidgetSettingsObject(id: String, posX: Float, partX: Float, posY: Float, partY: Float, transparency: Float, size: Float) : DefaultWidgetSettingsObject(id, posX, partX, posY, partY, transparency, size), ColorTextSettingsObject {
+    open class TextWidgetSettingsObject(id: String, posX: Float, partX: Float, posY: Float, partY: Float, transparency: Float, size: Float) :
+        DefaultWidgetSettingsObject(id, posX, partX, posY, partY, transparency, size), ColorTextSettingsObject {
         val text_color = ColorSaverSetting(WIDGETS, arrayOf(id), "text_color", ColorSaver.of(0xFFFFFF), null)
 
         override fun getSettingList(): SettingList {
@@ -48,7 +49,8 @@ object SettingTypes {
         }
     }
 
-    open class SpeedWidgetSettingsObject(id: String, posX: Float, partX: Float, posY: Float, partY: Float, transparency: Float, size: Float) : TextWidgetSettingsObject(id, posX, partX, posY, partY, transparency, size) {
+    open class SpeedWidgetSettingsObject(id: String, posX: Float, partX: Float, posY: Float, partY: Float, transparency: Float, size: Float) :
+        TextWidgetSettingsObject(id, posX, partX, posY, partY, transparency, size) {
         val vertical_speed = BooleanSetting(WIDGETS, arrayOf(id), "vertical_speed", false, BooleanSettingsElementOptions().withDescription())
 
         override fun getSettingList(): SettingList {
@@ -56,14 +58,15 @@ object SettingTypes {
         }
     }
 
-    open class ColorcodeBiomeWidgetSettingsObject(id: String, posX: Float, partX: Float, posY: Float, partY: Float, transparency: Float, size: Float) : DefaultWidgetSettingsObject(id, posX, partX, posY, partY, transparency, size), ColorTextSettingsObject {
+    open class ColorcodeBiomeWidgetSettingsObject(id: String, posX: Float, partX: Float, posY: Float, partY: Float, transparency: Float, size: Float) :
+        DefaultWidgetSettingsObject(id, posX, partX, posY, partY, transparency, size), ColorTextSettingsObject {
         val colorcode_biome = BooleanSetting(WIDGETS, arrayOf(id), "colorcode_biome", false, null)
         val text_color = ColorSaverSetting(WIDGETS, arrayOf(id), "text_color", ColorSaver.of(0xFFFFFF), DefaultSettingElementOptions().withEnableFunction {
             !WidgetRenderer.biomeWidget.settings.colorcode_biome.get()
         })
 
         override fun getSettingList(): SettingList {
-            return super.getSettingList().append(colorcode_biome,text_color)
+            return super.getSettingList().append(colorcode_biome, text_color)
         }
 
         override fun getTextColor(): ColorSaver {
@@ -71,7 +74,8 @@ object SettingTypes {
         }
     }
 
-    open class DaytimeWidgetSettingsObject(id: String, posX: Float, partX: Float, posY: Float, partY: Float, transparency: Float, size: Float) : TextWidgetSettingsObject(id, posX, partX, posY, partY, transparency, size) {
+    open class DaytimeWidgetSettingsObject(id: String, posX: Float, partX: Float, posY: Float, partY: Float, transparency: Float, size: Float) :
+        TextWidgetSettingsObject(id, posX, partX, posY, partY, transparency, size) {
         val clock24 = BooleanSetting(WIDGETS, arrayOf(id), "24clock", !((DateFormat.getTimeInstance(DateFormat.DEFAULT, Locale.getDefault())) as SimpleDateFormat).toPattern().contains("a"), null)
 
         override fun getSettingList(): SettingList {
@@ -79,15 +83,17 @@ object SettingTypes {
         }
     }
 
-    open class CPSWidgetSettingsObject(id: String, posX: Float, partX: Float, posY: Float, partY: Float, transparency: Float, size: Float) : TextWidgetSettingsObject(id, posX, partX, posY, partY, transparency, size) {
-        val cps_elements = ArraySetting(WIDGETS, arrayOf(id), "cps_elements", arrayOf("cps.both","cps.left","cps.right"), 0, DefaultSettingElementOptions())
+    open class CPSWidgetSettingsObject(id: String, posX: Float, partX: Float, posY: Float, partY: Float, transparency: Float, size: Float) :
+        TextWidgetSettingsObject(id, posX, partX, posY, partY, transparency, size) {
+        val cps_elements = ArraySetting(WIDGETS, arrayOf(id), "cps_elements", arrayOf("cps.both", "cps.left", "cps.right"), 0, DefaultSettingElementOptions())
 
         override fun getSettingList(): SettingList {
             return super.getSettingList().append(cps_elements)
         }
     }
 
-    open class CoordinatesWidgetSettingsObject(id: String, posX: Float, partX: Float, posY: Float, partY: Float, transparency: Float, size: Float) : TextWidgetSettingsObject(id, posX, partX, posY, partY, transparency, size) {
+    open class CoordinatesWidgetSettingsObject(id: String, posX: Float, partX: Float, posY: Float, partY: Float, transparency: Float, size: Float) :
+        TextWidgetSettingsObject(id, posX, partX, posY, partY, transparency, size) {
         val show_biome = BooleanSetting(WIDGETS, arrayOf(id, "select_parts"), "show_biome", true, null)
         val show_direction = BooleanSetting(WIDGETS, arrayOf(id, "select_parts"), "show_direction", true, null)
         val select_parts = MultipleBooleanSetting(WIDGETS, arrayOf(id, "select_parts"), arrayOf(show_biome, show_direction))
@@ -96,11 +102,12 @@ object SettingTypes {
         })
 
         override fun getSettingList(): SettingList {
-            return super.getSettingList().append(select_parts,colorcode_biome)
+            return super.getSettingList().append(select_parts, colorcode_biome)
         }
     }
 
-    open class KeyWidgetSettingsObject(id: String, posX: Float, partX: Float, posY: Float, partY: Float, transparency: Float, size: Float) : ColorcodeBiomeWidgetSettingsObject(id, posX, partX, posY, partY, transparency, size) {
+    open class KeyWidgetSettingsObject(id: String, posX: Float, partX: Float, posY: Float, partY: Float, transparency: Float, size: Float) :
+        ColorcodeBiomeWidgetSettingsObject(id, posX, partX, posY, partY, transparency, size) {
         val show_movement_keys = BooleanSetting(WIDGETS, arrayOf(id, "select_parts"), "show_movement_keys", true, null)
         val show_space_bar = BooleanSetting(WIDGETS, arrayOf(id, "select_parts"), "show_space_bar", true, null)
         val show_mouse_button = BooleanSetting(WIDGETS, arrayOf(id, "select_parts"), "show_mouse_button", true, null)
@@ -112,8 +119,19 @@ object SettingTypes {
         }
     }
 
-    open class TiwylaWidgetSettingsObject(id: String, posX: Float, partX: Float, posY: Float, partY: Float, transparency: Float, size: Float): DaytimeWidgetSettingsObject(id, posX, partX, posY, partY, transparency, size) {
-        private val tiwylaArray = arrayOf("tiwyla.tool","tiwyla.level","tiwyla.time","tiwyla.tool.progress","tiwyla.level.progress","tiwyla.time.progress","tiwyla.tool.extra","tiwyla.level.extra","tiwyla.time.extra")
+    open class TiwylaWidgetSettingsObject(id: String, posX: Float, partX: Float, posY: Float, partY: Float, transparency: Float, size: Float) :
+        DaytimeWidgetSettingsObject(id, posX, partX, posY, partY, transparency, size) {
+        private val tiwylaArray = arrayOf(
+            "tiwyla.tool",
+            "tiwyla.level",
+            "tiwyla.time",
+            "tiwyla.tool.progress",
+            "tiwyla.level.progress",
+            "tiwyla.time.progress",
+            "tiwyla.tool.extra",
+            "tiwyla.level.extra",
+            "tiwyla.time.extra"
+        )
 
         val top_color = ColorSaverSetting(WIDGETS, arrayOf(id), "top_color", ColorSaver.of("0xFFFFFF"), null)
         val bottom_color = ColorSaverSetting(WIDGETS, arrayOf(id), "bottom_color", ColorSaver.of("0xFFFFFF"), null)
@@ -126,15 +144,15 @@ object SettingTypes {
         val show_health_information = BooleanSetting(WIDGETS, arrayOf(id), "show_health_information", true, null)
         val show_progress_bar = BooleanSetting(WIDGETS, arrayOf(id), "show_progress_bar", true, null)
 
-        val multiple = MultipleBooleanSetting(WIDGETS, arrayOf(id, "select_parts"), arrayOf(show_progress_bar,show_health_information,show_block_icon))
+        val multiple = MultipleBooleanSetting(WIDGETS, arrayOf(id, "select_parts"), arrayOf(show_progress_bar, show_health_information, show_block_icon))
 
         override fun getSettingList(): SettingList {
             return super.getSettingList().append(top_color, bottom_color, first_line, seccond_line, third_line, multiple)
         }
     }
 
-    class SettingList : ArrayList<Setting<*,*>>() {
-        fun append(vararg settings: Setting<*,*>): SettingList {
+    class SettingList : ArrayList<Setting<*, *>>() {
+        fun append(vararg settings: Setting<*, *>): SettingList {
             this.addAll(settings)
 
             return this

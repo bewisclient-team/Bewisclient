@@ -19,18 +19,18 @@ import java.util.*
 /**
  * Collections of the elements for the [MainOptionsScreen]
  */
-object ElementList: Settings() {
+object ElementList : Settings() {
 
     /**
      * Properties that should not generate an [OptionElement] when in a widget
      */
-    private val excludedProperties = arrayOf("posX","posY","partX","partY","effect","enabled")
+    private val excludedProperties = arrayOf("posX", "posY", "partX", "partY", "effect", "enabled")
 
     val widgets = {
         arrayOf(
             TitleOptionElement("setting.widgets"),
             MultiplePagesOptionElement(
-                loadWidgetsFromDefault().toArray(arrayOf()),100
+                loadWidgetsFromDefault().toArray(arrayOf()), 100
             )
         )
     }
@@ -40,20 +40,20 @@ object ElementList: Settings() {
      *
      * @see [bewis09.bewisclient.api.APIEntryPoint]
      */
-    val newMainOptionsElements: ArrayList<()->OptionElement> = arrayListOf()
+    val newMainOptionsElements: ArrayList<() -> OptionElement> = arrayListOf()
 
     val design = { options_menu.getElements() }
 
     val scoreboard = { Settings.scoreboard.getElements() }
 
     val cosmetics = {
-        Util.modFoundDependent("notenoughanimations","1.9.0",{ it <= 0 },{
+        Util.modFoundDependent("notenoughanimations", "1.9.0", { it <= 0 }, {
             arrayOf(
                 TitleOptionElement("nea_incompatible"),
                 InfoElement("cosmetics.nae_incompatible"),
-                ContactElement("nea_link","https://modrinth.com/mod/not-enough-animations")
+                ContactElement("nea_link", "https://modrinth.com/mod/not-enough-animations")
             )
-        },{
+        }, {
             arrayOf(
                 TitleOptionElement("setting.cosmetics"),
                 CosmeticsDrawBigElement(),
@@ -70,7 +70,7 @@ object ElementList: Settings() {
         val a: ArrayList<OptionElement> = arrayListOf(
             TitleOptionElement("setting.experimental")
         )
-        if(System.getProperty("os.name").lowercase(Locale.getDefault()).contains("win"))
+        if (System.getProperty("os.name").lowercase(Locale.getDefault()).contains("win"))
             a.add(BooleanOptionElement(Settings.experimental.auto_update))
         a.toTypedArray()
     }
@@ -83,11 +83,11 @@ object ElementList: Settings() {
 
     val contact = {
         arrayOf(
-                TitleOptionElement("setting.contact"),
-                ContactElement("modrinth","https://modrinth.com/mod/bewisclient"),
-                ContactElement("sources","https://github.com/Bewis09/bewisclient-2/"),
-                ContactElement("issues","https://github.com/Bewis09/Bewisclient-2/issues"),
-                ContactElement("discord","https://discord.com/invite/kuUyGUeEZS")
+            TitleOptionElement("setting.contact"),
+            ContactElement("modrinth", "https://modrinth.com/mod/bewisclient"),
+            ContactElement("sources", "https://github.com/Bewis09/bewisclient-2/"),
+            ContactElement("issues", "https://github.com/Bewis09/Bewisclient-2/issues"),
+            ContactElement("discord", "https://discord.com/invite/kuUyGUeEZS")
         )
     }
 
@@ -126,68 +126,70 @@ object ElementList: Settings() {
             MainOptionElement("setting.option_menu", "description.setting.option_menu", design(), Identifier.of("bewisclient", "textures/main_icons/design.png")),
             MainOptionElement("setting.util", "description.setting.util", util(), Identifier.of("bewisclient", "textures/main_icons/util.png")),
             MainOptionElement("setting.cosmetics", "description.setting.cosmetics", cosmetics(), Identifier.of("bewisclient", "textures/main_icons/cosmetics.png")),
-            MultiplePagesOptionElement(arrayOf(
-                MultiplePagesOptionElement.ImagedMultiplePagesElement(
-                    fullbright(),
-                    Settings.fullbright
-                ),
-                MultiplePagesOptionElement.ImagedMultiplePagesElement(
-                    contact(),
-                    "contact"
-                ),
-                MultiplePagesOptionElement.ImagedMultiplePagesElement(
-                    better_visibility(),
-                    "better_visibility"
-                ),
-                MultiplePagesOptionElement.ImagedMultiplePagesElement(
-                    blockhit(),
-                    "blockhit_and_hit_overlay"
-                ),
-                MultiplePagesOptionElement.ImagedMultiplePagesElement(
-                    zoom(),
-                    Settings.zoom
-                ),
-                MultiplePagesOptionElement.ImagedMultiplePagesElement(
-                    pumpkin(),
-                    Settings.pumpkin
-                ),
-                MultiplePagesOptionElement.ImagedMultiplePagesElement(
-                    held_item_info(),
-                    Settings.held_item_info
-                ),
-                MultiplePagesOptionElement.ImagedMultiplePagesElement(
-                    cleaner_debug_menu(),
-                    cleanerDebugMenu
-                ),
-                MultiplePagesOptionElement.ImagedMultiplePagesElement(
-                    shulker_box_tooltip(),
-                    shulkerBoxTooltip
-                ),
-                MultiplePagesOptionElement.ImagedMultiplePagesElement(
-                    tnt_timer(),
-                    tntTimer
-                ),
-                MultiplePagesOptionElement.ImagedMultiplePagesElement(
-                    scoreboard(),
-                    "scoreboard"
-                ),
-                MultiplePagesOptionElement.ImagedMultiplePagesElement(
-                    experimental(),
-                    "experimental"
-                ),
-                MultiplePagesOptionElement.ImagedMultiplePagesElement(
-                    perspective(),
-                    Settings.perspective
-                ),
-                MultiplePagesOptionElement.ImagedMultiplePagesElement(
-                    screenshot(),
-                    "screenshot"
-                ),
-                MultiplePagesOptionElement.ImagedMultiplePagesElement(
-                    donation(),
-                    "donation"
-                )
-            ),70),
+            MultiplePagesOptionElement(
+                arrayOf(
+                    MultiplePagesOptionElement.ImagedMultiplePagesElement(
+                        fullbright(),
+                        Settings.fullbright
+                    ),
+                    MultiplePagesOptionElement.ImagedMultiplePagesElement(
+                        contact(),
+                        "contact"
+                    ),
+                    MultiplePagesOptionElement.ImagedMultiplePagesElement(
+                        better_visibility(),
+                        "better_visibility"
+                    ),
+                    MultiplePagesOptionElement.ImagedMultiplePagesElement(
+                        blockhit(),
+                        "blockhit_and_hit_overlay"
+                    ),
+                    MultiplePagesOptionElement.ImagedMultiplePagesElement(
+                        zoom(),
+                        Settings.zoom
+                    ),
+                    MultiplePagesOptionElement.ImagedMultiplePagesElement(
+                        pumpkin(),
+                        Settings.pumpkin
+                    ),
+                    MultiplePagesOptionElement.ImagedMultiplePagesElement(
+                        held_item_info(),
+                        Settings.held_item_info
+                    ),
+                    MultiplePagesOptionElement.ImagedMultiplePagesElement(
+                        cleaner_debug_menu(),
+                        cleanerDebugMenu
+                    ),
+                    MultiplePagesOptionElement.ImagedMultiplePagesElement(
+                        shulker_box_tooltip(),
+                        shulkerBoxTooltip
+                    ),
+                    MultiplePagesOptionElement.ImagedMultiplePagesElement(
+                        tnt_timer(),
+                        tntTimer
+                    ),
+                    MultiplePagesOptionElement.ImagedMultiplePagesElement(
+                        scoreboard(),
+                        "scoreboard"
+                    ),
+                    MultiplePagesOptionElement.ImagedMultiplePagesElement(
+                        experimental(),
+                        "experimental"
+                    ),
+                    MultiplePagesOptionElement.ImagedMultiplePagesElement(
+                        perspective(),
+                        Settings.perspective
+                    ),
+                    MultiplePagesOptionElement.ImagedMultiplePagesElement(
+                        screenshot(),
+                        "screenshot"
+                    ),
+                    MultiplePagesOptionElement.ImagedMultiplePagesElement(
+                        donation(),
+                        "donation"
+                    )
+                ), 70
+            ),
         ).addNewElements()
     }
 
@@ -201,7 +203,7 @@ object ElementList: Settings() {
             val m: Array<OptionElement> = loadWidgetsSingleFromDefault(v)
 
             if (!excludedProperties.contains(v.id))
-                map.add(MultiplePagesOptionElement.DescriptionedMultiplePagesElement( m,v.settings.enabled))
+                map.add(MultiplePagesOptionElement.DescriptionedMultiplePagesElement(m, v.settings.enabled))
         }
 
         return map
@@ -214,7 +216,7 @@ object ElementList: Settings() {
      */
     fun loadWidgetsSingleFromDefault(widget: Widget<*>): Array<OptionElement> {
         val map: ArrayList<OptionElement> = arrayListOf(
-            TitleWidgetEnablerOptionElement(widget.settings.enabled,"gui.widgets","setting.widgets."+widget.id)
+            TitleWidgetEnablerOptionElement(widget.settings.enabled, "gui.widgets", "setting.widgets." + widget.id)
         )
 
         widget.getWidgetSettings().getSettingList().forEach {

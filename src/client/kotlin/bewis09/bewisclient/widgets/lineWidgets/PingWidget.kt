@@ -10,7 +10,7 @@ import net.minecraft.client.MinecraftClient
 /**
  * A [LineWidget] which displays the current latency of the server connection. Doesn't display in singleplayer worlds
  */
-class PingWidget: LineWidget<SettingTypes.TextWidgetSettingsObject>("ping",80,true) {
+class PingWidget : LineWidget<SettingTypes.TextWidgetSettingsObject>("ping", 80, true) {
 
     /**
      * The current latency cached, so that there isn't a packet send every render tick
@@ -27,11 +27,11 @@ class PingWidget: LineWidget<SettingTypes.TextWidgetSettingsObject>("ping",80,tr
     }
 
     override fun getText(): ArrayList<String> {
-        if(MinecraftClient.getInstance().isInSingleplayer && (MinecraftClient.getInstance().currentScreen is WidgetConfigScreen || MinecraftClient.getInstance().currentScreen is MainOptionsScreen))
+        if (MinecraftClient.getInstance().isInSingleplayer && (MinecraftClient.getInstance().currentScreen is WidgetConfigScreen || MinecraftClient.getInstance().currentScreen is MainOptionsScreen))
             return arrayListOf("${Bewisclient.getTranslatedString("widgets.ping")}: 99")
-        if(getLatency()<=0)
+        if (getLatency() <= 0)
             return arrayListOf(Bewisclient.getTranslatedString("widgets.loading"))
-        return arrayListOf(Bewisclient.getTranslatedString("widgets.ping")+": "+getLatency())
+        return arrayListOf(Bewisclient.getTranslatedString("widgets.ping") + ": " + getLatency())
     }
 
     /**
@@ -40,8 +40,8 @@ class PingWidget: LineWidget<SettingTypes.TextWidgetSettingsObject>("ping",80,tr
     private fun getLatency(): Int {
         try {
 
-            if(v+100<System.currentTimeMillis()) {
-                if(!MinecraftClient.getInstance().debugHud.shouldShowPacketSizeAndPingCharts()) {
+            if (v + 100 < System.currentTimeMillis()) {
+                if (!MinecraftClient.getInstance().debugHud.shouldShowPacketSizeAndPingCharts()) {
                     (MinecraftClient.getInstance().networkHandler as ClientPlayNetworkHandlerMixin).pingMeasurer.ping()
                 }
 
@@ -66,6 +66,6 @@ class PingWidget: LineWidget<SettingTypes.TextWidgetSettingsObject>("ping",80,tr
     }
 
     override fun getWidgetSettings(): SettingTypes.TextWidgetSettingsObject {
-        return SettingTypes.TextWidgetSettingsObject(id, 0.7f,5f,1f,104f,0.43f, -1f)
+        return SettingTypes.TextWidgetSettingsObject(id, 0.7f, 5f, 1f, 104f, 0.43f, -1f)
     }
 }

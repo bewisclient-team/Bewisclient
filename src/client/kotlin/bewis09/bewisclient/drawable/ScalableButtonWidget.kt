@@ -51,10 +51,11 @@ open class ScalableButtonWidget(x: Int, y: Int, width: Int, height: Int, message
             val f = sin(1.5707963267948966 * cos(Math.PI * 2 * d / e)) / 2.0 + 0.5
             val g = MathHelper.lerp(f, 0.0, l.toDouble())
             context.enableScissor(
-                    (startX/ MainOptionsScreen.scale).toInt(),
-                    (startY/ MainOptionsScreen.scale).toInt(),
-                    (endX/ MainOptionsScreen.scale).toInt(),
-                    (endY/ MainOptionsScreen.scale).toInt())
+                (startX / MainOptionsScreen.scale).toInt(),
+                (startY / MainOptionsScreen.scale).toInt(),
+                (endX / MainOptionsScreen.scale).toInt(),
+                (endY / MainOptionsScreen.scale).toInt()
+            )
             context.drawTextWithShadow(textRenderer, text, startX - g.toInt(), j, color)
             context.disableScissor()
         } else {

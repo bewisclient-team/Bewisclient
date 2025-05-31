@@ -4,7 +4,7 @@ open class ElementOptions {
     var pathedTitle = false
 }
 
-fun <T: ElementOptions> T.addPathToTitle(): T {
+fun <T : ElementOptions> T.addPathToTitle(): T {
     pathedTitle = true
     return this
 }

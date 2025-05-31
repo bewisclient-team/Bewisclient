@@ -13,7 +13,7 @@ import javax.imageio.ImageIO
 
 
 object Util {
-    fun isIn(mouseX: Number, mouseY: Number, x1: Int, y1: Int, x2: Int, y2: Int) = mouseX.toDouble()>=x1&&mouseX.toDouble()<=x2&&mouseY.toDouble()>=y1&&mouseY.toDouble()<=y2
+    fun isIn(mouseX: Number, mouseY: Number, x1: Int, y1: Int, x2: Int, y2: Int) = mouseX.toDouble() >= x1 && mouseX.toDouble() <= x2 && mouseY.toDouble() >= y1 && mouseY.toDouble() <= y2
 
     fun downloadToFile(address: String, file: File) {
         val url = URI(address).toURL()
@@ -47,7 +47,7 @@ object Util {
     /**
      * @param versionConsumer A function which has an [Int] as an argument, which is positive if the current version is bigger than the specified one, negative if it is smaller and 0 if those are equal
      */
-    fun <T> modFoundDependent(id: String, version: String, versionConsumer: Predicate<Int>, onTrue: ()->T, onFalse: ()->T): T {
+    fun <T> modFoundDependent(id: String, version: String, versionConsumer: Predicate<Int>, onTrue: () -> T, onFalse: () -> T): T {
         return if (FabricLoader.getInstance().allMods.any {
                 return@any it.metadata.id == id && versionConsumer.test(compareVersion(it.metadata.version.friendlyString, version))
             }) onTrue() else onFalse()
@@ -81,7 +81,7 @@ fun DrawContext.drawTexture(
 ) {
     this.drawTexture(
         { texture: Identifier? ->
-            RenderLayer.getGuiTexturedOverlay( texture )
+            RenderLayer.getGuiTexturedOverlay(texture)
         },
         sprite,
         x,

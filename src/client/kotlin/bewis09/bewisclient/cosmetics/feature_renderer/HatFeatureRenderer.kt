@@ -22,7 +22,7 @@ class HatFeatureRenderer(context: FeatureRendererContext<PlayerEntityRenderState
     init {
         val modelData = ModelData()
         val modelPartData = modelData.root
-        hat = modelPartData.addChild(EntityModelPartNames.HAT, ModelPartBuilder.create().uv(0, 0).cuboid(-4f, -8f, -4f, 8f, 8f, 8f, Dilation(0.51f)), ModelTransform.pivot(0.0f, 0.0f, 0.0f))
+        hat = modelPartData.addChild(EntityModelPartNames.HAT, ModelPartBuilder.create().uv(0, 0).cuboid(-4f, -8f, -4f, 8f, 8f, 8f, Dilation(0.51f)), ModelTransform.origin(0.0f, 0.0f, 0.0f))
             .createPart(32, 16)
     }
 
@@ -34,9 +34,9 @@ class HatFeatureRenderer(context: FeatureRendererContext<PlayerEntityRenderState
                 hat.yaw = head.yaw
                 hat.pitch = head.pitch
                 hat.roll = head.roll
-                hat.pivotX = head.pivotX
-                hat.pivotY = head.pivotY
-                hat.pivotZ = head.pivotZ
+                hat.originX = head.originX
+                hat.originY = head.originY
+                hat.originZ = head.originZ
 
                 hat.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(texture)), light, OverlayTexture.DEFAULT_UV)
             }

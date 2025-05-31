@@ -108,11 +108,11 @@ object ServerConnection {
             }
 
             for (cosmetic in cosmetic_data) {
-                val texture = File("${FabricLoader.getInstance().gameDir}/bewisclient/server/${cosmetic.type}/${cosmetic.id}"+(if(cosmetic.frames > 1) ".gif" else ".png"))
+                val texture = File("${FabricLoader.getInstance().gameDir}/bewisclient/server/${cosmetic.type}/${cosmetic.id}" + (if (cosmetic.frames > 1) ".gif" else ".png"))
 
                 try {
                     if (base_url != "") {
-                        val address = base_url.replace("%s", cosmetic.type + "/" + cosmetic.id + (if(cosmetic.frames > 1) ".gif" else ".png"))
+                        val address = base_url.replace("%s", cosmetic.type + "/" + cosmetic.id + (if (cosmetic.frames > 1) ".gif" else ".png"))
 
                         if (!texture.exists()) {
                             bewis09.bewisclient.util.Util.downloadToFile(address, texture)
@@ -142,7 +142,7 @@ object ServerConnection {
 
     data class ReturnData(val specials: Array<Cosmetic>, val user_data: Array<String>, val cosmetics: Array<DefaultCosmetic>, val min_api_level: Int, val current: Selection, val base_url: String)
 
-    class DefaultCosmetic(type: String, id: String, val frames: Int, val hash: String?, val default: Boolean, val old_id: Int?): Cosmetic(type, id)
+    class DefaultCosmetic(type: String, id: String, val frames: Int, val hash: String?, val default: Boolean, val old_id: Int?) : Cosmetic(type, id)
 
     open class Cosmetic(val type: String, val id: String) {
         override fun equals(other: Any?): Boolean {
@@ -154,7 +154,7 @@ object ServerConnection {
         }
 
         override fun toString(): String {
-            return javaClass.simpleName+"/"+type+"/"+id
+            return javaClass.simpleName + "/" + type + "/" + id
         }
     }
 
@@ -163,7 +163,7 @@ object ServerConnection {
     var loadedCosmetics = false
 
     fun registerCosmetics() {
-        if(loadedCosmetics) return
+        if (loadedCosmetics) return
 
         loadedCosmetics = true
 
@@ -181,10 +181,11 @@ object ServerConnection {
                             ImageIO.write(image, "png", baos)
 
                             val bytes = baos.toByteArray()
+                            val identifier = Identifier.of("bewisclient", "cosmetic_" + cosmetic.type + "_" + cosmetic.id + "_" + i)
 
                             MinecraftClient.getInstance().textureManager.registerTexture(
-                                Identifier.of("bewisclient", "cosmetic_" + cosmetic.type + "_" + cosmetic.id + "_" + i),
-                                NativeImageBackedTexture(NativeImage.read(bytes))
+                                identifier,
+                                NativeImageBackedTexture(identifier::toString, NativeImage.read(bytes))
                             )
                         }
 
@@ -193,15 +194,17 @@ object ServerConnection {
                         continue
                     }
 
+                    val identifier = Identifier.of("bewisclient", "cosmetic_" + cosmetic.type + "_" + cosmetic.id)
+
                     MinecraftClient.getInstance().textureManager.registerTexture(
-                        Identifier.of("bewisclient", "cosmetic_" + cosmetic.type + "_" + cosmetic.id),
-                        NativeImageBackedTexture(NativeImage.read(texture.readBytes()))
+                        identifier,
+                        NativeImageBackedTexture(identifier::toString, NativeImage.read(texture.readBytes()))
                     )
 
                     Cosmetics.registerCosmetic(Cosmetic(Cosmetics.getCosmeticsType(cosmetic.type), cosmetic.id), cosmetic.default || cosmetic in specials)
                 }
             } catch (e: Exception) {
-                Bewisclient.warn("Error loading cosmetic ${cosmetic.type+"/"+cosmetic.id}: "+e.localizedMessage)
+                Bewisclient.warn("Error loading cosmetic ${cosmetic.type + "/" + cosmetic.id}: " + e.localizedMessage)
             }
         }
 
@@ -210,7 +213,8 @@ object ServerConnection {
                 if ((it.default || specials.contains(it)) && it.old_id != null && it.old_id == SettingsLoader.get(Settings.DESIGN, it.type, arrayOf(), JsonPrimitive(-1)).asInt) {
                     Cosmetics.getCosmeticsType(it.type).currentlySelected = it.id
                 }
-            } catch (_: Exception) {}
+            } catch (_: Exception) {
+            }
         }
     }
 }

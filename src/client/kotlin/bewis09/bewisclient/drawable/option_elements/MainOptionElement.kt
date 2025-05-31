@@ -31,47 +31,44 @@ open class MainOptionElement
      * The image that should be displayed when rendering the [MainOptionElement]
      */
     val image: Identifier
-) : OptionElement( title, description) {
+) : OptionElement(title, description) {
 
     /**
      * The [ValuedAnimation] for the scaling when hovered
      */
-    var animation: ValuedAnimation = ValuedAnimation(System.currentTimeMillis(), options_menu.animation_time.get().roundToLong()/2, EaseMode.CONST, 0f, 0f)
+    var animation: ValuedAnimation = ValuedAnimation(System.currentTimeMillis(), options_menu.animation_time.get().roundToLong() / 2, EaseMode.CONST, 0f, 0f)
 
     override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {
         val client = MinecraftClient.getInstance()
 
-        val descriptionLines = client.textRenderer.wrapLines(Bewisclient.getTranslationText(description),width-50)
+        val descriptionLines = client.textRenderer.wrapLines(Bewisclient.getTranslationText(description), width - 50)
 
-        val height = max(36,20+10*descriptionLines.size)
+        val height = max(36, 20 + 10 * descriptionLines.size)
 
-        pos = arrayOf(x,y,x+width,y+height)
+        pos = arrayOf(x, y, x + width, y + height)
 
         context.matrices.push()
 
-        val isSelected: Boolean = (x < mouseX && y < mouseY && x+width > mouseX && y+height > mouseY)
+        val isSelected: Boolean = (x < mouseX && y < mouseY && x + width > mouseX && y + height > mouseY)
 
-        if(isSelected != (animation.endValue==3f)) {
-            animation = ValuedAnimation(System.currentTimeMillis(), options_menu.animation_time.get().roundToLong()/3, EaseMode.EASE_IN_OUT, animation.getValue(), if(isSelected) 3f else 0f)
+        if (isSelected != (animation.endValue == 3f)) {
+            animation = ValuedAnimation(System.currentTimeMillis(), options_menu.animation_time.get().roundToLong() / 3, EaseMode.EASE_IN_OUT, animation.getValue(), if (isSelected) 3f else 0f)
         }
 
-        context.matrices.translate(x.toFloat(),y.toFloat(),0f)
-        context.matrices.scale(1+animation.getValue()/width*2,1+animation.getValue()/width*2,1f)
-        context.matrices.translate(-x.toFloat()-animation.getValue(),-y.toFloat()-height/width.toFloat()*animation.getValue(),0f)
+        context.matrices.translate(x.toFloat(), y.toFloat(), 0f)
+        context.matrices.scale(1 + animation.getValue() / width * 2, 1 + animation.getValue() / width * 2, 1f)
+        context.matrices.translate(-x.toFloat() - animation.getValue(), -y.toFloat() - height / width.toFloat() * animation.getValue(), 0f)
 
-        RenderSystem.enableBlend()
+        context.drawTexture(image, x + 6, y + 6, 32, 32)
 
-        context.drawTexture(image,x+6,y+6,32,32)
+        RenderSystem.setShaderColor(1F, 1F, 1 - animation.getValue() / 6f, (((alphaModifier shr 24)) * 1f) / 0xFF)
 
-        RenderSystem.disableBlend()
-        RenderSystem.setShaderColor(1F,1F,1-animation.getValue()/6f, (((alphaModifier shr 24))*1f)/0xFF)
-
-        context.drawTextWithShadow(client.textRenderer,Bewisclient.getTranslationText(title),x+44,y+6,0xFFFFFF)
+        context.drawTextWithShadow(client.textRenderer, Bewisclient.getTranslationText(title), x + 44, y + 6, 0xFFFFFF)
         descriptionLines.iterator().withIndex().forEach { (index, line) ->
             context.drawTextWithShadow(client.textRenderer, line, x + 44, y + 20 + 10 * index, 0x808080)
         }
 
-        RenderSystem.setShaderColor(1F,1F,1-animation.getValue()/6f, (((alphaModifier shr 24))*1f)/0xFF)
+        RenderSystem.setShaderColor(1F, 1F, 1 - animation.getValue() / 6f, (((alphaModifier shr 24)) * 1f) / 0xFF)
 
         context.matrices.pop()
 

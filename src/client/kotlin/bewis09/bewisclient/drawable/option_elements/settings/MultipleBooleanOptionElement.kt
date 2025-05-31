@@ -10,7 +10,8 @@ import net.minecraft.client.gui.DrawContext
 /**
  * An [OptionElement] which changes multiple true-false settings
  */
-class MultipleBooleanOptionElement(val setting: MultipleBooleanSetting): OptionElement("setting."+(setting.path.reduceOrNull { acc, s -> "$acc.$s" }?.let { "$it." }?:"")+setting.settings+"."+setting.id,"") {
+class MultipleBooleanOptionElement(val setting: MultipleBooleanSetting) :
+    OptionElement("setting." + (setting.path.reduceOrNull { acc, s -> "$acc.$s" }?.let { "$it." } ?: "") + setting.settings + "." + setting.id, "") {
 
     /**
      * The index of the setting that is currently hovered over
@@ -26,32 +27,33 @@ class MultipleBooleanOptionElement(val setting: MultipleBooleanSetting): OptionE
         mouseY: Int,
         alphaModifier: Long
     ): Int {
-        val height = 22 + setting.children.size*13
+        val height = 22 + setting.children.size * 13
 
         selected = -1
 
-        context.drawHorizontalLine(x+4,x+width-5,y+16,0xFFAAAAAA.toInt())
+        context.drawHorizontalLine(x + 4, x + width - 5, y + 16, 0xFFAAAAAA.toInt())
 
-        context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer,Bewisclient.getTranslationText(title),x+width/2,y+5,-1)
+        context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, Bewisclient.getTranslationText(title), x + width / 2, y + 5, -1)
 
         setting.children.forEachIndexed { index, it ->
-            val hovered = mouseX>=x+5 && mouseX<=x+20+MinecraftClient.getInstance().textRenderer.getWidth(Bewisclient.getTranslationText("setting."+it.path.reduce { acc, s -> "$acc.$s" }+"."+it.id)) && mouseY>=y+20+13*index && mouseY<=y+31+13*index
+            val hovered =
+                mouseX >= x + 5 && mouseX <= x + 20 + MinecraftClient.getInstance().textRenderer.getWidth(Bewisclient.getTranslationText("setting." + it.path.reduce { acc, s -> "$acc.$s" } + "." + it.id)) && mouseY >= y + 20 + 13 * index && mouseY <= y + 31 + 13 * index
 
-            if(hovered)
+            if (hovered)
                 selected = index
 
             context.drawTextWithShadow(
                 MinecraftClient.getInstance().textRenderer,
-                Bewisclient.getTranslationText("setting."+it.path.reduce { acc, s -> "$acc.$s" }+"."+it.id),
+                Bewisclient.getTranslationText("setting." + it.path.reduce { acc, s -> "$acc.$s" } + "." + it.id),
                 x + 20,
-                y + 22 + 13*index,
-                if(hovered) (alphaModifier+0xFFFFFF).toInt() else (alphaModifier+0xAAAAAA).toInt()
+                y + 22 + 13 * index,
+                if (hovered) (alphaModifier + 0xFFFFFF).toInt() else (alphaModifier + 0xAAAAAA).toInt()
             )
 
-            context.drawBorder(x+5,y+20+13*index,11,11,if(hovered) (alphaModifier+0xFFFFFF).toInt() else (alphaModifier+0xAAAAAA).toInt())
+            context.drawBorder(x + 5, y + 20 + 13 * index, 11, 11, if (hovered) (alphaModifier + 0xFFFFFF).toInt() else (alphaModifier + 0xAAAAAA).toInt())
 
-            if(it.get()) {
-                context.fill(x+8,y+23+13*index,x+13,y+20+13*index+8,if(hovered) (alphaModifier+0xFFFFFF).toInt() else (alphaModifier+0xAAAAAA).toInt())
+            if (it.get()) {
+                context.fill(x + 8, y + 23 + 13 * index, x + 13, y + 20 + 13 * index + 8, if (hovered) (alphaModifier + 0xFFFFFF).toInt() else (alphaModifier + 0xAAAAAA).toInt())
             }
         }
 
@@ -59,7 +61,7 @@ class MultipleBooleanOptionElement(val setting: MultipleBooleanSetting): OptionE
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int, screen: MainOptionsScreen) {
-        if(selected!=-1) {
+        if (selected != -1) {
             setting.children[selected].also { it.set(!it.get()) }
         }
     }

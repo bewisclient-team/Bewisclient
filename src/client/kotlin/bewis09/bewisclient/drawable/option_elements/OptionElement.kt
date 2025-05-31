@@ -95,7 +95,7 @@ abstract class OptionElement(val title: String, val description: String) : Setti
      * @param scanCode The scan code of the pressed key
      * @param modifiers The modifiers that are active during the key press
      */
-    open fun keyPressed(keyCode:Int, scanCode:Int, modifiers:Int) {
+    open fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int) {
 
     }
 
@@ -116,7 +116,7 @@ abstract class OptionElement(val title: String, val description: String) : Setti
     }
 
     override fun getSearchKeywords(): Array<String> {
-        if(Bewisclient.getTranslatedString(title)== "bewisclient.$title") return arrayOf()
+        if (Bewisclient.getTranslatedString(title) == "bewisclient.$title") return arrayOf()
         return arrayOf(Bewisclient.getTranslatedString(title))
     }
 }

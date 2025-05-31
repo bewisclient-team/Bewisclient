@@ -102,8 +102,8 @@ class UsableSliderWidget : SliderWidget {
     }
 
     override fun updateMessage() {
-        message = if(messageApplier==null)
-            Text.of(Bewisclient.getTranslatedString("gui.value")+": "+ withAfterPointZero(value*(maxValue-minValue)+minValue,decimalPlaces))
+        message = if (messageApplier == null)
+            Text.of(Bewisclient.getTranslatedString("gui.value") + ": " + withAfterPointZero(value * (maxValue - minValue) + minValue, decimalPlaces))
         else
             messageApplier!!(value)
     }

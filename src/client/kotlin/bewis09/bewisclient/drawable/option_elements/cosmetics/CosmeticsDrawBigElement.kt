@@ -13,7 +13,7 @@ import org.joml.Quaternionf
 import org.joml.Vector3f
 import kotlin.math.atan
 
-class CosmeticsDrawBigElement(val right: Boolean = false): OptionElement("", "") {
+class CosmeticsDrawBigElement(val right: Boolean = false) : OptionElement("", "") {
     override fun render(
         context: DrawContext,
         x: Int,
@@ -24,34 +24,34 @@ class CosmeticsDrawBigElement(val right: Boolean = false): OptionElement("", "")
         alphaModifier: Long
     ): Int {
         Cosmetics.types.forEach {
-            it.currentOverwrite = Pair(true,if(it.currentlySelected == null) null else it.defaultCosmetics[it.currentlySelected])
+            it.currentOverwrite = Pair(true, if (it.currentlySelected == null) null else it.defaultCosmetics[it.currentlySelected])
         }
 
         context.matrices.pop()
         context.matrices.push()
 
-        if(MinecraftClient.getInstance().currentScreen is MainOptionsScreen) {
-            if((MinecraftClient.getInstance().currentScreen as MainOptionsScreen).animation.getType() == "SLIDE") {
+        if (MinecraftClient.getInstance().currentScreen is MainOptionsScreen) {
+            if ((MinecraftClient.getInstance().currentScreen as MainOptionsScreen).animation.getType() == "SLIDE") {
                 val a = (MinecraftClient.getInstance().currentScreen as MainOptionsScreen).animation.getValue()
 
-                context.matrices.translate((1-a)*MinecraftClient.getInstance().currentScreen!!.width.toFloat()/4*(if(right) 1f else -1f),0f,0f)
+                context.matrices.translate((1 - a) * MinecraftClient.getInstance().currentScreen!!.width.toFloat() / 4 * (if (right) 1f else -1f), 0f, 0f)
             }
         }
 
-        context.matrices.translate((MinecraftClient.getInstance().currentScreen!!.width)*(if(right) 7/8f else 1/8f),(MinecraftClient.getInstance().currentScreen!!.height)/2f + 50,500f)
-        context.matrices.scale(60f,60f,-60f)
+        context.matrices.translate((MinecraftClient.getInstance().currentScreen!!.width) * (if (right) 7 / 8f else 1 / 8f), (MinecraftClient.getInstance().currentScreen!!.height) / 2f + 50, 500f)
+        context.matrices.scale(60f, 60f, -60f)
 
-        val f = atan(((mouseX - ((MinecraftClient.getInstance().currentScreen!!.width*scale)*(if(right) 7/8f else 1/8f))) / 40.0f).toDouble().toFloat()) * if(right) 1f else -1f
-        val g = -atan(((mouseY - ((MinecraftClient.getInstance().currentScreen!!.height)/2)) / 40.0f).toDouble().toFloat() * -1)
+        val f = atan(((mouseX - ((MinecraftClient.getInstance().currentScreen!!.width * scale) * (if (right) 7 / 8f else 1 / 8f))) / 40.0f).toDouble().toFloat()) * if (right) 1f else -1f
+        val g = -atan(((mouseY - ((MinecraftClient.getInstance().currentScreen!!.height) / 2)) / 40.0f).toDouble().toFloat() * -1)
 
         val skinTextures = MinecraftClient.getInstance().skinProvider.getSkinTextures(MinecraftClient.getInstance().gameProfile)
 
         playerEntityRenderState.bodyYaw = f * 10.0f
-        playerEntityRenderState.yawDegrees = f * 20f
+        playerEntityRenderState.relativeHeadYaw = f * 20f
         playerEntityRenderState.pitch = g * 10.0f
         playerEntityRenderState.skinTextures = skinTextures
 
-        val quaternionf = Quaternionf().rotateZ(3.1415927f).rotateX((if(right) 1f else -1f) * g * 10.0f * 0.017453292f).rotateY(if(right) 0f else 3.1415927f)
+        val quaternionf = Quaternionf().rotateZ(3.1415927f).rotateX((if (right) 1f else -1f) * g * 10.0f * 0.017453292f).rotateY(if (right) 0f else 3.1415927f)
 
         RenderSystem.setShaderLights(Vector3f(0f, 0f, 0f), Vector3f(1f, 1f, 10f))
 
@@ -60,17 +60,17 @@ class CosmeticsDrawBigElement(val right: Boolean = false): OptionElement("", "")
         context.disableScissor()
 
         context.draw {
-            renderEntity(it,alphaModifier,context)
+            renderEntity(it, alphaModifier, context)
         }
 
-        context.fill(0,0,0,0,0)
+        context.fill(0, 0, 0, 0, 0)
 
-        RenderSystem.setShaderColor(1f,1f,1f, 1f)
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
 
         context.matrices.pop()
         context.matrices.push()
 
-        context.matrices.scale(1/scale, 1/scale, 1/scale)
+        context.matrices.scale(1 / scale, 1 / scale, 1 / scale)
         context.matrices.translate(normalOffset.toFloat(), 0f, 0f)
 
         context.enableScissor(MainOptionsScreen.currentScissors.x, MainOptionsScreen.currentScissors.y, MainOptionsScreen.currentScissors.x2, MainOptionsScreen.currentScissors.y2)

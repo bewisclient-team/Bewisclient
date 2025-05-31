@@ -32,25 +32,25 @@ open class Settings {
 
         interface SettingToElementProvider {
             fun getElements(): Array<OptionElement> {
-                if(getTitle() != null) {
-                    return (mutableListOf(TitleOptionElement("setting."+getTitle()!!)) + getElementSettings().mapNotNull { it.createOptionElement() }.toTypedArray()).toTypedArray()
+                if (getTitle() != null) {
+                    return (mutableListOf(TitleOptionElement("setting." + getTitle()!!)) + getElementSettings().mapNotNull { it.createOptionElement() }.toTypedArray()).toTypedArray()
                 }
 
                 return getElementSettings().mapNotNull { it.createOptionElement() }.toTypedArray()
             }
 
-            fun getElementSettings(): Array<Setting<*,*>>
+            fun getElementSettings(): Array<Setting<*, *>>
 
             fun getTitle(): String? = null
         }
 
-        class ScoreboardSettings: SettingToElementProvider {
+        class ScoreboardSettings : SettingToElementProvider {
             private val path = arrayOf("scoreboard")
 
-            val scale = FloatSetting(DESIGN, path, "scale", 1f, FloatSettingsElementOptions().withSliderInfo(SliderInfo(0.5f,1.5f,2)))
+            val scale = FloatSetting(DESIGN, path, "scale", 1f, FloatSettingsElementOptions().withSliderInfo(SliderInfo(0.5f, 1.5f, 2)))
             val hide_numbers = BooleanSetting(DESIGN, path, "hide_numbers", false, null)
 
-            override fun getElementSettings(): Array<Setting<*,*>> {
+            override fun getElementSettings(): Array<Setting<*, *>> {
                 return arrayOf(scale, hide_numbers)
             }
 
@@ -59,12 +59,12 @@ open class Settings {
             }
         }
 
-        class ExperimentalSettings: SettingToElementProvider {
+        class ExperimentalSettings : SettingToElementProvider {
             private val path = arrayOf("experimental")
 
             val auto_update = BooleanSetting(GENERAL, path, "auto_update", false, null)
 
-            override fun getElementSettings(): Array<Setting<*,*>> {
+            override fun getElementSettings(): Array<Setting<*, *>> {
                 return arrayOf(auto_update)
             }
 
@@ -73,7 +73,7 @@ open class Settings {
             }
         }
 
-        class FullbrightSettings: BooleanSetting(DESIGN, arrayOf("fullbright"), "fullbright", false, BooleanSettingsElementOptions().asTitle().withValueChanger {
+        class FullbrightSettings : BooleanSetting(DESIGN, arrayOf("fullbright"), "fullbright", false, BooleanSettingsElementOptions().asTitle().withValueChanger {
             if (fullbright.get())
                 MinecraftClient.getInstance().options.gamma.value = fullbright.fullbright_value.get().toDouble()
             else
@@ -87,12 +87,12 @@ open class Settings {
             })
             val night_vision = BooleanSetting(DESIGN, path, "night_vision", false, null)
 
-            override fun getElementSettings(): Array<Setting<*,*>> {
+            override fun getElementSettings(): Array<Setting<*, *>> {
                 return arrayOf(this, fullbright_value, night_vision)
             }
         }
 
-        class BetterVisibilitySettings: SettingToElementProvider {
+        class BetterVisibilitySettings : SettingToElementProvider {
             private val path = arrayOf("better_visibility")
 
             val lava = BooleanSetting(DESIGN, path, "lava", false, null)
@@ -101,15 +101,17 @@ open class Settings {
             val powder_snow = BooleanSetting(DESIGN, path, "powder_snow", false, null)
             val terrain_fog = BooleanSetting(DESIGN, path, "terrain_fog", false, null)
 
-            val multiple = MultipleBooleanSetting(DESIGN, path, arrayOf(
-                lava, water, nether, powder_snow, terrain_fog
-            ))
+            val multiple = MultipleBooleanSetting(
+                DESIGN, path, arrayOf(
+                    lava, water, nether, powder_snow, terrain_fog
+                )
+            )
 
             val lava_view = FloatSetting(DESIGN, path, "lava_view", 0.5f, FloatSettingsElementOptions().withSliderInfo(SliderInfo(0.0f, 1.0f, 2)).withEnableFunction {
                 return@withEnableFunction lava.get()
             })
 
-            override fun getElementSettings(): Array<Setting<*,*>> {
+            override fun getElementSettings(): Array<Setting<*, *>> {
                 return arrayOf(multiple, lava_view)
             }
 
@@ -118,20 +120,20 @@ open class Settings {
             }
         }
 
-        class ZoomSettings: BooleanSetting(GENERAL, arrayOf(), "zoom", true, BooleanSettingsElementOptions().asTitle()), SettingToElementProvider {
+        class ZoomSettings : BooleanSetting(GENERAL, arrayOf(), "zoom", true, BooleanSettingsElementOptions().asTitle()), SettingToElementProvider {
             val instant_zoom = BooleanSetting(GENERAL, arrayOf(), "instant_zoom", false, null)
             val hard_zoom = BooleanSetting(GENERAL, arrayOf(), "hard_zoom", false, null)
 
-            override fun getElementSettings(): Array<Setting<*,*>> {
+            override fun getElementSettings(): Array<Setting<*, *>> {
                 return arrayOf(this, instant_zoom, hard_zoom)
             }
         }
 
-        class BlockhitSettings: BooleanSetting(DESIGN, arrayOf("blockhit"), "blockhit", false, BooleanSettingsElementOptions().asTitle()), SettingToElementProvider {
+        class BlockhitSettings : BooleanSetting(DESIGN, arrayOf("blockhit"), "blockhit", false, BooleanSettingsElementOptions().asTitle()), SettingToElementProvider {
             val color = ColorSaverSetting(DESIGN, path, "color", ColorSaver.of(0), DefaultSettingElementOptions().addPathToTitle())
-            val alpha = FloatSetting(DESIGN, path, "alpha", 0.4f, FloatSettingsElementOptions().withSliderInfo(SliderInfo(0.0f,1.0f,2)).addPathToTitle())
+            val alpha = FloatSetting(DESIGN, path, "alpha", 0.4f, FloatSettingsElementOptions().withSliderInfo(SliderInfo(0.0f, 1.0f, 2)).addPathToTitle())
 
-            override fun getElementSettings(): Array<Setting<*,*>> {
+            override fun getElementSettings(): Array<Setting<*, *>> {
                 return arrayOf(this, color, alpha, hit_overlay, hit_overlay.color, hit_overlay.alpha)
             }
 
@@ -140,38 +142,38 @@ open class Settings {
             }
         }
 
-        class HitOverlaySettings: BooleanSetting(DESIGN, arrayOf("blockhit","hit_overlay"), "hit_overlay", false, BooleanSettingsElementOptions().asTitle()) {
+        class HitOverlaySettings : BooleanSetting(DESIGN, arrayOf("blockhit", "hit_overlay"), "hit_overlay", false, BooleanSettingsElementOptions().asTitle()) {
             val color = ColorSaverSetting(DESIGN, path, "color", ColorSaver.of(0), DefaultSettingElementOptions().addPathToTitle())
-            val alpha = FloatSetting(DESIGN, path, "alpha", 0.33f, FloatSettingsElementOptions().withSliderInfo(SliderInfo(0.0f,1.0f,2)).addPathToTitle())
+            val alpha = FloatSetting(DESIGN, path, "alpha", 0.33f, FloatSettingsElementOptions().withSliderInfo(SliderInfo(0.0f, 1.0f, 2)).addPathToTitle())
         }
 
-        class PumpkinSettings: BooleanSetting(DESIGN, arrayOf(), "disable_pumpkin_overlay", false, BooleanSettingsElementOptions().asTitle()), SettingToElementProvider {
+        class PumpkinSettings : BooleanSetting(DESIGN, arrayOf(), "disable_pumpkin_overlay", false, BooleanSettingsElementOptions().asTitle()), SettingToElementProvider {
             val show_pumpkin_icon = BooleanSetting(DESIGN, arrayOf(), "show_pumpkin_icon", false, null)
 
-            override fun getElementSettings(): Array<Setting<*,*>> {
+            override fun getElementSettings(): Array<Setting<*, *>> {
                 return arrayOf(this, show_pumpkin_icon)
             }
         }
 
-        class HeldItemInfoSettings: BooleanSetting(DESIGN, arrayOf("held_item_info"), "held_item_info", false, BooleanSettingsElementOptions().asTitle()), SettingToElementProvider {
-            val maxinfolength = FloatSetting(DESIGN, path, "maxinfolength", 5.0f, FloatSettingsElementOptions().withSliderInfo(SliderInfo(1f,10f,0)))
+        class HeldItemInfoSettings : BooleanSetting(DESIGN, arrayOf("held_item_info"), "held_item_info", false, BooleanSettingsElementOptions().asTitle()), SettingToElementProvider {
+            val maxinfolength = FloatSetting(DESIGN, path, "maxinfolength", 5.0f, FloatSettingsElementOptions().withSliderInfo(SliderInfo(1f, 10f, 0)))
 
-            override fun getElementSettings(): Array<Setting<*,*>> {
+            override fun getElementSettings(): Array<Setting<*, *>> {
                 return arrayOf(this, maxinfolength)
             }
         }
 
-        class OptionMenuSettings: SettingToElementProvider {
+        class OptionMenuSettings : SettingToElementProvider {
             private val path = arrayOf("options_menu")
 
-            val animation_time = FloatSetting(DESIGN, path, "animation_time", 200f, FloatSettingsElementOptions().withSliderInfo(SliderInfo(0f,500f,0)))
+            val animation_time = FloatSetting(DESIGN, path, "animation_time", 200f, FloatSettingsElementOptions().withSliderInfo(SliderInfo(0f, 500f, 0)))
             val show_title_menu = BooleanSetting(DESIGN, path, "show_title_menu", true, null)
             val show_game_menu = BooleanSetting(DESIGN, path, "show_game_menu", true, null)
             val shown_start_menu = BooleanSetting(DESIGN, path, "shown_start_menu", true, null)
-            val scale = FloatSetting(DESIGN, path, "scale", 0.75f, FloatSettingsElementOptions().withSliderInfo(SliderInfo(0.5f,1f,2)).addPathToTitle())
+            val scale = FloatSetting(DESIGN, path, "scale", 0.75f, FloatSettingsElementOptions().withSliderInfo(SliderInfo(0.5f, 1f, 2)).addPathToTitle())
 
-            override fun getElementSettings(): Array<Setting<*,*>> {
-                return arrayOf(animation_time,scale,show_game_menu,show_title_menu)
+            override fun getElementSettings(): Array<Setting<*, *>> {
+                return arrayOf(animation_time, scale, show_game_menu, show_title_menu)
             }
 
             override fun getTitle(): String {
@@ -179,40 +181,40 @@ open class Settings {
             }
         }
 
-        class UtilitiesSettings: SettingToElementProvider {
+        class UtilitiesSettings : SettingToElementProvider {
             val screenshot_folder_open = BooleanSetting(GENERAL, arrayOf(), "screenshot_folder_open", false, null)
-            val fire_height = FloatSetting(DESIGN, arrayOf(), "fire_height", 1.0f, FloatSettingsElementOptions().withSliderInfo(SliderInfo(0.6f,1f,2)))
+            val fire_height = FloatSetting(DESIGN, arrayOf(), "fire_height", 1.0f, FloatSettingsElementOptions().withSliderInfo(SliderInfo(0.6f, 1f, 2)))
             val extend_status_effect_info = BooleanSetting(DESIGN, arrayOf(), "extend_status_effect_info", false, null)
 
             override fun getTitle(): String {
                 return "utilities"
             }
 
-            override fun getElementSettings(): Array<Setting<*,*>> {
+            override fun getElementSettings(): Array<Setting<*, *>> {
                 return arrayOf(screenshot_folder_open, fire_height, extend_status_effect_info)
             }
         }
 
-        class PerspectiveSettings: BooleanSetting(GENERAL, arrayOf(), "perspective", false, BooleanSettingsElementOptions().asTitle()), SettingToElementProvider {
-            override fun getElementSettings(): Array<Setting<*,*>> {
+        class PerspectiveSettings : BooleanSetting(GENERAL, arrayOf(), "perspective", false, BooleanSettingsElementOptions().asTitle()), SettingToElementProvider {
+            override fun getElementSettings(): Array<Setting<*, *>> {
                 return arrayOf(this)
             }
         }
 
-        class TNTTimerSettings: BooleanSetting(GENERAL, arrayOf(), "tnt_timer", false, BooleanSettingsElementOptions().asTitle()), SettingToElementProvider {
-            override fun getElementSettings(): Array<Setting<*,*>> {
+        class TNTTimerSettings : BooleanSetting(GENERAL, arrayOf(), "tnt_timer", false, BooleanSettingsElementOptions().asTitle()), SettingToElementProvider {
+            override fun getElementSettings(): Array<Setting<*, *>> {
                 return arrayOf(this)
             }
         }
 
-        class ShulkerBoxTooltipSettings: BooleanSetting(DESIGN, arrayOf(), "shulker_box_tooltip", false, BooleanSettingsElementOptions().asTitle()), SettingToElementProvider {
-            override fun getElementSettings(): Array<Setting<*,*>> {
+        class ShulkerBoxTooltipSettings : BooleanSetting(DESIGN, arrayOf(), "shulker_box_tooltip", false, BooleanSettingsElementOptions().asTitle()), SettingToElementProvider {
+            override fun getElementSettings(): Array<Setting<*, *>> {
                 return arrayOf(this)
             }
         }
 
-        class CleanerDebugMenuSettings: BooleanSetting(DESIGN, arrayOf(), "cleaner_debug_menu", false, BooleanSettingsElementOptions().asTitle()), SettingToElementProvider {
-            override fun getElementSettings(): Array<Setting<*,*>> {
+        class CleanerDebugMenuSettings : BooleanSetting(DESIGN, arrayOf(), "cleaner_debug_menu", false, BooleanSettingsElementOptions().asTitle()), SettingToElementProvider {
+            override fun getElementSettings(): Array<Setting<*, *>> {
                 return arrayOf(this)
             }
         }

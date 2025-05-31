@@ -1,7 +1,6 @@
 package bewis09.bewisclient.mixin;
 
 import bewis09.bewisclient.settingsLoader.Settings;
-import bewis09.bewisclient.settingsLoader.SettingsLoader;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.ClientBrandRetriever;
@@ -37,8 +36,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
-
-import static bewis09.bewisclient.settingsLoader.Settings.DESIGN;
 
 @Mixin(DebugHud.class)
 public abstract class DebugHudMixin {
@@ -90,7 +87,7 @@ public abstract class DebugHudMixin {
                 }
 
                 Direction direction = client.getCameraEntity().getHorizontalFacing();
-                String string2 = switch ( direction ) {
+                String string2 = switch (direction) {
                     case NORTH -> "Towards negative Z";
                     case SOUTH -> "Towards positive Z";
                     case WEST -> "Towards negative X";
@@ -103,7 +100,7 @@ public abstract class DebugHudMixin {
                 list.add("Chuck: " + chunkPos.x + " " + ChunkSectionPos.getSectionCoord(this.client.getCameraEntity().getBlockPos().getY()) + " " + chunkPos.z);
                 list.add("ChunkRelative: " + (this.client.getCameraEntity().getBlockX() & 15) + " " + (this.client.getCameraEntity().getBlockY() & 15) + " " + (this.client.getCameraEntity().getBlockZ() & 15));
                 Entity entity = client.getCameraEntity();
-                list.add("Facing: " + direction + " (" + string2 + ") (" + String.format(Locale.ROOT, "%.1f / %.1f",MathHelper.wrapDegrees(entity.getYaw()),MathHelper.wrapDegrees(entity.getPitch())) + ")");
+                list.add("Facing: " + direction + " (" + string2 + ") (" + String.format(Locale.ROOT, "%.1f / %.1f", MathHelper.wrapDegrees(entity.getYaw()), MathHelper.wrapDegrees(entity.getPitch())) + ")");
 
             }
             BlockPos blockPos = this.client.getCameraEntity().getBlockPos();
@@ -114,7 +111,7 @@ public abstract class DebugHudMixin {
                 list.add("Waiting for Chunk...");
             } else {
                 WorldChunk worldChunk2 = this.getChunk();
-                list.add((k==0?(j<8?"§c":"§6"):"§2")+ "Light: " + Math.max(j, k) + " (sky: " + j + " block: " + k + ")");
+                list.add((k == 0 ? (j < 8 ? "§c" : "§6") : "§2") + "Light: " + Math.max(j, k) + " (sky: " + j + " block: " + k + ")");
                 list.add("Highest Block: " + worldChunk.sampleHeightmap(Heightmap.Type.WORLD_SURFACE, blockPos.getX(), blockPos.getZ()));
                 RegistryEntry<Biome> var27 = this.client.world.getBiome(blockPos);
                 AtomicReference<String> text = new AtomicReference<>(getBiomeString(var27));
@@ -130,7 +127,7 @@ public abstract class DebugHudMixin {
                 LocalDifficulty localDifficulty = new LocalDifficulty(client.world.getDifficulty(), client.world.getTimeOfDay(), l, h);
                 list.add("Local Difficulty: " + localDifficulty.getLocalDifficulty() + " // " + localDifficulty.getClampedLocalDifficulty());
                 assert this.client.player != null;
-                list.add("Mood: "+Math.round(this.client.player.getMoodPercentage() * 100.0F)+"%");
+                list.add("Mood: " + Math.round(this.client.player.getMoodPercentage() * 100.0F) + "%");
             }
             ServerWorld serverWorld = this.getServerWorld();
             if (serverWorld != null) {
@@ -147,13 +144,13 @@ public abstract class DebugHudMixin {
                     Object2IntMap<SpawnGroup> object2IntMap = info.getGroupToCount();
                     int m = info.getSpawningChunkCount();
 
-                    list.add("SpawnChunks: "+m);
+                    list.add("SpawnChunks: " + m);
                     for (SpawnGroup spawnGroup : SpawnGroup.values()) {
                         StringBuilder str = new StringBuilder();
                         for (String s : spawnGroup.getName().split("_")) {
                             str.append(s.replaceFirst(".", String.valueOf(s.toUpperCase().charAt(0))));
                         }
-                        list.add(str+": "+object2IntMap.getInt(spawnGroup));
+                        list.add(str + ": " + object2IntMap.getInt(spawnGroup));
                     }
                 } else {
                     list.add("SC: N/A");

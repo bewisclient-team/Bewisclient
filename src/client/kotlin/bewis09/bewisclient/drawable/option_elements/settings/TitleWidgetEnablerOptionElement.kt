@@ -29,11 +29,11 @@ class TitleWidgetEnablerOptionElement(val setting: BooleanSetting, vararg titles
     ): Int {
         val a = super.render(context, x, y, width, mouseX, mouseY, alphaModifier)
 
-        isWidgetHovered = mouseX>x+width-80&&mouseX<x+width&&mouseY>y+3&&mouseY<y+17
+        isWidgetHovered = mouseX > x + width - 80 && mouseX < x + width && mouseY > y + 3 && mouseY < y + 17
 
         val enabled = setting.get()
 
-        if(!isWidgetHovered) {
+        if (!isWidgetHovered) {
             context.fill(
                 x + width - 80,
                 y + 3,
@@ -51,18 +51,18 @@ class TitleWidgetEnablerOptionElement(val setting: BooleanSetting, vararg titles
             )
         }
         context.drawBorder(
-            x+width-80,
+            x + width - 80,
             y + 3,
             80,
             14,
-            (alphaModifier + (if(isWidgetHovered) 0xAAAAFF else 0xFFFFFF)).toInt()
+            (alphaModifier + (if (isWidgetHovered) 0xAAAAFF else 0xFFFFFF)).toInt()
         )
 
         context.drawCenteredTextWithShadow(
             MinecraftClient.getInstance().textRenderer,
             if (enabled) Bewisclient.getTranslatedString("enabled") else Bewisclient.getTranslatedString("disabled"),
             x + width - 40,
-            y+6,
+            y + 6,
             (alphaModifier + 0xFFFFFF).toInt()
         )
 
@@ -70,7 +70,7 @@ class TitleWidgetEnablerOptionElement(val setting: BooleanSetting, vararg titles
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int, screen: MainOptionsScreen) {
-        if(isWidgetHovered) {
+        if (isWidgetHovered) {
             screen.playDownSound(MinecraftClient.getInstance().soundManager)
             val enabled = setting.get()
             setting.set(!enabled)

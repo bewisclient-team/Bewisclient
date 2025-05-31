@@ -15,7 +15,7 @@ import net.minecraft.util.math.MathHelper
 import java.awt.Color
 import kotlin.math.roundToInt
 
-class ColorPickerPopup(screen: MainOptionsScreen, val setting: ColorSaverSetting): PopUp(screen) {
+class ColorPickerPopup(screen: MainOptionsScreen, val setting: ColorSaverSetting) : PopUp(screen) {
     override fun getWidth() = 200
 
     override fun getHeight() = 92
@@ -31,22 +31,56 @@ class ColorPickerPopup(screen: MainOptionsScreen, val setting: ColorSaverSetting
         val white = (a * 0xFF).toInt() * 0x1000000 + 0xFFFFFF
         val changing = color.getOriginalColor() < 0
 
-        RenderSystem.enableBlend()
         context.drawTexture(Identifier.of("bewisclient", "textures/color_space.png"), x + getWidth() - 64, y + 6, 58, 58)
         RenderSystem.setShaderColor(1f, 1f, 1f, a)
-        RenderSystem.disableBlend()
 
         context.drawBorder(x + getWidth() - 65, y + 5, 60, 60, white)
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
 
-        context.fill(x + 3 + (if (!changing) getWidth() / 2 - 2 else 0), y + getHeight() - 20, x + getWidth() / 2 - 1 + (if (!changing) getWidth() / 2 - 2 else 0), y + getHeight() - 3, (a * 0xFF).toInt() * 0x1000000 + 0x777777)
-        context.fill(x + 3 + (if (changing) getWidth() / 2 - 2 else 0), y + getHeight() - 20, x + getWidth() / 2 - 1 + (if (changing) getWidth() / 2 - 2 else 0), y + getHeight() - 3, (a * 0xFF).toInt() * 0x1000000 + 0x33333)
+        context.fill(
+            x + 3 + (if (!changing) getWidth() / 2 - 2 else 0),
+            y + getHeight() - 20,
+            x + getWidth() / 2 - 1 + (if (!changing) getWidth() / 2 - 2 else 0),
+            y + getHeight() - 3,
+            (a * 0xFF).toInt() * 0x1000000 + 0x777777
+        )
+        context.fill(
+            x + 3 + (if (changing) getWidth() / 2 - 2 else 0),
+            y + getHeight() - 20,
+            x + getWidth() / 2 - 1 + (if (changing) getWidth() / 2 - 2 else 0),
+            y + getHeight() - 3,
+            (a * 0xFF).toInt() * 0x1000000 + 0x33333
+        )
 
-        context.drawBorder(x + 3, y + getHeight() - 20, getWidth() / 2 - 4, 17, (a * 0xFF).toInt() * 0x1000000 + (if (Util.isIn(mouseX, mouseY, x + 3, y + getHeight() - 20, x - 2 + getWidth() / 2, y + getHeight() - 3)) 0xAAAAFF else 0xFFFFFF))
-        context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, Bewisclient.getTranslationText("color.static"), x + 1 + getWidth() / 4, y + getHeight() - 15, (a * 0xFF).toInt() * 0x1000000 + (if (changing) 0xAAAAAA else 0xFFFFFF))
+        context.drawBorder(
+            x + 3,
+            y + getHeight() - 20,
+            getWidth() / 2 - 4,
+            17,
+            (a * 0xFF).toInt() * 0x1000000 + (if (Util.isIn(mouseX, mouseY, x + 3, y + getHeight() - 20, x - 2 + getWidth() / 2, y + getHeight() - 3)) 0xAAAAFF else 0xFFFFFF)
+        )
+        context.drawCenteredTextWithShadow(
+            MinecraftClient.getInstance().textRenderer,
+            Bewisclient.getTranslationText("color.static"),
+            x + 1 + getWidth() / 4,
+            y + getHeight() - 15,
+            (a * 0xFF).toInt() * 0x1000000 + (if (changing) 0xAAAAAA else 0xFFFFFF)
+        )
 
-        context.drawBorder(x + getWidth() / 2 + 1, y + getHeight() - 20, getWidth() / 2 - 4, 17, (a * 0xFF).toInt() * 0x1000000 + (if (Util.isIn(mouseX, mouseY, x + getWidth() / 2 + 1, y + getHeight() - 20, x - 3 + getWidth(), y + getHeight() - 3)) 0xAAAAFF else 0xFFFFFF))
-        context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, Bewisclient.getTranslationText("color.change"), x - 1 + getWidth() / 4 + getWidth() / 2, y + getHeight() - 15, (a * 0xFF).toInt() * 0x1000000 + (if (changing) 0xFFFFFF else 0xAAAAAA))
+        context.drawBorder(
+            x + getWidth() / 2 + 1,
+            y + getHeight() - 20,
+            getWidth() / 2 - 4,
+            17,
+            (a * 0xFF).toInt() * 0x1000000 + (if (Util.isIn(mouseX, mouseY, x + getWidth() / 2 + 1, y + getHeight() - 20, x - 3 + getWidth(), y + getHeight() - 3)) 0xAAAAFF else 0xFFFFFF)
+        )
+        context.drawCenteredTextWithShadow(
+            MinecraftClient.getInstance().textRenderer,
+            Bewisclient.getTranslationText("color.change"),
+            x - 1 + getWidth() / 4 + getWidth() / 2,
+            y + getHeight() - 15,
+            (a * 0xFF).toInt() * 0x1000000 + (if (changing) 0xFFFFFF else 0xAAAAAA)
+        )
 
         context.drawHorizontalLine(x, x + getWidth() - 1, y + getHeight() - 23, white)
         context.drawVerticalLine(x + getWidth() - 70, y, y + getHeight() - 23, white)
@@ -64,7 +98,13 @@ class ColorPickerPopup(screen: MainOptionsScreen, val setting: ColorSaverSetting
 
             offset = ((value - 1000) / 19000f * (getWidth() - 88)).toInt()
 
-            context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, Bewisclient.getTranslatedString("gui.speed") + ": " + ((value / 100f).roundToInt() / 10f) + "s", x + (getWidth() - 64) / 2, y + 7, white)
+            context.drawCenteredTextWithShadow(
+                MinecraftClient.getInstance().textRenderer,
+                Bewisclient.getTranslatedString("gui.speed") + ": " + ((value / 100f).roundToInt() / 10f) + "s",
+                x + (getWidth() - 64) / 2,
+                y + 7,
+                white
+            )
         } else {
             val hsb = Color.RGBtoHSB(ColorHelper.getRed(color.getOriginalColor()), ColorHelper.getGreen(color.getOriginalColor()), ColorHelper.getBlue(color.getOriginalColor()), null)
 
@@ -87,7 +127,13 @@ class ColorPickerPopup(screen: MainOptionsScreen, val setting: ColorSaverSetting
 
             offset = (bri * (getWidth() - 88)).toInt()
 
-            context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, Bewisclient.getTranslatedString("gui.brightness") + ": " + ((bri * 100f).roundToInt()) + "%", x + (getWidth() - 64) / 2, y + 7, white)
+            context.drawCenteredTextWithShadow(
+                MinecraftClient.getInstance().textRenderer,
+                Bewisclient.getTranslatedString("gui.brightness") + ": " + ((bri * 100f).roundToInt()) + "%",
+                x + (getWidth() - 64) / 2,
+                y + 7,
+                white
+            )
         }
 
         context.fill(x + 3, y + 20, x + getWidth() - 72, y + 33, (a * 0xFF).toInt() * 0x1000000 + 0x444444)

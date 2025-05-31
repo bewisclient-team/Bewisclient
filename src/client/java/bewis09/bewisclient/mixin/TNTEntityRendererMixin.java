@@ -19,8 +19,8 @@ public abstract class TNTEntityRendererMixin extends EntityRenderer<TntEntity, T
         super(ctx);
     }
 
-    @Inject(method = "render(Lnet/minecraft/client/render/entity/state/TntEntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at=@At("RETURN"))
+    @Inject(method = "render(Lnet/minecraft/client/render/entity/state/TntEntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At("RETURN"))
     public void inject(TntEntityRenderState tntEntityRenderState, MatrixStack matrices, VertexConsumerProvider vertexConsumerProvider, int light, CallbackInfo ci) {
-        KFJ.INSTANCE.renderTNTTimer(tntEntityRenderState,matrices,vertexConsumerProvider,light,getTextRenderer(),this.dispatcher);
+        KFJ.INSTANCE.renderTNTTimer(tntEntityRenderState, matrices, vertexConsumerProvider, light, getTextRenderer(), this.dispatcher);
     }
 }

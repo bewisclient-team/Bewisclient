@@ -47,269 +47,283 @@ import kotlin.math.max
  * The main class for Bewisclient
  */
 object Bewisclient : Settings(), ClientModInitializer {
-	val logger: Logger = LoggerFactory.getLogger("Bewisclient")
+    val logger: Logger = LoggerFactory.getLogger("Bewisclient")
 
-	const val API_LEVEL = 2
+    const val API_LEVEL = 2
 
-	/**
-	 * The position when the speed was calculated the previous time
-	 */
-	var posOld = Vec3d.ZERO!!
+    /**
+     * The position when the speed was calculated the previous time
+     */
+    var posOld = Vec3d.ZERO!!
 
-	/**
-	 * The current speed of the player for the [bewis09.bewisclient.widgets.lineWidgets.SpeedWidget]
-	 */
-	var speed = 0.0
+    /**
+     * The current speed of the player for the [bewis09.bewisclient.widgets.lineWidgets.SpeedWidget]
+     */
+    var speed = 0.0
 
-	/**
-	 * The [KeyBinding] for free look
-	 */
-	var freeLookKeyBinding: KeyBinding? = null
+    /**
+     * The [KeyBinding] for free look
+     */
+    var freeLookKeyBinding: KeyBinding? = null
 
-	/**
-	 * Indicates if smoothCamera was enabled before the zoom was enabled
-	 */
-	var pt: Boolean? = false
+    /**
+     * Indicates if smoothCamera was enabled before the zoom was enabled
+     */
+    var pt: Boolean? = false
 
-	/**
-	 * A collection of all times in milliseconds in the last second, when the right mouse button was pressed
-	 */
-	var rightList: ArrayList<Long> = ArrayList()
+    /**
+     * A collection of all times in milliseconds in the last second, when the right mouse button was pressed
+     */
+    var rightList: ArrayList<Long> = ArrayList()
 
-	/**
-	 * A collection of all times in milliseconds in the last second, when the left mouse button was pressed
-	 */
-	val leftList: ArrayList<Long> = ArrayList()
+    /**
+     * A collection of all times in milliseconds in the last second, when the left mouse button was pressed
+     */
+    val leftList: ArrayList<Long> = ArrayList()
 
-	/**
-	 * A new Bewisclient update or null if none is available
-	 */
-	var update: JsonObject? = null
+    /**
+     * A new Bewisclient update or null if none is available
+     */
+    var update: JsonObject? = null
 
-	/**
-	 * Indicates if the user has been informed about the new update
-	 */
-	var updateInformed = false
+    /**
+     * Indicates if the user has been informed about the new update
+     */
+    var updateInformed = false
 
-	val translationsFile = File(FabricLoader.getInstance().gameDir.toFile(), "bewisclient/debug/unresolved_translations.json")
-	val debugTranslations = translationsFile.exists()
+    val translationsFile = File(FabricLoader.getInstance().gameDir.toFile(), "bewisclient/debug/unresolved_translations.json")
+    val debugTranslations = translationsFile.exists()
 
-	var unresolvedTranslations = JsonObject()
+    var unresolvedTranslations = JsonObject()
 
-	override fun onInitializeClient() {
-		SettingsLoader.loadSettings()
+    override fun onInitializeClient() {
+        SettingsLoader.loadSettings()
 
-		update = UpdateChecker.checkForUpdates()
-		if(update!=null)
-			Updater.downloadVersion(update!!)
+        update = UpdateChecker.checkForUpdates()
+        if (update != null)
+            Updater.downloadVersion(update!!)
 
-		ServerConnection.load()
+        ServerConnection.load()
 
-		HudRenderCallback.EVENT.register(WidgetRenderer())
+        HudRenderCallback.EVENT.register(WidgetRenderer())
 
-		val keyBinding1 = KeyBindingHelper.registerKeyBinding(KeyBinding("bewisclient.key.gamma", GLFW.GLFW_KEY_G, "bewisclient.category.bewisclient"))
-		val keyBinding2 = KeyBindingHelper.registerKeyBinding(KeyBinding("bewisclient.key.gamma_up", GLFW.GLFW_KEY_UP, "bewisclient.category.bewisclient"))
-		val keyBinding3 = KeyBindingHelper.registerKeyBinding(KeyBinding("bewisclient.key.gamma_down", GLFW.GLFW_KEY_DOWN, "bewisclient.category.bewisclient"))
-		val keyBinding4 = KeyBindingHelper.registerKeyBinding(KeyBinding("bewisclient.key.night_vision", GLFW.GLFW_KEY_H, "bewisclient.category.bewisclient"))
-		freeLookKeyBinding = KeyBindingHelper.registerKeyBinding(KeyBinding("bewisclient.key.free_look", GLFW.GLFW_KEY_LEFT_ALT, "bewisclient.category.bewisclient"))
+        val keyBinding1 = KeyBindingHelper.registerKeyBinding(KeyBinding("bewisclient.key.gamma", GLFW.GLFW_KEY_G, "bewisclient.category.bewisclient"))
+        val keyBinding2 = KeyBindingHelper.registerKeyBinding(KeyBinding("bewisclient.key.gamma_up", GLFW.GLFW_KEY_UP, "bewisclient.category.bewisclient"))
+        val keyBinding3 = KeyBindingHelper.registerKeyBinding(KeyBinding("bewisclient.key.gamma_down", GLFW.GLFW_KEY_DOWN, "bewisclient.category.bewisclient"))
+        val keyBinding4 = KeyBindingHelper.registerKeyBinding(KeyBinding("bewisclient.key.night_vision", GLFW.GLFW_KEY_H, "bewisclient.category.bewisclient"))
+        freeLookKeyBinding = KeyBindingHelper.registerKeyBinding(KeyBinding("bewisclient.key.free_look", GLFW.GLFW_KEY_LEFT_ALT, "bewisclient.category.bewisclient"))
 
-		val openOptionScreenKeyBinding = KeyBindingHelper.registerKeyBinding(KeyBinding(
-				"bewisclient.key.open_screen",
-				InputUtil.Type.KEYSYM,
-				GLFW.GLFW_KEY_RIGHT_SHIFT,
-				"bewisclient.category.bewisclient"
-		))
+        val openOptionScreenKeyBinding = KeyBindingHelper.registerKeyBinding(
+            KeyBinding(
+                "bewisclient.key.open_screen",
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_RIGHT_SHIFT,
+                "bewisclient.category.bewisclient"
+            )
+        )
 
-		val zoomBinding = KeyBindingHelper.registerKeyBinding(KeyBinding(
-				"bewisclient.key.zoom",
-				InputUtil.Type.KEYSYM,
-				GLFW.GLFW_KEY_C,
-				"bewisclient.category.bewisclient"
-		))
+        val zoomBinding = KeyBindingHelper.registerKeyBinding(
+            KeyBinding(
+                "bewisclient.key.zoom",
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_C,
+                "bewisclient.category.bewisclient"
+            )
+        )
 
-		ClientTickEvents.END_CLIENT_TICK.register {
+        ClientTickEvents.END_CLIENT_TICK.register {
 
-			if(it.player!=null && it.isPaused.not()) {
-				val posNew = it.player!!.pos
+            if (it.player != null && it.isPaused.not()) {
+                val posNew = it.player!!.pos
 
-				speed = if(WidgetRenderer.speedWidget.settings.vertical_speed.get())
-					posNew.subtract(posOld).length()
-				else
-					posNew.subtract(posOld).horizontalLength()
+                speed = if (WidgetRenderer.speedWidget.settings.vertical_speed.get())
+                    posNew.subtract(posOld).length()
+                else
+                    posNew.subtract(posOld).horizontalLength()
 
-				posOld = posNew
-			}
+                posOld = posNew
+            }
 
-			if (MinecraftClient.getInstance().options.togglePerspectiveKey.isPressed) {
-				MixinStatics.cameraAddYaw = 0f
-				MixinStatics.cameraAddPitch = 0f
-			}
+            if (MinecraftClient.getInstance().options.togglePerspectiveKey.isPressed) {
+                MixinStatics.cameraAddYaw = 0f
+                MixinStatics.cameraAddPitch = 0f
+            }
 
-			while (openOptionScreenKeyBinding?.wasPressed() == true) {
-				if(!options_menu.shown_start_menu.get()) {
-					MinecraftClient.getInstance().setScreen(WelcomingScreen())
-				} else {
-					MinecraftClient.getInstance().setScreen(MainOptionsScreen())
-				}
-			}
+            while (openOptionScreenKeyBinding?.wasPressed() == true) {
+                if (!options_menu.shown_start_menu.get()) {
+                    MinecraftClient.getInstance().setScreen(WelcomingScreen())
+                } else {
+                    MinecraftClient.getInstance().setScreen(MainOptionsScreen())
+                }
+            }
 
-			while (keyBinding1.wasPressed()) {
-				fullbright.set(true)
-				fullbright.fullbright_value.set(if(fullbright.fullbright_value.get() <= 1f) 10f else 1f)
-				MinecraftClient.getInstance().options.gamma.value = fullbright.fullbright_value.get().toDouble()
-				printGammaMessage(fullbright.fullbright_value.get()/10f)
-			}
+            while (keyBinding1.wasPressed()) {
+                fullbright.set(true)
+                fullbright.fullbright_value.set(if (fullbright.fullbright_value.get() <= 1f) 10f else 1f)
+                MinecraftClient.getInstance().options.gamma.value = fullbright.fullbright_value.get().toDouble()
+                printGammaMessage(fullbright.fullbright_value.get() / 10f)
+            }
 
-			while (keyBinding2.wasPressed()) {
-				val value = min(10f, fullbright.fullbright_value.get() + 0.25f)
-				fullbright.set(true)
-				fullbright.fullbright_value.set(value)
-				MinecraftClient.getInstance().options.gamma.value = value.toDouble()
-				printGammaMessage(value/10f)
-			}
+            while (keyBinding2.wasPressed()) {
+                val value = min(10f, fullbright.fullbright_value.get() + 0.25f)
+                fullbright.set(true)
+                fullbright.fullbright_value.set(value)
+                MinecraftClient.getInstance().options.gamma.value = value.toDouble()
+                printGammaMessage(value / 10f)
+            }
 
-			while (keyBinding3.wasPressed()) {
-				val value = max(0f, fullbright.fullbright_value.get() - 0.25f)
-				fullbright.set(true)
-				fullbright.fullbright_value.set(value)
-				MinecraftClient.getInstance().options.gamma.value = value.toDouble()
-				printGammaMessage(value/10f)
-			}
+            while (keyBinding3.wasPressed()) {
+                val value = max(0f, fullbright.fullbright_value.get() - 0.25f)
+                fullbright.set(true)
+                fullbright.fullbright_value.set(value)
+                MinecraftClient.getInstance().options.gamma.value = value.toDouble()
+                printGammaMessage(value / 10f)
+            }
 
-			while (keyBinding4.wasPressed()) {
-				fullbright.night_vision.set(!fullbright.night_vision.get())
-				assert(MinecraftClient.getInstance().player != null)
-				MinecraftClient.getInstance().player!!.sendMessage(Text.translatable("bewisclient.night_vision." + (if (fullbright.night_vision.get()) "enabled" else "disabled")).setStyle(
-						Style.EMPTY.withColor(if (fullbright.night_vision.get()) 0xFFFF00 else 0xFF0000)
-				), true)
-			}
+            while (keyBinding4.wasPressed()) {
+                fullbright.night_vision.set(!fullbright.night_vision.get())
+                assert(MinecraftClient.getInstance().player != null)
+                MinecraftClient.getInstance().player!!.sendMessage(
+                    Text.translatable("bewisclient.night_vision." + (if (fullbright.night_vision.get()) "enabled" else "disabled")).setStyle(
+                        Style.EMPTY.withColor(if (fullbright.night_vision.get()) 0xFFFF00 else 0xFF0000)
+                    ), true
+                )
+            }
 
-			if(zoom.get()) {
-				if (zoomBinding?.isPressed == true) {
-					MixinStatics.isZoomed = true
-					if (pt == null)
-						pt = MinecraftClient.getInstance().options.smoothCameraEnabled
-					if(!zoom.hard_zoom.get())
-						MinecraftClient.getInstance().options.smoothCameraEnabled = true
-				} else {
-					MixinStatics.isZoomed = false
-					if (pt != null && !zoom.hard_zoom.get())
-						MinecraftClient.getInstance().options.smoothCameraEnabled = pt!!
-					pt = null
-				}
-			}
-		}
+            if (zoom.get()) {
+                if (zoomBinding?.isPressed == true) {
+                    MixinStatics.isZoomed = true
+                    if (pt == null)
+                        pt = MinecraftClient.getInstance().options.smoothCameraEnabled
+                    if (!zoom.hard_zoom.get())
+                        MinecraftClient.getInstance().options.smoothCameraEnabled = true
+                } else {
+                    MixinStatics.isZoomed = false
+                    if (pt != null && !zoom.hard_zoom.get())
+                        MinecraftClient.getInstance().options.smoothCameraEnabled = pt!!
+                    pt = null
+                }
+            }
+        }
 
-		ClientCommandRegistrationCallback.EVENT.register(ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource?>, _: CommandRegistryAccess? ->
-			dispatcher.register(ClientCommandManager.literal("snake")
-					.executes { context: CommandContext<FabricClientCommandSource> ->
-						context.source.client.send {
-							context.source.client.setScreen(SnakeScreen())
-						}
-						1
-					})
-		})
+        ClientCommandRegistrationCallback.EVENT.register(ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource?>, _: CommandRegistryAccess? ->
+            dispatcher.register(
+                ClientCommandManager.literal("snake")
+                    .executes { context: CommandContext<FabricClientCommandSource> ->
+                        context.source.client.send {
+                            context.source.client.setScreen(SnakeScreen())
+                        }
+                        1
+                    })
+        })
 
-		ClientCommandRegistrationCallback.EVENT.register(ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource?>, _: CommandRegistryAccess? ->
-			dispatcher.register(ClientCommandManager.literal("bewisclient").then(
-				ClientCommandManager.literal("snake").executes{ context: CommandContext<FabricClientCommandSource> ->
-					context.source.client.send {
-						context.source.client.setScreen(SnakeScreen())
-					}
-					1
-				}
-			).then(ClientCommandManager.literal("screenshot").then(ClientCommandManager.argument("file",StringArgumentType.string()).executes { context: CommandContext<FabricClientCommandSource> ->
-					context.source.client.send {
-						val s = MainOptionsScreen()
+        ClientCommandRegistrationCallback.EVENT.register(ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource?>, _: CommandRegistryAccess? ->
+            dispatcher.register(
+                ClientCommandManager.literal("bewisclient").then(
+                ClientCommandManager.literal("snake").executes { context: CommandContext<FabricClientCommandSource> ->
+                    context.source.client.send {
+                        context.source.client.setScreen(SnakeScreen())
+                    }
+                    1
+                }
+            ).then(
+                ClientCommandManager.literal("screenshot").then(ClientCommandManager.argument("file", StringArgumentType.string()).executes { context: CommandContext<FabricClientCommandSource> ->
+                    context.source.client.send {
+                        val s = MainOptionsScreen()
 
-						s.allElements.add(ElementList.screenshot())
-						s.allElements.add(arrayOf(
-							JustTextOptionElement(StringArgumentType.getString(context,"file")),
-							SingleScreenshotElement(ScreenshotElement.screenshots.first {
-								it.name == StringArgumentType.getString(context,"file")
-							})
-						)
-						)
+                        s.allElements.add(ElementList.screenshot())
+                        s.allElements.add(
+                            arrayOf(
+                                JustTextOptionElement(StringArgumentType.getString(context, "file")),
+                                SingleScreenshotElement(ScreenshotElement.screenshots.first {
+                                    it.name == StringArgumentType.getString(context, "file")
+                                })
+                            )
+                        )
 
-						s.scrolls.add(0f)
-						s.scrolls.add(0f)
+                        s.scrolls.add(0f)
+                        s.scrolls.add(0f)
 
-						s.slice = 2
+                        s.slice = 2
 
-						context.source.client.setScreen(s)
-					}
-					1
-				})))
-		})
+                        context.source.client.setScreen(s)
+                    }
+                    1
+                })
+            )
+            )
+        })
 
-		wing()
-	}
+        wing()
+    }
 
-	fun printGammaMessage(gamma: Float) {
-		assert(MinecraftClient.getInstance().player != null)
-		MinecraftClient.getInstance().player!!.sendMessage(Text.translatable("options.gamma")
-				.setStyle(Style.EMPTY.withColor((0xFF00 + (((gamma * 0xFF).toInt()))) shl 8))
-				.append(": ").append((gamma * 1000f).toString() + "%"), true)
-	}
+    fun printGammaMessage(gamma: Float) {
+        assert(MinecraftClient.getInstance().player != null)
+        MinecraftClient.getInstance().player!!.sendMessage(
+            Text.translatable("options.gamma")
+                .setStyle(Style.EMPTY.withColor((0xFF00 + (((gamma * 0xFF).toInt()))) shl 8))
+                .append(": ").append((gamma * 1000f).toString() + "%"), true
+        )
+    }
 
-	/**
-	 * @param key The translation key without "bewisclient."
-	 *
-	 * @return A translated [Text] with prefix "bewisclient."
-	 */
-	fun getTranslationText(key: String): MutableText {
-		if(debugTranslations && Text.translatable("bewisclient.$key").string == "bewisclient.$key" && !unresolvedTranslations.has("bewisclient.$key")) {
-			unresolvedTranslations.add("bewisclient.$key", JsonPrimitive(""))
+    /**
+     * @param key The translation key without "bewisclient."
+     *
+     * @return A translated [Text] with prefix "bewisclient."
+     */
+    fun getTranslationText(key: String): MutableText {
+        if (debugTranslations && Text.translatable("bewisclient.$key").string == "bewisclient.$key" && !unresolvedTranslations.has("bewisclient.$key")) {
+            unresolvedTranslations.add("bewisclient.$key", JsonPrimitive(""))
 
-			translationsFile.writeText(SettingsLoader.gson.toJson(unresolvedTranslations))
-		}
+            translationsFile.writeText(SettingsLoader.gson.toJson(unresolvedTranslations))
+        }
 
-		return Text.translatable("bewisclient.$key")
-	}
+        return Text.translatable("bewisclient.$key")
+    }
 
-	/**
-	 * @param key The translation key without "bewisclient."
-	 *
-	 * @return The [String] from the translated [Text] with prefix "bewisclient."
-	 */
-	fun getTranslatedString(key: String): String {
-		return getTranslationText(key).string
-	}
+    /**
+     * @param key The translation key without "bewisclient."
+     *
+     * @return The [String] from the translated [Text] with prefix "bewisclient."
+     */
+    fun getTranslatedString(key: String): String {
+        return getTranslationText(key).string
+    }
 
-	/**
-	 * Starts a timer for the wing animation
-	 */
-	fun wing() {
-		Timer(50) {
-			WingFeatureRenderer.wing_animation_frame = (WingFeatureRenderer.wing_animation_frame + 1) % 60
-		}.start()
-	}
+    /**
+     * Starts a timer for the wing animation
+     */
+    fun wing() {
+        Timer(50) {
+            WingFeatureRenderer.wing_animation_frame = (WingFeatureRenderer.wing_animation_frame + 1) % 60
+        }.start()
+    }
 
-	/**
-	 * @return The CPS for the left mouse button
-	 */
-	fun lCount(): Int {
-		for (l in java.util.ArrayList(leftList)) {
-			if (System.currentTimeMillis() - l > 1000) leftList.remove(l)
-		}
-		return leftList.size
-	}
+    /**
+     * @return The CPS for the left mouse button
+     */
+    fun lCount(): Int {
+        for (l in java.util.ArrayList(leftList)) {
+            if (System.currentTimeMillis() - l > 1000) leftList.remove(l)
+        }
+        return leftList.size
+    }
 
-	/**
-	 * @return The CPS for the right mouse button
-	 */
-	fun rCount(): Int {
-		for (l in java.util.ArrayList(rightList)) {
-			if (System.currentTimeMillis() - l > 1000) rightList.remove(l)
-		}
-		return rightList.size
-	}
+    /**
+     * @return The CPS for the right mouse button
+     */
+    fun rCount(): Int {
+        for (l in java.util.ArrayList(rightList)) {
+            if (System.currentTimeMillis() - l > 1000) rightList.remove(l)
+        }
+        return rightList.size
+    }
 
-	fun info(vararg message: Any?) {
-		logger.info(message.reduce { acc, p -> "$acc, $p" }.toString())
-	}
+    fun info(vararg message: Any?) {
+        logger.info(message.reduce { acc, p -> "$acc, $p" }.toString())
+    }
 
-	fun warn(vararg message: Any) {
-		logger.warn(message.reduce { acc, p -> "$acc, $p" }.toString())
-	}
+    fun warn(vararg message: Any) {
+        logger.warn(message.reduce { acc, p -> "$acc, $p" }.toString())
+    }
 }

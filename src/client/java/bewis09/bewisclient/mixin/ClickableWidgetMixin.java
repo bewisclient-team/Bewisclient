@@ -17,29 +17,41 @@ import java.util.Objects;
 abstract
 class ClickableWidgetMixin implements Drawable, Element, Widget, Selectable {
 
-    @Shadow public boolean visible;
+    @Shadow
+    public boolean visible;
 
-    @Shadow protected boolean hovered;
+    @Shadow
+    protected boolean hovered;
 
-    @Shadow protected abstract void renderWidget(DrawContext context, int mouseX, int mouseY, float delta);
+    @Shadow
+    protected abstract void renderWidget(DrawContext context, int mouseX, int mouseY, float delta);
 
-    @Shadow @Final private TooltipState tooltip;
+    @Shadow
+    @Final
+    private TooltipState tooltip;
 
-    @Shadow public abstract boolean isHovered();
+    @Shadow
+    public abstract boolean isHovered();
 
-    @Shadow public abstract boolean isFocused();
+    @Shadow
+    public abstract boolean isFocused();
 
-    @Shadow public abstract ScreenRect getNavigationFocus();
+    @Shadow
+    public abstract ScreenRect getNavigationFocus();
 
-    @Shadow public abstract int getX();
+    @Shadow
+    public abstract int getX();
 
-    @Shadow public abstract int getY();
+    @Shadow
+    public abstract int getY();
 
-    @Shadow protected int width;
+    @Shadow
+    protected int width;
 
-    @Shadow protected int height;
+    @Shadow
+    protected int height;
 
-    @Inject(method = "render",at=@At("HEAD"),cancellable = true)
+    @Inject(method = "render", at = @At("HEAD"), cancellable = true)
     public final void render(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         if (this.visible && Objects.equals(toString(), "§disable_scissors")) {
             this.hovered = mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;

@@ -11,10 +11,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(TooltipComponent.class)
 public interface TooltipComponentMixin {
-    @Inject(method = "of(Lnet/minecraft/item/tooltip/TooltipData;)Lnet/minecraft/client/gui/tooltip/TooltipComponent;",at=@At("HEAD"),cancellable = true)
+    @Inject(method = "of(Lnet/minecraft/item/tooltip/TooltipData;)Lnet/minecraft/client/gui/tooltip/TooltipComponent;", at = @At("HEAD"), cancellable = true)
     private static void inject(TooltipData data, CallbackInfoReturnable<TooltipComponent> cir) {
         if (data instanceof ShulkerBoxTooltipData) {
-            cir.setReturnValue(new ShulkerBoxTooltip((ShulkerBoxTooltipData)data));
+            cir.setReturnValue(new ShulkerBoxTooltip((ShulkerBoxTooltipData) data));
         }
     }
 }

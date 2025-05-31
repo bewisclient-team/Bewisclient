@@ -4,7 +4,7 @@ import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.screen.MainOptionsScreen
 import com.terraformersmc.modmenu.api.*
 
-class BewisclientModMenuApiImpl: ModMenuApi {
+class BewisclientModMenuApiImpl : ModMenuApi {
     override fun getModConfigScreenFactory(): ConfigScreenFactory<*> {
         return ConfigScreenFactory { MainOptionsScreen(it) }
     }
@@ -13,11 +13,11 @@ class BewisclientModMenuApiImpl: ModMenuApi {
         return UpdateChecker { BewisclientUpdateInfo() }
     }
 
-    class BewisclientUpdateInfo: UpdateInfo {
+    class BewisclientUpdateInfo : UpdateInfo {
         override fun isUpdateAvailable(): Boolean = Bewisclient.update != null
 
         override fun getDownloadLink(): String {
-            if(Bewisclient.update==null) return ""
+            if (Bewisclient.update == null) return ""
 
             return Bewisclient.update!!.get("files").asJsonArray[0].asJsonObject.get("url").asString
         }

@@ -3,7 +3,6 @@ package bewis09.bewisclient.mixin;
 import bewis09.bewisclient.drawable.UsableTexturedButtonWidget;
 import bewis09.bewisclient.screen.MainOptionsScreen;
 import bewis09.bewisclient.settingsLoader.Settings;
-import bewis09.bewisclient.settingsLoader.SettingsLoader;
 import net.minecraft.client.gui.screen.ButtonTextures;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
@@ -13,8 +12,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import static bewis09.bewisclient.settingsLoader.Settings.DESIGN;
 
 @Mixin(GameMenuScreen.class)
 public class InGameScreenMixin extends Screen {

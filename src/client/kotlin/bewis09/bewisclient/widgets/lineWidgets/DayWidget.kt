@@ -7,12 +7,12 @@ import net.minecraft.client.MinecraftClient
 /**
  * A [LineWidget] which displays the number of in-game-days the world has existed for
  */
-class DayWidget: LineWidget<SettingTypes.TextWidgetSettingsObject>("days",80,true) {
+class DayWidget : LineWidget<SettingTypes.TextWidgetSettingsObject>("days", 80, true) {
     override fun getText(): ArrayList<String> {
-        return arrayListOf(Bewisclient.getTranslatedString("widgets.day")+" "+ (MinecraftClient.getInstance().world?.timeOfDay?.div(24000L) ?: 0))
+        return arrayListOf(Bewisclient.getTranslatedString("widgets.day") + " " + (MinecraftClient.getInstance().world?.timeOfDay?.div(24000L) ?: 0))
     }
 
     override fun getWidgetSettings(): SettingTypes.TextWidgetSettingsObject {
-        return SettingTypes.TextWidgetSettingsObject(id,5f,1f,68f,-1f,0.43f, .7f)
+        return SettingTypes.TextWidgetSettingsObject(id, 5f, 1f, 68f, -1f, 0.43f, .7f)
     }
 }

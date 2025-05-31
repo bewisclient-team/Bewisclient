@@ -6,7 +6,8 @@ import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.settingsLoader.settings.element_options.FloatSettingsElementOptions
 import com.google.gson.JsonPrimitive
 
-class FloatSetting(settings: String, path: Array<String>, id: String, defaultValue: Float, elementOptions: FloatSettingsElementOptions?) : Setting<Float, FloatSettingsElementOptions>(settings, path, id, defaultValue, elementOptions ?: FloatSettingsElementOptions()) {
+class FloatSetting(settings: String, path: Array<String>, id: String, defaultValue: Float, elementOptions: FloatSettingsElementOptions?) :
+    Setting<Float, FloatSettingsElementOptions>(settings, path, id, defaultValue, elementOptions ?: FloatSettingsElementOptions()) {
 
     override fun get(): Float {
         return try {
@@ -17,7 +18,7 @@ class FloatSetting(settings: String, path: Array<String>, id: String, defaultVal
     }
 
     override fun set(value: Float) {
-        SettingsLoader.set(settings,JsonPrimitive(value),path,id)
+        SettingsLoader.set(settings, JsonPrimitive(value), path, id)
     }
 
     override fun createOptionElement(): OptionElement {

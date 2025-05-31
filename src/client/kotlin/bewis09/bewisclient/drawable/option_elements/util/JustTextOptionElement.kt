@@ -9,7 +9,7 @@ import net.minecraft.client.gui.DrawContext
  *
  * @param _title The text
  */
-open class JustTextOptionElement(val _title: String): OptionElement(_title,"") {
+open class JustTextOptionElement(val _title: String) : OptionElement(_title, "") {
     override fun render(
         context: DrawContext,
         x: Int,
@@ -19,7 +19,7 @@ open class JustTextOptionElement(val _title: String): OptionElement(_title,"") {
         mouseY: Int,
         alphaModifier: Long
     ): Int {
-        context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer,_title,x+width/2,y+5,-1)
+        context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, _title, x + width / 2, y + 5, -1)
 
         return 20
     }

@@ -15,21 +15,21 @@ public class APIEntryPoint {
     /**
      * Allows you to add your custom external information about the block the player is looking at in the TIWYLA Widget
      *
-     * @param block The block for which the information should be added
+     * @param block    The block for which the information should be added
      * @param property The property that should be regarded
      */
     public static void addBlockExtraInfoPair(Block block, Property<?> property) {
-        TiwylaWidget.Companion.getExtraInfo().put(block,property);
+        TiwylaWidget.Companion.getExtraInfo().put(block, property);
     }
 
     /**
      * Allows you to add your custom external information about the entity the player is looking at in the TIWYLA Widget
      *
-     * @param entityType The {@link EntityType} for which this information should be added
+     * @param entityType     The {@link EntityType} for which this information should be added
      * @param entityListener The {@link EntityListener} that produces the {@link String} that should be displayed
      */
     public static void addEntityExtraInfoPair(EntityType<?> entityType, EntityListener entityListener) {
-        TiwylaWidget.Companion.getEntityExtraInfo().put(entityType,entityListener);
+        TiwylaWidget.Companion.getEntityExtraInfo().put(entityType, entityListener);
     }
 
     /**
@@ -46,6 +46,7 @@ public class APIEntryPoint {
 
     /**
      * Allows you to add your own element in the Main Options Screen
+     *
      * @param m The {@link OptionElement} which should be added
      */
     public static void addMainOptionsElement(OptionElement m) {
@@ -54,6 +55,7 @@ public class APIEntryPoint {
 
     /**
      * Allows you to add your own widget
+     *
      * @param w The {@link Widget} that should be added
      */
     public static void addWidget(Widget w) {

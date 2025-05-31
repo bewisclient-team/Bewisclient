@@ -1,6 +1,6 @@
 package bewis09.bewisclient.settingsLoader.settings.element_options
 
-class BooleanSettingsElementOptions: DefaultSettingElementOptions() {
+class BooleanSettingsElementOptions : DefaultSettingElementOptions() {
     var title = false
 }
 

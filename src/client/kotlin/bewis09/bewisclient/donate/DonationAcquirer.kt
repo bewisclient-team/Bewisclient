@@ -51,29 +51,29 @@ object DonationAcquirer {
         FALSE_API_LEVEL
     }
 
-    data class Response (
+    data class Response(
         val minimum_api_level: Int,
         val data: Any
     )
 
-    data class CorrectResponse (
+    data class CorrectResponse(
         val minimum_api_level: Int,
         val data: Result
     )
 
-    data class Money (
+    data class Money(
         val value: Double,
         val currency: String
     )
 
-    data class Avatar (
+    data class Avatar(
         val width: String,
         val height: String,
         val src: String,
         val alt: String
     )
 
-    data class Cause (
+    data class Cause(
         val name: String,
         val description: String,
         val short_description: String,
@@ -82,7 +82,7 @@ object DonationAcquirer {
         val website: String
     )
 
-    data class Result (
+    data class Result(
         val goal: Money,
         val published_at: String,
         val id: String,
