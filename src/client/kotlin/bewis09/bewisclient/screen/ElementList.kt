@@ -214,7 +214,7 @@ object ElementList: Settings() {
      */
     fun loadWidgetsSingleFromDefault(widget: Widget<*>): Array<OptionElement> {
         val map: ArrayList<OptionElement> = arrayListOf(
-            TitleWidgetEnablerOptionElement(widget.settings.enabled,"gui.widgets","settings.widgets."+widget.id)
+            TitleWidgetEnablerOptionElement(widget.settings.enabled,"gui.widgets","setting.widgets."+widget.id)
         )
 
         widget.getWidgetSettings().getSettingList().forEach {

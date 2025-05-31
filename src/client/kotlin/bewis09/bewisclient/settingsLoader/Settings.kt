@@ -128,11 +128,11 @@ open class Settings {
         }
 
         class BlockhitSettings: BooleanSetting(DESIGN, arrayOf("blockhit"), "blockhit", false, BooleanSettingsElementOptions().asTitle()), SettingToElementProvider {
-            val color = ColorSaverSetting(DESIGN, path, "color", ColorSaver.of(0), null)
-            val alpha = FloatSetting(DESIGN, path, "alpha", 0.4f, FloatSettingsElementOptions().withSliderInfo(SliderInfo(0.0f,1.0f,2)))
+            val color = ColorSaverSetting(DESIGN, path, "color", ColorSaver.of(0), DefaultSettingElementOptions().addPathToTitle())
+            val alpha = FloatSetting(DESIGN, path, "alpha", 0.4f, FloatSettingsElementOptions().withSliderInfo(SliderInfo(0.0f,1.0f,2)).addPathToTitle())
 
             override fun getElementSettings(): Array<Setting<*,*>> {
-                return arrayOf(this, color, alpha, hit_overlay, color, alpha)
+                return arrayOf(this, color, alpha, hit_overlay, hit_overlay.color, hit_overlay.alpha)
             }
 
             override fun getTitle(): String {
@@ -141,8 +141,8 @@ open class Settings {
         }
 
         class HitOverlaySettings: BooleanSetting(DESIGN, arrayOf("blockhit","hit_overlay"), "hit_overlay", false, BooleanSettingsElementOptions().asTitle()) {
-            val color = ColorSaverSetting(DESIGN, path, "color", ColorSaver.of(0), null)
-            val alpha = FloatSetting(DESIGN, path, "alpha", 0.33f, FloatSettingsElementOptions().withSliderInfo(SliderInfo(0.0f,1.0f,2)))
+            val color = ColorSaverSetting(DESIGN, path, "color", ColorSaver.of(0), DefaultSettingElementOptions().addPathToTitle())
+            val alpha = FloatSetting(DESIGN, path, "alpha", 0.33f, FloatSettingsElementOptions().withSliderInfo(SliderInfo(0.0f,1.0f,2)).addPathToTitle())
         }
 
         class PumpkinSettings: BooleanSetting(DESIGN, arrayOf(), "disable_pumpkin_overlay", false, BooleanSettingsElementOptions().asTitle()), SettingToElementProvider {
@@ -168,7 +168,7 @@ open class Settings {
             val show_title_menu = BooleanSetting(DESIGN, path, "show_title_menu", true, null)
             val show_game_menu = BooleanSetting(DESIGN, path, "show_game_menu", true, null)
             val shown_start_menu = BooleanSetting(DESIGN, path, "shown_start_menu", true, null)
-            val scale = FloatSetting(DESIGN, path, "scale", 0.75f, FloatSettingsElementOptions().withSliderInfo(SliderInfo(0.5f,1f,2)))
+            val scale = FloatSetting(DESIGN, path, "scale", 0.75f, FloatSettingsElementOptions().withSliderInfo(SliderInfo(0.5f,1f,2)).addPathToTitle())
 
             override fun getElementSettings(): Array<Setting<*,*>> {
                 return arrayOf(animation_time,scale,show_game_menu,show_title_menu)
