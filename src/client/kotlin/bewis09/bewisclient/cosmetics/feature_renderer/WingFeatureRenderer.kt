@@ -42,17 +42,17 @@ class WingFeatureRenderer(context: FeatureRendererContext<PlayerEntityRenderStat
             val texture = getTexture(state.name)
 
             if (texture != null) {
-                var clamped_value = MathHelper.clamp((wing_animation_frame - 30) / 30f, -1f, 1f)
-                clamped_value = (1 - cos(Math.PI * clamped_value)).toFloat() / 2
-                clamped_value = (clamped_value + 1) * 30
+                var clampedValue = MathHelper.clamp((wing_animation_frame - 30) / 30f, -1f, 1f)
+                clampedValue = (1 - cos(Math.PI * clampedValue)).toFloat() / 2
+                clampedValue = (clampedValue + 1) * 30
 
-                part1.yaw = (body.yaw + abs((clamped_value - 30).toDouble()) / 30f).toFloat()
+                part1.yaw = (body.yaw + abs((clampedValue - 30).toDouble()) / 30f).toFloat()
                 part1.pitch = body.pitch
                 part1.roll = body.roll
                 part1.originX = body.originX
                 part1.originY = body.originY
                 part1.originZ = body.originZ + 2
-                part2.yaw = (body.yaw - abs((clamped_value - 30).toDouble()) / 30f).toFloat()
+                part2.yaw = (body.yaw - abs((clampedValue - 30).toDouble()) / 30f).toFloat()
                 part2.pitch = body.pitch
                 part2.roll = body.roll
                 part2.originX = body.originX

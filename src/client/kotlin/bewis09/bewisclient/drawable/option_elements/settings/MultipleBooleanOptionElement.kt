@@ -4,6 +4,7 @@ import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.drawable.option_elements.OptionElement
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.settingsLoader.settings.MultipleBooleanSetting
+import bewis09.bewisclient.util.applyAlpha
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 
@@ -25,15 +26,15 @@ class MultipleBooleanOptionElement(val setting: MultipleBooleanSetting) :
         width: Int,
         mouseX: Int,
         mouseY: Int,
-        alphaModifier: Long
+        alpha: Float
     ): Int {
         val height = 22 + setting.children.size * 13
 
         selected = -1
 
-        context.drawHorizontalLine(x + 4, x + width - 5, y + 16, 0xFFAAAAAA.toInt())
+        context.drawHorizontalLine(x + 4, x + width - 5, y + 16, applyAlpha(0xAAAAAAA, alpha))
 
-        context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, Bewisclient.getTranslationText(title), x + width / 2, y + 5, -1)
+        context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, Bewisclient.getTranslationText(title), x + width / 2, y + 5, applyAlpha(0xFFFFFF, alpha))
 
         setting.children.forEachIndexed { index, it ->
             val hovered =
@@ -47,13 +48,13 @@ class MultipleBooleanOptionElement(val setting: MultipleBooleanSetting) :
                 Bewisclient.getTranslationText("setting." + it.path.reduce { acc, s -> "$acc.$s" } + "." + it.id),
                 x + 20,
                 y + 22 + 13 * index,
-                if (hovered) (alphaModifier + 0xFFFFFF).toInt() else (alphaModifier + 0xAAAAAA).toInt()
+                if (hovered) applyAlpha(0xFFFFFF, alpha) else applyAlpha(0xAAAAAA, alpha)
             )
 
-            context.drawBorder(x + 5, y + 20 + 13 * index, 11, 11, if (hovered) (alphaModifier + 0xFFFFFF).toInt() else (alphaModifier + 0xAAAAAA).toInt())
+            context.drawBorder(x + 5, y + 20 + 13 * index, 11, 11, if (hovered) applyAlpha(0xFFFFFF, alpha) else applyAlpha(0xAAAAAA, alpha))
 
             if (it.get()) {
-                context.fill(x + 8, y + 23 + 13 * index, x + 13, y + 20 + 13 * index + 8, if (hovered) (alphaModifier + 0xFFFFFF).toInt() else (alphaModifier + 0xAAAAAA).toInt())
+                context.fill(x + 8, y + 23 + 13 * index, x + 13, y + 20 + 13 * index + 8, if (hovered) applyAlpha(0xFFFFFF, alpha) else applyAlpha(0xAAAAAA, alpha))
             }
         }
 

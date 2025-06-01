@@ -1,5 +1,6 @@
 {
   "bewisclient.setting.design.fullbright": "Fullbright",
+  "bewisclient.fullbright": "Fullbright",
   "bewisclient.setting.contact": "Contact",
   "bewisclient.setting.better_visibility": "Better Visibility",
   "bewisclient.setting.blockhit_and_hit_overlay": "Blockhit and Hit Overlay",
@@ -165,7 +166,7 @@
   "bewisclient.setting.widgets.bottom_color": "Bottom Color",
   "bewisclient.setting.widgets.first_line": "First Line",
   "bewisclient.tiwyla.tool.extra": "Tool & Extra Info",
-  "bewisclient.setting.widgets.seccond_line": "Second Line",
+  "bewisclient.setting.widgets.second_line": "Second Line",
   "bewisclient.setting.widgets.third_line": "Third Line",
   "bewisclient.setting.tiwyla.widgets.select_parts": "Select what should be shown",
   "bewisclient.setting.tiwyla.show_progress_bar": "Show Progress Bar",

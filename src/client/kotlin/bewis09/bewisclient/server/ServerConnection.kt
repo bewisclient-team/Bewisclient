@@ -13,11 +13,7 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.MinecraftClient
-import net.minecraft.client.texture.NativeImage
-import net.minecraft.client.texture.NativeImageBackedTexture
-import net.minecraft.util.Identifier
 import net.minecraft.util.Util
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.net.HttpURLConnection
 import java.net.URI
@@ -25,7 +21,6 @@ import java.net.URL
 import java.net.URLConnection
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
-import javax.imageio.ImageIO
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 
@@ -173,35 +168,12 @@ object ServerConnection {
             try {
                 if (texture.exists()) {
                     if (cosmetic.frames > 1) {
-                        val gif = bewis09.bewisclient.util.Util.getFrames(texture)
-
-                        gif.forEachIndexed { i, image ->
-                            val baos = ByteArrayOutputStream()
-
-                            ImageIO.write(image, "png", baos)
-
-                            val bytes = baos.toByteArray()
-                            val identifier = Identifier.of("bewisclient", "cosmetic_" + cosmetic.type + "_" + cosmetic.id + "_" + i)
-
-                            MinecraftClient.getInstance().textureManager.registerTexture(
-                                identifier,
-                                NativeImageBackedTexture(identifier::toString, NativeImage.read(bytes))
-                            )
-                        }
-
-                        Cosmetics.registerCosmetic(AnimatedCape(Cosmetics.getCosmeticsType(cosmetic.type), cosmetic.id, gif.size, 80), cosmetic.default || cosmetic in specials)
+                        Cosmetics.registerCosmetic(AnimatedCape(Cosmetics.getCosmeticsType(cosmetic.type), cosmetic.id, texture.readBytes()), cosmetic.default || cosmetic in specials)
 
                         continue
                     }
 
-                    val identifier = Identifier.of("bewisclient", "cosmetic_" + cosmetic.type + "_" + cosmetic.id)
-
-                    MinecraftClient.getInstance().textureManager.registerTexture(
-                        identifier,
-                        NativeImageBackedTexture(identifier::toString, NativeImage.read(texture.readBytes()))
-                    )
-
-                    Cosmetics.registerCosmetic(Cosmetic(Cosmetics.getCosmeticsType(cosmetic.type), cosmetic.id), cosmetic.default || cosmetic in specials)
+                    Cosmetics.registerCosmetic(Cosmetic(Cosmetics.getCosmeticsType(cosmetic.type), cosmetic.id, texture.readBytes()), cosmetic.default || cosmetic in specials)
                 }
             } catch (e: Exception) {
                 Bewisclient.warn("Error loading cosmetic ${cosmetic.type + "/" + cosmetic.id}: " + e.localizedMessage)

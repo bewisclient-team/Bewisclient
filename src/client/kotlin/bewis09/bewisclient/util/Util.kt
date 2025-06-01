@@ -1,15 +1,14 @@
 package bewis09.bewisclient.util
 
 import net.fabricmc.loader.api.FabricLoader
-import net.minecraft.client.gui.DrawContext
-import net.minecraft.client.render.RenderLayer
-import net.minecraft.util.Identifier
 import java.awt.image.BufferedImage
+import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.IOException
 import java.net.URI
 import java.util.function.Predicate
 import javax.imageio.ImageIO
+import kotlin.io.path.pathString
 
 
 object Util {
@@ -27,9 +26,9 @@ object Util {
     }
 
     @Throws(IOException::class)
-    fun getFrames(input: File?): ArrayList<BufferedImage> {
+    fun getFrames(input: ByteArray): ArrayList<BufferedImage> {
         val reader = ImageIO.getImageReadersByFormatName("gif").next()
-        val stream = ImageIO.createImageInputStream(input)
+        val stream = ImageIO.createImageInputStream(ByteArrayInputStream(input))
         val frames = arrayListOf<BufferedImage>()
 
         reader.input = stream
@@ -72,29 +71,12 @@ object Util {
     }
 }
 
-fun DrawContext.drawTexture(
-    sprite: Identifier?,
-    x: Int,
-    y: Int,
-    width: Int,
-    height: Int
-) {
-    this.drawTexture(
-        { texture: Identifier? ->
-            RenderLayer.getGuiTexturedOverlay(texture)
-        },
-        sprite,
-        x,
-        y,
-        0f,
-        0f,
-        width,
-        height,
-        width,
-        height,
-        width,
-        height
-    )
+fun getRelativeGamePath(path: String): String {
+    return FabricLoader.getInstance().gameDir.pathString + File.separator + path
+}
+
+fun getRelativeGameFile(path: String): File {
+    return File(getRelativeGamePath(path))
 }
 
 inline fun <S, T> Array<out T>.reduce(operation: (acc: S, T) -> S, initial_accumulator: S): S {

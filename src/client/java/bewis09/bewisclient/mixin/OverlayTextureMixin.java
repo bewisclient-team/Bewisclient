@@ -13,13 +13,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(OverlayTexture.class)
 public class OverlayTextureMixin {
-//    @Shadow
-//    @Final
-//    private NativeImageBackedTexture texture;
-//
-//    @Inject(method = "<init>", at = @At("RETURN"))
-//    private void inject(CallbackInfo ci) {
-//        if (Settings.Companion.getHit_overlay().get())
-//            KFJ.INSTANCE.overlayTexture(texture);
-//    }
+    @Shadow
+    @Final
+    private NativeImageBackedTexture texture;
+
+    @Inject(method = "<init>", at = @At("RETURN"))
+    private void inject(CallbackInfo ci) {
+        if (Settings.Companion.getHit_overlay().get())
+            KFJ.INSTANCE.overlayTexture(texture);
+    }
 }

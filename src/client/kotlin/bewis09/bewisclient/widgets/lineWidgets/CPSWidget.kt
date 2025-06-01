@@ -8,7 +8,7 @@ import bewis09.bewisclient.settingsLoader.SettingTypes
  */
 class CPSWidget : LineWidget<SettingTypes.CPSWidgetSettingsObject>("cps", 80, true) {
     override fun getText(): ArrayList<String> {
-        when (settings.cps_elements.get()) {
+        when (settings.cpsElements.get()) {
             0 -> return arrayListOf("${Bewisclient.lCount()} | ${Bewisclient.rCount()} CPS")
             1 -> return arrayListOf("${Bewisclient.lCount()} CPS")
             2 -> return arrayListOf("${Bewisclient.rCount()} CPS")

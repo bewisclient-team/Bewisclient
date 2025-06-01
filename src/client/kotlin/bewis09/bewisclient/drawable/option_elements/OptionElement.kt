@@ -46,11 +46,11 @@ abstract class OptionElement(val title: String, val description: String) : Setti
      * @param width The width of the middle part of the option screen and the optimal width of the element
      * @param mouseX The x coordinate of the mouse
      * @param mouseY The y coordinate of the mouse
-     * @param alphaModifier A number between 0x1000000 and 0xFF000000 that should be added to any RGB color to support the blend-in and blend-out animation
+     * @param alpha The alpha that should be used for rendering the element, can be used to fade out elements
      *
      * @return The height of the element
      */
-    abstract fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int
+    abstract fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alpha: Float): Int
 
     /**
      * Gets called when a mouse button is clicked

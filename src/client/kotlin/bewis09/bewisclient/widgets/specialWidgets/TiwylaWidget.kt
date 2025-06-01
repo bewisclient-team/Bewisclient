@@ -13,6 +13,9 @@ import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.passive.AxolotlEntity
+import net.minecraft.entity.passive.CatEntity
+import net.minecraft.entity.passive.FrogEntity
+import net.minecraft.entity.passive.HorseEntity
 import net.minecraft.entity.passive.LlamaEntity
 import net.minecraft.entity.passive.RabbitEntity
 import net.minecraft.entity.passive.TraderLlamaEntity
@@ -61,18 +64,18 @@ class TiwylaWidget : Widget<SettingTypes.TiwylaWidgetSettingsObject>("tiwyla") {
          * A [HashMap] of the entities which have special information displayed
          */
         val entityExtraInfo = hashMapOf<EntityType<*>, EntityListener>(
-//                Pair(EntityType.CAT, EntityListener {
-//                    if(it is CatEntity) Registries.CAT_VARIANT.getId(it.variant.value())?.path else ""
-//                }),
-//                Pair(EntityType.FROG, EntityListener {
-//                    if(it is FrogEntity) Registries.FROG_VARIANT.getId(it.variant.value())?.path else ""
-//                }),
+                Pair(EntityType.CAT, EntityListener {
+                    if(it is CatEntity) it.variant.key.get().value.path else ""
+                }),
+                Pair(EntityType.FROG, EntityListener {
+                    if(it is FrogEntity) it.variant.key.get().value.path else ""
+                }),
             Pair(EntityType.AXOLOTL, EntityListener {
-                if (it is AxolotlEntity) it.variant.name else ""
+                if (it is AxolotlEntity) it.variant.name.lowercase() else ""
             }),
-//                Pair(EntityType.HORSE, EntityListener {
-//                    if (it is HorseEntity) it.variant.name.lowercase(Locale.getDefault()) + ", " + it.marking.name.lowercase(Locale.getDefault()) else ""
-//                }),
+                Pair(EntityType.HORSE, EntityListener {
+                    if (it is HorseEntity) it.horseColor.name.lowercase(Locale.getDefault()) + ", " + it.marking.name.lowercase(Locale.getDefault()) else ""
+                }),
             Pair(EntityType.RABBIT, EntityListener {
                 if (it is RabbitEntity) it.variant.name else ""
             }),
@@ -98,7 +101,7 @@ class TiwylaWidget : Widget<SettingTypes.TiwylaWidgetSettingsObject>("tiwyla") {
         drawContext.matrices.push()
         drawContext.matrices.scale(settings.size.get(), settings.size.get(), 1F)
         drawContext.fill(x, y, x + getOriginalWidth(), y + getOriginalHeight(), ColorHelper.getArgb(((settings.transparency.get().times(255F)).toInt()), 0, 0, 0))
-        drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, getText()[0], x + getOriginalWidth() / 2, y + 4, (0xFF000000L + settings.top_color.get().getColor()).toInt())
+        drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, getText()[0], x + getOriginalWidth() / 2, y + 4, (0xFF000000L + settings.topColor.get().getColor()).toInt())
         drawContext.matrices.scale(0.7F, 0.7F, 1F)
         for ((index, text) in getText().iterator().withIndex()) {
             if (index != 0)
@@ -107,17 +110,17 @@ class TiwylaWidget : Widget<SettingTypes.TiwylaWidgetSettingsObject>("tiwyla") {
                         text.split("%")[1].toDouble(),
                         text.split("%")[2].toDouble(),
                         text.split("%")[3].toDouble()
-                    ) else Text.of(text), ((x + getOriginalWidth() / 2) / 0.7F).toInt(), ((y + 8 * index + 8) / 0.7F).toInt(), (0xFF000000L + settings.bottom_color.get().getColor()).toInt()
+                    ) else Text.of(text), ((x + getOriginalWidth() / 2) / 0.7F).toInt(), ((y + 8 * index + 8) / 0.7F).toInt(), (0xFF000000L + settings.bottomColor.get().getColor()).toInt()
                 )
         }
         drawContext.matrices.scale(1 / 0.7F, 1 / 0.7F, 1F)
         val hitResult = MinecraftClient.getInstance().crosshairTarget
         if (hitResult is BlockHitResult) {
-            if (settings.show_block_icon.get()) {
+            if (settings.showBlockIcon.get()) {
                 drawContext.drawItem(ItemStack(MinecraftClient.getInstance().world!!.getBlockState(hitResult.blockPos).block), x + 10, y + 12)
             }
 
-            if ((MinecraftClient.getInstance().interactionManager as ClientPlayerInteractionManagerMixin?)!!.getCurrentBreakingProgress() != 0f && settings.show_progress_bar.get()) {
+            if ((MinecraftClient.getInstance().interactionManager as ClientPlayerInteractionManagerMixin?)!!.getCurrentBreakingProgress() != 0f && settings.showProgressBar.get()) {
                 drawContext.drawHorizontalLine(
                     x,
                     floor(x + getOriginalWidth() * ((MinecraftClient.getInstance().interactionManager as ClientPlayerInteractionManagerMixin?)!!.getCurrentBreakingProgress())).toInt(),
@@ -161,9 +164,9 @@ class TiwylaWidget : Widget<SettingTypes.TiwylaWidgetSettingsObject>("tiwyla") {
      */
     private fun getTextFromBlock(hitResult: BlockHitResult, blockState: BlockState): ArrayList<String> {
         val firstLine = blockState.block.name.string
-        val secondLine = getBlockInformation(settings.first_line.get(), blockState, hitResult.blockPos)
-        val thirdLine = getBlockInformation(settings.seccond_line.get(), blockState, hitResult.blockPos)
-        val fourthLine = getBlockInformation(settings.third_line.get(), blockState, hitResult.blockPos)
+        val secondLine = getBlockInformation(settings.firstLine.get(), blockState, hitResult.blockPos)
+        val thirdLine = getBlockInformation(settings.secondLine.get(), blockState, hitResult.blockPos)
+        val fourthLine = getBlockInformation(settings.thirdLine.get(), blockState, hitResult.blockPos)
 
         return arrayListOf(firstLine, secondLine, thirdLine, fourthLine)
     }
@@ -311,7 +314,7 @@ class TiwylaWidget : Widget<SettingTypes.TiwylaWidgetSettingsObject>("tiwyla") {
      */
     private fun getTextFromEntity(entity: Entity): ArrayList<String> {
         return if (entity is LivingEntity)
-            if (MinecraftClient.getInstance().isInSingleplayer && settings.show_health_information.get()) {
+            if (MinecraftClient.getInstance().isInSingleplayer && settings.showHealthInformation.get()) {
                 if (entity.maxHealth > 20 && entity.maxHealth <= 40) {
                     arrayListOf(
                         entity.name.string,

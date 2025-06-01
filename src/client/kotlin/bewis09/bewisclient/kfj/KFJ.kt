@@ -15,6 +15,8 @@ import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.render.VertexConsumerProvider
 import net.minecraft.client.render.entity.EntityRenderDispatcher
 import net.minecraft.client.render.entity.state.TntEntityRenderState
+import net.minecraft.client.texture.NativeImage
+import net.minecraft.client.texture.NativeImageBackedTexture
 import net.minecraft.client.texture.StatusEffectSpriteManager
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.effect.StatusEffect
@@ -253,31 +255,30 @@ object KFJ : Settings() {
         textRenderer.draw(s, 0f, 0f, -1, false, matrix4f, vertexConsumerProvider, TextRenderer.TextLayerType.POLYGON_OFFSET, 0, LightmapTextureManager.applyEmission(light, 2))
     }
 
-//    /**
-//     * @see [bewis09.bewisclient.mixin.OverlayTextureMixin.inject]
-//     */
-//    fun overlayTexture(texture: NativeImageBackedTexture) {
-//        val nativeImage: NativeImage = texture.image!!
-//
-//        for (i in 0..15) {
-//            for (j in 0..15) {
-//                if (i < 8) {
-//                    nativeImage.setColorArgb(
-//                        j, i, ColorHelper.getArgb((1- hit_overlay.alpha.get() *255).toInt(),ColorHelper.getRed(
-//                            hit_overlay.color.get().getColor()),ColorHelper.getGreen(
-//                            hit_overlay.color.get().getColor()),ColorHelper.getBlue(
-//                            hit_overlay.color.get().getColor()))
-//                    )
-//                } else {
-//                    val k = ((1.0f - j.toFloat() / 15.0f * 0.75f) * 255.0f).toInt()
-//                    nativeImage.setColorArgb(j, i, ColorHelper.withAlpha(k, -1))
-//                }
-//            }
-//        }
-//
-//        RenderSystem.activeTexture(33985)
-//        texture.bindTexture()
-//        nativeImage.upload(0, 0, 0, 0, 0, nativeImage.width, nativeImage.height, false)
-//        RenderSystem.activeTexture(33984)
-//    }
+    /**
+     * @see [bewis09.bewisclient.mixin.OverlayTextureMixin.inject]
+     */
+    fun overlayTexture(texture: NativeImageBackedTexture) {
+        val nativeImage: NativeImage = texture.image!!
+
+        for (i in 0..15) {
+            for (j in 0..15) {
+                if (i < 8) {
+                    nativeImage.setColorArgb(
+                        j, i, ColorHelper.getArgb((1- hit_overlay.alpha.get() *255).toInt(),ColorHelper.getRed(
+                            hit_overlay.color.get().getColor()),ColorHelper.getGreen(
+                            hit_overlay.color.get().getColor()),ColorHelper.getBlue(
+                            hit_overlay.color.get().getColor()))
+                    )
+                } else {
+                    val k = ((1.0f - j.toFloat() / 15.0f * 0.75f) * 255.0f).toInt()
+                    nativeImage.setColorArgb(j, i, ColorHelper.withAlpha(k, -1))
+                }
+            }
+        }
+
+        texture.setFilter(false, false)
+        texture.setClamp(true)
+        texture.upload()
+    }
 }

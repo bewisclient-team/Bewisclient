@@ -5,11 +5,15 @@ import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.settingsLoader.SettingsLoader
 import bewis09.bewisclient.settingsLoader.settings.FloatSetting
 import bewis09.bewisclient.util.NumberFormatter
+import bewis09.bewisclient.util.applyAlpha
+import bewis09.bewisclient.util.drawTextLinesWithShadow
+import bewis09.bewisclient.util.fillWithBorder
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.util.math.MathHelper
 import kotlin.math.pow
 import kotlin.math.round
+import kotlin.math.roundToInt
 
 /**
  * A [SettingsOptionElement] which sets a float and displays a fader
@@ -46,27 +50,28 @@ class FloatOptionElement(setting: FloatSetting) : SettingsOptionElement<Float, F
 
     var value = 1f
 
-    override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {
+    override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alpha: Float): Int {
         if (setting.elementOptions.enableFunction?.invoke() == false) return -8
 
         val client = MinecraftClient.getInstance()
 
-        val descriptionLines = if (setting.elementOptions.description) client.textRenderer.wrapLines(Bewisclient.getTranslationText(description), width - 34) else mutableListOf()
-
-        val height = 13 + if (descriptionEnabled) descriptionLines.size * 10 + 4 else 0
+        var height = 13
 
         isSelected = x + width - 80 < mouseX && y < mouseY && x + width > mouseX && y + 13 > mouseY
 
+        context.drawTextWithShadow(client.textRenderer, Bewisclient.getTranslationText(title), x + 6, y + 3, applyAlpha(0xFFFFFF, alpha))
+
+        if (setting.elementOptions.description)
+            height = context.drawTextLinesWithShadow(
+                width - 34,
+                Bewisclient.getTranslationText(description),
+                x + 6,
+                y + 16,
+                applyAlpha(0x808080, alpha),
+                10
+            ) + 17
+
         pos = arrayOf(x, y, x + width, y + height)
-
-        context.drawTextWithShadow(client.textRenderer, Bewisclient.getTranslationText(title), x + 6, y + 3, (alphaModifier + 0xFFFFFF).toInt())
-
-        value = (setting.get() - range.start) / (range.end - range.start)
-
-        if (descriptionEnabled)
-            descriptionLines.iterator().withIndex().forEach { (index, line) ->
-                context.drawTextWithShadow(client.textRenderer, line, x + 6, y + 16 + 10 * index, (alphaModifier + 0x808080).toInt())
-            }
 
         if (clicked) {
             value = MathHelper.clamp((mouseX - x - width + 75) / 70f, 0f, 1f)
@@ -75,20 +80,19 @@ class FloatOptionElement(setting: FloatSetting) : SettingsOptionElement<Float, F
             setting.set(value * (range.end - range.start) + range.start)
         }
 
-        value = (((Math.round((value * (range.end - range.start) + range.start) * 10.0.pow(range.decimalPoints.toDouble())))
+        value = ((((value * (range.end - range.start) + range.start) * 10.0.pow(range.decimalPoints.toDouble())).roundToInt()
                 / 10.0.pow(range.decimalPoints.toDouble()) - range.start) / (range.end - range.start)).toFloat()
 
         val str = NumberFormatter.withAfterPointZero((value * (range.end - range.start) + range.start).toDouble(), range.decimalPoints)
 
-        context.drawTextWithShadow(client.textRenderer, str, width + x - 84 - client.textRenderer.getWidth(str), y + 3, (alphaModifier + 0xFFFFFF).toInt())
+        context.drawTextWithShadow(client.textRenderer, str, width + x - 84 - client.textRenderer.getWidth(str), y + 3, applyAlpha(0xFFFFFF, alpha))
 
-        context.fill(x + width - 80, y, x + width, y + 13, (alphaModifier).toInt())
-        context.drawBorder(x + width - 80, y, 80, 13, (alphaModifier + 0xFFFFFF).toInt())
+        context.fillWithBorder(x + width - 80, y, 80, 13, applyAlpha(0, alpha), applyAlpha(0xFFFFFF, alpha))
 
-        context.fill((x + width - 77 + value * 67).toInt(), y + 3, (x + width - 70 + value * 67).toInt(), y + 10, (alphaModifier + 0xFFFFFF).toInt())
+        context.fill((x + width - 77 + value * 67).toInt(), y + 3, (x + width - 70 + value * 67).toInt(), y + 10, applyAlpha(0xFFFFFF, alpha))
 
         if (isSelected) {
-            context.drawBorder((x + width - 78 + value * 67).toInt(), y + 2, 9, 9, (alphaModifier + 0xAAAAFF).toInt())
+            context.drawBorder((x + width - 78 + value * 67).toInt(), y + 2, 9, 9, applyAlpha(0xAAAAFF, alpha))
         }
 
         return height

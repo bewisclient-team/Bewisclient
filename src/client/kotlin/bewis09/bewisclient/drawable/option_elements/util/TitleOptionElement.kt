@@ -2,6 +2,7 @@ package bewis09.bewisclient.drawable.option_elements.util
 
 import bewis09.bewisclient.Bewisclient
 import bewis09.bewisclient.drawable.option_elements.OptionElement
+import bewis09.bewisclient.util.applyAlpha
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 
@@ -18,11 +19,11 @@ open class TitleOptionElement(vararg val titles: String) : OptionElement(if (tit
         width: Int,
         mouseX: Int,
         mouseY: Int,
-        alphaModifier: Long
+        alpha: Float
     ): Int {
         context.drawCenteredTextWithShadow(
             MinecraftClient.getInstance().textRenderer,
-            titles.joinToString(" >> ") { Bewisclient.getTranslatedString(it) }, x + width / 2, y + 5, (alphaModifier + 0xFFFFFF).toInt()
+            titles.joinToString(" >> ") { Bewisclient.getTranslatedString(it) }, x + width / 2, y + 5, applyAlpha(0xFFFFFF, alpha)
         )
 
         return 20

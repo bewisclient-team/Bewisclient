@@ -34,7 +34,6 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.Util
 import org.joml.Matrix4f
 import java.util.*
-import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -221,7 +220,7 @@ open class MainOptionsScreen(val parent: Screen? = null) : Screen(Text.empty()) 
                 width / 2 - 20,
                 (mouseX * scale).toInt(),
                 (mouseY * scale).toInt(),
-                max(10, floor(animationFrame * 255).toLong()) * 0x1000000L
+                (10 / 255f).coerceAtLeast(animationFrame)
             )
         }
 
@@ -237,7 +236,7 @@ open class MainOptionsScreen(val parent: Screen? = null) : Screen(Text.empty()) 
                     width / 2 - 20,
                     (mouseX * scale).toInt(),
                     (mouseY * scale).toInt(),
-                    max(10, floor(animationFrame * 255).toLong()) * 0x1000000L
+                    (10 / 255f).coerceAtLeast(animationFrame)
                 )
             }
         }

@@ -17,7 +17,7 @@ class KeyWidget : Widget<SettingTypes.KeyWidgetSettingsObject>("keys") {
         drawContext.matrices.push()
         drawContext.matrices.scale(settings.size.get(), settings.size.get(), 1F)
         var off = 0
-        if (settings.show_movement_keys.get()) {
+        if (settings.showMovementKeys.get()) {
             renderKey(20, 19, x + 22, y + 0, MinecraftClient.getInstance().options.forwardKey, drawContext)
             renderKey(20, 19, x + 0, y + 21, MinecraftClient.getInstance().options.leftKey, drawContext)
             renderKey(20, 19, x + 22, y + 21, MinecraftClient.getInstance().options.backKey, drawContext)
@@ -25,14 +25,14 @@ class KeyWidget : Widget<SettingTypes.KeyWidgetSettingsObject>("keys") {
 
             off += 42
         }
-        if (settings.show_space_bar.get()) {
+        if (settings.showSpaceBar.get()) {
             renderKey(64, x + 0, y + off, MinecraftClient.getInstance().options.jumpKey, drawContext)
             off += 17
         }
 
-        if (settings.show_mouse_button.get()) {
-            renderKey(31, x + 0, y + off, Text.of(if (settings.show_cps.get()) Bewisclient.lCount().toString() + " L" else "LMB"), MinecraftClient.getInstance().options.attackKey, drawContext)
-            renderKey(31, x + 33, y + off, Text.of(if (settings.show_cps.get()) Bewisclient.rCount().toString() + " R" else "RMB"), MinecraftClient.getInstance().options.useKey, drawContext)
+        if (settings.showMouseButton.get()) {
+            renderKey(31, x + 0, y + off, Text.of(if (settings.showCps.get()) Bewisclient.lCount().toString() + " L" else "LMB"), MinecraftClient.getInstance().options.attackKey, drawContext)
+            renderKey(31, x + 33, y + off, Text.of(if (settings.showCps.get()) Bewisclient.rCount().toString() + " R" else "RMB"), MinecraftClient.getInstance().options.useKey, drawContext)
         }
 
         drawContext.matrices.pop()
@@ -43,7 +43,7 @@ class KeyWidget : Widget<SettingTypes.KeyWidgetSettingsObject>("keys") {
     }
 
     override fun getOriginalHeight(): Int {
-        return (if (settings.show_movement_keys.get()) 40 else -2) + (if (settings.show_space_bar.get()) 17 else 0) + (if (settings.show_mouse_button.get()) 17 else 0)
+        return (if (settings.showMovementKeys.get()) 40 else -2) + (if (settings.showSpaceBar.get()) 17 else 0) + (if (settings.showMouseButton.get()) 17 else 0)
     }
 
     /**
@@ -106,7 +106,7 @@ class KeyWidget : Widget<SettingTypes.KeyWidgetSettingsObject>("keys") {
             text,
             x + width / 2,
             y + ((height - 9) / 2 + 1),
-            (0xFF000000L + settings.text_color.get().getColor()).toInt()
+            (0xFF000000L + settings.textColor.get().getColor()).toInt()
         )
     }
 

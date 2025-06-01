@@ -12,7 +12,7 @@ open class CosmeticsType(val typeId: String) {
 
     var currentlySelected: String? = try {
         SettingsLoader.get(Settings.DESIGN, typeId, arrayOf(), JsonPrimitive("")).asString
-    } catch (e: Exception) {
+    } catch (_: Exception) {
         null
     }
         set(value) {

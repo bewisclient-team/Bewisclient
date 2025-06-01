@@ -1,6 +1,7 @@
 package bewis09.bewisclient.drawable.option_elements.util
 
 import bewis09.bewisclient.drawable.option_elements.OptionElement
+import bewis09.bewisclient.util.applyAlpha
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 
@@ -17,9 +18,9 @@ open class JustTextOptionElement(val _title: String) : OptionElement(_title, "")
         width: Int,
         mouseX: Int,
         mouseY: Int,
-        alphaModifier: Long
+        alpha: Float
     ): Int {
-        context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, _title, x + width / 2, y + 5, -1)
+        context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, _title, x + width / 2, y + 5, applyAlpha(0xFFFFFF, alpha))
 
         return 20
     }

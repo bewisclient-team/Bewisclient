@@ -17,7 +17,7 @@ import net.minecraft.world.biome.BiomeKeys
 class BiomeWidget : LineWidget<SettingTypes.ColorcodeBiomeWidgetSettingsObject>("biome", 150, true) {
 
     override fun getText(): ArrayList<String> {
-        return arrayListOf(getText(settings.colorcode_biome.get()))
+        return arrayListOf(getText(settings.colorcodeBiome.get()))
     }
 
     companion object {
@@ -100,10 +100,10 @@ class BiomeWidget : LineWidget<SettingTypes.ColorcodeBiomeWidgetSettingsObject>(
         fun getText(colorCode: Boolean): String {
             return (if (colorCode) colorCode() else "") + Text.translatable(
                 Identifier.of(
-                MinecraftClient.getInstance().world?.getBiome(
-                    MinecraftClient.getInstance().player?.blockPos
-                        ?: BlockPos(0, 0, 0)
-                )?.let { getBiomeString(it) }).toTranslationKey("biome")
+                    MinecraftClient.getInstance().world?.getBiome(
+                        MinecraftClient.getInstance().player?.blockPos
+                            ?: BlockPos(0, 0, 0)
+                    )?.let { getBiomeString(it) }).toTranslationKey("biome")
             ).string
         }
 

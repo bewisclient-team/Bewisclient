@@ -45,7 +45,7 @@ class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, v
         width: Int,
         mouseX: Int,
         mouseY: Int,
-        alphaModifier: Long
+        alpha: Float
     ): Int {
         val elementsPerRow = (width + 4) / minElementWidth
         val elementWidth: Int = (width + 4) / elementsPerRow - 4
@@ -69,90 +69,10 @@ class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, v
                 height,
                 mouseX,
                 mouseY,
-                alphaModifier
+                alpha
             )
 
             context.matrices.pop()
-
-            //val hasImage = multiplePagesElement.image != null
-//
-            //val inline = i % elementsPerRow
-            //val line = i / elementsPerRow
-//
-            //val isHovered =
-            //    mouseX > x + (elementWidthFloat * inline) && mouseX < x + (elementWidthFloat * inline) + elementWidth && mouseY > y + line * height + 2f && mouseY < y + line * height + height - 2f
-//
-            //if (isHovered) {
-            //    hoveredElement = i
-            //}
-//
-            //if(isHovered != (animation[i].endValue==3f)) {
-            //    animation[i] = ValuedAnimation(
-            //        System.currentTimeMillis(),
-            //        options_menu.animation_time.get().roundToLong() / 3,
-            //        EaseMode.EASE_IN_OUT,
-            //        animation[i].getValue(),
-            //        if (isHovered) 3f else 0f
-            //    )
-            //}
-//
-            //context.matrices.push()
-//
-            //context.matrices.translate((elementWidthFloat * inline), 0f, 0f)
-//
-            //context.matrices.translate(x.toFloat(), y.toFloat() + line * height, 0f)
-            //context.matrices.scale(
-            //    (1 + animation[i].getValue() / elementWidth * 2),
-            //    (1 + animation[i].getValue() / elementWidth * 2), 0f
-            //)
-            //context.matrices.translate(-x.toFloat() - animation[i].getValue(), -y.toFloat() - line * height - animation[i].getValue(), 0f)
-//
-            //if (hasImage) {
-            //    RenderSystem.enableBlend()
-            //    context.drawTexture(
-            //        multiplePagesElement.image,
-            //        x + elementWidth / 2 - 16,
-            //        y + line * height + 10,
-            //        32,
-            //        32,
-            //    )
-            //    RenderSystem.disableBlend()
-            //    RenderSystem.setShaderColor(1f, 1f, 1-animation[i].getValue()/6f, ((alphaModifier.toFloat() / 0xFFFFFFFF)))
-            //}
-//
-            //context.fill(0,0,0,0,-1)
-            //RenderSystem.setShaderColor(1f, 1f, 1-animation[i].getValue()/6f, ((alphaModifier.toFloat() / 0xFFFFFFFF)))
-//
-            //val l = MinecraftClient.getInstance().textRenderer.wrapLines(
-            //    Bewisclient.getTranslationText(multiplePagesElement.title),
-            //    elementWidth - 8
-            //)
-            //l.forEachIndexed { i1: Int, orderedText: OrderedText ->
-            //    context.drawCenteredTextWithShadow(
-            //        MinecraftClient.getInstance().textRenderer,
-            //        orderedText,
-            //        x + elementWidth / 2,
-            //        y + line * height + (if (hasImage) 53 else 6) + i1 * 9 + 9 - (l.size * 4.5).toInt(),
-            //        -1
-            //    )
-            //}
-//
-            //if (!hasImage) {
-            //    val d = MinecraftClient.getInstance().textRenderer.wrapLines(
-            //        Bewisclient.getTranslationText(multiplePagesElement.description!!), elementWidth - 8
-            //    )
-            //    d.forEachIndexed { i1: Int, orderedText: OrderedText ->
-            //        context.drawCenteredTextWithShadow(
-            //            MinecraftClient.getInstance().textRenderer,
-            //            orderedText,
-            //            x + elementWidth / 2,
-            //            y + line * height + (40) + i1 * 9 + 9 - (d.size * 4.5).toInt(),
-            //            0xFFAAAAAA.toInt()
-            //        )
-            //    }
-            //}
-//
-            //context.matrices.pop()
         }
 
         context.fill(0, 0, 0, 0, -1)
@@ -166,7 +86,7 @@ class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, v
         val description: String = settings.createOptionElement().description
         val id: String = settings.id
 
-        override fun render(context: DrawContext, width: Int, height: Int, mouseX: Int, mouseY: Int, alphaModifier: Long) {
+        override fun render(context: DrawContext, width: Int, height: Int, mouseX: Int, mouseY: Int, alpha: Float) {
             val l = MinecraftClient.getInstance().textRenderer.wrapLines(
                 Bewisclient.getTranslationText(title),
                 width
@@ -177,7 +97,7 @@ class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, v
                     orderedText,
                     width / 2,
                     6 + i1 * 9 + 9 - (l.size * 4.5).toInt(),
-                    -1
+                    applyAlpha(0xFFFFFF, alpha)
                 )
             }
 
@@ -190,7 +110,7 @@ class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, v
                     orderedText,
                     width / 2,
                     40 + i1 * 9 + 9 - (d.size * 4.5).toInt(),
-                    0xFFAAAAAA.toInt()
+                    applyAlpha(0xAAAAAA, alpha)
                 )
             }
         }
@@ -217,7 +137,7 @@ class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, v
             this.id = id
         }
 
-        override fun render(context: DrawContext, width: Int, height: Int, mouseX: Int, mouseY: Int, alphaModifier: Long) {
+        override fun render(context: DrawContext, width: Int, height: Int, mouseX: Int, mouseY: Int, alpha: Float) {
             context.drawTexture(
                 Identifier.of("bewisclient", "textures/main_icons/${id}.png"),
                 width / 2 - 16,
@@ -225,7 +145,7 @@ class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, v
                 32,
                 32,
             )
-            RenderSystem.setShaderColor(1f, 1f, 1 - animation.getValue() / 6f, ((alphaModifier.toFloat() / 0xFFFFFFFF)))
+            RenderSystem.setShaderColor(1f, 1f, 1 - animation.getValue() / 6f, alpha)
 
             val l = MinecraftClient.getInstance().textRenderer.wrapLines(
                 Bewisclient.getTranslationText(this.title),
@@ -238,7 +158,7 @@ class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, v
                     orderedText,
                     width / 2,
                     53 + i1 * 9 + 9 - (l.size * 4.5).toInt(),
-                    -1
+                    applyAlpha(0xFFFFFF, alpha)
                 )
             }
         }
@@ -256,7 +176,7 @@ class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, v
 
         var animation = ValuedAnimation(System.currentTimeMillis(), options_menu.animation_time.get().roundToLong() / 2, EaseMode.CONST, 0f, 0f)
 
-        fun onRender(context: DrawContext, x: Int, y: Int, width: Int, height: Int, mouseX: Int, mouseY: Int, alphaModifier: Long) {
+        fun onRender(context: DrawContext, x: Int, y: Int, width: Int, height: Int, mouseX: Int, mouseY: Int, alpha: Float) {
             this.width = width
             this.height = height
             this.x = x
@@ -279,10 +199,10 @@ class MultiplePagesOptionElement(val elementList: Array<MultiplePagesElement>, v
                 (1 + animation.getValue() / width * 2), 0f
             )
             context.matrices.translate(-animation.getValue(), -animation.getValue(), 0f)
-            render(context, width, height, mouseX - x, mouseY - y, alphaModifier)
+            render(context, width, height, mouseX - x, mouseY - y, alpha)
         }
 
-        abstract fun render(context: DrawContext, width: Int, height: Int, mouseX: Int, mouseY: Int, alphaModifier: Long)
+        abstract fun render(context: DrawContext, width: Int, height: Int, mouseX: Int, mouseY: Int, alpha: Float)
 
         open fun mouseClicked(mouseX: Double, mouseY: Double, screen: MainOptionsScreen) {
             if (mouseX >= x && mouseY >= y && mouseX <= x + width && mouseY <= y + height) {

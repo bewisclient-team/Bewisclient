@@ -21,7 +21,7 @@ class CosmeticsDrawBigElement(val right: Boolean = false) : OptionElement("", ""
         width: Int,
         mouseX: Int,
         mouseY: Int,
-        alphaModifier: Long
+        alpha: Float
     ): Int {
         Cosmetics.types.forEach {
             it.currentOverwrite = Pair(true, if (it.currentlySelected == null) null else it.defaultCosmetics[it.currentlySelected])
@@ -30,9 +30,11 @@ class CosmeticsDrawBigElement(val right: Boolean = false) : OptionElement("", ""
         context.matrices.pop()
         context.matrices.push()
 
-        if (MinecraftClient.getInstance().currentScreen is MainOptionsScreen) {
-            if ((MinecraftClient.getInstance().currentScreen as MainOptionsScreen).animation.getType() == "SLIDE") {
-                val a = (MinecraftClient.getInstance().currentScreen as MainOptionsScreen).animation.getValue()
+        val currentScreen = MinecraftClient.getInstance().currentScreen
+
+        if (currentScreen is MainOptionsScreen) {
+            if (currentScreen.animation.getType() == "SLIDE") {
+                val a = currentScreen.animation.getValue()
 
                 context.matrices.translate((1 - a) * MinecraftClient.getInstance().currentScreen!!.width.toFloat() / 4 * (if (right) 1f else -1f), 0f, 0f)
             }
@@ -60,7 +62,7 @@ class CosmeticsDrawBigElement(val right: Boolean = false) : OptionElement("", ""
         context.disableScissor()
 
         context.draw {
-            renderEntity(it, alphaModifier, context)
+            renderEntity(it, alpha, context)
         }
 
         context.fill(0, 0, 0, 0, 0)

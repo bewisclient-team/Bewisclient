@@ -12,6 +12,7 @@ import bewis09.bewisclient.mixin.EntityRenderDispatcherMixin
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.util.ScreenValuedAnimation
 import bewis09.bewisclient.util.Util
+import bewis09.bewisclient.util.applyAlpha
 import bewis09.bewisclient.util.drawTexture
 import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.MinecraftClient
@@ -58,25 +59,25 @@ class CosmeticsElement(val type: String, val renderType: RenderType = RenderType
 
     val cosmeticsType = Cosmetics.getCosmeticsType(type)
 
-    var left_selected = false
-    var right_selected = false
+    var leftSelected = false
+    var rightSelected = false
 
     var maxX = 0f
 
-    override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {
-        context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, Bewisclient.getTranslationText(title), x + width / 2, y + 5, (alphaModifier + 0xFFFFFF).toInt())
+    override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alpha: Float): Int {
+        context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, Bewisclient.getTranslationText(title), x + width / 2, y + 5, applyAlpha(0xFFFFFF, alpha))
 
-        context.fill(x, y + 25, x + width, y + 140, 0x80555555.toInt())
+        context.fill(x, y + 25, x + width, y + 140, applyAlpha(0x555555, alpha / 2))
 
-        left_selected = Util.isIn(mouseX, mouseY, x, y + 25, x + 20, y + 140)
+        leftSelected = Util.isIn(mouseX, mouseY, x, y + 25, x + 20, y + 140)
 
-        context.fill(x, y + 25, x + 20, y + 140, (alphaModifier).toInt())
-        context.drawBorder(x, y + 25, 20, 115, (alphaModifier + (if (left_selected) 0xAAAAFF else 0xFFFFFF)).toInt())
+        context.fill(x, y + 25, x + 20, y + 140, applyAlpha(0, alpha))
+        context.drawBorder(x, y + 25, 20, 115, applyAlpha(if (leftSelected) 0xAAAAFF else 0xFFFFFF, alpha))
 
-        right_selected = Util.isIn(mouseX, mouseY, x + width - 20, y + 25, x + width, y + 140)
+        rightSelected = Util.isIn(mouseX, mouseY, x + width - 20, y + 25, x + width, y + 140)
 
-        context.fill(x + width - 20, y + 25, x + width, y + 140, (alphaModifier).toInt())
-        context.drawBorder(x + width - 20, y + 25, 20, 115, (alphaModifier + (if (right_selected) 0xAAAAFF else 0xFFFFFF)).toInt())
+        context.fill(x + width - 20, y + 25, x + width, y + 140, applyAlpha(0, alpha))
+        context.drawBorder(x + width - 20, y + 25, 20, 115, applyAlpha(if (rightSelected) 0xAAAAFF else 0xFFFFFF, alpha))
 
         val shiftXOffset = 25 - xAnimation.getValue().toInt()
 
@@ -85,18 +86,21 @@ class CosmeticsElement(val type: String, val renderType: RenderType = RenderType
         }
 
         context.drawTexture(
-            Identifier.of(if (right_selected) "bewisclient:textures/sprites/select_highlighted.png" else "bewisclient:textures/sprites/select.png"),
+            Identifier.of(if (rightSelected) "bewisclient:textures/sprites/select_highlighted.png" else "bewisclient:textures/sprites/select.png"),
             x + width - 26,
             y + 25 + 115 / 2 - 16,
             32,
-            32
+            32,
+            alpha = alpha
         )
+
         context.drawTexture(
-            Identifier.of(if (left_selected) "bewisclient:textures/sprites/select_left_highlighted.png" else "bewisclient:textures/sprites/select_left.png"),
+            Identifier.of(if (leftSelected) "bewisclient:textures/sprites/select_left_highlighted.png" else "bewisclient:textures/sprites/select_left.png"),
             x - 6,
             y + 25 + 115 / 2 - 16,
             32,
-            32
+            32,
+            alpha = alpha
         )
 
         context.enableScissor(x + 21, y + 25, x + width - 20, y + 140)
@@ -116,11 +120,11 @@ class CosmeticsElement(val type: String, val renderType: RenderType = RenderType
                 if (cosmeticsType.currentlySelected == pair.second.id) Bewisclient.getTranslationText("setting.disable") else Bewisclient.getTranslationText("setting.select"),
                 xOffset + 30,
                 y + 125,
-                (if (!hovered) 0xFFFFFFFF else 0xFFFFFF70).toInt()
+                applyAlpha(if (!hovered) 0xFFFFFF else 0xFFFF70, alpha)
             )
 
             if (cosmeticsType.currentlySelected == pair.second.id) {
-                context.fill(xOffset, y + 25, xOffset + 60, y + 140, 0x80555555.toInt())
+                context.fill(xOffset, y + 25, xOffset + 60, y + 140, applyAlpha(0x555555, alpha / 2))
             }
 
             if (hovered)
@@ -131,6 +135,7 @@ class CosmeticsElement(val type: String, val renderType: RenderType = RenderType
             else
                 ((mouseX - (xOffset + 30)) / 10f) % 360 - 180f
             val g = atan((((if (renderType != RenderType.FAST_CHANGING) (mouseY - (y + 50)) else 50)) / 40.0f).toDouble()).toFloat() * (if (renderType == RenderType.REVERSED) 1 else -1)
+
             val quaternionf = Quaternionf().rotateZ(3.1415927f)
             val quaternionf2 = Quaternionf().rotateX(g * 5.0f * 0.017453292f)
             val quaternionf3 = Quaternionf().rotateY(3.1415927f)
@@ -159,12 +164,8 @@ class CosmeticsElement(val type: String, val renderType: RenderType = RenderType
             cosmeticsType.currentOverwrite = Pair(true, pair.second)
 
             context.draw {
-                renderEntity(it, alphaModifier, context)
+                renderEntity(it, alpha, context)
             }
-
-            context.fill(0, 0, 0, 0, 0)
-
-            RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
 
             context.matrices.pop()
         }
@@ -187,18 +188,18 @@ class CosmeticsElement(val type: String, val renderType: RenderType = RenderType
                 cosmeticsType.currentlySelected = pair.second.id
         }
 
-        if (right_selected) {
+        if (rightSelected) {
             xAnimation = ScreenValuedAnimation(xAnimation.getValue(), 0f.coerceAtLeast(maxX.coerceAtMost(xAnimation.getValue() + 100f)))
         }
 
-        if (left_selected) {
+        if (leftSelected) {
             xAnimation = ScreenValuedAnimation(xAnimation.getValue(), 0f.coerceAtLeast(maxX.coerceAtMost(xAnimation.getValue() - 100f)))
         }
     }
 }
 
-fun renderEntity(vertexConsumerProvider: VertexConsumerProvider, alphaModifier: Long, context: DrawContext) {
-    RenderSystem.setShaderColor(1f, 1f, 1f, (alphaModifier / 0xFF).toFloat() / 0x1000000)
+fun renderEntity(vertexConsumerProvider: VertexConsumerProvider, alpha: Float, context: DrawContext) {
+    RenderSystem.setShaderColor(1f, 1f, 1f, alpha)
 
     if ((MinecraftClient.getInstance().skinProvider.getSkinTextures(MinecraftClient.getInstance().gameProfile).model == SkinTextures.Model.SLIM) != slim) {
         entityRenderer = PlayerEntityRenderer(RendererContext, MinecraftClient.getInstance().skinProvider.getSkinTextures(MinecraftClient.getInstance().gameProfile).model == SkinTextures.Model.SLIM)
@@ -211,4 +212,6 @@ fun renderEntity(vertexConsumerProvider: VertexConsumerProvider, alphaModifier: 
         vertexConsumerProvider,
         0xFFFFFF,
     )
+
+    RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
 }

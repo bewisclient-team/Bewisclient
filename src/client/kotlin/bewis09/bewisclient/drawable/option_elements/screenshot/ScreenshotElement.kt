@@ -3,9 +3,9 @@ package bewis09.bewisclient.drawable.option_elements.screenshot
 import bewis09.bewisclient.drawable.option_elements.OptionElement
 import bewis09.bewisclient.drawable.option_elements.util.JustTextOptionElement
 import bewis09.bewisclient.screen.MainOptionsScreen
+import bewis09.bewisclient.util.applyAlpha
 import bewis09.bewisclient.util.drawTexture
-import com.mojang.blaze3d.systems.RenderSystem
-import net.fabricmc.loader.api.FabricLoader
+import bewis09.bewisclient.util.getRelativeGameFile
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.texture.NativeImage
@@ -19,11 +19,36 @@ import kotlin.math.floor
 import kotlin.math.roundToInt
 
 class ScreenshotElement : OptionElement("", "") {
-    class SizedIdentifier(val identifier: Identifier, val width: Int, val height: Int, val name: String)
+    class SizedIdentifier(val identifier: Identifier, val width: Int, val height: Int, val name: String, var initialized: Boolean, val nativeImage: NativeImage) {
+        fun getInitializedIdentifier(): Identifier {
+            if (!initialized) {
+                initialized = true
+                MinecraftClient.getInstance().textureManager.registerTexture(
+                    identifier,
+                    NativeImageBackedTexture(identifier::toString, nativeImage)
+                )
+            }
+            return identifier
+        }
+    }
 
     var hoveredShot = -1
 
     companion object {
+        fun addScreenshot(f: File) {
+            try {
+                addNew = true
+                val n = NativeImage.read(FileInputStream(f))
+                val identifier = Identifier.of("bewisclient", "screenshot_" + ((++id).toString()))
+
+                val a = SizedIdentifier(
+                    identifier, n.width, n.height, f.name, false, n
+                )
+
+                screenshots.add(a)
+            } catch (_: Exception) {}
+        }
+
         val screenshots: ArrayList<SizedIdentifier> = arrayListOf()
             get() {
                 if (!loaded) {
@@ -32,24 +57,18 @@ class ScreenshotElement : OptionElement("", "") {
                     Util.getIoWorkerExecutor().execute {
                         val s = arrayListOf<SizedIdentifier>()
 
-                        for (f in File(FabricLoader.getInstance().gameDir.toString() + "\\screenshots").listFiles() ?: arrayOf()) {
+                        for (f in getRelativeGameFile("screenshots").listFiles() ?: arrayOf()) {
                             try {
                                 addNew = true
                                 val n = NativeImage.read(FileInputStream(f))
                                 val identifier = Identifier.of("bewisclient", "screenshot_" + ((++id).toString()))
 
-                                MinecraftClient.getInstance().textureManager.registerTexture(
-                                    identifier,
-                                    NativeImageBackedTexture(identifier::toString, n)
-                                )
-
                                 val a = SizedIdentifier(
-                                    Identifier.of("bewisclient", "screenshot_$id"), n.width, n.height, f.name
+                                    identifier, n.width, n.height, f.name, false, n
                                 )
 
                                 s.add(a)
-                            } catch (_: Exception) {
-                            }
+                            } catch (_: Exception) {}
                         }
 
                         screenshots.addAll(s)
@@ -73,38 +92,36 @@ class ScreenshotElement : OptionElement("", "") {
         width: Int,
         mouseX: Int,
         mouseY: Int,
-        alphaModifier: Long
+        alpha: Float
     ): Int {
         hoveredShot = -1
 
-        RenderSystem.setShaderColor(1f, 1f, 1f, ((alphaModifier / 0x1000000) / 255f))
-
         val columns = floor(width / 120f)
-        val img_width = (width - 6 * columns + 6) / columns
-        val img_height = img_width * 9 / 16
+        val imgWidth = (width - 6 * columns + 6) / columns
+        val imgHeight = imgWidth * 9 / 16
 
         screenshots.reversed().forEachIndexed { index, it ->
             val row = floor(index / columns)
             val column = floor(index % columns)
 
             val startX = (x + column / columns * (width - 6 * columns + 6) + 6 * column).toInt()
-            val startY = (y + row * (img_height + 20)).toInt()
+            val startY = (y + row * (imgHeight + 20)).toInt()
 
-            var i_width: Float = it.width.toFloat()
-            var i_height: Float = it.height.toFloat()
+            var iWidth: Float = it.width.toFloat()
+            var iHeight: Float = it.height.toFloat()
 
-            if (i_width * 9 > i_height * 16) {
-                i_width = img_width
-                i_height *= img_width / it.width.toFloat()
+            if (iWidth * 9 > iHeight * 16) {
+                iWidth = imgWidth
+                iHeight *= imgWidth / it.width.toFloat()
             } else {
-                i_height = img_height
-                i_width *= img_height / it.height.toFloat()
+                iHeight = imgHeight
+                iWidth *= imgHeight / it.height.toFloat()
             }
 
             val hovered = mouseX > startX &&
-                    mouseX < startX + img_width.toInt() &&
+                    mouseX < startX + imgWidth.toInt() &&
                     mouseY > startY &&
-                    mouseY < (startY + img_height).toInt()
+                    mouseY < (startY + imgHeight).toInt()
 
             if (hovered)
                 hoveredShot = index
@@ -112,20 +129,21 @@ class ScreenshotElement : OptionElement("", "") {
             context.matrices.push()
 
             if (hovered) {
-                val scale = 1 + 2 / i_width
+                val scale = 1 + 2 / iWidth
 
                 context.matrices.scale(scale, scale, scale)
 
                 context.matrices.translate(
                     ((startX * (1 / scale - 1)) - 1).toDouble(),
-                    (startY * (1 / scale - 1) - i_height / i_width).toDouble(),
+                    (startY * (1 / scale - 1) - iHeight / iWidth).toDouble(),
                     0.0
                 )
             }
 
             context.drawTexture(
-                it.identifier, startX + ((img_width - i_width) / 2).toInt(), startY + ((img_height - i_height) / 2).toInt(), i_width.toInt(),
-                i_height.toInt()
+                it.getInitializedIdentifier(), startX + ((imgWidth - iWidth) / 2).toInt(), startY + ((imgHeight - iHeight) / 2).toInt(), iWidth.toInt(),
+                iHeight.toInt(),
+                alpha = alpha
             )
 
             context.matrices.pop()
@@ -133,26 +151,25 @@ class ScreenshotElement : OptionElement("", "") {
             context.matrices.push()
 
             context.matrices.translate(
-                (startX + img_width / 2).toDouble(),
-                (startY + img_height).toDouble(),
+                (startX + imgWidth / 2).toDouble(),
+                (startY + imgHeight).toDouble(),
                 0.0
             )
 
             context.matrices.scale(0.7f, 0.7f, 0.7f)
 
             context.matrices.translate(
-                -(startX + img_width / 2).toDouble(),
-                -(startY + img_height).toDouble(),
+                -(startX + imgWidth / 2).toDouble(),
+                -(startY + imgHeight).toDouble(),
                 0.0
             )
 
-            context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, it.name, (startX + img_width / 2).toInt(), (startY + img_height + 5).toInt(), -1)
+            context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, it.name, (startX + imgWidth / 2).toInt(), (startY + imgHeight + 5).toInt(), applyAlpha(0xFFFFFF, alpha))
 
             context.matrices.pop()
         }
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
 
-        return ((img_height + 20) * ceil(screenshots.size / columns) - 6).roundToInt()
+        return ((imgHeight + 20) * ceil(screenshots.size / columns) - 6).roundToInt()
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int, screen: MainOptionsScreen) {

@@ -2,14 +2,13 @@ package bewis09.bewisclient.autoUpdate
 
 import bewis09.bewisclient.Bewisclient.update
 import bewis09.bewisclient.settingsLoader.Settings
+import bewis09.bewisclient.util.getRelativeGameFile
 import com.google.gson.JsonObject
-import net.fabricmc.loader.api.FabricLoader
+import net.minecraft.util.Util
 import org.apache.commons.io.FileUtils
 import java.io.ByteArrayInputStream
-import java.io.File
 import java.net.URI
 import java.util.*
-import kotlin.io.path.pathString
 
 /**
  * Used for downloading the new version and copying the java class to change the jar file
@@ -22,14 +21,12 @@ object Updater {
      * @param version The version returned by the modrinth api
      */
     fun downloadVersion(version: JsonObject) {
-        if (!System.getProperty("os.name").lowercase(Locale.getDefault()).contains("win")) {
+        if (!Settings.experimental.auto_update.get() || Util.getOperatingSystem() != Util.OperatingSystem.WINDOWS) {
             return
         }
 
-        if (!Settings.experimental.auto_update.get()) return
-
-        val file = File(
-            FabricLoader.getInstance().gameDir.pathString + "\\bewisclient\\download\\" + update!!["name"].asString.lowercase(
+        val file = getRelativeGameFile(
+            "bewisclient\\download\\" + update!!["name"].asString.lowercase(
                 Locale.getDefault()
             ).replace(" ", "-") + ".jar"
         )
@@ -51,7 +48,7 @@ object Updater {
             }
         }
 
-        val f = File(FabricLoader.getInstance().gameDir.pathString + "\\bewisclient\\java\\JavaUpdater.class")
+        val f = getRelativeGameFile("bewisclient\\java\\JavaUpdater.class")
 
         if (!f.exists()) {
             f.parentFile.mkdirs()

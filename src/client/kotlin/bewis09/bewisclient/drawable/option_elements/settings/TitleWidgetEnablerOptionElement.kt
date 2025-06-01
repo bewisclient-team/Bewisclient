@@ -5,6 +5,8 @@ import bewis09.bewisclient.drawable.option_elements.OptionElement
 import bewis09.bewisclient.drawable.option_elements.util.TitleOptionElement
 import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.settingsLoader.settings.BooleanSetting
+import bewis09.bewisclient.util.applyAlpha
+import bewis09.bewisclient.util.fillHoverableWithBorder
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 
@@ -25,37 +27,23 @@ class TitleWidgetEnablerOptionElement(val setting: BooleanSetting, vararg titles
         width: Int,
         mouseX: Int,
         mouseY: Int,
-        alphaModifier: Long
+        alpha: Float
     ): Int {
-        val a = super.render(context, x, y, width, mouseX, mouseY, alphaModifier)
-
-        isWidgetHovered = mouseX > x + width - 80 && mouseX < x + width && mouseY > y + 3 && mouseY < y + 17
+        val a = super.render(context, x, y, width, mouseX, mouseY, alpha)
 
         val enabled = setting.get()
 
-        if (!isWidgetHovered) {
-            context.fill(
-                x + width - 80,
-                y + 3,
-                x + width,
-                y + 17,
-                (alphaModifier + (if (enabled) 0x44BB44 else 0xFF0000)).toInt()
-            )
-        } else {
-            context.fill(
-                x + width - 80,
-                y + 3,
-                x + width,
-                y + 17,
-                (alphaModifier + (if (enabled) 0x226022 else 0x800000)).toInt()
-            )
-        }
-        context.drawBorder(
+        isWidgetHovered = context.fillHoverableWithBorder(
             x + width - 80,
             y + 3,
             80,
             14,
-            (alphaModifier + (if (isWidgetHovered) 0xAAAAFF else 0xFFFFFF)).toInt()
+            mouseX,
+            mouseY,
+            applyAlpha(if (enabled) 0x44BB44 else 0xFF0000, alpha),
+            applyAlpha(if (enabled) 0x226022 else 0x800000, alpha),
+            applyAlpha(0xFFFFFF, alpha),
+            applyAlpha(0xAAAAFF, alpha)
         )
 
         context.drawCenteredTextWithShadow(
@@ -63,7 +51,7 @@ class TitleWidgetEnablerOptionElement(val setting: BooleanSetting, vararg titles
             if (enabled) Bewisclient.getTranslatedString("enabled") else Bewisclient.getTranslatedString("disabled"),
             x + width - 40,
             y + 6,
-            (alphaModifier + 0xFFFFFF).toInt()
+            applyAlpha(0xFFFFFF, alpha)
         )
 
         return a

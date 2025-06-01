@@ -99,7 +99,7 @@ object Bewisclient : Settings(), ClientModInitializer {
     override fun onInitializeClient() {
         SettingsLoader.loadSettings()
 
-        update = UpdateChecker.checkForUpdates()
+        update = UpdateChecker.checkForUpdates().printErrorThenNullable { "Failed to check for updates: " + it.localizedMessage }
         if (update != null)
             Updater.downloadVersion(update!!)
 
@@ -136,7 +136,7 @@ object Bewisclient : Settings(), ClientModInitializer {
             if (it.player != null && it.isPaused.not()) {
                 val posNew = it.player!!.pos
 
-                speed = if (WidgetRenderer.speedWidget.settings.vertical_speed.get())
+                speed = if (WidgetRenderer.speedWidget.settings.verticalSpeed.get())
                     posNew.subtract(posOld).length()
                 else
                     posNew.subtract(posOld).horizontalLength()
@@ -220,37 +220,37 @@ object Bewisclient : Settings(), ClientModInitializer {
         ClientCommandRegistrationCallback.EVENT.register(ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource?>, _: CommandRegistryAccess? ->
             dispatcher.register(
                 ClientCommandManager.literal("bewisclient").then(
-                ClientCommandManager.literal("snake").executes { context: CommandContext<FabricClientCommandSource> ->
-                    context.source.client.send {
-                        context.source.client.setScreen(SnakeScreen())
+                    ClientCommandManager.literal("snake").executes { context: CommandContext<FabricClientCommandSource> ->
+                        context.source.client.send {
+                            context.source.client.setScreen(SnakeScreen())
+                        }
+                        1
                     }
-                    1
-                }
-            ).then(
-                ClientCommandManager.literal("screenshot").then(ClientCommandManager.argument("file", StringArgumentType.string()).executes { context: CommandContext<FabricClientCommandSource> ->
-                    context.source.client.send {
-                        val s = MainOptionsScreen()
+                ).then(
+                    ClientCommandManager.literal("screenshot").then(ClientCommandManager.argument("file", StringArgumentType.string()).executes { context: CommandContext<FabricClientCommandSource> ->
+                        context.source.client.send {
+                            val s = MainOptionsScreen()
 
-                        s.allElements.add(ElementList.screenshot())
-                        s.allElements.add(
-                            arrayOf(
-                                JustTextOptionElement(StringArgumentType.getString(context, "file")),
-                                SingleScreenshotElement(ScreenshotElement.screenshots.first {
-                                    it.name == StringArgumentType.getString(context, "file")
-                                })
+                            s.allElements.add(ElementList.screenshot())
+                            s.allElements.add(
+                                arrayOf(
+                                    JustTextOptionElement(StringArgumentType.getString(context, "file")),
+                                    SingleScreenshotElement(ScreenshotElement.screenshots.first {
+                                        it.name == StringArgumentType.getString(context, "file")
+                                    })
+                                )
                             )
-                        )
 
-                        s.scrolls.add(0f)
-                        s.scrolls.add(0f)
+                            s.scrolls.add(0f)
+                            s.scrolls.add(0f)
 
-                        s.slice = 2
+                            s.slice = 2
 
-                        context.source.client.setScreen(s)
-                    }
-                    1
-                })
-            )
+                            context.source.client.setScreen(s)
+                        }
+                        1
+                    })
+                )
             )
         })
 

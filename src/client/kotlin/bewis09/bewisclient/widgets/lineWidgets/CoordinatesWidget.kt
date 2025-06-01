@@ -9,12 +9,12 @@ import net.minecraft.client.gui.DrawContext
  */
 class CoordinatesWidget : LineWidget<SettingTypes.CoordinatesWidgetSettingsObject>("coordinates", 100, false) {
     override fun getText(): ArrayList<String> {
-        return if (settings.show_biome.get()) {
+        return if (settings.showBiome.get()) {
             arrayListOf(
                 "X: " + MinecraftClient.getInstance().player?.blockX,
                 "Y: " + MinecraftClient.getInstance().player?.blockY,
                 "Z: " + MinecraftClient.getInstance().player?.blockZ,
-                BiomeWidget.getText(settings.colorcode_biome.get())
+                BiomeWidget.getText(settings.colorcodeBiome.get())
             )
         } else {
             arrayListOf(
@@ -26,12 +26,12 @@ class CoordinatesWidget : LineWidget<SettingTypes.CoordinatesWidgetSettingsObjec
     }
 
     override fun getOriginalWidth(): Int {
-        return if (settings.show_biome.get()) 130 else 100
+        return if (settings.showBiome.get()) 130 else 100
     }
 
     override fun render(drawContext: DrawContext, x: Int, y: Int) {
         super.render(drawContext, x, y)
-        if (settings.show_direction.get()) {
+        if (settings.showDirection.get()) {
             drawContext.matrices.push()
             drawContext.matrices.scale(settings.size.get(), settings.size.get(), 1F)
             var direction = ""
@@ -52,7 +52,7 @@ class CoordinatesWidget : LineWidget<SettingTypes.CoordinatesWidgetSettingsObjec
                 text,
                 x + getOriginalWidth() - 6 - MinecraftClient.getInstance().textRenderer.getWidth(text),
                 y + 4,
-                (0xFF000000L + settings.text_color.get().getColor()).toInt()
+                (0xFF000000L + settings.textColor.get().getColor()).toInt()
             )
             drawContext.matrices.pop()
         }

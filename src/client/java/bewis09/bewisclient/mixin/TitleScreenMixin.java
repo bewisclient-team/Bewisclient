@@ -41,6 +41,6 @@ public class TitleScreenMixin extends Screen {
 
         Util.getIoWorkerExecutor().execute(ScreenshotElement.Companion::getScreenshots);
 
-        Util.getIoWorkerExecutor().execute(ServerConnection.INSTANCE::registerCosmetics);
+        Util.getDownloadWorkerExecutor().execute(ServerConnection.INSTANCE::registerCosmetics);
     }
 }

@@ -5,6 +5,7 @@ import bewis09.bewisclient.screen.MainOptionsScreen
 import bewis09.bewisclient.util.EaseMode
 import bewis09.bewisclient.util.ScreenValuedTypedAnimation
 import bewis09.bewisclient.util.ValuedAnimation
+import bewis09.bewisclient.util.applyAlpha
 import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
@@ -24,7 +25,7 @@ open class ContactElement(title: String, val url: String) : OptionElement("conta
      */
     var animation: ValuedAnimation = ValuedAnimation(System.currentTimeMillis(), options_menu.animation_time.get().roundToLong() / 2, EaseMode.CONST, 0f, 0f)
 
-    override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {
+    override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alpha: Float): Int {
         val client = MinecraftClient.getInstance()
 
         val descriptionLines = client.textRenderer.wrapLines(Bewisclient.getTranslationText(description), width - 12)
@@ -53,9 +54,9 @@ open class ContactElement(title: String, val url: String) : OptionElement("conta
 
         RenderSystem.setShaderColor(1f, 1f, 1 - animation.getValue() / 6f, 1f)
 
-        context.drawTextWithShadow(client.textRenderer, Bewisclient.getTranslationText(title), x + 6, y + 6, (alphaModifier + 0xFFFFFF).toInt())
+        context.drawTextWithShadow(client.textRenderer, Bewisclient.getTranslationText(title), x + 6, y + 6, applyAlpha(0xFFFFFF, alpha))
         descriptionLines.iterator().withIndex().forEach { (index, line) ->
-            context.drawTextWithShadow(client.textRenderer, line, x + 6, y + 20 + 10 * index, (alphaModifier + 0x808080).toInt())
+            context.drawTextWithShadow(client.textRenderer, line, x + 6, y + 20 + 10 * index, applyAlpha(0x808080, alpha))
         }
 
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f)

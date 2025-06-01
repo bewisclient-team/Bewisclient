@@ -25,12 +25,12 @@ class WidgetPreviewOptionElement(val widget: Widget<*>?) : OptionElement("", "")
         width: Int,
         mouseX: Int,
         mouseY: Int,
-        alphaModifier: Long
+        alpha: Float
     ): Int {
         if (widget == null) return 0
 
         context.matrices.scale(scale, scale, scale)
-        RenderSystem.setShaderColor(1F, 1F, 1F, (alphaModifier.toFloat() / 0xFFFFFFFF))
+        RenderSystem.setShaderColor(1F, 1F, 1F, alpha)
 
         context.drawTexture(
             { texture: Identifier? ->
@@ -56,7 +56,7 @@ class WidgetPreviewOptionElement(val widget: Widget<*>?) : OptionElement("", "")
 
         widget.render(context, (((x + width / 2) / scale - widget.getOriginalWidth() / 2)).roundToInt(), ((y / scale + 3f)).roundToInt())
 
-        RenderSystem.setShaderColor(1F, 1F, 1F, (alphaModifier.toFloat() / 0xFFFFFFFF))
+        RenderSystem.setShaderColor(1F, 1F, 1F, alpha)
 
         context.matrices.scale(1 / scale, 1 / scale, 1 / scale)
         context.fill(0, 0, 0, 0, 0)

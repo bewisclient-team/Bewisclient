@@ -12,6 +12,8 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.collection.DefaultedList;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 
 import java.util.Optional;
 
@@ -37,9 +39,4 @@ public abstract class BlockItemMixin extends Item {
         }
         return super.getTooltipData(stack);
     }
-
-//   @Inject(method = "appendTooltip",at=@At("HEAD"),cancellable = true)
-//   public void inject(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type, CallbackInfo ci) {
-//       if(getBlock() instanceof ShulkerBoxBlock && bewis09.bewisclient.settingsLoader.Settings.Companion.getShulkerBoxTooltip().get()) ci.cancel();
-//   }
 }

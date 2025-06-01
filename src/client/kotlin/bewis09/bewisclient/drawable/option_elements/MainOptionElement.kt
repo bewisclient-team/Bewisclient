@@ -38,7 +38,7 @@ open class MainOptionElement
      */
     var animation: ValuedAnimation = ValuedAnimation(System.currentTimeMillis(), options_menu.animation_time.get().roundToLong() / 2, EaseMode.CONST, 0f, 0f)
 
-    override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alphaModifier: Long): Int {
+    override fun render(context: DrawContext, x: Int, y: Int, width: Int, mouseX: Int, mouseY: Int, alpha: Float): Int {
         val client = MinecraftClient.getInstance()
 
         val descriptionLines = client.textRenderer.wrapLines(Bewisclient.getTranslationText(description), width - 50)
@@ -61,14 +61,14 @@ open class MainOptionElement
 
         context.drawTexture(image, x + 6, y + 6, 32, 32)
 
-        RenderSystem.setShaderColor(1F, 1F, 1 - animation.getValue() / 6f, (((alphaModifier shr 24)) * 1f) / 0xFF)
+        RenderSystem.setShaderColor(1F, 1F, 1 - animation.getValue() / 6f, alpha)
 
         context.drawTextWithShadow(client.textRenderer, Bewisclient.getTranslationText(title), x + 44, y + 6, 0xFFFFFF)
         descriptionLines.iterator().withIndex().forEach { (index, line) ->
             context.drawTextWithShadow(client.textRenderer, line, x + 44, y + 20 + 10 * index, 0x808080)
         }
 
-        RenderSystem.setShaderColor(1F, 1F, 1 - animation.getValue() / 6f, (((alphaModifier shr 24)) * 1f) / 0xFF)
+        RenderSystem.setShaderColor(1F, 1F, 1 - animation.getValue() / 6f, alpha)
 
         context.matrices.pop()
 

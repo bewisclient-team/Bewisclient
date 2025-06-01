@@ -1,10 +1,9 @@
 package bewis09.bewisclient.donate
 
 import bewis09.bewisclient.Bewisclient
+import bewis09.bewisclient.util.NetTools
 import com.google.gson.Gson
 import net.minecraft.util.Util
-import java.net.URI
-import java.nio.charset.StandardCharsets
 
 object DonationAcquirer {
     lateinit var donation_data: Result
@@ -15,26 +14,16 @@ object DonationAcquirer {
         data_loading_status = State.LOADING
         Util.getIoWorkerExecutor().execute {
             try {
-                val gson = Gson()
+                val testJson = NetTools.loadHttpJsonData("https://bewisclient.deno.dev/api/donations", Response::class.java).unwrap()
 
-                val url = URI("https://bewisclient.deno.dev/api/donations").toURL()
-
-                val connection = url.openConnection()
-
-                val result = String(connection.getInputStream().readAllBytes(), StandardCharsets.UTF_8)
-
-                val test_json = gson.fromJson(result, Response::class.java)
-
-                if (Bewisclient.API_LEVEL >= test_json.minimum_api_level) {
-                    val json = gson.fromJson(result, CorrectResponse::class.java).data
-
-                    donation_data = json
+                if (Bewisclient.API_LEVEL >= testJson.minimum_api_level) {
+                    donation_data = Gson().fromJson(Gson().toJson(testJson.data), Result::class.java) ?: throw IllegalArgumentException("Invalid data format received from the server")
 
                     data_loading_status = State.FINISHED
                 } else {
                     data_loading_status = State.FALSE_API_LEVEL
 
-                    error = test_json.minimum_api_level.toString()
+                    error = testJson.minimum_api_level.toString()
                 }
             } catch (e: Exception) {
                 data_loading_status = State.ERROR
@@ -54,11 +43,6 @@ object DonationAcquirer {
     data class Response(
         val minimum_api_level: Int,
         val data: Any
-    )
-
-    data class CorrectResponse(
-        val minimum_api_level: Int,
-        val data: Result
     )
 
     data class Money(

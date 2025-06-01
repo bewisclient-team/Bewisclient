@@ -11,7 +11,7 @@ class HRElement : OptionElement("", "") {
         width: Int,
         mouseX: Int,
         mouseY: Int,
-        alphaModifier: Long
+        alpha: Float
     ): Int {
         context.drawHorizontalLine(x, x + width, y + 4, 0xFFAAAAAA.toInt())
 

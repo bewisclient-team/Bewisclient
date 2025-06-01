@@ -1,14 +1,14 @@
 package bewis09.bewisclient.autoUpdate
 
 import bewis09.bewisclient.autoUpdate.UpdateChecker.getVersionNumber
-import com.google.gson.Gson
+import bewis09.bewisclient.util.NetTools
+import bewis09.bewisclient.util.Result
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.SharedConstants
-import java.net.URL
-import java.util.*
+import kotlin.jvm.optionals.getOrElse
 
 /**
  * Checks for updates
@@ -18,14 +18,8 @@ object UpdateChecker {
     /**
      * Checks for updates
      */
-    fun checkForUpdates(): JsonObject? {
-        try {
-            @Suppress("DEPRECATION") val scanner = Scanner(URL("https://api.modrinth.com/v2/project/bewisclient/version").openStream())
-            val response = scanner.nextLine()
-            scanner.close()
-
-            val jsonResponse = Gson().fromJson(response, JsonArray::class.java)
-
+    fun checkForUpdates(): Result<JsonObject?, Throwable> {
+        return NetTools.loadHttpJsonData("https://api.modrinth.com/v2/project/bewisclient/version", JsonArray::class.java).map { jsonResponse ->
             var new: JsonObject? = null
             var vListed = false
             var versionNumber = 0
@@ -49,27 +43,17 @@ object UpdateChecker {
             }
 
             if (vListed)
-                return new
-        } catch (_: Exception) {
-        }
+                return@map new
 
-        return null
+            return@map null
+        }
     }
 
     /**
      * @return The version that is currently installed
      */
     fun getCurrentVersion(): String {
-        val mod = FabricLoader.getInstance().getModContainer("bewisclient")
-
-        if (mod.isPresent) {
-            val m = mod.get()
-            val v = m.metadata.version.friendlyString
-
-            return v
-        }
-
-        return ""
+        return FabricLoader.getInstance().getModContainer("bewisclient").map { it.metadata.version.friendlyString }.getOrElse { "" }
     }
 
     /**
@@ -77,7 +61,10 @@ object UpdateChecker {
      */
     fun getCurrentVersionNumber(): Int {
         val v = getCurrentVersion()
-        if (v.split("-").size < 2) return 2
+
+        if (v.split("-").size < 2)
+            return 2
+
         return getVersionNumber(v.split("-")[1].split(".")[0])
     }
 
