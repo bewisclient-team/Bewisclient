@@ -1,5 +1,7 @@
 # Bewisclient
 
+This is an old version of Bewisclient. The new one is found [here](https://github.com/bewisclient-team/bewisclient-v3)
+
 ---
 
 ## Basic Information
